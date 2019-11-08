@@ -1,0 +1,135 @@
+---
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: "Coolestprojects registration"
+tags:
+- name: "registration"
+paths:
+  /register:
+    post:
+      tags:
+      - "registration"
+      summary: "Create new registration"
+      operationId: "registerPOST"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "The user to create."
+        required: false
+        schema:
+          $ref: "#/definitions/RegistrationRequest"
+      responses:
+        200:
+          description: "OK"
+        404:
+          description: "Server is down"
+        405:
+          description: "Invalid input"
+      x-swagger-router-controller: "Registration"
+definitions:
+  RegistrationRequest:
+    type: "object"
+    required:
+    - "birthmonth"
+    - "firstname"
+    - "lastname"
+    - "mandatory_approvals"
+    - "postalcode"
+    - "sex"
+    - "size"
+    - "type"
+    properties:
+      postalcode:
+        type: "integer"
+        example: 1000
+        minimum: 1000
+        maximum: 9999
+      email:
+        type: "string"
+        format: "email"
+      firstname:
+        type: "string"
+        example: "Jane"
+      lastname:
+        type: "string"
+        example: "Doe"
+      sex:
+        type: "string"
+        enum:
+        - "m"
+        - "v"
+        - "x"
+      general_questions:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "photo"
+          - "contact"
+      mandatory_approvals:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ok"
+      birthmonth:
+        type: "string"
+        format: "date"
+      size:
+        type: "string"
+        enum:
+        - "s"
+        - "m"
+        - "l"
+        - "xl"
+        - "xxl"
+        - "3xl"
+      type:
+        type: "string"
+        enum:
+        - "m"
+        - "v"
+      via:
+        type: "string"
+        maxLength: 200
+      medical:
+        type: "string"
+        maxLength: 500
+      extra:
+        type: "string"
+        maxLength: 500
+      project_name:
+        type: "string"
+        maxLength: 25
+      project_descr:
+        type: "string"
+        maxLength: 200
+      project_type:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "scratch"
+          - "hardware"
+          - "software"
+          - "wifi"
+          - "kabel"
+      project_code:
+        type: "string"
+        format: "uuid"
+      project_lang:
+        type: "string"
+        enum:
+        - "nl"
+        - "fr"
+        - "en"
+      gsm:
+        type: "string"
+        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+      gsm_guardian:
+        type: "string"
+        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+      email_guardian:
+        type: "string"
+        format: "email"
