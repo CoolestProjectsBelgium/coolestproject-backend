@@ -32,10 +32,10 @@ module.exports = {
       sex: {
         type: Sequelize.ENUM('m', 'v', 'x')
       },
-      general_questions_json: {
+      general_questions: {
         type: Sequelize.JSON
       },
-      mandatory_approvals_json: {
+      mandatory_approvals: {
         type: Sequelize.JSON
       },
       birthmonth: {
@@ -66,7 +66,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       project_type: {
-        type: Sequelize.STRING
+        type: Sequelize.JSON
       },
       project_lang: {
         type: Sequelize.ENUM('nl','fr','en')

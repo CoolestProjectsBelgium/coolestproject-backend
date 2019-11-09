@@ -5,6 +5,7 @@ info:
   title: "Coolestprojects registration"
 tags:
 - name: "registration"
+- name: "login"
 paths:
   /register:
     post:
@@ -14,20 +15,28 @@ paths:
       operationId: "registerPOST"
       parameters:
       - in: "body"
-        name: "user"
-        description: "The user to create."
+        name: "registration"
+        description: "The registration to create."
         required: false
         schema:
           $ref: "#/definitions/RegistrationRequest"
       responses:
         200:
           description: "OK"
-        404:
-          description: "Server is down"
-        405:
-          description: "Invalid input"
+        default:
+          description: "Unexpected error"
       x-swagger-router-controller: "Registration"
 definitions:
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "string"
+      message:
+        type: "string"
   RegistrationRequest:
     type: "object"
     required:
@@ -126,9 +135,11 @@ definitions:
         - "en"
       gsm:
         type: "string"
+        example: "+32460789101"
         pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
       gsm_guardian:
         type: "string"
+        example: "+32460789101"
         pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
       email_guardian:
         type: "string"

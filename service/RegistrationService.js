@@ -1,8 +1,11 @@
 'use strict';
 
-var models = require('../models');
+const logger = require('pino')()
 
-const Registration = models.Registration;
+var models = require('../models');
+var Registration = models.Registration;
+
+var MailService = require('./MailService');
 
 /**
  * Create new registration
@@ -10,12 +13,23 @@ const Registration = models.Registration;
  * user RegistrationRequest The user to create. (optional)
  * no response value expected for this operation
  **/
-exports.registerPOST = function(user) {
+exports.registerPOST = function(registration) {
   return new Promise(function(resolve, reject) {
-    Registration.create(user).then(user => {
+
+    /** 
+     * Extra validation before creating the registration record
+     * 1) check if mandatory fields are filled in (mandatory_approvals == ok)
+     * 2) check if a project is filled in or a project_code
+     * 3) check if the registration is for a minor (extra approval flow via guardian email)
+     **/
+
+    Registration.create(registration).then(registration => {
+      MailService.registrationMail(registration);
       resolve();
     }).catch((err) => {
-      reject(err);
+      logger.error(err);
+      reject();
     });
+    
   });
 }
