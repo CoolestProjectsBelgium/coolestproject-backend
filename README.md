@@ -17,6 +17,8 @@ To run the server, run:
 npm start
 ```
 
+npx nodemon run start 
+
 To view the Swagger UI interface:
 
 ```

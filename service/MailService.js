@@ -2,12 +2,11 @@
 
 const logger = require('pino')()
 const nodemailer = require('nodemailer');
-const pug = require('pug');
+const Email = require('email-templates');
+const env = process.env.NODE_ENV || 'development';
+const path = require('path');
 
-const registrationTemplate = pug.compileFile('./templates/registration.pug');
-const registrationTemplateText = pug.compileFile('./templates/registration_text.pug');
-
-let transport = nodemailer.createTransport({
+const transport = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
   auth: {
@@ -18,19 +17,55 @@ let transport = nodemailer.createTransport({
 
 module.exports = {
   registrationMail(user) {
-    const message = {
-      from: process.env.EMAIL,
-      to: user.email, 
-      subject: 'Registratie',
-      html: registrationTemplate(user),
-      text: registrationTemplateText(user)
-    };
-    transport.sendMail(message, function (err, info) {
-      if (err) {
-        logger.log(err)
-      } else {
-        logger.log(info);
+    const email = new Email({
+      message: {
+        from: process.env.EMAIL,
+      },
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      transport: transport,
+      i18n: {
+        locales:['en', 'nl', 'fr'],
+        directory: path.join(__dirname, '..', 'locales')
       }
     });
+
+    email.send({
+      template: 'registration',
+      message: {
+        to: user.email
+      },
+      locals: {
+        locale: 'nl',
+        name: user.firstname + ' ' + user.lastname
+      }
+    })
+    .then((log) => { logger.info(log) })
+    .catch((log) => { logger.error(log) });
+  },
+  loginMail(user) {
+    const email = new Email({
+      message: {
+        from: process.env.EMAIL,
+      },
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      transport: transport,
+      i18n: {
+        locales:['en', 'nl', 'fr'],
+        directory: path.join(__dirname, '..', 'locales')
+      }
+    });
+
+    email.send({
+      template: 'login',
+      message: {
+        to: user.email
+      },
+      locals: {
+        locale: 'nl',
+        name: user.firstname + ' ' + user.lastname
+      }
+    })
+    .then((log) => { logger.info(log) })
+    .catch((log) => { logger.error(log) });
   }
 }

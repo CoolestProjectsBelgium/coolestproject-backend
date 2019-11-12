@@ -22,6 +22,8 @@ config/**
 migrations/**
 service/RegistrationService.js
 service/MailService.js
+email/**
+locales/**
 index.js
 *.md
 
