@@ -20,8 +20,9 @@ seeders/**
 models/**
 config/**
 migrations/**
-service/RegistrationService.js
+# service/RegistrationService.js
 service/MailService.js
+service/DBService.js
 email/**
 locales/**
 index.js
