@@ -13,6 +13,13 @@ var serverPort = 8080;
 const dotenv = require('dotenv');
 dotenv.config();
 
+//enable i18n
+const i18n = require("i18n")
+i18n.configure({
+  locales:['en', 'nl', 'fr'],
+  directory: __dirname + '/locales'
+});
+
 // swaggerRouter configuration
 var options = {
   swaggerUi: path.join(__dirname, '/swagger.json'),
