@@ -75,11 +75,8 @@ module.exports = {
      * @param {Number} userId
      */
     updateUser: async function (user, userId) {
-        return await User.update(user, {
-            where: {
-                id: userId
-            }
-        });
+        var user = await User.findByPk(userId);
+        return await user.update(user);
     },
     /**
      * Delete a user
@@ -94,9 +91,7 @@ module.exports = {
      * @returns {Project}
      */
     createProject: async function (project) {
-        return await Project.create(
-            project
-        );
+        return await Project.create(project);
     },
     /**
      * Update a project
@@ -104,11 +99,8 @@ module.exports = {
      * @param {Number} projectId 
      */
     updateProject: async function (project, projectId) {
-        return await Project.update(project, {
-            where: {
-                id: projectId
-            }
-        });
+        var project = await Project.findByPk(projectId);
+        return await project.update(project);
     },
     /**
      * Delete a project
