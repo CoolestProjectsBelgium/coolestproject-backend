@@ -565,7 +565,8 @@ definitions:
           - "kabel"
       project_code:
         type: "string"
-        format: "uuid"
+        maxLength: 36
+        minLength: 36
       project_lang:
         type: "string"
         enum:
