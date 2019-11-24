@@ -1,8 +1,17 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Registration = sequelize.define('Registration', {
-    postalcode: DataTypes.INTEGER,
-    email: DataTypes.STRING,
+    postalcode: {
+      type:  DataTypes.INTEGER,
+      min: 1000,
+      max: 9999
+    },
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: true
+      }
+    }, 
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,
     sex: DataTypes.ENUM('m', 'v', 'x'),
@@ -24,13 +33,24 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('mandatory_approvals', JSON.stringify(value));
       }
     },
-    birthmonth: DataTypes.DATEONLY,
-    size: DataTypes.ENUM('s','m','l','xl','xxl','3xl'),
-    type: DataTypes.ENUM('m', 'v'),
+    birthmonth: {
+      type: DataTypes.DATEONLY,
+      isAfter: "2002-01-01",
+      isBefore: "2015-01-01"
+    },
+    t_size: DataTypes.ENUM(
+      'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
+      'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+    ),
     via: DataTypes.STRING,
     medical: DataTypes.STRING,
     extra: DataTypes.STRING,
-    project_code: DataTypes.UUID,
+    project_code: {
+      type: DataTypes.UUID,
+      validate: {
+        isUUID: 4
+      }
+    },
     project_name: DataTypes.STRING,
     project_descr: DataTypes.STRING,
     project_type: {
@@ -45,7 +65,10 @@ module.exports = (sequelize, DataTypes) => {
     project_lang: DataTypes.ENUM('nl','fr','en'),
     gsm: DataTypes.STRING,
     gsm_guardian: DataTypes.STRING,
-    email_guardian: DataTypes.STRING,
+    email_guardian: { 
+      type: DataTypes.STRING,
+      isEmail: true
+    },
   }, {});
   Registration.associate = function(models) {
     // associations can be defined here

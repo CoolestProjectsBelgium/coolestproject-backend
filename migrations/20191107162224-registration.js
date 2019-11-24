@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Registrations', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('Registrations', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,10 +10,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       postalcode: {
-        type: Sequelize.INTEGER
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(254)
       },
       createdAt: {
         allowNull: false,
@@ -24,28 +26,34 @@ module.exports = {
         type: Sequelize.DATE
       },
       firstname: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       lastname: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       sex: {
-        type: Sequelize.ENUM('m', 'v', 'x')
+        allowNull: false,
+        type: Sequelize.ENUM('m', 'f', 'x')
       },
       general_questions: {
         type: Sequelize.JSON
       },
       mandatory_approvals: {
-        type: Sequelize.JSON
+        type: Sequelize.JSON,
+        allowNull: false,
       },
       birthmonth: {
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        allowNull: false
       },
-      size: {
-        type: Sequelize.ENUM('s','m','l','xl','xxl','3xl')
-      },
-      type: {
-        type: Sequelize.ENUM('m', 'v')
+      t_size: {
+        type: Sequelize.ENUM(
+          'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
+          'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+        ),
+        allowNull: false
       },
       via: {
         type: Sequelize.STRING
@@ -60,10 +68,10 @@ module.exports = {
         type: Sequelize.UUID
       },
       project_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(100)
       },
       project_descr: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(500)
       },
       project_type: {
         type: Sequelize.JSON
@@ -72,15 +80,176 @@ module.exports = {
         type: Sequelize.ENUM('nl','fr','en')
       },
       gsm: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(13)
       },
       gsm_guardian: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(13)
       },
       email_guardian: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(254)
       }
     });
+
+    await queryInterface.createTable('Users', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      postalcode: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      email: {
+        type: Sequelize.STRING(254)
+      },
+      firstname: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      lastname: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      sex: {
+        type: Sequelize.ENUM('m', 'f', 'x'),
+        allowNull: false
+      },
+      general_questions: {
+        type: Sequelize.JSON
+      },
+      mandatory_approvals: {
+        type: Sequelize.JSON,
+        allowNull: false
+      },
+      birthmonth: {
+        type: Sequelize.DATEONLY,
+        allowNull: false
+      },
+      t_size: {
+        type: Sequelize.ENUM(
+          'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
+          'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+        ),
+        allowNull: false
+      },
+      via: {
+        type: Sequelize.STRING
+      },
+      medical: {
+        type: Sequelize.STRING
+      },
+      extra: {
+        type: Sequelize.STRING
+      },
+      gsm: {
+        type: Sequelize.STRING(13)
+      },
+      gsm_guardian: {
+        type: Sequelize.STRING(13)
+      },
+      email_guardian: {
+        type: Sequelize.STRING(254)
+      }
+    });
+
+    await queryInterface.createTable('Projects', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      project_name: {
+        type: Sequelize.STRING(100),
+        allowNull: false
+      },
+      project_descr: {
+        type: Sequelize.STRING(500),
+        allowNull: false
+      },
+      project_type: {
+        type: Sequelize.JSON,
+        allowNull: false
+      },
+      project_lang: {
+        type: Sequelize.ENUM('nl','fr','en'),
+        allowNull: false
+      },
+      ownerId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id',
+          as: 'ownerId'
+        },
+        onDelete: 'cascade',
+        allowNull: false        
+      }
+    }); 
+
+    await queryInterface.createTable('Vouchers', {
+      id: {
+        allowNull: false,
+        primaryKey: true,
+        type: Sequelize.UUID
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      projectId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Projects',
+          key: 'id',
+          as: 'projectId'
+        },
+        onDelete: 'cascade',
+        allowNull: false 
+      },
+      participantId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id',
+          as: 'participantId'
+        },
+        onDelete: 'cascade',
+        allowNull: true 
+      }
+    });    
+
+    await queryInterface.addConstraint(
+      'Vouchers',
+      ['projectId','participantId'],
+      {
+        type: 'unique',
+        name: 'project_participants'
+      }
+    );
+
   },
 
   down: (queryInterface, Sequelize) => {
