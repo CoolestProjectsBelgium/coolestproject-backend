@@ -74,9 +74,12 @@ module.exports = {
      * @param {User} user
      * @param {Number} userId
      */
-    updateUser: async function (user, userId) {
+    updateUser: async function (changedFields, userId) {
         var user = await User.findByPk(userId);
-        return await user.update(user);
+        var result = await user.update(changedFields);
+        if(result === false){
+            throw new Error('Update failed');
+        }
     },
     /**
      * Delete a user
@@ -98,9 +101,12 @@ module.exports = {
      * @param {Project} project 
      * @param {Number} projectId 
      */
-    updateProject: async function (project, projectId) {
+    updateProject: async function (changedFields, projectId) {
         var project = await Project.findByPk(projectId);
-        return await project.update(project);
+        var result = await project.update(changedFields);
+        if(result === false){
+            throw new Error('Update failed');
+        }
     },
     /**
      * Delete a project
