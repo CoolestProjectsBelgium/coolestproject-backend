@@ -440,36 +440,6 @@ definitions:
         maxLength: 500
       project:
         $ref: "#/definitions/Project"
-    example:
-      gsm: "+32460789101"
-      general_questions:
-      - "photo"
-      - "photo"
-      email_guardian: "email_guardian"
-      firstname: "Jane"
-      gsm_guardian: "+32460789101"
-      medical: "medical"
-      sex: "m"
-      project:
-        project_type:
-        - "scratch"
-        - "scratch"
-        unused_vouchers: 0
-        project_id: 6
-        project_lang: "nl"
-        project_name: "project_name"
-        project_descr: "project_descr"
-        participants:
-        - null
-        - null
-      t_size: "female_small"
-      lastname: "Doe"
-      via: "via"
-      birthmonth: "2000-01-23"
-      postalcode: 1000
-      extra: "extra"
-      id: 0
-      email: "email"
   Project:
     type: "object"
     properties:
@@ -506,18 +476,7 @@ definitions:
         - "nl"
         - "fr"
         - "en"
-    example:
-      project_type:
-      - "scratch"
-      - "scratch"
-      unused_vouchers: 0
-      project_id: 6
-      project_lang: "nl"
-      project_name: "project_name"
-      project_descr: "project_descr"
-      participants:
-      - null
-      - null
+
   Registration:
     type: "object"
     required:
