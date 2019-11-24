@@ -12,7 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     project_type: {
       type: DataTypes.JSON,
       get () {
-        return JSON.parse(this.getDataValue('project_type'));
+        //todo: try to understand why it is undefined in some cases
+        var project_type = this.getDataValue('project_type')
+        if(project_type === undefined){
+          return project_type;
+        }
+        return JSON.parse(project_type);
       },
       set (value) {
         this.setDataValue('project_type', JSON.stringify(value));
