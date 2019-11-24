@@ -2,6 +2,65 @@ var dba = require('../service/DBService');
 
 async function main(){
 
+    // create registration with own project
+    var registration = await dba.createRegistration(
+        {
+            "postalcode": 1000,
+            "email": "test@test.be",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "sex": "m",
+            "general_questions": [
+              "photo"
+            ],
+            "mandatory_approvals": [
+              "ok"
+            ],
+            "birthmonth": "2010-11-24",
+            "t_size": "female_small",
+            "via": "string",
+            "medical": "string",
+            "extra": "string",
+            "project_name": "string",
+            "project_descr": "string",
+            "project_type": [
+              "scratch"
+            ],
+            "project_lang": "nl",
+            "gsm": "+32460789101",
+            "gsm_guardian": "+32460789101",
+            "email_guardian": "test@test.be"
+        }
+    );
+    console.log('register' + registration.id );
+
+    // create registration with own project
+    var registration = await dba.createRegistration(
+        {
+            "postalcode": 1000,
+            "email": "test@test.be",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "sex": "m",
+            "general_questions": [
+              "photo"
+            ],
+            "mandatory_approvals": [
+              "ok"
+            ],
+            "birthmonth": "2010-11-24",
+            "t_size": "female_small",
+            "via": "string",
+            "medical": "string",
+            "extra": "string",
+            "project_code": "dummy1234dummy",
+            "gsm": "+32460789101",
+            "gsm_guardian": "+32460789101",
+            "email_guardian": "test@test.be"
+        }
+    );
+    console.log('register' + registration.id );    
+
     // create user with project
     var owner = await dba.createUserWithProject(
         {

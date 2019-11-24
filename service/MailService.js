@@ -1,6 +1,5 @@
 'use strict';
 
-const logger = require('pino')()
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const env = process.env.NODE_ENV || 'development';
@@ -16,7 +15,7 @@ const transport = nodemailer.createTransport({
 });
 
 module.exports = {
-  registrationMail(user) {
+  async registrationMail(user) {
     const email = new Email({
       message: {
         from: process.env.EMAIL,
@@ -29,7 +28,7 @@ module.exports = {
       }
     });
 
-    email.send({
+    var result = await email.send({
       template: 'registration',
       message: {
         to: user.email
@@ -38,11 +37,10 @@ module.exports = {
         locale: 'nl',
         name: user.firstname + ' ' + user.lastname
       }
-    })
-    .then((log) => { logger.info(log) })
-    .catch((log) => { logger.error(log) });
+    });
+    return result;
   },
-  loginMail(user) {
+  async loginMail(user) {
     const email = new Email({
       message: {
         from: process.env.EMAIL,
@@ -55,7 +53,7 @@ module.exports = {
       }
     });
 
-    email.send({
+    var result = await email.send({
       template: 'login',
       message: {
         to: user.email
@@ -64,8 +62,7 @@ module.exports = {
         locale: 'nl',
         name: user.firstname + ' ' + user.lastname
       }
-    })
-    .then((log) => { logger.info(log) })
-    .catch((log) => { logger.error(log) });
+    });
+    return result;
   }
 }

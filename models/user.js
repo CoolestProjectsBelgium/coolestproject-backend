@@ -25,20 +25,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     sex: {
-      type: DataTypes.ENUM('m', 'v', 'x'),
+      type: DataTypes.ENUM('m', 'f', 'x'),
       allowNull: false,
       validate: {
-        isIn: [['m', 'v', 'x']]
+        isIn: [['m', 'f', 'x']]
       }
     },
     general_questions: {
       type: DataTypes.JSON,
       get () {
-        //todo: try to understand why it is undefined in some cases
-        var general_questions = this.getDataValue('general_questions')
-        if(general_questions === undefined){
-          return general_questions;
-        }
         return JSON.parse(this.getDataValue('general_questions'));
       },
       set (value) {
@@ -57,12 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     mandatory_approvals: {
       allowNull: false,
       type: DataTypes.JSON,
-      get () {
-        //todo: try to understand why it is undefined in some cases
-        var mandatory_approvals = this.getDataValue('mandatory_approvals')
-        if(mandatory_approvals === undefined){
-          return mandatory_approvals;
-        }        
+      get () {        
         return JSON.parse(this.getDataValue('mandatory_approvals'));
       },
       set (value) {

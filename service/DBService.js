@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const Project = models.Project;
 const User = models.User;
 const Voucher = models.Voucher;
+const Registration = models.Registration;
 const sequelize = models.sequelize;
 
 const MAX_VOUCHERS = 2
@@ -33,7 +34,7 @@ module.exports = {
             }
         }
     */
-    createUserWithProject: async function (userProject) {
+   async createUserWithProject(userProject) {
         return await User.create(userProject, { include: ['project'] });
     },
     /**
@@ -54,7 +55,7 @@ module.exports = {
             t_size: 'female_large'
         }
      */
-    createUserWithVoucher: async function (user, voucherId) {
+    async createUserWithVoucher(user, voucherId) {
         var transaction = await sequelize.transaction();
         var voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, transaction: transaction, lock: true });
 
@@ -74,7 +75,7 @@ module.exports = {
      * @param {User} user
      * @param {Number} userId
      */
-    updateUser: async function (changedFields, userId) {
+    async updateUser(changedFields, userId) {
         var user = await User.findByPk(userId);
         var result = await user.update(changedFields);
         if(result === false){
@@ -85,7 +86,7 @@ module.exports = {
      * Delete a user
      * @param {Number} userId 
      */
-    deleteUser: async function (userId) {
+    async deleteUser(userId) {
         return await User.destroy({ where: { id: userId } });
     },
     /**
@@ -93,7 +94,7 @@ module.exports = {
      * @param {Object} project
      * @returns {Project}
      */
-    createProject: async function (project) {
+    async createProject(project) {
         return await Project.create(project);
     },
     /**
@@ -101,7 +102,7 @@ module.exports = {
      * @param {Project} project 
      * @param {Number} projectId 
      */
-    updateProject: async function (changedFields, projectId) {
+    async updateProject(changedFields, projectId) {
         var project = await Project.findByPk(projectId);
         var result = await project.update(changedFields);
         if(result === false){
@@ -112,7 +113,7 @@ module.exports = {
      * Delete a project
      * @param {Number} projectId 
      */
-    deleteProject: async function (projectId) {
+    async deleteProject(projectId) {
         return await Project.destroy({ where: { id: projectId } });
     },
     /**
@@ -120,7 +121,7 @@ module.exports = {
      * @param {Number} projectId 
      * @returns {Voucher}
      */
-    createVoucher: async function (projectId) {
+    async createVoucher(projectId) {
         var totalVouchers = await Voucher.count({ where: { projectId: projectId } });
 
         if (totalVouchers >= MAX_VOUCHERS) {
@@ -142,7 +143,7 @@ module.exports = {
      * @param {Number} projectId 
      * @param {Number} participantId 
      */
-    deleteParticipantProject: async function (projectId, participantId) {
+    async deleteParticipantProject(projectId, participantId) {
         return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
     },
     /**
@@ -151,7 +152,7 @@ module.exports = {
      * @param {Number} voucherId 
      * @returns {Number}
      */
-    addParticipantProject: async function (userId, voucherId) {
+    async addParticipantProject(userId, voucherId) {
         var transaction = await sequelize.transaction();
         var voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, transaction: transaction, lock: true });
 
@@ -162,5 +163,13 @@ module.exports = {
         await voucher.setParticipant(userId, { transaction: transaction });
 
         return await voucher.getParticipant();
+    },
+    /**
+     * Add registration
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async createRegistration(registration) {
+        return await Registration.create(registration);
     }
 };

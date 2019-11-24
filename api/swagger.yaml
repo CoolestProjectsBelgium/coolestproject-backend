@@ -505,7 +505,7 @@ definitions:
         type: "string"
         enum:
         - "m"
-        - "v"
+        - "f"
         - "x"
       general_questions:
         type: "array"
