@@ -1,11 +1,15 @@
 ---
 swagger: "2.0"
 info:
-  version: "0.0.1"
+  description: "This api exposes the api's for the Coolestproject registration website,\
+    \ voting system, event setup."
+  version: "0.0.3"
   title: "Coolestprojects registration"
 tags:
 - name: "registration"
 - name: "login"
+- name: "user"
+- name: "project"
 paths:
   /register:
     post:
@@ -19,14 +23,334 @@ paths:
         description: "The registration to create."
         required: false
         schema:
-          $ref: "#/definitions/RegistrationRequest"
+          $ref: "#/definitions/Registration"
       responses:
         200:
           description: "OK"
-        default:
-          description: "Unexpected error"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
       x-swagger-router-controller: "Registration"
+  /userinfo:
+    get:
+      tags:
+      - "user"
+      summary: "get userinfo for the logged in user"
+      operationId: "userinfoGET"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+  /login:
+    post:
+      tags:
+      - "login"
+      summary: "Login / Activate account"
+      operationId: "loginPOST"
+      parameters:
+      - in: "body"
+        name: "registration"
+        description: "The registration to create."
+        required: false
+        schema:
+          $ref: "#/definitions/registration"
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+            Set-Cookie:
+              type: "string"
+              description: "http only session cookie"
+          schema:
+            $ref: "#/definitions/Login"
+      x-swagger-router-controller: "Login"
+  /user/{userId}:
+    get:
+      tags:
+      - "user"
+      summary: "Get user based on id"
+      operationId: "userGET"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "userId."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+    delete:
+      tags:
+      - "user"
+      summary: "delete user based on id"
+      operationId: "userDELETE"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "userId."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+    patch:
+      tags:
+      - "user"
+      summary: "update user based on id"
+      operationId: "userPATCH"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "userId."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+  /project:
+    post:
+      tags:
+      - "project"
+      summary: "Create new project"
+      operationId: "projectPOST"
+      parameters:
+      - in: "body"
+        name: "project"
+        required: false
+        schema:
+          $ref: "#/definitions/Project"
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+  /project/{projectId}:
+    get:
+      tags:
+      - "project"
+      summary: "Get project based on id"
+      operationId: "projectGET"
+      parameters:
+      - name: "projectId"
+        in: "path"
+        description: "projectid."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+    delete:
+      tags:
+      - "project"
+      summary: "delete project"
+      operationId: "projectDELETE"
+      parameters:
+      - name: "projectId"
+        in: "path"
+        description: "projectId."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+    patch:
+      tags:
+      - "project"
+      summary: "update project based on id"
+      operationId: "projectPATCH"
+      parameters:
+      - name: "projectId"
+        in: "path"
+        description: "projectid."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+  /project/{projectId}/participants:
+    post:
+      tags:
+      - "project"
+      summary: "Add new participant to project"
+      operationId: "participantsPOST"
+      parameters:
+      - name: "projectId"
+        in: "path"
+        description: "projectid."
+        required: true
+        type: "integer"
+        minimum: 1
+      - in: "body"
+        name: "voucher"
+        required: false
+        schema:
+          $ref: "#/definitions/Voucher"
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+  /project/{projectId}/participants/{userId}:
+    delete:
+      tags:
+      - "project"
+      summary: "delete participant from project"
+      operationId: "participantsDELETE"
+      parameters:
+      - name: "projectId"
+        in: "path"
+        description: "projectId."
+        required: true
+        type: "integer"
+        minimum: 1
+      - name: "userId"
+        in: "path"
+        description: "userId."
+        required: true
+        type: "integer"
+        minimum: 1
+      responses:
+        200:
+          description: "OK"
+          headers:
+            X-CSRF-Token:
+              type: "string"
+              description: "CSRF token required for state changes, valid for the whole\
+                \ session"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+securityDefinitions:
+  loginToken:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
 definitions:
+  Login:
+    type: "object"
+    properties:
+      api_key:
+        type: "string"
+      expires:
+        type: "string"
+        format: "date-time"
+    example:
+      expires: "2000-01-23T04:56:07.000+00:00"
+      api_key: "api_key"
   Error:
     type: "object"
     required:
@@ -37,7 +361,164 @@ definitions:
         type: "string"
       message:
         type: "string"
-  RegistrationRequest:
+  Voucher:
+    type: "object"
+    required:
+    - "code"
+    properties:
+      code:
+        type: "string"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      postalcode:
+        type: "integer"
+        example: 1000
+        minimum: 1000
+        maximum: 9999
+      email:
+        type: "string"
+        format: "email"
+      firstname:
+        type: "string"
+        example: "Jane"
+      lastname:
+        type: "string"
+        example: "Doe"
+      sex:
+        type: "string"
+        enum:
+        - "m"
+        - "v"
+        - "x"
+      gsm:
+        type: "string"
+        example: "+32460789101"
+        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+      general_questions:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "photo"
+          - "contact"
+      birthmonth:
+        type: "string"
+        format: "date"
+      t_size:
+        type: "string"
+        enum:
+        - "female_small"
+        - "female_medium"
+        - "female_large"
+        - "female_xl"
+        - "female_xxl"
+        - "female_3xl"
+        - "male_small"
+        - "male_medium"
+        - "male_large"
+        - "male_xl"
+        - "male_xxl"
+        - "male_3xl"
+      gsm_guardian:
+        type: "string"
+        example: "+32460789101"
+        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+      email_guardian:
+        type: "string"
+        format: "email"
+      via:
+        type: "string"
+        maxLength: 200
+      medical:
+        type: "string"
+        maxLength: 500
+      extra:
+        type: "string"
+        maxLength: 500
+      project:
+        $ref: "#/definitions/Project"
+    example:
+      gsm: "+32460789101"
+      general_questions:
+      - "photo"
+      - "photo"
+      email_guardian: "email_guardian"
+      firstname: "Jane"
+      gsm_guardian: "+32460789101"
+      medical: "medical"
+      sex: "m"
+      project:
+        project_type:
+        - "scratch"
+        - "scratch"
+        unused_vouchers: 0
+        project_id: 6
+        project_lang: "nl"
+        project_name: "project_name"
+        project_descr: "project_descr"
+        participants:
+        - null
+        - null
+      t_size: "female_small"
+      lastname: "Doe"
+      via: "via"
+      birthmonth: "2000-01-23"
+      postalcode: 1000
+      extra: "extra"
+      id: 0
+      email: "email"
+  Project:
+    type: "object"
+    properties:
+      owner:
+        $ref: "#/definitions/User"
+      project_id:
+        type: "integer"
+      project_name:
+        type: "string"
+        maxLength: 50
+      project_descr:
+        type: "string"
+        maxLength: 200
+      participants:
+        type: "array"
+        items:
+          $ref: "#/definitions/User"
+      unused_vouchers:
+        type: "integer"
+        maximum: 2
+      project_type:
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "scratch"
+          - "hardware"
+          - "software"
+          - "wifi"
+          - "kabel"
+      project_lang:
+        type: "string"
+        enum:
+        - "nl"
+        - "fr"
+        - "en"
+    example:
+      project_type:
+      - "scratch"
+      - "scratch"
+      unused_vouchers: 0
+      project_id: 6
+      project_lang: "nl"
+      project_name: "project_name"
+      project_descr: "project_descr"
+      participants:
+      - null
+      - null
+  Registration:
     type: "object"
     required:
     - "birthmonth"
@@ -46,8 +527,6 @@ definitions:
     - "mandatory_approvals"
     - "postalcode"
     - "sex"
-    - "size"
-    - "type"
     properties:
       postalcode:
         type: "integer"
@@ -85,20 +564,21 @@ definitions:
       birthmonth:
         type: "string"
         format: "date"
-      size:
+      t_size:
         type: "string"
         enum:
-        - "s"
-        - "m"
-        - "l"
-        - "xl"
-        - "xxl"
-        - "3xl"
-      type:
-        type: "string"
-        enum:
-        - "m"
-        - "v"
+        - "female_small"
+        - "female_medium"
+        - "female_large"
+        - "female_xl"
+        - "female_xxl"
+        - "female_3xl"
+        - "male_small"
+        - "male_medium"
+        - "male_large"
+        - "male_xl"
+        - "male_xxl"
+        - "male_3xl"
       via:
         type: "string"
         maxLength: 200
@@ -144,3 +624,9 @@ definitions:
       email_guardian:
         type: "string"
         format: "email"
+  registration:
+    type: "object"
+    properties:
+      refresh_token:
+        type: "string"
+        format: "uuid"
