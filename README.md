@@ -1,11 +1,14 @@
 # Coolest project event website
+
 ## Overview
+
 This application is the backend component of the coolestproject website. This application is based on swagger-codegen.
 
 ## Example development flow
+
 Generating new server version:
 
-```
+```bash
 wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.4.9/swagger-codegen-cli-2.4.9.jar -O swagger-codegen-cli.jar
 java -jar swagger-codegen-cli.jar help
 
@@ -30,20 +33,24 @@ erik@erik-***:~$ java -jar swagger-codegen-cli.jar generate -i ~/Downloads/coder
 ```
 
 ## Running development server
+
 To run the server, run:
 
-```
+```bash
 npx nodemon run start 
 ```
 
 To view the Swagger UI interface:
-```
+
+```bash
 open http://localhost:8080/docs
 ```
 
 ## Prepare the development environment
+
 create .env file in the project folder:
-```
+
+```INI
 EMAIL=info@coolestproject.be
 DB=mysql://coolestproject:***@***/coolestproject
 NODE_ENV=development
@@ -54,18 +61,26 @@ MAIL_USER=***
 MAIL_PASS=***
 ```
 
-## initialize database
-CLI flow:
-```
+## Initialize database
+
+Install the correct db driver (application is tested with mysql).
+
+more info: https://sequelize.org/master/manual/getting-started.html
+
+you need to do this once before starting the application:
+
+```bash
 export DB=mysql://coolestproject:***@***/coolestproject
 npx sequelize db:create
 npx sequelize db:migrate
 ```
 
 ## Important folders
+
 * emails: folder with all the emails
 * locales: translations
 * models: DB models
 * config: folder with DB config file
 * test: some testscripts
 * migrations: DB migration files
+  
