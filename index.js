@@ -9,10 +9,6 @@ var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 var serverPort = 8080;
 
-// read .env file
-const dotenv = require('dotenv');
-dotenv.config();
-
 //enable i18n
 const i18n = require("i18n")
 i18n.configure({

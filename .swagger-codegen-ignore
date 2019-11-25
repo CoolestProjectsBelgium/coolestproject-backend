@@ -20,13 +20,14 @@ seeders/**
 models/**
 config/**
 migrations/**
-# service/RegistrationService.js
+service/RegistrationService.js
 service/MailService.js
 service/DBService.js
 email/**
 locales/**
 index.js
 *.md
+index.js
 
 # You can also negate patterns with an exclamation (!).
 # For example, you can ignore all files in a docs folder with the file extension .md:

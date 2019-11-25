@@ -10,7 +10,7 @@
   "keywords": [
     "swagger"
   ],
-  "license": "MIT",
+  "license": "MIT License",
   "private": true,
   "dependencies": {
     "connect": "^3.2.0",
