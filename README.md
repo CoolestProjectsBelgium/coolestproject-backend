@@ -37,7 +37,7 @@ erik@erik-***:~$ java -jar swagger-codegen-cli.jar generate -i ~/Downloads/coder
 To run the server, run:
 
 ```bash
-npx nodemon run start 
+npm run dev
 ```
 
 To view the Swagger UI interface:
