@@ -29,7 +29,7 @@ erik@erik-***:~$ java -jar swagger-codegen-cli.jar generate -i ~/Downloads/coder
 [main] INFO io.swagger.codegen.AbstractGenerator - writing file /home/erik/coolestproject-backend/.swagger-codegen/VERSION
 ```
 
-## Running the server
+## Running development server
 To run the server, run:
 
 ```
@@ -37,7 +37,6 @@ npx nodemon run start
 ```
 
 To view the Swagger UI interface:
-
 ```
 open http://localhost:8080/docs
 ```
@@ -56,10 +55,17 @@ MAIL_PASS=***
 ```
 
 ## initialize database
-
 CLI flow:
 ```
 export DB=mysql://coolestproject:***@***/coolestproject
 npx sequelize db:create
 npx sequelize db:migrate
 ```
+
+## Important folders
+* emails: folder with all the emails
+* locales: translations
+* models: DB models
+* config: folder with DB config file
+* test: some testscripts
+* migrations: DB migration files

@@ -41,11 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       as: 'participant',
       through: {
         model: models.Voucher,
-        unique: false,
-        /*
-        scope: {
-          taggable: 'post'
-        }*/
+        unique: false
       },
       foreignKey: 'participantId',
       otherKey: 'projectId',
