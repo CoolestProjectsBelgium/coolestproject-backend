@@ -175,3 +175,27 @@ User.findOne({
     console.log(user);
 });
 */
+var jwt = require('jsonwebtoken');
+
+var userName = 'test';
+
+var token = jwt.sign({ id: userName }, process.env.SECRET_KEY, {
+    expiresIn: 86400 // expires in 24 hours
+});
+
+console.log(token);
+
+new Promise(function(resolve, reject){
+    jwt.verify(token, process.env.SECRET_KEY, function(err, decoded) {
+        if (err) {
+            reject({ auth: false, message: 'Failed to authenticate token.' });
+        } else {
+            resolve(decoded);
+        }
+    });
+}).then(function(result){
+    console.log(result);
+}).catch(function(error){
+    console.log(error);
+});
+

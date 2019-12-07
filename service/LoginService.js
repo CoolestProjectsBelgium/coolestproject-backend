@@ -1,6 +1,5 @@
 'use strict';
 
-
 /**
  * Login / Activate account
  *
