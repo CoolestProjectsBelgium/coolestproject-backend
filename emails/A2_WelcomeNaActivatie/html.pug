@@ -1,2 +1,24 @@
-p= `${t('Hi')} ${name},`
-p= t('Welcome to Mars, the red planet.')
+p Hi #{name},
+|
+| you have successfully activated your project with the title <b>#{cptitle}</b> as project owner.
+| Your project is created with the following ID:"#{cpid}"
+| 
+| 
+| <p>If you want to make changes on your project or if you would like to invite co-workers on your project 
+| please use the following link <a href="#{urlActivated}">Go2MyProject</a> to start your browser.</p>
+|
+| You can now 
+| <ul>
+|  <li>Change your personal data(except the eMail, age,...)</li>
+|  <li>Change your project name and description</li>
+|  <li>Invite co-workers to your project by pushing the button "CO-WORKERS"</li>
+|  <li>Delete all co-workers to your project by pushing the delete button behind all co-worker"</li>
+|  <li>Delete singel co-workers to your project by pushing the delete button behind this one co-worker"</li>
+|  <li>delete your project at all (co-workers will receive a mail to create their own project"</li>
+| </ul>
+|
+| <p>You will find the full information about our Coolest Project event on our <a href="#{url}">Coolest Projects 2020</a> .</p>
+|
+| <p>Good luck #{name}  and success with your project development.</p>
+| 
+| <p>Coolest Project team </p>

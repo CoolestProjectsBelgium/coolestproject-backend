@@ -29,13 +29,16 @@ module.exports = {
     });
 
     var result = await email.send({
-      template: 'registration',
+      template: 'A3_DeleteProject',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
         to: user.email
       },
       locals: {
         locale: 'nl',
-        name: user.firstname + ' ' + user.lastname
+        name: user.firstname, //+ ' ' + user.lastname,
+        cpid: "CPnn",
+        cptitle: user.project_name,
+        url: 'https://coolestprojects.be/'
       }
     });
     return result;

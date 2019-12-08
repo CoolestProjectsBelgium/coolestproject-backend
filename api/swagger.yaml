@@ -549,7 +549,7 @@ definitions:
         maxLength: 500
       project_name:
         type: "string"
-        maxLength: 25
+        maxLength: 75
       project_descr:
         type: "string"
         maxLength: 200
