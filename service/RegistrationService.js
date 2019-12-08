@@ -7,6 +7,7 @@ var models = require('../models');
 var Registration = models.Registration;
 
 var MailService = require('./MailService');
+var TokenService = require('./TokenService');
 
 /**
  * Create new registration
@@ -25,7 +26,8 @@ exports.registerPOST = function (registration) {
      **/
 
     Registration.create(registration).then(registration => {
-      MailService.registrationMail(registration);
+      const registrationToken = TokenService.generateRegistrationToken(registration.id)
+      MailService.registrationMail(registration, registrationToken);
       resolve();
     }).catch((err) => {
       logger.error(err);

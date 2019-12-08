@@ -59,11 +59,11 @@ paths:
       operationId: "loginPOST"
       parameters:
       - in: "body"
-        name: "registration"
-        description: "The registration to create."
+        name: "login"
+        description: "Login information"
         required: false
         schema:
-          $ref: "#/definitions/registration"
+          $ref: "#/definitions/LoginActivate"
       responses:
         200:
           description: "OK"
@@ -584,9 +584,8 @@ definitions:
       email_guardian:
         type: "string"
         format: "email"
-  registration:
+  LoginActivate:
     type: "object"
     properties:
-      refresh_token:
+      jwt:
         type: "string"
-        format: "uuid"
