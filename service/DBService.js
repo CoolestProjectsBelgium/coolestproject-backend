@@ -83,6 +83,15 @@ module.exports = {
         }
     },
     /**
+     * Get registration information
+     * @param {Number} registrationId
+     * @returns {Registration}
+     */
+    async getRegistration(registrationId) {
+        var registration = await Registration.findByPk(registrationId);
+        return registration
+    },    
+    /**
      * Delete a user
      * @param {Number} userId 
      */
