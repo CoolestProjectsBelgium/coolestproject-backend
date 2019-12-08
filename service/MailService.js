@@ -15,7 +15,7 @@ const transport = nodemailer.createTransport({
 });
 
 module.exports = {
-  async registrationMail(user) {
+  async registrationMail(user, registrationToken) {
     const email = new Email({
       message: {
         from: process.env.EMAIL,
@@ -38,7 +38,7 @@ module.exports = {
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CPnn",
         cptitle: user.project_name,
-        url: 'https://coolestprojects.be/'
+        url: 'https://coolestprojects.be/login?token=' + registrationToken
       }
     });
     return result;
