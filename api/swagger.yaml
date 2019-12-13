@@ -404,6 +404,8 @@ definitions:
           enum:
           - "photo"
           - "contact"
+          - "no_photo"
+          - "no_contact"
       birthmonth:
         type: "string"
         format: "date"

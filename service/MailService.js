@@ -27,9 +27,9 @@ module.exports = {
         directory: path.join(__dirname, '..', 'locales')
       }
     });
-
+    const token = await registrationToken
     var result = await email.send({
-      template: 'A3_DeleteProject',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
+      template: 'A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
         to: user.email
       },
@@ -38,7 +38,7 @@ module.exports = {
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CPnn",
         cptitle: user.project_name,
-        url: 'https://coolestprojects.be/login?token=' + registrationToken
+        url: 'https://coolestprojects.be/login?token=' + token
       }
     });
     return result;
@@ -64,6 +64,34 @@ module.exports = {
       locals: {
         locale: 'nl',
         name: user.firstname + ' ' + user.lastname
+      }
+    });
+    return result;
+  },
+  async welcomeMailOwner(user, token) {
+    const email = new Email({
+      message: {
+        from: process.env.EMAIL,
+      },
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      transport: transport,
+      i18n: {
+        locales:['en', 'nl', 'fr'],
+        directory: path.join(__dirname, '..', 'locales')
+      }
+    });
+
+    var result = await email.send({
+      template: 'A2_WelcomeNaActivatie',
+      message: {
+        to: user.email
+      },
+      locals: {
+        locale: 'nl',
+        name: user.firstname, //+ ' ' + user.lastname,
+        cpid: "CP."+user.project.id,
+        cptitle: user.project.project_name,
+        urlActivated: 'https://coolestprojects.be/login?token=' + token
       }
     });
     return result;
