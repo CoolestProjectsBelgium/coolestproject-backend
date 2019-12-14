@@ -3,6 +3,7 @@
 const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../service/DBService');
+var MailService = require('./MailService');
 
 /**
  * Login / Activate account
@@ -81,6 +82,7 @@ exports.loginPOST = function (login) {
           console.log('created project: ' + owner.project.id);
         }
         userId = owner.id;
+
       } else {
         console.log('login token found just generate same token with new validity');
         console.log(validToken.id);
@@ -90,6 +92,12 @@ exports.loginPOST = function (login) {
       const token = await TokenService.generateLoginToken(userId);
       const date = new Date();
       date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
+
+      //sent welcome mail
+      if(validToken.registrationId){
+        MailService.welcomeMailOwner(owner, token);
+      }
+
       resolve({ api_key: token, expires: date });
     })
       .catch(function (response) {
