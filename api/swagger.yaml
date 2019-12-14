@@ -516,6 +516,8 @@ definitions:
           enum:
           - "photo"
           - "contact"
+          - "no_photo"
+          - "no_contact"
       mandatory_approvals:
         type: "array"
         items:
