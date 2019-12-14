@@ -30,6 +30,7 @@ exports.loginPOST = function (login) {
           // create user and add to existing project
           var participant = await dba.createUserWithVoucher(
             {
+              language: registration.language,
               postalcode: registration.postalcode,
               email: registration.email,
               gsm: registration.gsm,
@@ -53,6 +54,7 @@ exports.loginPOST = function (login) {
           // create user with project
           var owner = await dba.createUserWithProject(
             {
+              language: registration.language,
               postalcode: registration.postalcode,
               email: registration.email,
               gsm: registration.gsm,
