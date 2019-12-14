@@ -1,6 +1,13 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Registration = sequelize.define('Registration', {
+    language: {
+      type: DataTypes.ENUM('nl', 'fr', 'en'),
+      allowNull: false,
+      validate: {
+        isIn: [['nl', 'fr', 'en']]
+      }
+    },
     postalcode: {
       type: DataTypes.INTEGER,
       validate: {

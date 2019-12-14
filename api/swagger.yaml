@@ -378,6 +378,12 @@ definitions:
         example: 1000
         minimum: 1000
         maximum: 9999
+      language:
+        type: "string"
+        enum:
+        - "nl"
+        - "fr"
+        - "en"
       email:
         type: "string"
         format: "email"
@@ -486,6 +492,7 @@ definitions:
     - "mandatory_approvals"
     - "postalcode"
     - "sex"
+    - "language"
     properties:
       postalcode:
         type: "integer"
@@ -507,6 +514,12 @@ definitions:
         - "m"
         - "f"
         - "x"
+      language:
+        type: "string"
+        enum:
+        - "nl"
+        - "fr"
+        - "en"
       general_questions:
         type: "array"
         items:

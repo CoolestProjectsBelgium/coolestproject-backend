@@ -37,6 +37,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.ENUM('m', 'f', 'x')
       },
+      language: {
+        allowNull: false,
+        type: Sequelize.ENUM('nl', 'fr', 'en')
+      },
       general_questions: {
         type: Sequelize.JSON
       },
@@ -108,6 +112,10 @@ module.exports = {
       postalcode: {
         type: Sequelize.INTEGER,
         allowNull: false
+      },
+      language: {
+        allowNull: false,
+        type: Sequelize.ENUM('nl', 'fr', 'en')
       },
       email: {
         type: Sequelize.STRING(254)
