@@ -457,10 +457,10 @@ definitions:
         type: "integer"
       project_name:
         type: "string"
-        maxLength: 50
+        maxLength: 100
       project_descr:
         type: "string"
-        maxLength: 200
+        maxLength: 4000
       participants:
         type: "array"
         items:
@@ -566,10 +566,10 @@ definitions:
         maxLength: 500
       project_name:
         type: "string"
-        maxLength: 75
+        maxLength: 100
       project_descr:
         type: "string"
-        maxLength: 200
+        maxLength: 4000
       project_type:
         type: "array"
         items:

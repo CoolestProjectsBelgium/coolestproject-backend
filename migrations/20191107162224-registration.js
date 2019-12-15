@@ -75,7 +75,7 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       project_descr: {
-        type: Sequelize.STRING(500)
+        type: Sequelize.STRING(4000)
       },
       project_type: {
         type: Sequelize.JSON
@@ -190,7 +190,7 @@ module.exports = {
         allowNull: false
       },
       project_descr: {
-        type: Sequelize.STRING(500),
+        type: Sequelize.STRING(4000),
         allowNull: false
       },
       project_type: {

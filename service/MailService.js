@@ -35,10 +35,10 @@ module.exports = {
       },
       locals: {
         locale: 'nl',
-        name: user.firstname, //+ ' ' + user.lastname,
+        name: user.firstname, //+ ' ' + user.lastname, 192.168.1.253
         cpid: "CPnn",
         cptitle: user.project_name,
-        url: 'https://coolestprojects.be/login?token=' + token
+        url: 'http://192.168.0.42:3000/login?token=' + token
       }
     });
     return result;
@@ -73,7 +73,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
@@ -91,7 +91,7 @@ module.exports = {
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CP."+user.project.id,
         cptitle: user.project.project_name,
-        urlActivated: 'https://coolestprojects.be/login?token=' + token
+        urlActivated: 'https://192.168.0.42:3000/login?token=' + token
       }
     });
     return result;
