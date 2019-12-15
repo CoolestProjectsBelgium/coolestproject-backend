@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node -r dotenv/config index.js",
-    "dev": "nodemon --exec 'node -r dotenv/config'"
+    "dev": "nodemon -r dotenv/config index.js"
   },
   "keywords": [
     "swagger"
