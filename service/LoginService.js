@@ -13,7 +13,7 @@ var MailService = require('./MailService');
  **/
 exports.loginPOST = function (login) {
   return new Promise(function (resolve, reject) {
-    console.log('validate token');
+    console.log('validate token: ' + login.jwt);
     TokenService.validateToken(login.jwt).then(async function (validToken) {
       //token success
       console.log(validToken)
