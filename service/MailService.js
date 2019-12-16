@@ -31,7 +31,8 @@ module.exports = {
     var result = await email.send({
       template: user.language +'_A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
         locale: user.language,
@@ -59,7 +60,8 @@ module.exports = {
     var result = await email.send({
       template: 'login',
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
         locale: user.language,
@@ -84,7 +86,8 @@ module.exports = {
     var result = await email.send({
       template: user.language +'_A2_WelcomeNaActivatie',
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
         locale: user.language,
