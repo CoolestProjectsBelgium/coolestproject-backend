@@ -29,16 +29,16 @@ module.exports = {
     });
     const token = await registrationToken
     var result = await email.send({
-      template: 'A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
+      template: user.language +'_A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
         to: user.email
       },
       locals: {
-        locale: 'nl',
-        name: user.firstname, //+ ' ' + user.lastname, 192.168.1.253
+        locale: user.language,
+        name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CPnn",
         cptitle: user.project_name,
-        url: 'http://192.168.0.42:3000/login?token=' + token
+        url: process.env.URL + 'login?token=' + token
       }
     });
     return result;
@@ -62,7 +62,7 @@ module.exports = {
         to: user.email
       },
       locals: {
-        locale: 'nl',
+        locale: user.language,
         name: user.firstname + ' ' + user.lastname
       }
     });
@@ -82,16 +82,16 @@ module.exports = {
     });
 
     var result = await email.send({
-      template: 'A2_WelcomeNaActivatie',
+      template: user.language +'_A2_WelcomeNaActivatie',
       message: {
         to: user.email
       },
       locals: {
-        locale: 'nl',
+        locale: user.language,
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CP."+user.project.id,
         cptitle: user.project.project_name,
-        urlActivated: 'https://192.168.0.42:3000/login?token=' + token
+        urlActivated: process.env.URL + 'login?token=' + token
       }
     });
     return result;
