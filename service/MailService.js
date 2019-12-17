@@ -29,16 +29,17 @@ module.exports = {
     });
     const token = await registrationToken
     var result = await email.send({
-      template: 'A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
+      template: user.language +'_A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
-        locale: 'nl',
+        locale: user.language,
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CPnn",
         cptitle: user.project_name,
-        url: 'https://coolestprojects.be/login?token=' + token
+        url: process.env.URL + 'login?token=' + token
       }
     });
     return result;
@@ -59,10 +60,11 @@ module.exports = {
     var result = await email.send({
       template: 'login',
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
-        locale: 'nl',
+        locale: user.language,
         name: user.firstname + ' ' + user.lastname
       }
     });
@@ -73,7 +75,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
@@ -82,16 +84,17 @@ module.exports = {
     });
 
     var result = await email.send({
-      template: 'A2_WelcomeNaActivatie',
+      template: user.language +'_A2_WelcomeNaActivatie',
       message: {
-        to: user.email
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
-        locale: 'nl',
+        locale: user.language,
         name: user.firstname, //+ ' ' + user.lastname,
         cpid: "CP."+user.project.id,
         cptitle: user.project.project_name,
-        urlActivated: 'https://coolestprojects.be/login?token=' + token
+        urlActivated: process.env.URL + 'login?token=' + token
       }
     });
     return result;

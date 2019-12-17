@@ -106,7 +106,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     },
     project_descr: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING(4000),
       defaultValue: null
     },
     project_type: {

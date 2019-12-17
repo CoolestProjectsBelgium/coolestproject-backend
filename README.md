@@ -68,6 +68,7 @@ Install the correct db driver (application is tested with mysql).
 more info: https://sequelize.org/master/manual/getting-started.html
 
 you need to do this once before starting the application:
+copy DB info from .env file
 
 ```bash
 export DB=mysql://coolestproject:***@***/coolestproject
