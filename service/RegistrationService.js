@@ -2,6 +2,7 @@
 
 const logger = require('pino')()
 const respondWithCode = require('../utils/writer').respondWithCode
+var dba = require('../service/DBService');
 
 var models = require('../models');
 var Registration = models.Registration;
@@ -16,7 +17,7 @@ var TokenService = require('./TokenService');
  * no response value expected for this operation
  **/
 exports.registerPOST = function (registration) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
 
     /** 
      * Extra validation before creating the registration record
@@ -24,18 +25,24 @@ exports.registerPOST = function (registration) {
      * 2) check if a project is filled in or a project_code
      * 3) check if the registration is for a minor (extra approval flow via guardian email)
      **/
-
-    Registration.create(registration).then(registration => {
-      const registrationToken = TokenService.generateRegistrationToken(registration.id)
-      MailService.registrationMail(registration, registrationToken);
+    try {
+      // for the moment we allow to register with a duplicate email (we want to keep an overview)
+      if (!(await dba.doesEmailExists(registration.email))) {
+        const register = await dba.createRegistration(registration);     
+        const registrationToken = await TokenService.generateRegistrationToken(register.id);
+        MailService.registrationMail(register, registrationToken);
+      } else {
+        logger.error("user tried to register with same email: "+registration.email);
+      }
       resolve();
-    }).catch((err) => {
-      logger.error(err);
+
+    } catch (ex) {
+      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
       }));
-    });
+    }
 
   });
 }

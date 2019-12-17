@@ -258,6 +258,16 @@ module.exports = {
       }
     );
 
+    await queryInterface.addConstraint(
+      'Users',
+      ['email'],
+      {
+        type: 'unique',
+        name: 'email'
+      }
+    );
+
+
   },
 
   down: (queryInterface, Sequelize) => {

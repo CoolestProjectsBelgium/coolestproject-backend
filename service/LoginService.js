@@ -50,6 +50,16 @@ exports.loginPOST = function (login) {
 
         // get registration
         var registration = await dba.getRegistration(validToken.registrationId);
+
+        // no registration found in our table (already created)
+        if (registration === null){
+          reject(new respondWithCode(500, {
+            code: 0,
+            message: 'Login failed'
+          }));
+          return;
+        }
+
         if (registration.project_code) {
           // create user and add to existing project
           var participant = await dba.createUserWithVoucher(
@@ -70,7 +80,9 @@ exports.loginPOST = function (login) {
               gsm_guardian: registration.gsm_guardian,
               email_guardian: registration.email_guardian,
               general_questions: registration.general_questions
-            }, registration.project_code
+            }, 
+            registration.project_code,  
+            registration.id
           );
           console.log('created user: ' + participant.id);
           userId = participant.id
@@ -100,7 +112,8 @@ exports.loginPOST = function (login) {
                 project_type: registration.project_type,
                 project_lang: registration.project_lang
               }
-            }
+            },
+            registration.id
           );
           console.log('created user: ' + owner.id);
           console.log('created project: ' + owner.project.id);

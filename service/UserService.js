@@ -1,5 +1,9 @@
 'use strict';
 
+const logger = require('pino')()
+const TokenService = require('./TokenService');
+const respondWithCode = require('../utils/writer').respondWithCode
+var dba = require('../service/DBService');
 
 /**
  * delete user based on id
@@ -76,9 +80,22 @@ exports.userPATCH = function(userId) {
  *
  * returns User
  **/
-exports.userinfoGET = function() {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
+exports.userinfoGET = function(loginToken) {
+  return new Promise(async function(resolve, reject) {
+    try {
+      var token = await TokenService.validateToken(loginToken);
+      logger.info('user id:' + token.id)
+      resolve()
+    }catch (ex) {
+      logger.error(ex);
+      reject(new respondWithCode(500, {
+        code: 0,
+        message: 'Backend error'
+      }));
+    }
+  })
+
+    /*
     examples['application/json'] = {
   "gsm" : "+32460789101",
   "general_questions" : [ "photo", "photo" ],
@@ -110,6 +127,6 @@ exports.userinfoGET = function() {
     } else {
       resolve();
     }
-  });
+  });*/
 }
 
