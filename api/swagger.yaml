@@ -78,6 +78,23 @@ paths:
           schema:
             $ref: "#/definitions/Login"
       x-swagger-router-controller: "Login"
+  /mailToken:
+    post:
+      tags:
+      - "login"
+      summary: "Get new token to login"
+      operationId: "mailLoginPOST"
+      parameters:
+      - in: "body"
+        name: "login"
+        description: "email address"
+        required: true
+        schema:
+          $ref: "#/definitions/LoginMail"
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Login"      
   /user/{userId}:
     get:
       tags:
@@ -606,3 +623,9 @@ definitions:
     properties:
       jwt:
         type: "string"
+  LoginMail:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        format: "email"   

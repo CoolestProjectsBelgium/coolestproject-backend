@@ -58,7 +58,7 @@ module.exports = {
     });
 
     var result = await email.send({
-      template: 'login',
+      template: 'login_orig',
       message: {
         to: user.email,
         cc: user.email_guardian

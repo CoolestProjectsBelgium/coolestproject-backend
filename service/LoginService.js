@@ -6,6 +6,30 @@ var dba = require('../service/DBService');
 var MailService = require('./MailService');
 
 /**
+ * Ask for logintoken via mail
+ *
+ * get user & send login token via mail
+ **/
+exports.mailLoginPOST = function (login) {
+  return new Promise(async function (resolve, reject) {
+    console.log('login requested for: ' + login.email);
+    try {
+      var users = await dba.getUsersViaMail(login.email);
+      console.log(users);
+      for (const user of users) {
+        //generate new token for user
+        const token = await TokenService.generateLoginToken(user.id);
+        const date = new Date();
+        date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
+        MailService.loginMail(user, token);
+      }
+    } catch (ex){
+      console.log(ex);
+    }
+    resolve();
+  });
+}
+/**
  * Login / Activate account
  *
  * registration Registration The registration to create. (optional)

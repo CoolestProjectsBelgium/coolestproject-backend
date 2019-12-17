@@ -2,12 +2,14 @@
 
 const models = require('../models');
 const crypto = require('crypto');
+const Sequelize = require('sequelize');
 
 const Project = models.Project;
 const User = models.User;
 const Voucher = models.Voucher;
 const Registration = models.Registration;
 const sequelize = models.sequelize;
+const Op = Sequelize.Op;
 
 const MAX_VOUCHERS = 2
 
@@ -180,5 +182,24 @@ module.exports = {
      */
     async createRegistration(registration) {
         return await Registration.create(registration);
+    },
+    /**
+     * Get user via email
+     * @param {String} email
+     * @returns {Array.<User>}
+     */
+    async getUsersViaMail(email) {
+        return User.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        email: email
+                    },
+                    {
+                        email_guardian: email
+                    }
+                ]    
+            }
+        });
     }
 };
