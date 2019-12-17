@@ -188,6 +188,14 @@ module.exports = {
         return await Registration.create(registration);
     },
     /**
+     * Add registration
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async getUser(userId) {
+        return await User.findByPk(userId);
+    },
+    /**
      * Check if email adress exists in User records table
      * @param {String} email
      * @returns {boolean}

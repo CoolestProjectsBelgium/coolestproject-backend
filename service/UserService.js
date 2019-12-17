@@ -84,8 +84,15 @@ exports.userinfoGET = function(loginToken) {
   return new Promise(async function(resolve, reject) {
     try {
       var token = await TokenService.validateToken(loginToken);
-      logger.info('user id:' + token.id)
-      resolve()
+      logger.info('user id:' + token.id);
+      
+      var user = await dba.getUser(token.id);
+
+      resolve({
+        firstname: user.firstname,
+        lastname: user.lastname
+      })
+
     }catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
