@@ -486,15 +486,8 @@ definitions:
         type: "integer"
         maximum: 2
       project_type:
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "scratch"
-          - "hardware"
-          - "software"
-          - "wifi"
-          - "kabel"
+        type: "string"
+        maxLength: 100
       project_lang:
         type: "string"
         enum:
@@ -588,15 +581,8 @@ definitions:
         type: "string"
         maxLength: 4000
       project_type:
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "scratch"
-          - "hardware"
-          - "software"
-          - "wifi"
-          - "kabel"
+        type: "string"
+        maxLength: 100  
       project_code:
         type: "string"
         maxLength: 36

@@ -78,7 +78,7 @@ module.exports = {
         type: Sequelize.STRING(4000)
       },
       project_type: {
-        type: Sequelize.JSON
+        type: Sequelize.STRING(100)
       },
       project_lang: {
         type: Sequelize.ENUM('nl','fr','en')
@@ -194,8 +194,8 @@ module.exports = {
         allowNull: false
       },
       project_type: {
-        type: Sequelize.JSON,
-        allowNull: false
+        type: Sequelize.STRING(100),
+        allowNull: true
       },
       project_lang: {
         type: Sequelize.ENUM('nl','fr','en'),

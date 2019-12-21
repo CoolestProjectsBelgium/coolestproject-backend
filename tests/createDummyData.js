@@ -23,9 +23,8 @@ async function main(){
             "extra": "string",
             "project_name": "string",
             "project_descr": "string",
-            "project_type": [
-              "scratch"
-            ],
+            "project_type": 
+            "scratch",
             "project_lang": "nl",
             "gsm": "+32460789101",
             "gsm_guardian": "+32460789101",
@@ -140,7 +139,7 @@ async function main(){
         {
             project_name: 'test',
             project_descr: 'aaa',
-            project_type: [],
+            project_type: "",
             ownerId: participant1.id 
         }
     );

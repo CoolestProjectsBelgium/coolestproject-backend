@@ -110,13 +110,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     },
     project_type: {
-      type: DataTypes.JSON,
-      get() {
-        return JSON.parse(this.getDataValue('project_type'));
-      },
-      set(value) {
-        this.setDataValue('project_type', JSON.stringify(value));
-      },
+      type: DataTypes.STRING(100),
       defaultValue: null
     },
     project_lang: {
@@ -151,12 +145,12 @@ module.exports = (sequelize, DataTypes) => {
       projectOrVoucher() {
         // user had own project
         if (this.project_code === null) {
-          if (this.project_name === null || this.project_descr === null || this.project_lang === null || this.project_type === null) {
+          if (this.project_name === null || this.project_descr === null || this.project_lang === null) {
             throw new Error('You need a project token or a project');
           }
           // user joins existing project
         } else {
-          if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null || this.project_type !== null) {
+          if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null) {
             throw new Error('You need a project token or a project');
           }
         }
