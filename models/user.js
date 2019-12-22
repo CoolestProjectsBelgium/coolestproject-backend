@@ -1,4 +1,12 @@
 'use strict';
+
+const addYears = require('date-fns/addYears')
+const addDays = require('date-fns/addDays')
+const parseISO = require('date-fns/parseISO')
+
+console.log('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
+console.log('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     language: {
@@ -79,10 +87,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DATEONLY,
       validate: {
-        isAfter: "2002-01-01",
-        isBefore: "2015-01-01"
+        isAfter: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10),
+        isBefore: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10)
       }
     },
+    last_token: {
+      allowNull: true,
+      type: DataTypes.DATE
+    },    
     t_size: {
       type: DataTypes.ENUM(
         'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',

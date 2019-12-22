@@ -10,22 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     project_type: {
-      type: DataTypes.JSON,
-      get () {
-        return JSON.parse(this.getDataValue('project_type'));
-      },
-      set (value) {
-        this.setDataValue('project_type', JSON.stringify(value));
-      },
-      validate: {
-        isJSON(value) {
-          try{
-            JSON.parse(value);
-          } catch (error) {
-            throw new Error('JSON is not valid');
-          }
-        }
-      },
+      type: DataTypes.STRING(500),
       allowNull: false
     },
     project_lang: {

@@ -15,6 +15,7 @@
   "private": true,
   "dependencies": {
     "connect": "^3.2.0",
+    "date-fns": "^2.8.1",
     "dotenv": "^8.2.0",
     "email-templates": "^6.0.3",
     "i18n": "^0.8.4",

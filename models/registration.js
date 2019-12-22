@@ -1,4 +1,13 @@
 'use strict';
+
+const addYears = require('date-fns/addYears')
+const addDays = require('date-fns/addDays')
+const parseISO = require('date-fns/parseISO')
+
+console.log('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
+console.log('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
+
+
 module.exports = (sequelize, DataTypes) => {
   const Registration = sequelize.define('Registration', {
     language: {
@@ -79,8 +88,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DATEONLY,
       validate: {
-        isAfter: "2002-01-01",
-        isBefore: "2015-01-01"
+        isAfter: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10),
+        isBefore: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10)
       }
     },
     t_size: {
@@ -110,13 +119,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     },
     project_type: {
-      type: DataTypes.JSON,
-      get() {
-        return JSON.parse(this.getDataValue('project_type'));
-      },
-      set(value) {
-        this.setDataValue('project_type', JSON.stringify(value));
-      },
+      type: DataTypes.STRING(500),
       defaultValue: null
     },
     project_lang: {
@@ -158,6 +161,16 @@ module.exports = (sequelize, DataTypes) => {
         } else {
           if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null || this.project_type !== null) {
             throw new Error('You need a project token or a project');
+          }
+        }
+      },
+      guardianRequirement() {
+        const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
+        console.log(minGuardian)
+        // check if guardian information is filled in
+        if (minGuardian > this.birthmonth) { 
+          if ( this.gsm_guardian === null || this.email_guardian === null ){
+            throw new Error('You need guardian information');
           }
         }
       }

@@ -17,11 +17,15 @@ exports.mailLoginPOST = function (login) {
       var users = await dba.getUsersViaMail(login.email);
       console.log(users);
       for (const user of users) {
-        //generate new token for user
-        const token = await TokenService.generateLoginToken(user.id);
-        const date = new Date();
-        date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
-        MailService.loginMail(user, token);
+        // only one token every 15 minutes
+        if (user.last_token > new Date(new Date().getTime() + process.env.TOKEN_RESEND_TIME)) {
+          // generate new token for user
+          const token = await TokenService.generateLoginToken(user.id);
+          await dba.
+          MailService.loginMail(user, token);
+        } else {
+          console.log('Token requested but time is not passed yet:' + user.email);
+        }
       }
     } catch (ex){
       console.log(ex);
@@ -114,8 +118,9 @@ exports.loginPOST = function (login) {
       }
       //generate new token and return
       const token = await TokenService.generateLoginToken(userId);
+      
       const date = new Date();
-      date.setTime(date.getTime() + (48 * 60 * 60 * 1000));
+      date.setTime(date.getTime() + process.env.TOKEN_VALID_TIME | 0);
 
       //sent welcome mail
       if(validToken.registrationId){
