@@ -37,7 +37,8 @@ module.exports.userPATCH = function userPATCH (req, res, next) {
 };
 
 module.exports.userinfoGET = function userinfoGET (req, res, next) {
-  User.userinfoGET()
+  var loginToken = req.headers.api_key;
+  User.userinfoGET(loginToken)
     .then(function (response) {
       utils.writeJson(res, response);
     })

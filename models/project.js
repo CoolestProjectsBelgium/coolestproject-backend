@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     project_type: {
       type: DataTypes.STRING(100),
-      allowNull: false
+      allowNull: true
     },
     project_lang: {
       type: DataTypes.ENUM('nl','fr','en'),

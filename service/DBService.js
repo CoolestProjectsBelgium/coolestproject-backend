@@ -36,8 +36,12 @@ module.exports = {
             }
         }
     */
-   async createUserWithProject(userProject) {
-        return await User.create(userProject, { include: ['project'] });
+   async createUserWithProject(userProject, registrationId) {
+        var transaction = await sequelize.transaction();
+        var user = await User.create(userProject, { include: ['project'], transaction: transaction});
+        await Registration.destroy({ where: { id: registrationId }, transaction: transaction });
+        await transaction.commit();
+        return user;
     },
     /**
      * Create a new user with a token
@@ -57,7 +61,7 @@ module.exports = {
             t_size: 'female_large'
         }
      */
-    async createUserWithVoucher(user, voucherId) {
+    async createUserWithVoucher(user, voucherId, registrationId) {
         var transaction = await sequelize.transaction();
         var voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, transaction: transaction, lock: true });
 
@@ -67,7 +71,7 @@ module.exports = {
 
         var user = await User.create(user, { transaction: transaction });
         await voucher.setParticipant(user, { transaction: transaction });
-
+        await Registration.destroy({ where: { id: registrationId }, transaction: transaction });
         await transaction.commit();
 
         return user;
@@ -182,6 +186,23 @@ module.exports = {
      */
     async createRegistration(registration) {
         return await Registration.create(registration);
+    },
+    /**
+     * Add registration
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async getUser(userId) {
+        return await User.findByPk(userId);
+    },
+    /**
+     * Check if email adress exists in User records table
+     * @param {String} email
+     * @returns {boolean}
+     */
+    async doesEmailExists(emailAddres) {
+        const count = await User.count({ where: { email: emailAddres } });
+        return count !== 0;
     },
     /**
      * Get user via email

@@ -54,8 +54,10 @@ module.exports = {
       },
       t_size: {
         type: Sequelize.ENUM(
-          'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
-          'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+          'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
+          'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
+          'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
+          'male_medium','male_large','male_xl','male_xxl','male_3xl'
         ),
         allowNull: false
       },
@@ -149,8 +151,10 @@ module.exports = {
       },
       t_size: {
         type: Sequelize.ENUM(
-          'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
-          'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+          'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
+          'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
+          'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
+          'male_medium','male_large','male_xl','male_xxl','male_3xl'    
         ),
         allowNull: false
       },
@@ -199,7 +203,7 @@ module.exports = {
       },
       project_type: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       project_lang: {
         type: Sequelize.ENUM('nl','fr','en'),
@@ -261,6 +265,16 @@ module.exports = {
         name: 'project_participants'
       }
     );
+
+    await queryInterface.addConstraint(
+      'Users',
+      ['email'],
+      {
+        type: 'unique',
+        name: 'email'
+      }
+    );
+
 
   },
 

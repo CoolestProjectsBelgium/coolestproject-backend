@@ -44,8 +44,9 @@ module.exports = {
     });
     return result;
   },
-  async loginMail(user) {
-    const email = new Email({
+  async loginMail(user,token) {
+      console.log("Login requested from "+user.email)
+      const email = new Email({
       message: {
         from: process.env.EMAIL,
       },
@@ -58,14 +59,15 @@ module.exports = {
     });
 
     var result = await email.send({
-      template: 'login_orig',
+      template: user.language +'_A4_VraagToken',
       message: {
         to: user.email,
         cc: user.email_guardian
       },
       locals: {
         locale: user.language,
-        name: user.firstname + ' ' + user.lastname
+        name: user.firstname,      //+ ' ' + user.lastname,
+        urlLogin: process.env.URL + 'login?token=' + token
       }
     });
     return result;

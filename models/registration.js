@@ -95,13 +95,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     t_size: {
       type: DataTypes.ENUM(
-        'female_small', 'female_medium', 'female_large', 'female_xl', 'female_xxl', 'female_3xl',
-        'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
+        'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
+        'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
+        'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
+        'male_medium','male_large','male_xl','male_xxl','male_3xl'        
       ),
       allowNull: false,
       validate: {
-        isIn: [['female_small', 'female_medium', 'female_large', 'female_xl', 'female_xxl', 'female_3xl',
-          'male_small', 'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl']]
+        isIn: [['female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
+        'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
+        'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
+        'male_medium','male_large','male_xl','male_xxl','male_3xl']]
       }
     },
     via: DataTypes.STRING,
@@ -155,12 +159,12 @@ module.exports = (sequelize, DataTypes) => {
       projectOrVoucher() {
         // user had own project
         if (this.project_code === null) {
-          if (this.project_name === null || this.project_descr === null || this.project_lang === null || this.project_type === null) {
+          if (this.project_name === null || this.project_descr === null || this.project_lang === null) {
             throw new Error('You need a project token or a project');
           }
           // user joins existing project
         } else {
-          if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null || this.project_type !== null) {
+          if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null) {
             throw new Error('You need a project token or a project');
           }
         }
