@@ -37,7 +37,7 @@ exports.userGET = function(userId) {
   "medical" : "medical",
   "sex" : "m",
   "project" : {
-    "project_type" : "scratch",
+    "project_type" : "project_type",
     "unused_vouchers" : 0,
     "project_id" : 6,
     "project_lang" : "nl",
@@ -125,7 +125,7 @@ exports.userinfoGET = function(loginToken) {
   "medical" : "medical",
   "sex" : "m",
   "project" : {
-    "project_type" : "scratch",
+    "project_type" : "project_type",
     "unused_vouchers" : 0,
     "project_id" : 6,
     "project_lang" : "nl",

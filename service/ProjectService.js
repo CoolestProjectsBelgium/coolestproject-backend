@@ -52,7 +52,7 @@ exports.projectGET = function(projectId) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "project_type" : "esp8266",
+  "project_type" : "project_type",
   "unused_vouchers" : 0,
   "project_id" : 6,
   "project_lang" : "nl",
@@ -79,7 +79,7 @@ exports.projectPATCH = function(projectId) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "project_type" : "scratch",
+  "project_type" : "project_type",
   "unused_vouchers" : 0,
   "project_id" : 6,
   "project_lang" : "nl",
@@ -106,7 +106,7 @@ exports.projectPOST = function(project) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "project_type" : "",
+  "project_type" : "project_type",
   "unused_vouchers" : 0,
   "project_id" : 6,
   "project_lang" : "nl",
