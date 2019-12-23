@@ -419,7 +419,7 @@ definitions:
       gsm:
         type: "string"
         example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
       general_questions:
         type: "array"
         items:
@@ -435,22 +435,41 @@ definitions:
       t_size:
         type: "string"
         enum:
-        - "female_small"
+        - "female_M116"
+        - "female_M122"
+        - "female_M128"
+        - "female_M134"
+        - "female_M146"
+        - "female_M152"
+        - "female_M158"
+        - "female_M164"
+        - "female_M170"
+        - "female_M176"
         - "female_medium"
         - "female_large"
         - "female_xl"
-        - "female_xxl"
-        - "female_3xl"
+        - "male_M116"
+        - "male_M122"
+        - "male_M128"
+        - "male_M134"
+        - "male_M140"
+        - "male_M146"
+        - "male_M152"
+        - "male_M158"
+        - "male_M164"
+        - "male_M170"
+        - "male_M176"
+        - "male_Xsmall"
         - "male_small"
         - "male_medium"
         - "male_large"
         - "male_xl"
         - "male_xxl"
-        - "male_3xl"
+        - "male_3xl- "
       gsm_guardian:
         type: "string"
         example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
       email_guardian:
         type: "string"
         format: "email"
@@ -486,15 +505,8 @@ definitions:
         type: "integer"
         maximum: 2
       project_type:
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "scratch"
-          - "hardware"
-          - "software"
-          - "wifi"
-          - "kabel"
+        type: "string"
+        maxLength: 100
       project_lang:
         type: "string"
         enum:
@@ -560,18 +572,37 @@ definitions:
       t_size:
         type: "string"
         enum:
-        - "female_small"
+        - "female_M116"
+        - "female_M122"
+        - "female_M128"
+        - "female_M134"
+        - "female_M146"
+        - "female_M152"
+        - "female_M158"
+        - "female_M164"
+        - "female_M170"
+        - "female_M176"
         - "female_medium"
         - "female_large"
         - "female_xl"
-        - "female_xxl"
-        - "female_3xl"
+        - "male_M116"
+        - "male_M122"
+        - "male_M128"
+        - "male_M134"
+        - "male_M140"
+        - "male_M146"
+        - "male_M152"
+        - "male_M158"
+        - "male_M164"
+        - "male_M170"
+        - "male_M176"
+        - "male_Xsmall"
         - "male_small"
         - "male_medium"
         - "male_large"
         - "male_xl"
         - "male_xxl"
-        - "male_3xl"
+        - "male_3xl- "
       via:
         type: "string"
         maxLength: 200
@@ -588,15 +619,8 @@ definitions:
         type: "string"
         maxLength: 4000
       project_type:
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "scratch"
-          - "hardware"
-          - "software"
-          - "wifi"
-          - "kabel"
+        type: "string"
+        maxLength: 100  
       project_code:
         type: "string"
         maxLength: 36
@@ -610,11 +634,11 @@ definitions:
       gsm:
         type: "string"
         example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
       gsm_guardian:
         type: "string"
         example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)4(60|[789]\\d)(\\s?\\d{2}){3}$"
+        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
       email_guardian:
         type: "string"
         format: "email"

@@ -1,16 +1,16 @@
-p= `${t('Hi')} ${name},`
-p= t('We are very pleased that you want to participate on the next ') 
-  b Coolest Projects 2020
-p= t('organized by Coderdojo Belgium and taking place at TECHNOPOLIS, MECHELEN op Sunday 17 May 2020.')
-p= t('You will find the full information about our Coolest Project event on our ') 
-  a(href="https://coolestprojects.be")= `${t('Coolest Projects 2020 website.')}`
-p= t('If you are younger than 16 your parents receive this mail also and they should confirm your participation.')
-p= t('Via this') 
-  a(href=`${url}`)  ActivationLink
-  you or your parent have to click on to do the activation.
-
-p Only if the activation happens during the next 2 days your participation will be accepted.
-p If all is fine you will receive a second mail with more information you need to bring your project on rails.
-p
-    b Good luck, #{name} and we are awainting your project activation soon.
-p Coolest Project team
+p Hi #{name}, 
+|
+| We are very pleased that you want to participate on the next <b>Coolest Projects 2020</b> organized
+| by Coderdojo Belgium at TECHNOPOLIS, MECHELEN on Sunday 17th of May 2020.
+| <p>You can find all the info on Coolest Project on our <a href="https://coolestprojects.be">Coolest Projects 2020</a> website .</p>
+| <p>If you are younger than 16, your parents will also receive this mail and they have to confirm your participation.</p>
+| <p>Click this <a href="#{url}">ActivationLink</a> to activate your project.</p>
+|
+| Be sure to click this activation link within 2 days, to ensure your participation.
+| ??(what if: after that 2 days)??
+|
+| <p>You should receive a second mail then, with some more information you need to get your project on rails.</p>
+| 
+| <p><b>Good luck, #{name} we’re looking forward to your project activation!</b></p>
+| 
+| <p>Coolest Project team </p>

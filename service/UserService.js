@@ -28,6 +28,7 @@ exports.userGET = function(userId) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
+  "language" : "nl",      
   "gsm" : "+32460789101",
   "general_questions" : [ "photo", "photo" ],
   "email_guardian" : "email_guardian",
@@ -36,7 +37,7 @@ exports.userGET = function(userId) {
   "medical" : "medical",
   "sex" : "m",
   "project" : {
-    "project_type" : [ "scratch", "scratch" ],
+    "project_type" : "project_type",
     "unused_vouchers" : 0,
     "project_id" : 6,
     "project_lang" : "nl",
@@ -83,20 +84,29 @@ exports.userPATCH = function(userId) {
 exports.userinfoGET = function(loginToken) {
   return new Promise(async function(resolve, reject) {
     try {
+      logger.info("LoginToken:"+loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);
-      
-      var user = await dba.getUser(token.id);
 
+      var user = await dba.getUser(token.id);
       resolve({
+<<<<<<< HEAD
         gsm: user.gsm,
         general_questions: user.general_questions,
         email_guardian: user.email_guardian,
         firstname: user.firstname,
+=======
+        language: user.language,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        gsm: user.gsm,
+        general_questions: user.general_questions,
+>>>>>>> fb741d09ea62cfa1ec15d237fc58c6c3c6a676eb
         gsm_guardian: user.gsm_guardian,
         medical: user.medical,
         sex: user.sex,
         t_size: user.t_size,
+<<<<<<< HEAD
         lastname: user.lastname,
         via: user.via,
         birthmonth: user.birthmonth,
@@ -104,8 +114,16 @@ exports.userinfoGET = function(loginToken) {
         extra: user.extra,
         email: user.email
       })
+=======
+        via: user.via,
+        birthmonth: user.birthmonth.substr(0, 7),
+        postalcode: user.postalcode,
+        extra: user.extra,
+        email: user.email,
+        email_guardian: user.email_guardian });
+>>>>>>> fb741d09ea62cfa1ec15d237fc58c6c3c6a676eb
 
-    }catch (ex) {
+    } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
@@ -124,7 +142,7 @@ exports.userinfoGET = function(loginToken) {
   "medical" : "medical",
   "sex" : "m",
   "project" : {
-    "project_type" : [ "scratch", "scratch" ],
+    "project_type" : "project_type",
     "unused_vouchers" : 0,
     "project_id" : 6,
     "project_lang" : "nl",
