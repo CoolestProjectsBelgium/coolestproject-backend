@@ -1,11 +1,12 @@
 'use strict';
 
+const logger = require('pino')()
 const addYears = require('date-fns/addYears')
 const addDays = require('date-fns/addDays')
 const parseISO = require('date-fns/parseISO')
 
-console.log('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
-console.log('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
+logger.debug('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
+logger.debug('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -119,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     },
     project_type: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING(100),
       defaultValue: null
     },
     project_lang: {

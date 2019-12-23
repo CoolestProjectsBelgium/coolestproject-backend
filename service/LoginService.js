@@ -1,7 +1,9 @@
 'use strict';
 
+const logger = require('pino')();
+const addSeconds = require('date-fns/addSeconds');
 const TokenService = require('./TokenService');
-const respondWithCode = require('../utils/writer').respondWithCode
+const respondWithCode = require('../utils/writer').respondWithCode;
 var dba = require('../service/DBService');
 var MailService = require('./MailService');
 
@@ -12,23 +14,29 @@ var MailService = require('./MailService');
  **/
 exports.mailLoginPOST = function (login) {
   return new Promise(async function (resolve, reject) {
-    console.log('login requested for: ' + login.email);
+    logger.info('login requested for: ' + login.email);
+
     try {
       var users = await dba.getUsersViaMail(login.email);
-      console.log(users);
       for (const user of users) {
+        logger.info('user found: ' + user.id);
+
         // only one token every 15 minutes
-        if (user.last_token > new Date(new Date().getTime() + process.env.TOKEN_RESEND_TIME)) {
+        var tokenTime = -1;
+        if (user.last_token !== null){
+          tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0); 
+        }
+        if (new Date() > tokenTime) {
           // generate new token for user
+          await dba.updateLastToken(user);
           const token = await TokenService.generateLoginToken(user.id);
-          await dba.
           MailService.loginMail(user, token);
         } else {
-          console.log('Token requested but time is not passed yet:' + user.email);
+          logger.info('Token requested but time is not passed yet: ' + user.email);
         }
       }
     } catch (ex){
-      console.log(ex);
+      logger.error(ex);
     }
     resolve();
   });
@@ -41,16 +49,16 @@ exports.mailLoginPOST = function (login) {
  **/
 exports.loginPOST = function (login) {
   return new Promise(function (resolve, reject) {
-    console.log('validate token: ' + login.jwt);
+    logger.info('validate token: ' + login.jwt);
     TokenService.validateToken(login.jwt).then(async function (validToken) {
       //token success
-      console.log(validToken)
+      logger.info(validToken)
 
       //check if token is registration or login token
       let userId = -1;
       if (validToken.registrationId) {
-        console.log('registration token found start creation of user & project');
-        console.log(validToken.registrationId);
+        logger.info('registration token found start creation of user & project');
+        logger.info(validToken.registrationId);
 
         // get registration
         var registration = await dba.getRegistration(validToken.registrationId);
@@ -76,7 +84,7 @@ exports.loginPOST = function (login) {
               general_questions: registration.general_questions
             }, registration.project_code
           );
-          console.log('created user: ' + participant.id);
+          logger.info('created user: ' + participant.id);
           userId = participant.id
         } else {
           // create user with project
@@ -106,32 +114,29 @@ exports.loginPOST = function (login) {
               }
             }
           );
-          console.log('created user: ' + owner.id);
-          console.log('created project: ' + owner.project.id);
+          logger.info('created user: ' + owner.id);
+          logger.info('created project: ' + owner.project.id);
         }
         userId = owner.id;
 
       } else {
-        console.log('login token found just generate same token with new validity');
-        console.log(validToken.id);
+        logger.info('login token found just generate same token with new validity');
+        logger.info(validToken.id);
         userId = validToken.id;
       }
       //generate new token and return
       const token = await TokenService.generateLoginToken(userId);
-      
-      const date = new Date();
-      date.setTime(date.getTime() + process.env.TOKEN_VALID_TIME | 0);
 
       //sent welcome mail
       if(validToken.registrationId){
         MailService.welcomeMailOwner(owner, token);
       }
 
-      resolve({ api_key: token, expires: date });
+      resolve({ api_key: token, expires: addSeconds(new Date(),  process.env.TOKEN_VALID_TIME || 0) });
     })
       .catch(function (response) {
         //token failed
-        console.log(response)
+        logger.error(response)
         reject(new respondWithCode(500, {
           code: 0,
           message: 'Login failed'

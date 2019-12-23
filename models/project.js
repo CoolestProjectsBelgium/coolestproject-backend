@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     project_type: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     project_lang: {

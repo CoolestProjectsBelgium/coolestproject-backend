@@ -201,5 +201,13 @@ module.exports = {
                 ]    
             }
         });
+    },
+    /**
+     * Update token
+     * @param {User} user
+     */
+    async updateLastToken(user){
+        user.last_token = new Date();
+        await user.save();
     }
 };

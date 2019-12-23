@@ -52,10 +52,6 @@ module.exports = {
         type: Sequelize.DATEONLY,
         allowNull: false
       },
-      last_token: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
       t_size: {
         type: Sequelize.ENUM(
           'female_small','female_medium','female_large','female_xl','female_xxl','female_3xl',
@@ -82,7 +78,7 @@ module.exports = {
         type: Sequelize.STRING(4000)
       },
       project_type: {
-        type: Sequelize.STRING(500)
+        type: Sequelize.STRING(100)
       },
       project_lang: {
         type: Sequelize.ENUM('nl','fr','en')
@@ -104,6 +100,10 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      last_token: {
+        type: Sequelize.DATE,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,
@@ -198,7 +198,7 @@ module.exports = {
         allowNull: false
       },
       project_type: {
-        type: Sequelize.JSON,
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       project_lang: {
