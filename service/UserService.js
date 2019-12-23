@@ -90,38 +90,21 @@ exports.userinfoGET = function(loginToken) {
 
       var user = await dba.getUser(token.id);
       resolve({
-<<<<<<< HEAD
-        gsm: user.gsm,
-        general_questions: user.general_questions,
-        email_guardian: user.email_guardian,
-        firstname: user.firstname,
-=======
         language: user.language,
         firstname: user.firstname,
         lastname: user.lastname,
         gsm: user.gsm,
         general_questions: user.general_questions,
->>>>>>> fb741d09ea62cfa1ec15d237fc58c6c3c6a676eb
         gsm_guardian: user.gsm_guardian,
         medical: user.medical,
         sex: user.sex,
         t_size: user.t_size,
-<<<<<<< HEAD
-        lastname: user.lastname,
-        via: user.via,
-        birthmonth: user.birthmonth,
-        postalcode: user.postalcode,
-        extra: user.extra,
-        email: user.email
-      })
-=======
         via: user.via,
         birthmonth: user.birthmonth.substr(0, 7),
         postalcode: user.postalcode,
         extra: user.extra,
         email: user.email,
         email_guardian: user.email_guardian });
->>>>>>> fb741d09ea62cfa1ec15d237fc58c6c3c6a676eb
 
     } catch (ex) {
       logger.error(ex);
