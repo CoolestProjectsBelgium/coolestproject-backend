@@ -83,10 +83,12 @@ module.exports = {
      */
     async updateUser(changedFields, userId) {
         var user = await User.findByPk(userId);
+        console.log(changedFields);
         var result = await user.update(changedFields);
         if(result === false){
             throw new Error('Update failed');
         }
+        return result;
     },
     /**
      * Get registration information

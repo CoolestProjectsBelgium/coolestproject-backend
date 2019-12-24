@@ -3,13 +3,12 @@ swagger: "2.0"
 info:
   description: "This api exposes the api's for the Coolestproject registration website,\
     \ voting system, event setup."
-  version: "0.0.3"
+  version: "0.0.4"
   title: "Coolestprojects registration"
 tags:
 - name: "registration"
 - name: "login"
 - name: "user"
-- name: "project"
 paths:
   /register:
     post:
@@ -51,6 +50,31 @@ paths:
       security:
       - loginToken: []
       x-swagger-router-controller: "User"
+    patch:
+      tags:
+        - "user"
+      summary: "update user"
+      operationId: "userinfoPATCH"  
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "User info"
+        required: false
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+    
   /login:
     post:
       tags:
@@ -94,263 +118,7 @@ paths:
       responses:
         200:
           description: "OK"
-      x-swagger-router-controller: "Login"      
-  /user/{userId}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user based on id"
-      operationId: "userGET"
-      parameters:
-      - name: "userId"
-        in: "path"
-        description: "userId."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/User"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "User"
-    delete:
-      tags:
-      - "user"
-      summary: "delete user based on id"
-      operationId: "userDELETE"
-      parameters:
-      - name: "userId"
-        in: "path"
-        description: "userId."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "User"
-    patch:
-      tags:
-      - "user"
-      summary: "update user based on id"
-      operationId: "userPATCH"
-      parameters:
-      - name: "userId"
-        in: "path"
-        description: "userId."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "User"
-  /project:
-    post:
-      tags:
-      - "project"
-      summary: "Create new project"
-      operationId: "projectPOST"
-      parameters:
-      - in: "body"
-        name: "project"
-        required: false
-        schema:
-          $ref: "#/definitions/Project"
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-          schema:
-            $ref: "#/definitions/Project"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
-  /project/{projectId}:
-    get:
-      tags:
-      - "project"
-      summary: "Get project based on id"
-      operationId: "projectGET"
-      parameters:
-      - name: "projectId"
-        in: "path"
-        description: "projectid."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Project"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
-    delete:
-      tags:
-      - "project"
-      summary: "delete project"
-      operationId: "projectDELETE"
-      parameters:
-      - name: "projectId"
-        in: "path"
-        description: "projectId."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
-    patch:
-      tags:
-      - "project"
-      summary: "update project based on id"
-      operationId: "projectPATCH"
-      parameters:
-      - name: "projectId"
-        in: "path"
-        description: "projectid."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-          schema:
-            $ref: "#/definitions/Project"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
-  /project/{projectId}/participants:
-    post:
-      tags:
-      - "project"
-      summary: "Add new participant to project"
-      operationId: "participantsPOST"
-      parameters:
-      - name: "projectId"
-        in: "path"
-        description: "projectid."
-        required: true
-        type: "integer"
-        minimum: 1
-      - in: "body"
-        name: "voucher"
-        required: false
-        schema:
-          $ref: "#/definitions/Voucher"
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
-  /project/{projectId}/participants/{userId}:
-    delete:
-      tags:
-      - "project"
-      summary: "delete participant from project"
-      operationId: "participantsDELETE"
-      parameters:
-      - name: "projectId"
-        in: "path"
-        description: "projectId."
-        required: true
-        type: "integer"
-        minimum: 1
-      - name: "userId"
-        in: "path"
-        description: "userId."
-        required: true
-        type: "integer"
-        minimum: 1
-      responses:
-        200:
-          description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"
+      x-swagger-router-controller: "Login"
 securityDefinitions:
   loginToken:
     type: "apiKey"

@@ -100,7 +100,7 @@ exports.userinfoGET = function(loginToken) {
         sex: user.sex,
         t_size: user.t_size,
         via: user.via,
-        birthmonth: user.birthmonth.substr(0, 7),
+        birthmonth: user.birthmonth,
         postalcode: user.postalcode,
         extra: user.extra,
         email: user.email,
@@ -114,7 +114,32 @@ exports.userinfoGET = function(loginToken) {
       }));
     }
   })
+}
 
+/**
+ * update the userinfo
+ *
+ * returns User
+ **/
+exports.userinfoPATCH = function(loginToken, user) {
+  return new Promise(async function(resolve, reject) {
+    try {
+      logger.info('LoginToken: '+loginToken);
+      var token = await TokenService.validateToken(loginToken);
+      logger.info('user id: ' + token.id);
+      var u = await dba.updateUser(user, token.id);
+      resolve(u);
+    } catch (ex) {
+      logger.error(ex);
+      reject(new respondWithCode(500, {
+        code: 0,
+        message: 'Backend error'
+      }));
+    }
+  })
+}
+
+  
     /*
     examples['application/json'] = {
   "gsm" : "+32460789101",
@@ -148,5 +173,4 @@ exports.userinfoGET = function(loginToken) {
       resolve();
     }
   });*/
-}
 
