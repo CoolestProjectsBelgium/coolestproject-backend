@@ -139,7 +139,29 @@ exports.userinfoPATCH = function(loginToken, user) {
   })
 }
 
-  
+/**
+ * delete the userinfo
+ *
+ * returns User
+ **/
+exports.userinfoDELETE = function(loginToken) {
+  return new Promise(async function(resolve, reject) {
+    try {
+      logger.info('LoginToken: '+loginToken);
+      var token = await TokenService.validateToken(loginToken);
+      logger.info('user id: ' + token.id);
+      var u = await dba.deleteUser(token.id);
+      resolve(u);
+    } catch (ex) {
+      logger.error(ex);
+      reject(new respondWithCode(500, {
+        code: 0,
+        message: 'Backend error'
+      }));
+    }
+  })
+}
+
     /*
     examples['application/json'] = {
   "gsm" : "+32460789101",

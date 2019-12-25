@@ -74,7 +74,22 @@ paths:
       security:
       - loginToken: []
       x-swagger-router-controller: "User"
-    
+    delete:
+      tags:
+        - "user"
+      summary: "delete user"
+      operationId: "userinfoDELETE" 
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
+
   /login:
     post:
       tags:

@@ -60,3 +60,14 @@ module.exports.userinfoPATCH = function userinfoPATCH (req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.userinfoDELETE = function userinfoDELETE (req, res, next) {
+  var loginToken = req.headers.api_key;
+  User.userinfoDELETE(loginToken)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
