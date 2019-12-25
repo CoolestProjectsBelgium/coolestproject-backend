@@ -3,6 +3,7 @@
 var utils = require('../utils/writer.js');
 var Project = require('../service/ProjectService');
 
+/*
 module.exports.participantsDELETE = function participantsDELETE (req, res, next) {
   var projectId = req.swagger.params['projectId'].value;
   var userId = req.swagger.params['userId'].value;
@@ -63,6 +64,17 @@ module.exports.projectPATCH = function projectPATCH (req, res, next) {
 module.exports.projectPOST = function projectPOST (req, res, next) {
   var project = req.swagger.params['project'].value;
   Project.projectPOST(project)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+*/
+module.exports.projectinfoGET = function projectinfoGET (req, res, next) {
+  var loginToken = req.headers.api_key;
+  Project.projectinfoGET(loginToken)
     .then(function (response) {
       utils.writeJson(res, response);
     })

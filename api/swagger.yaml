@@ -89,6 +89,25 @@ paths:
       security:
       - loginToken: []
       x-swagger-router-controller: "User"
+  /projectinfo:
+    get:
+      tags:
+      - "project"
+      summary: "get projectinfo for the logged in user"
+      operationId: "projectinfoGET"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
 
   /login:
     post:
@@ -265,13 +284,11 @@ definitions:
       extra:
         type: "string"
         maxLength: 500
-      project:
-        $ref: "#/definitions/Project"
   Project:
     type: "object"
     properties:
-      owner:
-        $ref: "#/definitions/User"
+      own_project:
+        type: "boolean"
       project_id:
         type: "integer"
       project_name:
@@ -280,13 +297,6 @@ definitions:
       project_descr:
         type: "string"
         maxLength: 4000
-      participants:
-        type: "array"
-        items:
-          $ref: "#/definitions/User"
-      unused_vouchers:
-        type: "integer"
-        maximum: 2
       project_type:
         type: "string"
         maxLength: 100
@@ -296,7 +306,6 @@ definitions:
         - "nl"
         - "fr"
         - "en"
-
   Registration:
     type: "object"
     required:

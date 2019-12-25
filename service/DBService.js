@@ -198,6 +198,14 @@ module.exports = {
         return await User.findByPk(userId);
     },
     /**
+     * get Project
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async getProject(userId) {
+        return await Project.findOne({ where: { ownerId: userId } });
+    },   
+    /**
      * Check if email adress exists in User records table
      * @param {String} email
      * @returns {boolean}
