@@ -108,7 +108,45 @@ paths:
       security:
       - loginToken: []
       x-swagger-router-controller: "Project"
-
+    patch:
+      tags:
+        - "project"
+      summary: "update project"
+      operationId: "projectinfoPATCH"  
+      parameters:
+      - in: "body"
+        name: "project"
+        description: "Project info"
+        required: false
+        schema:
+          $ref: "#/definitions/Project"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"
+    delete:
+      tags:
+        - "project"
+      summary: "delete project"
+      operationId: "projectinfoDELETE" 
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "User"
   /login:
     post:
       tags:

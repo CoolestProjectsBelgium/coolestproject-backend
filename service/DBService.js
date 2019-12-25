@@ -117,21 +117,22 @@ module.exports = {
     /**
      * Update a project
      * @param {Project} project 
-     * @param {Number} projectId 
+     * @param {Number} userId 
      */
-    async updateProject(changedFields, projectId) {
-        var project = await Project.findByPk(projectId);
+    async updateProject(changedFields, userId) {
+        var project = await Project.findOne({ where: { ownerId: userId } });
         var result = await project.update(changedFields);
         if(result === false){
             throw new Error('Update failed');
         }
+        return result;
     },
     /**
      * Delete a project
-     * @param {Number} projectId 
+     * @param {Number} userId 
      */
-    async deleteProject(projectId) {
-        return await Project.destroy({ where: { id: projectId } });
+    async deleteProject(userId) {
+        return await Project.destroy({ where: { ownerId: userId } });
     },
     /**
      * Create a voucher for a project
