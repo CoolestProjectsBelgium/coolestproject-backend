@@ -3,6 +3,7 @@
 const models = require('../models');
 const crypto = require('crypto');
 const Sequelize = require('sequelize');
+const logger = require('pino')()
 
 const Project = models.Project;
 const User = models.User;
@@ -121,8 +122,7 @@ module.exports = {
      * @param {Number} userId 
      */
     async updateProject(changedFields, userId) {
-        var project = await Project.findOne({ where: { ownerId: userId } });
-        var result = await project.update(changedFields);
+        var project = await Project.findOne({ where: { ownerId: userId }});
         if(result === false){
             throw new Error('Update failed');
         }
@@ -140,9 +140,11 @@ module.exports = {
      * @param {Number} projectId 
      * @returns {Voucher}
      */
-    async createVoucher(projectId) {
-        var totalVouchers = await Voucher.count({ where: { projectId: projectId } });
+    async createVoucher(userId) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        logger.info("Project found: " + project.id);
 
+        var totalVouchers = await Voucher.count({ where: { projectId: project.id } });
         if (totalVouchers >= MAX_VOUCHERS) {
             throw new Error('Max token reached');
         }
@@ -155,7 +157,7 @@ module.exports = {
                 resolve(buffer.toString('hex'));
             });
         });
-        return await Voucher.create({ projectId: projectId, id: token });
+        return await Voucher.create({ projectId: project.id, id: token });
     },    
     /**
      * Delete a participant from a project
@@ -198,6 +200,16 @@ module.exports = {
      */
     async getUser(userId) {
         return await User.findByPk(userId);
+    },
+    /**
+     * Add registration
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async getVouchers(userId) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        logger.info("Project found: " + project.id);
+        return await Voucher.findAll({ where: { projectId: project.id }, attributes: ['id']});
     },
     /**
      * get Project

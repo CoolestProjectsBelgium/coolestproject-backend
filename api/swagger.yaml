@@ -31,6 +31,39 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Registration"
+  /participants:
+    post:
+      tags:
+      - "project"
+      summary: "Create new participant"
+      operationId: "participantPOST"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Participant"
+    get:
+      tags:
+      - "project"
+      summary: "get participant"
+      operationId: "participantGET"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Participant"                  
   /userinfo:
     get:
       tags:
