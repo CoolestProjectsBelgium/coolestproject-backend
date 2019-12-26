@@ -138,6 +138,16 @@ module.exports = (sequelize, DataTypes) => {
         if(this.email_guardian === null && this.email === null){
           throw new Error('Email or Email Guardian is required')
         }
+      },
+      guardianRequirement() {
+        const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
+        console.log(minGuardian)
+        // check if guardian information is filled in
+        if (minGuardian > this.birthmonth) { 
+          if ( this.gsm_guardian === null || this.email_guardian === null ){
+            throw new Error('You need guardian information');
+          }
+        }
       }
     }
   });
