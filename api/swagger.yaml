@@ -132,6 +132,30 @@ paths:
       security:
       - loginToken: []
       x-swagger-router-controller: "Project"
+    post:
+      tags:
+        - "project"
+      summary: "update project"
+      operationId: "projectinfoPOST"  
+      parameters:
+      - in: "body"
+        name: "project"
+        description: "Project info"
+        required: false
+        schema:
+          $ref: "#/definitions/Project"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Project"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - loginToken: []
+      x-swagger-router-controller: "Project"      
     delete:
       tags:
         - "project"
@@ -146,7 +170,7 @@ paths:
             $ref: "#/definitions/Error"
       security:
       - loginToken: []
-      x-swagger-router-controller: "User"
+      x-swagger-router-controller: "Project"
   /login:
     post:
       tags:

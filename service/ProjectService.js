@@ -19,14 +19,19 @@ exports.projectinfoGET = function(loginToken) {
       logger.info('user id:' + token.id);
 
       var project = await dba.getProject(token.id);
-      resolve({
-        own_project: token.id === project.ownerId,
-        project_name: project.project_name,
-        project_descr: project.project_descr,
-        project_type: project.project_type,
-        project_lang: project.project_lang
-      });
-
+      if (project !== null) {
+        resolve({
+          own_project: token.id === project.ownerId,
+          project_id: project.id,
+          project_name: project.project_name,
+          project_descr: project.project_descr,
+          project_type: project.project_type,
+          project_lang: project.project_lang
+        });
+      } else {
+        // no project found
+        resolve();
+      }
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -49,6 +54,29 @@ exports.projectinfoPATCH = function(loginToken, project) {
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var p = await dba.updateProject(project, token.id);
+      resolve(p);
+    } catch (ex) {
+      logger.error(ex);
+      reject(new respondWithCode(500, {
+        code: 0,
+        message: 'Backend error'
+      }));
+    }
+  })
+}
+
+/**
+ * create the projectinfo
+ *
+ * returns Project
+ **/
+exports.projectinfoPOST = function(loginToken, project) {
+  return new Promise(async function(resolve, reject) {
+    try {
+      logger.info('LoginToken: '+loginToken);
+      var token = await TokenService.validateToken(loginToken);
+      logger.info('user id: ' + token.id);
+      var p = await dba.createProject(project, token.id);
       resolve(p);
     } catch (ex) {
       logger.error(ex);

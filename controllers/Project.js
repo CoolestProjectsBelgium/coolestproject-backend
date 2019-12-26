@@ -14,10 +14,20 @@ module.exports.projectinfoPATCH = function projectinfoPATCH (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-module.exports.projectinfoDELETE = function projectinfoDELETE (req, res, next) {
+module.exports.projectinfoPOST = function projectinfoPOST (req, res, next) {
   var loginToken = req.headers.api_key;
   var project = req.swagger.params['project'].value;
-  Project.projectinfoDELETE(loginToken, project)
+  Project.projectinfoPOST(loginToken, project)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+module.exports.projectinfoDELETE = function projectinfoDELETE (req, res, next) {
+  var loginToken = req.headers.api_key;
+  Project.projectinfoDELETE(loginToken)
     .then(function (response) {
       utils.writeJson(res, response);
     })

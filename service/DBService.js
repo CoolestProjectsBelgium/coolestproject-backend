@@ -111,7 +111,8 @@ module.exports = {
      * @param {Object} project
      * @returns {Project}
      */
-    async createProject(project) {
+    async createProject(project, userId) {
+        project.ownerId = userId;
         return await Project.create(project);
     },
     /**
