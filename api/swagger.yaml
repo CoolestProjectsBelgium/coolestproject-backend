@@ -278,7 +278,7 @@ definitions:
         type: "string"
         enum:
         - "m"
-        - "v"
+        - "f"
         - "x"
       gsm:
         type: "string"
