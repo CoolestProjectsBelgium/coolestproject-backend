@@ -133,6 +133,7 @@ module.exports = {
      * @param {Number} userId 
      */
     async deleteProject(userId) {
+        await Voucher.destroy({ where: { participantId: userId } });
         return await Project.destroy({ where: { ownerId: userId } });
     },
     /**
