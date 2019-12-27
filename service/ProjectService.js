@@ -17,16 +17,14 @@ exports.projectinfoGET = function(loginToken) {
       logger.info("LoginToken:"+loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);
-
       var project = await dba.getProject(token.id);
       if (project !== null) {
         resolve({
-          own_project: token.id === project.ownerId,
-          project_id: project.id,
           project_name: project.project_name,
           project_descr: project.project_descr,
           project_type: project.project_type,
-          project_lang: project.project_lang
+          project_lang: project.project_lang,
+          own_project: (token.id === project.ownerId)
         });
       } else {
         // no project found

@@ -129,9 +129,8 @@ exports.loginPOST = function (login) {
           );
           logger.info('created user: ' + owner.id);
           logger.info('created project: ' + owner.project.id);
+          userId = owner.id;
         }
-        userId = owner.id;
-
       } else {
         logger.info('login token found just generate same token with new validity');
         logger.info(validToken.id);

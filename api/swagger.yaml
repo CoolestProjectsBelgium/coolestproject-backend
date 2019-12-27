@@ -57,6 +57,8 @@ paths:
       responses:
         200:
           description: "OK"
+          schema:
+            $ref: "#/definitions/Participant"
         500:
           description: "Error"
           schema:
@@ -539,4 +541,11 @@ definitions:
     properties:
       email:
         type: "string"
-        format: "email"   
+        format: "email"
+  Participant:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"

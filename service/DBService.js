@@ -208,8 +208,16 @@ module.exports = {
      */
     async getVouchers(userId) {
         var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
-        logger.info("Project found: " + project.id);
-        return await Voucher.findAll({ where: { projectId: project.id }, attributes: ['id']});
+        let vouchers = [];
+        if (project !== null) {
+            logger.info("Project found: " + project.id);
+            vouchers = await Voucher.findAll({ where: { projectId: project.id }, attributes: ['id'], include: [{
+                model: User,
+                as: 'participant',
+                attributes: ['firstname', 'lastname']
+            }]});
+        }
+        return vouchers;
     },
     /**
      * get Project
@@ -217,7 +225,15 @@ module.exports = {
      * @returns {Registration}
      */
     async getProject(userId) {
-        return await Project.findOne({ where: { ownerId: userId } });
+        // own project
+        let project = await Project.findOne({ where: { ownerId: userId }});
+
+        if (project === null) {
+            const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId']});
+            logger.info("Project found: " + voucher.projectId);
+            project = await Project.findByPk(voucher.projectId);
+        }
+        return project;
     },   
     /**
      * Check if email adress exists in User records table
