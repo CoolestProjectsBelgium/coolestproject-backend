@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'projectId',
       constraints: false
     })
+    Project.hasMany(models.Voucher)
   };
   return Project;
 };

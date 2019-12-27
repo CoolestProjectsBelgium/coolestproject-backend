@@ -123,6 +123,7 @@ module.exports = {
      */
     async updateProject(changedFields, userId) {
         var project = await Project.findOne({ where: { ownerId: userId }});
+        var result = project.update(changedFields);
         if(result === false){
             throw new Error('Update failed');
         }
@@ -226,13 +227,29 @@ module.exports = {
      * @returns {Registration}
      */
     async getProject(userId) {
-        // own project
-        let project = await Project.findOne({ where: { ownerId: userId }});
-
+        // first look for project
+        let project = await Project.findOne({ where: { ownerId: userId }, include: [{
+            model: Voucher
+        }]});
+        const vouchers = await project.getVouchers({include: [{
+            model: User,
+            as: 'participant',
+            attributes: ['firstname', 'lastname']
+        }]});
+        logger.info('vouchers: ' + JSON.stringify(vouchers[0]));
         if (project === null) {
+            // check for participant
             const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId']});
-            logger.info("Project found: " + voucher.projectId);
-            project = await Project.findByPk(voucher.projectId);
+            if (voucher !== null) {
+                logger.info("Project found: " + voucher.projectId);
+                project = await Project.findByPk(voucher.projectId, {
+                    include: [{
+                        model: User,
+                        as: 'participant',
+                        attributes: ['firstname', 'lastname']
+                    }]
+                });
+            }
         }
         return project;
     },   

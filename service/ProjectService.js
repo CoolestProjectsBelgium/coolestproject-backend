@@ -18,6 +18,7 @@ exports.projectinfoGET = function(loginToken) {
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);
       var project = await dba.getProject(token.id);
+      logger.info("participant:"+project);
       if (project !== null) {
         resolve({
           project_name: project.project_name,
@@ -52,7 +53,13 @@ exports.projectinfoPATCH = function(loginToken, project) {
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var p = await dba.updateProject(project, token.id);
-      resolve(p);
+      resolve({
+        project_name: p.project_name,
+        project_descr: p.project_descr,
+        project_type: p.project_type,
+        project_lang: p.project_lang,
+        own_project: (token.id === p.ownerId)
+      });
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
