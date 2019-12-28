@@ -391,6 +391,10 @@ definitions:
       project_name:
         type: "string"
         maxLength: 100
+      project_code:
+        type: "string"
+        maxLength: 36
+        minLength: 36
       project_descr:
         type: "string"
         maxLength: 4000

@@ -12,7 +12,7 @@ const Registration = models.Registration;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 
-const MAX_VOUCHERS = 2
+const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0
 
 module.exports = {
     /**
@@ -184,6 +184,7 @@ module.exports = {
         }
 
         await voucher.setParticipant(userId, { transaction: transaction });
+        await transaction.commit();
 
         return await voucher.getParticipant();
     },
@@ -227,28 +228,28 @@ module.exports = {
      * @returns {Registration}
      */
     async getProject(userId) {
-        // first look for project
-        let project = await Project.findOne({ where: { ownerId: userId }, include: [{
-            model: Voucher
-        }]});
-        const vouchers = await project.getVouchers({include: [{
-            model: User,
-            as: 'participant',
-            attributes: ['firstname', 'lastname']
-        }]});
-        logger.info('vouchers: ' + JSON.stringify(vouchers[0]));
+        // first look for own project
+        let project = await Project.findOne({ where: { ownerId: userId }, include: [
+            { model: Voucher, 
+                include: [
+                    { model: User, as: 'participant', attributes: ['firstname', 'lastname'] }
+                ] 
+            },
+            { model: User, as: 'owner', attributes: ['firstname', 'lastname'] } 
+        ]});
+        // check other project via voucher
         if (project === null) {
-            // check for participant
             const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId']});
             if (voucher !== null) {
                 logger.info("Project found: " + voucher.projectId);
-                project = await Project.findByPk(voucher.projectId, {
-                    include: [{
-                        model: User,
-                        as: 'participant',
-                        attributes: ['firstname', 'lastname']
-                    }]
-                });
+                project = await Project.findByPk(voucher.projectId, { include: [
+                    { model: Voucher, 
+                        include: [
+                            { model: User, as: 'participant', attributes: ['firstname', 'lastname'] }
+                        ] 
+                    },
+                { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
+                ]});
             }
         }
         return project;

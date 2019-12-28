@@ -5,6 +5,39 @@ const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../service/DBService');
 
+async function getProjectDetails (userId) {
+  var project = await dba.getProject(userId);
+  logger.info("participant:" + project);
+  if (project !== null) {
+    var projectResult = {
+      project_name: project.project_name,
+      project_descr: project.project_descr,
+      project_type: project.project_type,
+      project_lang: project.project_lang,
+      own_project: (userId === project.ownerId),
+      participants: []
+    }
+    // list vouchers & display participants
+    project.Vouchers.forEach((voucher) => {
+      let line = {}      
+      if (voucher.participant) {
+        line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
+      } else {
+        line.id = voucher.id;
+      }
+      projectResult.participants.push(line);
+    })
+    // owner if you are not the owner
+    if (project.owner) {
+      projectResult.project_owner = project.owner.firstname + ' ' + project.owner.lastname;
+    }
+    // count remaining tokens
+    projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
+
+    return projectResult;
+  }
+}
+
 /**
  * Get project based on id
  *
@@ -14,23 +47,10 @@ var dba = require('../service/DBService');
 exports.projectinfoGET = function(loginToken) {
   return new Promise(async function(resolve, reject) {
     try {
-      logger.info("LoginToken:"+loginToken);
+      logger.info("LoginToken:" + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);
-      var project = await dba.getProject(token.id);
-      logger.info("participant:"+project);
-      if (project !== null) {
-        resolve({
-          project_name: project.project_name,
-          project_descr: project.project_descr,
-          project_type: project.project_type,
-          project_lang: project.project_lang,
-          own_project: (token.id === project.ownerId)
-        });
-      } else {
-        // no project found
-        resolve();
-      }
+      resolve(getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -52,14 +72,8 @@ exports.projectinfoPATCH = function(loginToken, project) {
       logger.info('LoginToken: '+loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
-      var p = await dba.updateProject(project, token.id);
-      resolve({
-        project_name: p.project_name,
-        project_descr: p.project_descr,
-        project_type: p.project_type,
-        project_lang: p.project_lang,
-        own_project: (token.id === p.ownerId)
-      });
+      await dba.updateProject(project, token.id);
+      resolve(await getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -81,8 +95,12 @@ exports.projectinfoPOST = function(loginToken, project) {
       logger.info('LoginToken: '+loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
-      var p = await dba.createProject(project, token.id);
-      resolve(p);
+      if(project.project_code){
+        await dba.addParticipantProject(token.id, project.project_code);
+      } else {
+        await dba.createProject(project, token.id);
+      }
+      resolve(await getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
