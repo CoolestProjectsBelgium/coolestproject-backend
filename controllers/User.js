@@ -13,7 +13,6 @@ module.exports.userinfoGET = function userinfoGET (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-
 module.exports.userinfoPATCH = function userinfoPATCH (req, res, next) {
   var loginToken = req.headers.api_key;
   var user = req.swagger.params['user'].value;
@@ -25,7 +24,6 @@ module.exports.userinfoPATCH = function userinfoPATCH (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-
 module.exports.userinfoDELETE = function userinfoDELETE (req, res, next) {
   var loginToken = req.headers.api_key;
   User.userinfoDELETE(loginToken)
