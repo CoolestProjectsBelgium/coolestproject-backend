@@ -13,13 +13,4 @@ module.exports.participantPOST = function participantPOST (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-module.exports.participantGET = function participantGET (req, res, next) {
-  var loginToken = req.headers.api_key;
-  Participant.participantGET(loginToken)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
+

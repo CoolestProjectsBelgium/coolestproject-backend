@@ -47,25 +47,7 @@ paths:
             $ref: "#/definitions/Error"
       security:
       - loginToken: []
-      x-swagger-router-controller: "Participant"
-    get:
-      tags:
-      - "project"
-      summary: "get participant"
-      operationId: "participantGET"
-      parameters: []
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Participant"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-      - loginToken: []
-      x-swagger-router-controller: "Participant"                  
+      x-swagger-router-controller: "Participant"              
   /userinfo:
     get:
       tags:
@@ -407,6 +389,10 @@ definitions:
         - "nl"
         - "fr"
         - "en"
+      participants:
+        type: "array"
+        items:
+          $ref: "#/definitions/Participant"
   Registration:
     type: "object"
     required:
@@ -495,7 +481,7 @@ definitions:
         - "male_large"
         - "male_xl"
         - "male_xxl"
-        - "male_3xl- "
+        - "male_3xl"
       via:
         type: "string"
         maxLength: 200

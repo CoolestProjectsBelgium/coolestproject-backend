@@ -275,6 +275,14 @@ module.exports = {
       }
     );
 
+    await queryInterface.addConstraint(
+      'Projects',
+      ['owner'],
+      {
+        type: 'unique',
+        name: 'ownerId'
+      }
+    );
 
   },
 
