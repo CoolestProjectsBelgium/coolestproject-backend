@@ -13,7 +13,6 @@ module.exports.loginPOST = function loginPOST (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-
 module.exports.mailLoginPOST = function mailLoginPOST (req, res, next) {
   var registration = req.swagger.params['login'].value;
   Login.mailLoginPOST(registration)

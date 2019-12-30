@@ -134,6 +134,7 @@ module.exports = {
      * @param {Number} userId 
      */
     async deleteProject(userId) {
+        // one will work
         await Voucher.destroy({ where: { participantId: userId } });
         return await Project.destroy({ where: { ownerId: userId } });
     },
@@ -232,7 +233,7 @@ module.exports = {
         let project = await Project.findOne({ where: { ownerId: userId }, include: [
             { model: Voucher, 
                 include: [
-                    { model: User, as: 'participant', attributes: ['firstname', 'lastname'] }
+                    { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
                 ] 
             },
             { model: User, as: 'owner', attributes: ['firstname', 'lastname'] } 
@@ -245,7 +246,7 @@ module.exports = {
                 project = await Project.findByPk(voucher.projectId, { include: [
                     { model: Voucher, 
                         include: [
-                            { model: User, as: 'participant', attributes: ['firstname', 'lastname'] }
+                            { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
                         ] 
                     },
                 { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }

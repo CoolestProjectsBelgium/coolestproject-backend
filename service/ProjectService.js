@@ -6,7 +6,8 @@ const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../service/DBService');
 
 async function getProjectDetails (userId) {
-  var project = await dba.getProject(userId);
+  const project = await dba.getProject(userId);
+  const ownProject = (userId === project.ownerId);
   logger.info("participant:" + project);
   if (project !== null) {
     var projectResult = {
@@ -14,14 +15,21 @@ async function getProjectDetails (userId) {
       project_descr: project.project_descr,
       project_type: project.project_type,
       project_lang: project.project_lang,
-      own_project: (userId === project.ownerId),
+      own_project: ownProject,
       participants: []
     }
     // list vouchers & display participants
     project.Vouchers.forEach((voucher) => {
+      // only show participants to non owners
+      if (!ownProject && voucher.participant === null) {
+        return
+      }
       let line = {}      
       if (voucher.participant) {
         line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
+        if (userId === voucher.participant.id) {
+          line.self = true;
+        }
       } else {
         line.id = voucher.id;
       }
@@ -32,7 +40,9 @@ async function getProjectDetails (userId) {
       projectResult.project_owner = project.owner.firstname + ' ' + project.owner.lastname;
     }
     // count remaining tokens
-    projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
+    if (ownProject) {
+      projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
+    }
 
     return projectResult;
   }

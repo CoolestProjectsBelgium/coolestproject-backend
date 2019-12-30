@@ -28,25 +28,4 @@ exports.participantPOST = function(loginToken) {
   })
 }
 
-/**
- * get the participant
- **/
-exports.participantGET = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
-    try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      var v = await dba.getVouchers(token.id);
-      resolve(v);
-    } catch (ex) {
-      logger.error(ex);
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  })
-}
-
 

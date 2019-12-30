@@ -20,8 +20,7 @@ exports.mailLoginPOST = function (login) {
       var users = await dba.getUsersViaMail(login.email);
       for (const user of users) {
         logger.info('user found: ' + user.id);
-
-        // only one token every 15 minutes
+        // only one token every n seconds
         var tokenTime = -1;
         if (user.last_token !== null){
           tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0); 
@@ -53,16 +52,13 @@ exports.loginPOST = function (login) {
     TokenService.validateToken(login.jwt).then(async function (validToken) {
       //token success
       logger.info(validToken)
-
       //check if token is registration or login token
       let userId = -1;
       if (validToken.registrationId) {
         logger.info('registration token found start creation of user & project');
         logger.info(validToken.registrationId);
-
         // get registration
         var registration = await dba.getRegistration(validToken.registrationId);
-
         // no registration found in our table (already created)
         if (registration === null){
           reject(new respondWithCode(500, {
@@ -71,7 +67,6 @@ exports.loginPOST = function (login) {
           }));
           return;
         }
-
         if (registration.project_code) {
           // create user and add to existing project
           var participant = await dba.createUserWithVoucher(
