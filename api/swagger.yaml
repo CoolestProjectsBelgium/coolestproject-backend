@@ -539,3 +539,5 @@ definitions:
         type: "string"
       name:
         type: "string"
+      self:
+        type: "boolean"
