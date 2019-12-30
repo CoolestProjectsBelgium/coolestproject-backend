@@ -22,7 +22,7 @@ exports.mailLoginPOST = function (login) {
         logger.info('user found: ' + user.id);
         // only one token every n seconds
         var tokenTime = -1;
-        if (user.last_token !== null){
+        if (user.last_token !== null) {
           tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0); 
         }
         if (new Date() > tokenTime) {

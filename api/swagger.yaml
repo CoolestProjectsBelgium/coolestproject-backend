@@ -10,6 +10,18 @@ tags:
 - name: "login"
 - name: "user"
 paths:
+  /settings:
+    get:
+      tags:
+      - "settings"
+      summary: "Get settings"
+      operationId: "settingsGET"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Settings"
+      x-swagger-router-controller: "Settings"
   /register:
     post:
       tags:
@@ -204,14 +216,6 @@ paths:
       responses:
         200:
           description: "OK"
-          headers:
-            X-CSRF-Token:
-              type: "string"
-              description: "CSRF token required for state changes, valid for the whole\
-                \ session"
-            Set-Cookie:
-              type: "string"
-              description: "http only session cookie"
           schema:
             $ref: "#/definitions/Login"
       x-swagger-router-controller: "Login"
@@ -541,3 +545,18 @@ definitions:
         type: "string"
       self:
         type: "boolean"
+  Settings:
+    type: "object"
+    properties:
+      startDateEvent:
+        type: "string"
+        format: "date"
+      maxAge:
+        type: "number"
+      minAge:
+        type: "number"
+      guardianAge:
+        type: "number"
+      tshirtDate:
+        type: "string"
+        format: "date"
