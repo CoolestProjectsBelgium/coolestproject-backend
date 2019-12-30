@@ -53,9 +53,19 @@ exports.userinfoGET = function(loginToken) {
 exports.userinfoPATCH = function(loginToken, user) {
   return new Promise(async function(resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
+      logger.info('LoginToken: ' + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
+
+      // remove fields that are not allowed to change (be paranoid)
+      delete user.email;
+      delete user.mandatory_approvals;
+
+      // remove non editable fields after specific date
+      if (new Date(process.env.TSHIRT_DATE) < new Date()) {
+        delete user.t_size;
+      }
+      
       var u = await dba.updateUser(user, token.id);
       resolve(u);
     } catch (ex) {

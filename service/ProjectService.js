@@ -24,15 +24,12 @@ async function getProjectDetails (userId) {
       if (!ownProject && voucher.participant === null) {
         return
       }
-
       let line = {}      
       if (voucher.participant) {
         line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
-
         if (userId === voucher.participant.id) {
           line.self = true;
         }
-
       } else {
         line.id = voucher.id;
       }
