@@ -346,7 +346,7 @@ definitions:
         - "male_large"
         - "male_xl"
         - "male_xxl"
-        - "male_3xl- "
+        - "male_3xl"
       gsm_guardian:
         type: "string"
         example: "+32460789101"

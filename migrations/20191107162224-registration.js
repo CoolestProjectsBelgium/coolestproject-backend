@@ -277,7 +277,7 @@ module.exports = {
 
     await queryInterface.addConstraint(
       'Projects',
-      ['owner'],
+      ['ownerId'],
       {
         type: 'unique',
         name: 'ownerId'
