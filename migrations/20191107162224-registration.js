@@ -280,7 +280,7 @@ module.exports = {
       ['ownerId'],
       {
         type: 'unique',
-        name: 'ownerId'
+        name: 'owner'
       }
     );
 

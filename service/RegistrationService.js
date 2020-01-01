@@ -26,7 +26,7 @@ exports.registerPOST = function (registration) {
      * 3) check if the registration is for a minor (extra approval flow via guardian email)
      **/
     try {
-      // for the moment we allow to register with a duplicate email (we want to keep an overview)
+      // Check if email exists if so ignore registration
       if (!(await dba.doesEmailExists(registration.email))) {
         const register = await dba.createRegistration(registration);     
         const registrationToken = await TokenService.generateRegistrationToken(register.id);

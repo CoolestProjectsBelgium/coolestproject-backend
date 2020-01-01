@@ -6,8 +6,7 @@ const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../service/DBService');
 
 /**
- * update the participant
- *
+ * Create Voucher for participant
  * returns Voucher
  **/
 exports.participantPOST = function(loginToken) {
