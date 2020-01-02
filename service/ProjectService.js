@@ -16,9 +16,11 @@ async function getProjectDetails (userId) {
       project_type: project.project_type,
       project_lang: project.project_lang,
       own_project: ownProject,
-      participants: []
+      participants: [],
+      delete_possible: true
     }
     // list vouchers & display participants
+    var assignedTokens = 0;
     project.Vouchers.forEach((voucher) => {
       // only show participants to non owners
       if (!ownProject && voucher.participant === null) {
@@ -30,6 +32,7 @@ async function getProjectDetails (userId) {
         if (userId === voucher.participant.id) {
           line.self = true;
         }
+        assignedTokens++;
       } else {
         line.id = voucher.id;
       }
@@ -43,6 +46,9 @@ async function getProjectDetails (userId) {
     if (ownProject) {
       projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
     }
+
+    //delete is not possible when there are participants & it's your own project
+    projectResult.delete_possible = ( ownProject && (assignedTokens === 0) ) || !ownProject;
 
     return projectResult;
   }

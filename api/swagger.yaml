@@ -367,6 +367,8 @@ definitions:
       extra:
         type: "string"
         maxLength: 500
+      delete_possible:
+        type: "boolean"
   Project:
     type: "object"
     properties:
@@ -397,6 +399,8 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Participant"
+      delete_possible:
+        type: "boolean"
   Registration:
     type: "object"
     required:

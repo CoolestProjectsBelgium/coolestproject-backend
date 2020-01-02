@@ -16,7 +16,7 @@ exports.participantPOST = function(loginToken) {
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var v = await dba.createVoucher(token.id);
-      resolve(v);
+      resolve(null);
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
