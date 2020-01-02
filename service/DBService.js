@@ -178,7 +178,7 @@ module.exports = {
         var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
         logger.info("Project found: " + project.id);
 
-        var totalVouchers = await Voucher.count({ where: { projectId: project.id, participantId: null } });
+        var totalVouchers = await Voucher.count({ where: { projectId: project.id } });
         if (totalVouchers >= MAX_VOUCHERS) {
             throw new Error('Max token reached');
         }
