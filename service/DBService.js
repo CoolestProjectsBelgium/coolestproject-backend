@@ -84,7 +84,6 @@ module.exports = {
      */
     async updateUser(changedFields, userId) {
         var user = await User.findByPk(userId);
-        console.log(changedFields);
         var result = await user.update(changedFields);
         if(result === false){
             throw new Error('Update failed');
@@ -105,6 +104,14 @@ module.exports = {
      * @param {Number} userId 
      */
     async deleteUser(userId) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        if(project !== null) {
+            logger.info("Project found: " + project.id);
+            var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
+            if (usedVoucher > 0) {
+                throw new Error('Delete not possible tokens in use');
+            }
+        }
         return await User.destroy({ where: { id: userId } });
     },
     /**
@@ -129,14 +136,38 @@ module.exports = {
         }
         return result;
     },
+    async isUserDeletable(userId) {
+        var result = true;
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        if(project !== null) {
+            logger.info("Project found: " + project.id);
+            var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
+            if (usedVoucher > 0) {
+                result = false;
+            }
+        }
+        return result
+    },
     /**
      * Delete a project
      * @param {Number} userId 
      */
     async deleteProject(userId) {
-        // one will work
-        await Voucher.destroy({ where: { participantId: userId } });
-        return await Project.destroy({ where: { ownerId: userId } });
+        // delete project or voucher
+        // only possible when there are no used vouchers
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        if(project !== null) {
+            logger.info("Project found: " + project.id);
+            var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
+            if (usedVoucher > 0) {
+                throw new Error('Delete not possible tokens in use');
+            }
+            // delete project
+            await Project.destroy({ where: { ownerId: userId } });
+        } else {
+            // delete voucher
+            await Voucher.destroy({ where: { participantId: userId } });
+        }
     },
     /**
      * Create a voucher for a project

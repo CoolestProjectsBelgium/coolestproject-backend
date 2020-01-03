@@ -1,5 +1,7 @@
 'use strict';
 
+const addYears = require('date-fns/addYears')
+const parseISO = require('date-fns/parseISO')
 const logger = require('pino')()
 const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
@@ -18,6 +20,7 @@ exports.userinfoGET = function(loginToken) {
       logger.info('user id:' + token.id);
 
       var user = await dba.getUser(token.id);
+
       resolve({
         language: user.language,
         firstname: user.firstname,
@@ -33,7 +36,8 @@ exports.userinfoGET = function(loginToken) {
         postalcode: user.postalcode,
         extra: user.extra,
         email: user.email,
-        email_guardian: user.email_guardian });
+        email_guardian: user.email_guardian,
+        delete_possible: await dba.isUserDeletable(user.id) });
 
     } catch (ex) {
       logger.error(ex);
@@ -62,12 +66,37 @@ exports.userinfoPATCH = function(loginToken, user) {
       delete user.mandatory_approvals;
 
       // remove non editable fields after specific date
-      if (new Date(process.env.TSHIRT_DATE) < new Date()) {
+      if (parseISO(process.env.TSHIRT_DATE) < new Date()) {
+        logger.info('tshirt date is passed');
         delete user.t_size;
       }
       
+      // cleanup guardian fields when not needed anymore
+      const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
+      if (minGuardian < user.birthmonth) { 
+        logger.info('remove guardian information');
+        user.gsm_guardian = null;
+        user.email_guardian = null;
+      }
       var u = await dba.updateUser(user, token.id);
-      resolve(u);
+      resolve({
+        general_questions: u.general_questions,
+        mandatory_approvals: u.mandatory_approvals,
+        language: u.language,
+        postalcode: u.postalcode,
+        email: u.email,
+        firstname: u.firstname,
+        lastname: u.lastname,
+        sex: u.sex,
+        birthmonth: u.birthmonth,
+        t_size: u.t_size,
+        via: u.via,
+        medical: u.medical,
+        extra: u.extra,
+        gsm: u.gsm,
+        gsm_guardian: u.gsm_guardian,
+        email_guardian: u.email_guardian
+      });
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -89,6 +118,7 @@ exports.userinfoDELETE = function(loginToken) {
       logger.info('LoginToken: '+loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
+
       var u = await dba.deleteUser(token.id);
       resolve(u);
     } catch (ex) {
