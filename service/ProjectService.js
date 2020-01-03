@@ -7,9 +7,9 @@ var dba = require('../service/DBService');
 
 async function getProjectDetails (userId) {
   const project = await dba.getProject(userId);
-  const ownProject = (userId === project.ownerId);
-  logger.info("participant:" + project);
   if (project !== null) {
+    const ownProject = (userId === project.ownerId);
+    logger.info("participant:" + project);
     var projectResult = {
       project_name: project.project_name,
       project_descr: project.project_descr,
@@ -60,7 +60,7 @@ exports.projectinfoGET = function(loginToken) {
       logger.info("LoginToken:" + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);
-      resolve(getProjectDetails(token.id));
+      resolve(await getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
