@@ -112,8 +112,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     via: DataTypes.STRING,
-    medical: DataTypes.STRING,
-    extra: DataTypes.STRING,    
+    medical: DataTypes.STRING,    
     gsm: {
       type: DataTypes.STRING(13), 
       defaultValue: null

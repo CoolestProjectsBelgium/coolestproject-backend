@@ -67,9 +67,6 @@ module.exports = {
       medical: {
         type: Sequelize.STRING
       },
-      extra: {
-        type: Sequelize.STRING
-      },
       project_code: {
         type: Sequelize.UUID
       },
@@ -162,9 +159,6 @@ module.exports = {
         type: Sequelize.STRING
       },
       medical: {
-        type: Sequelize.STRING
-      },
-      extra: {
         type: Sequelize.STRING
       },
       gsm: {

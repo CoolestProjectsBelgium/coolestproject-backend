@@ -110,7 +110,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     via: DataTypes.STRING,
     medical: DataTypes.STRING,
-    extra: DataTypes.STRING,
     project_code: {
       type: DataTypes.UUID,
       defaultValue: null

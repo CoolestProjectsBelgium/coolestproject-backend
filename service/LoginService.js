@@ -34,10 +34,11 @@ exports.mailLoginPOST = function (login) {
           logger.info('Token requested but time is not passed yet: ' + user.email);
         }
       }
+      resolve();
     } catch (ex){
       logger.error(ex);
+      reject(new respondWithCode(500, { code: 0, message: 'Backend error' }));
     }
-    resolve();
   });
 }
 /**
@@ -83,7 +84,6 @@ exports.loginPOST = function (login) {
               t_size: registration.t_size,
               via: registration.via,
               medical: registration.medical,
-              extra: registration.medical,
               gsm_guardian: registration.gsm_guardian,
               email_guardian: registration.email_guardian,
               general_questions: registration.general_questions
@@ -109,7 +109,6 @@ exports.loginPOST = function (login) {
               t_size: registration.t_size,
               via: registration.via,
               medical: registration.medical,
-              extra: registration.medical,
               gsm_guardian: registration.gsm_guardian,
               email_guardian: registration.email_guardian,
               general_questions: registration.general_questions,

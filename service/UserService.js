@@ -34,7 +34,6 @@ exports.userinfoGET = function(loginToken) {
         via: user.via,
         birthmonth: user.birthmonth,
         postalcode: user.postalcode,
-        extra: user.extra,
         email: user.email,
         email_guardian: user.email_guardian,
         delete_possible: await dba.isUserDeletable(user.id) });
@@ -92,7 +91,6 @@ exports.userinfoPATCH = function(loginToken, user) {
         t_size: u.t_size,
         via: u.via,
         medical: u.medical,
-        extra: u.extra,
         gsm: u.gsm,
         gsm_guardian: u.gsm_guardian,
         email_guardian: u.email_guardian
