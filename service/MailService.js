@@ -20,7 +20,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      send: (env === 'production') ? true: false, // This opens the browser to show the mail
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
@@ -45,12 +45,12 @@ module.exports = {
     return result;
   },
   async loginMail(user,token) {
-      console.log("Login requested from "+user.email)
+      console.log("Login requested sent to "+user.email+" env:"+env)
       const email = new Email({
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      send: (env === 'production') ? true: false, // This opens the browser to show the mail
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
@@ -77,7 +77,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail ....
+      send: (env === 'production') ? true: false, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],

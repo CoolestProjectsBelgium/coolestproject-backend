@@ -29,7 +29,7 @@ exports.mailLoginPOST = function (login) {
           // generate new token for user
           await dba.updateLastToken(user);
           const token = await TokenService.generateLoginToken(user.id);
-          MailService.loginMail(user, token);
+          await MailService.loginMail(user, token);
         } else {
           logger.info('Token requested but time is not passed yet: ' + user.email);
         }
