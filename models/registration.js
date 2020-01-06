@@ -114,6 +114,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: null
     },
+    waiting_list: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     project_name: {
       type: DataTypes.STRING(100),
       defaultValue: null

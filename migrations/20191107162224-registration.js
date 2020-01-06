@@ -90,6 +90,9 @@ module.exports = {
       },
       email_guardian: {
         type: Sequelize.STRING(254)
+      },
+      waiting_list: {
+        type: Sequelize.BOOLEAN
       }
     });
 
