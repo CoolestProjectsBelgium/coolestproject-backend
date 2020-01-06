@@ -250,6 +250,12 @@ definitions:
       expires:
         type: "string"
         format: "date-time"
+      language:
+        type: "string"
+        enum:
+        - "nl"
+        - "fr"
+        - "en"
     example:
       expires: "2000-01-23T04:56:07.000+00:00"
       api_key: "api_key"

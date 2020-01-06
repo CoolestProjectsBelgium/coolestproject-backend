@@ -138,7 +138,7 @@ exports.loginPOST = function (login) {
         MailService.welcomeMailOwner(owner, token);
       }
 
-      resolve({ api_key: token, expires: addSeconds(new Date(),  process.env.TOKEN_VALID_TIME || 0) });
+      resolve({ api_key: token, expires: addSeconds(new Date(),  process.env.TOKEN_VALID_TIME || 0), language: await dba.getUser(userId).language });
     })
       .catch(function (response) {
         //token failed
