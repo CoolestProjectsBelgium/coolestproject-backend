@@ -8,6 +8,9 @@ const path = require('path');
 const transport = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
+  debug: true,
+  authMethod: 'LOGIN',
+  requiredTLS: true,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
