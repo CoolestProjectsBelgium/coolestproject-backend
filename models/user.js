@@ -140,9 +140,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       guardianRequirement() {
         const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
-        console.log(minGuardian)
+        console.log("minGuardian:"+minGuardian+"this.birthmonth:"+parseISO(this.birthmonth))
         // check if guardian information is filled in
-        if (minGuardian > this.birthmonth) { 
+        if (minGuardian < parseISO(this.birthmonth)) { 
           if ( this.gsm_guardian === null || this.email_guardian === null ){
             throw new Error('You need guardian information');
           }

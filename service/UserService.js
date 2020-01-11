@@ -17,8 +17,7 @@ exports.userinfoGET = function(loginToken) {
     try {
       logger.info("LoginToken:"+loginToken);
       var token = await TokenService.validateToken(loginToken);
-      logger.info('user id:' + token.id);
-
+      logger.info('user id:' + token.id);     
       var user = await dba.getUser(token.id);
 
       resolve({
@@ -72,7 +71,8 @@ exports.userinfoPATCH = function(loginToken, user) {
       
       // cleanup guardian fields when not needed anymore
       const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
-      if (minGuardian < user.birthmonth) { 
+      console.log("minGuardian:"+minGuardian+"this.birthmonth:"+parseISO(user.birthmonth))
+      if (minGuardian > parseISO(user.birthmonth)) { 
         logger.info('remove guardian information');
         user.gsm_guardian = null;
         user.email_guardian = null;
