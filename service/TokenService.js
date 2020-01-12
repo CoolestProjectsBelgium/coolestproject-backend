@@ -5,14 +5,14 @@ var jwt = require('jsonwebtoken');
 module.exports = {
     async generateRegistrationToken(id) {
         const token = jwt.sign({ registrationId: id }, process.env.SECRET_KEY, {
-            expiresIn: Math.floor(Date.now() / 1000) + (process.env.TOKEN_VALID_TIME || 0),
+            expiresIn: Math.floor(Date.now() / 1000) + Number.parseInt(process.env.TOKEN_VALID_TIME),
         });
         return token;
     },
     async generateLoginToken(userId) {
         const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, {            
             iat: Math.floor(Date.now() / 1000) - 30, // backdate 30 seconds
-            expiresIn: Math.floor(Date.now() / 1000) + (process.env.TOKEN_VALID_TIME || 0),
+            expiresIn: Math.floor(Date.now() / 1000) + Number.parseInt(process.env.TOKEN_VALID_TIME),
         });
         return token;
     },
