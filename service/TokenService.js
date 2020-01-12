@@ -6,7 +6,7 @@ module.exports = {
     async generateRegistrationToken(id) {
         const token = jwt.sign({
             exp: Math.floor(Date.now() / 1000) + Number.parseInt(process.env.TOKEN_VALID_TIME),
-            data: { registrationId: id }
+            registrationId: id
         }, process.env.SECRET_KEY)
         return token;
     },
@@ -14,7 +14,7 @@ module.exports = {
         const token = jwt.sign({
             exp: Math.floor(Date.now() / 1000) + Number.parseInt(process.env.TOKEN_VALID_TIME),
             iat: Math.floor(Date.now() / 1000) - 30, // backdate 30 seconds
-            data: { id: userId }
+            id: userId
         }, process.env.SECRET_KEY)
         return token;
     },
