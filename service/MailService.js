@@ -8,6 +8,9 @@ const path = require('path');
 const transport = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
+ // debug: true,
+ // authMethod: 'LOGIN',
+ // requiredTLS: true,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
@@ -77,7 +80,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'production') ? true: false, // This opens the browser to show the mail ....
+      send: (env === 'development') ? true: false, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],

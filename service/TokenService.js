@@ -19,7 +19,7 @@ module.exports = {
         return new Promise(function(resolve, reject){
             jwt.verify(token, process.env.SECRET_KEY, function(err, decoded) {
                 if (err) {
-                    reject({ auth: false, message: 'Failed to authenticate token.' });
+                    reject({ auth: false, message: 'Failed to authenticate token in TokenService.js.' });
                 } else {
                     resolve(decoded);
                 }
