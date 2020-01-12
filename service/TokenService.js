@@ -10,7 +10,8 @@ module.exports = {
         return token;
     },
     async generateLoginToken(userId) {
-        const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ id: userId }, process.env.SECRET_KEY, {            
+            iat: Math.floor(Date.now() / 1000) - 30, // backdate 30 seconds
             expiresIn: Math.floor(Date.now() / 1000) + (process.env.TOKEN_VALID_TIME || 0),
         });
         return token;
