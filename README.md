@@ -84,4 +84,10 @@ npx sequelize db:migrate
 * config: folder with DB config file
 * test: some testscripts
 * migrations: DB migration files
-  
+
+## Run migrations
+```bash
+export DB=mysql://coolestproject:***@***/coolestproject
+npx sequelize db:migrate
+npx sequelize db:migrate:undo
+```
