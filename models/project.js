@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     project_descr: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.STRING(4000),
       allowNull: false
     },
     project_type: {
