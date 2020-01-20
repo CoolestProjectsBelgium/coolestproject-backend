@@ -91,3 +91,8 @@ export DB=mysql://coolestproject:***@***/coolestproject
 npx sequelize db:migrate
 npx sequelize db:migrate:undo
 ```
+
+## Running the admin part of the application
+```bash
+npm run admin
+```
