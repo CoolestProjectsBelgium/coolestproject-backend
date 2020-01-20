@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node index.js",
+    "admin": "node -r dotenv/config admin_index.js",
     "dev": "nodemon -r dotenv/config index.js",
     "dev2": "node -r dotenv/config index.js"
   },
@@ -15,10 +16,15 @@
   "license": "MIT License",
   "private": true,
   "dependencies": {
+    "admin-bro": "^1.6.0",
+    "admin-bro-expressjs": "^0.4.0",
+    "admin-bro-sequelizejs": "^0.3.0",
     "connect": "^3.2.0",
     "date-fns": "^2.8.1",
     "dotenv": "^8.2.0",
     "email-templates": "^6.0.3",
+    "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
     "i18n": "^0.8.4",
     "js-yaml": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
