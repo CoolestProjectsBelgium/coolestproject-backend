@@ -53,7 +53,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail
+      send: true, // This opens the browser to show the mail
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
@@ -80,7 +80,7 @@ module.exports = {
       message: {
         from: process.env.EMAIL,
       },
-      send: (env === 'development') ? true: false, // This opens the browser to show the mail ....
+      send: true, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
         locales:['en', 'nl', 'fr'],
