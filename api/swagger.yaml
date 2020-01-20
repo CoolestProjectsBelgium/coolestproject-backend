@@ -542,3 +542,5 @@ definitions:
       tshirtDate:
         type: "string"
         format: "date"
+      enviroment:
+        type: "string"

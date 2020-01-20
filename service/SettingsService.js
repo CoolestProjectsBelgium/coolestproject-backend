@@ -15,7 +15,8 @@ exports.settingsGET = function() {
             maxAge: process.env.MAX_AGE || 0,
             minAge: process.env.MIN_AGE || 0,
             guardianAge: process.env.GUARDIAN_AGE || 0,
-            tshirtDate: new Date(process.env.TSHIRT_DATE)
+            tshirtDate: new Date(process.env.TSHIRT_DATE),
+            enviroment: process.env.NODE_ENV
         });
     })
 }
