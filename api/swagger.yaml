@@ -358,7 +358,7 @@ definitions:
         maxLength: 200
       medical:
         type: "string"
-        maxLength: 500
+        maxLength: 255
       delete_possible:
         type: "boolean"
   Project:
@@ -476,7 +476,7 @@ definitions:
         maxLength: 200
       medical:
         type: "string"
-        maxLength: 500
+        maxLength: 255
       project_name:
         type: "string"
         maxLength: 100
