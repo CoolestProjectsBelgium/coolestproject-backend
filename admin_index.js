@@ -30,7 +30,7 @@ const adminBroOptions = {
       options: {
         properties: {
           createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
+          updatedAt: { isVisible: { list: false } },
         }
       } 
     },
@@ -39,7 +39,9 @@ const adminBroOptions = {
       options: {
         properties: {
           createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
+          updatedAt: { isVisible: { list: false } },
+          mandatory_approvals: { isVisible: false },
+          general_questions: { isVisible: false }
         }
       } 
     },
@@ -53,8 +55,8 @@ const adminBroOptions = {
           id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
-          general_questions: { isVisible: { list: false } },
-          mandatory_approvals: { isVisible: { list: false } }
+          general_questions: { isVisible: false },
+          mandatory_approvals: { isVisible: false }
         }
       } 
     }
@@ -64,6 +66,6 @@ const adminBro = new AdminBro(adminBroOptions)
 
 const router = AdminBroExpress.buildRouter(adminBro)
 
-var serverPort = process.env.PORT || 8080;
+var serverPort = process.env.PORT || 8081;
 app.use(adminBro.options.rootPath, router)
 app.listen(serverPort, () => console.log('Running server'))
