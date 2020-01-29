@@ -56,7 +56,15 @@ const adminBroOptions = {
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
           general_questions: { isVisible: false },
-          mandatory_approvals: { isVisible: false }
+          mandatory_approvals: { isVisible: false },
+          photo_allowed: {
+            components: {
+              show: AdminBro.bundle('./admin_components/photos_allowed')
+            },
+            isVisible: {
+              show: true, view: false, edit: false, filter: false,
+            }
+          }
         }
       } 
     }
