@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null,
     },
     internalu: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(1000),
       defaultValue: null
     }, 
   }, {

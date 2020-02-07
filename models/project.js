@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     internalp: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(1000),
       defaultValue: null
     }, 
     project_lang: {
