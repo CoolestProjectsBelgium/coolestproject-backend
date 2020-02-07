@@ -49,9 +49,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     general_questions: {
-      type: DataTypes.JSON,
+      type: DataTypes.STRING(50),
       get() {
-        return JSON.parse(this.getDataValue('general_questions'));
+        try{
+          return JSON.parse(this.getDataValue('general_questions'));
+        } catch (error) {
+          return null;    
+        }
+        
       },
       set(value) {
         this.setDataValue('general_questions', JSON.stringify(value));
@@ -68,9 +73,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     mandatory_approvals: {
       allowNull: false,
-      type: DataTypes.JSON,
+      type: DataTypes.STRING(10),
       get() {
-        return JSON.parse(this.getDataValue('mandatory_approvals'));
+        try{
+          return JSON.parse(this.getDataValue('mandatory_approvals'));
+        } catch (error) {
+          return null;    
+        }
       },
       set(value) {
         this.setDataValue('mandatory_approvals', JSON.stringify(value));

@@ -24,6 +24,7 @@
     "dotenv": "^8.2.0",
     "email-templates": "^6.0.3",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
     "express-formidable": "^1.2.0",
     "i18n": "^0.8.4",
     "js-yaml": "^3.3.0",

@@ -88,7 +88,7 @@ npx sequelize db:migrate
 ## Run migrations
 ```bash
 export DB=mysql://coolestproject:***@***/coolestproject
-npx sequelize db:migrate
+npx sequelize db:migrate 
 npx sequelize db:migrate:undo
 ```
 

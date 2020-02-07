@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: true
     },
+    internalp: {
+      type: DataTypes.STRING(100),
+      defaultValue: null
+    }, 
     project_lang: {
       type: DataTypes.ENUM('nl','fr','en'),
       validate: {

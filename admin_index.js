@@ -9,6 +9,12 @@ const express = require('express')
 const app = express()
 
 const db = require('./models');
+
+const reportParent = {
+  name: 'Reporting',
+  icon: 'fa fa-stream',
+}
+
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
@@ -17,11 +23,12 @@ const adminBroOptions = {
   },
   resources: [
     { 
-      resource: db.Voucher, 
+      resource: db.Registration, 
       options: {
         properties: {
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } }
+
         }
       } 
     },
@@ -29,19 +36,10 @@ const adminBroOptions = {
       resource: db.Project, 
       options: {
         properties: {
+          internalp: { type: 'richtext' },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
-        }
-      } 
-    },
-    { 
-      resource: db.Registration, 
-      options: {
-        properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-          mandatory_approvals: { isVisible: false },
-          general_questions: { isVisible: false }
+          internalp: { type: 'richtext' }
         }
       } 
     },
@@ -51,12 +49,81 @@ const adminBroOptions = {
         properties: {
           via: { type: 'richtext' },
           medical: { type: 'richtext' },
+          internalu: { type: 'richtext' },
           last_token: { isVisible: false },
           id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-          general_questions: { isVisible: false },
-          mandatory_approvals: { isVisible: false }
+          updatedAt: { isVisible: { list: false } }
+
+        }
+      } 
+    },
+    { 
+      resource: db.Voucher, 
+      options: {
+        properties: {
+          createdAt: { isVisible: { list: false } },
+          updatedAt: { isVisible: { list: false } }
+        }
+      } 
+    },
+     { 
+      resource: db.UserProjectView, 
+      options: {
+        name: "Projecten met medewerker",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.UserProjectViewAll, 
+      options: {
+        name: "Alle projecten met/zonder medewerker",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.tshirtsizes, 
+      options: {
+        name: "Aantal T-shirts per maat",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
         }
       } 
     }
@@ -66,6 +133,19 @@ const adminBro = new AdminBro(adminBroOptions)
 
 const router = AdminBroExpress.buildRouter(adminBro)
 
-var serverPort = process.env.PORT || 8081;
+// var serverPort = process.env.PORT || 8081;
+var serverPort = process.env.PORT || 3001;
+
+
+const basicAuth = require('express-basic-auth')
+
+var userList = {};
+userList[process.env.ADMIN_USER] = process.env.ADMIN_PWD;
+
+app.use(basicAuth({
+    users: userList,
+    challenge: true,
+    realm: 'Admin stuff'
+}));
 app.use(adminBro.options.rootPath, router)
 app.listen(serverPort, () => console.log('Running server'))
