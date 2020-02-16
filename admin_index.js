@@ -62,8 +62,15 @@ const adminBroOptions = {
           last_token: { isVisible: false },
           id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-
+          updatedAt: { isVisible: { list: false } },
+          photo_allowed: {
+            components: {
+              show: AdminBro.bundle('./admin_components/photos_allowed')
+            },
+            isVisible: {
+              show: true, view: false, edit: false, filter: false,
+            }
+          }
         }
       } 
     },

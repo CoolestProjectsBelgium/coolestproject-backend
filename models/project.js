@@ -26,17 +26,17 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Project.associate = function(models) {
     Project.belongsTo(models.User, { as: 'owner' });
-   Project.belongsToMany(models.User, {
-      as: 'participant',
-      through: {
-        model: models.Voucher,
-        unique: false
-      },
-      foreignKey: 'participantId',
-      otherKey: 'projectId',
-      constraints: false
+    Project.belongsToMany(models.User, {
+        as: 'participant',
+        through: {
+          model: models.Voucher,
+          unique: false
+        },
+        foreignKey: 'participantId',
+        otherKey: 'projectId',
+        constraints: false
     })
-    Project.hasMany(models.Voucher,{foreignKey: 'projectId'})
+    Project.hasMany(models.Voucher, { foreignKey: 'projectId' })
   };
   return Project;
 };
