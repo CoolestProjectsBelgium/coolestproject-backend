@@ -53,7 +53,8 @@ module.exports = (sequelize, DataTypes) => {
         try{
           return JSON.parse(this.getDataValue('general_questions'));
         } catch (error) {
-          return null;    
+          return null;  
+        //  return JSON.parse(this.getDataValue('general_questions'));  
         }        
       },
       set (value) {
@@ -76,7 +77,8 @@ module.exports = (sequelize, DataTypes) => {
         try{
           return JSON.parse(this.getDataValue('mandatory_approvals'));
         } catch (error) {
-          return null;    
+          return null;
+          //return JSON.parse(this.getDataValue('mandatory_approvals'));
         }
       },
       set (value) {

@@ -25,16 +25,25 @@ const adminBroOptions = {
     { 
       resource: db.Registration, 
       options: {
+        actions: {
+          new: {
+            isVisible: false
+          }
+        },
         properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-
+          // createdAt: { isVisible: { list: false } },
+          // updatedAt: { isVisible: { list: false } }
         }
       } 
     },
     { 
       resource: db.Project, 
       options: {
+        actions: {
+          new: {
+            isVisible: false
+          }
+        },
         properties: {
           internalp: { type: 'richtext' },
           createdAt: { isVisible: { list: false } },
@@ -61,6 +70,14 @@ const adminBroOptions = {
     { 
       resource: db.Voucher, 
       options: {
+        actions: {
+          edit: {
+            isVisible: false
+          },
+          new: {
+            isVisible: false
+          }
+        },
         properties: {
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } }
@@ -111,6 +128,46 @@ const adminBroOptions = {
       resource: db.tshirtsizes, 
       options: {
         name: "Aantal T-shirts per maat",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.sex, 
+      options: {
+        name: "Aantal jongens/meisjes",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.taal, 
+      options: {
+        name: "Aantal talen",
         parent: reportParent,
         actions: {
           new: {
