@@ -63,14 +63,14 @@ const adminBroOptions = {
           id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
-          photo_allowed: {
+         /* photo_allowed: {
             components: {
               show: AdminBro.bundle('./admin_components/photos_allowed')
             },
             isVisible: {
               show: true, view: false, edit: false, filter: false,
             }
-          }
+          } */
         }
       } 
     },
