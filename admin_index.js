@@ -226,7 +226,7 @@ const basicAuth = require('express-basic-auth')
 var userList = {};
 userList[process.env.ADMIN_USER] = process.env.ADMIN_PWD;
 
-app.use(basicAuth({
+app.use('/admin', basicAuth({
     users: userList,
     challenge: true,
     realm: 'Admin stuff'

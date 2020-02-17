@@ -1,1 +1,1 @@
-!function(e,o){"use strict";o=o&&o.hasOwnProperty("default")?o.default:o;AdminBro.UserComponents={},AdminBro.UserComponents.Component1=function(n){var t=n.record;n.property;return o.createElement(e.PropertyInShow,{property:{label:"Photo's",name:"photosAllowed"}},"photo"==t.params["general_questions.0"]&&o.createElement("span",null,"Allowed"),"photo"!=t.params["general_questions.0"]&&o.createElement("span",null,"Not Allowed"))}}(AdminBro,React);
+!function(){"use strict";AdminBro.UserComponents={}}();
