@@ -152,6 +152,26 @@ const adminBroOptions = {
       } 
     },
     { 
+      resource: db.UserNames, 
+      options: {
+        name: "Lijst gebruikers voor naam label",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
       resource: db.sex, 
       options: {
         name: "Aantal jongens/meisjes",
