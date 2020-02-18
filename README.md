@@ -46,6 +46,12 @@ To view the Swagger UI interface:
 open http://localhost:8080/docs
 ```
 
+To view the Admin UI interface:
+
+```bash
+open http://localhost:8080/admin
+```
+
 ## Prepare the development environment
 
 create .env file in the project folder:
@@ -84,15 +90,11 @@ npx sequelize db:migrate
 * config: folder with DB config file
 * test: some testscripts
 * migrations: DB migration files
+* admin: Admin interface
 
 ## Run migrations
 ```bash
 export DB=mysql://coolestproject:***@***/coolestproject
 npx sequelize db:migrate 
 npx sequelize db:migrate:undo
-```
-
-## Running the admin part of the application
-```bash
-npm run admin
 ```
