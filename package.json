@@ -6,7 +6,6 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node index.js",
-    "admin": "node -r dotenv/config admin_index.js",
     "dev": "nodemon -r dotenv/config index.js",
     "dev2": "node -r dotenv/config index.js"
   },
