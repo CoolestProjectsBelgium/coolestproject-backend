@@ -10,10 +10,6 @@ const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 
-// enable admin UI
-const adminUI = require('./admin');
-app.use('/admin', adminUI);
-
 // enable admin security
 const basicAuth = require('express-basic-auth')
 
@@ -25,6 +21,10 @@ app.use('/admin', basicAuth({
     challenge: true,
     realm: 'Admin stuff'
 }));
+
+// enable admin UI
+const adminUI = require('./admin');
+app.use('/admin', adminUI);
 
 //enable i18n
 const i18n = require("i18n")
