@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const Sequelize = require('sequelize');
 const logger = require('pino')()
 
+const Account = models.Account;
 const Project = models.Project;
 const User = models.User;
 const Voucher = models.Voucher;
@@ -122,6 +123,14 @@ module.exports = {
     async createProject(project, userId) {
         project.ownerId = userId;
         return await Project.create(project);
+    },
+    /**
+     * Create a Account (user for admin panel & jury)
+     * @param {Object} account
+     * @returns {Account}
+     */
+    async createAccount(account) {
+        return await Account.create(account);
     },
     /**
      * Update a project

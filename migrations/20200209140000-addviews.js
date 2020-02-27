@@ -10,12 +10,12 @@ const vname4 = 'UserProjectViewAll';
 const vname5 = 'UserProjectView';
 const vname6 = 'UserNames';
 
-const query1 = 'SELECT `users`.`t_size` AS `t_shirt_sizes`,count(`users`.`t_size`) AS `nmbr` from `users` group by `users`.`t_size';
-const query2 = 'SELECT `users`.`sex` AS `m_f`,count(`users`.`sex`) AS `total` from `users` group by `users`.`sex`';
-const query3 = 'SELECT `users`.`language` AS `taal`,count(`users`.`language`) AS `total` from `users` group by  `users`.`language`';
-const query4 = 'SELECT `projects`.`id` AS `p_id`,`projects`.`project_name` AS `project_name`,concat_ws(" ",`owner`.`firstname`,`owner`.`lastname`) AS `owner_name`,count(`vouchers`.`id`) AS `nmbr_voucher`,group_concat(concat_ws(" ",`participants`.`firstname`,`participants`.`lastname`) separator ",") AS `participants`,`projects`.`createdAt` AS `created_at` from (((`projects` join `users` `owner` on(`projects`.`ownerId` = `owner`.`id`)) left join `vouchers` on(`vouchers`.`projectId` = `projects`.`id`)) left join `users` `participants` on(`participants`.`id` = `vouchers`.`participantId`)) group by `projects`.`id`';
-const query5 = 'SELECT `projects`.`id` AS `p_id`,`projects`.`project_name` AS `project_name`,concat_ws(" ",`owner`.`firstname`,`owner`.`lastname`) AS `owner_name`,count(`vouchers`.`id`) AS `nmbr_vouchers`,group_concat(concat_ws(" ",`participants`.`firstname`,`participants`.`lastname`) separator ",") AS `participants` from (((`projects` join `users` `owner` on(`projects`.`ownerId` = `owner`.`id`)) left join `vouchers` on(`vouchers`.`projectId` = `projects`.`id`)) left join `users` `participants` on(`participants`.`id` = `vouchers`.`participantId`)) where `vouchers`.`participantId` is not null group by `projects`.`id`';
-const query6 = 'SELECT `users`.`email`,`users`.`firstname`,`users`.`lastname` from `users` order by `users`.`lastname`';
+const query1 = 'SELECT `Users`.`t_size` AS `t_shirt_sizes`,count(`Users`.`t_size`) AS `nmbr` from `Users` group by `Users`.`t_size`';
+const query2 = 'SELECT `Users`.`sex` AS `m_f`,count(`Users`.`sex`) AS `total` from `Users` group by `Users`.`sex`';
+const query3 = 'SELECT `Users`.`language` AS `taal`,count(`Users`.`language`) AS `total` from `Users` group by  `Users`.`language`';
+const query4 = 'SELECT `Projects`.`id` AS `p_id`,`Projects`.`project_name` AS `project_name`,concat_ws(" ",`owner`.`firstname`,`owner`.`lastname`) AS `owner_name`,count(`Vouchers`.`id`) AS `nmbr_voucher`,group_concat(concat_ws(" ",`Participants`.`firstname`,`Participants`.`lastname`) separator ",") AS `participants`,`Projects`.`createdAt` AS `created_at` from (((`Projects` join `Users` `owner` on(`Projects`.`ownerId` = `owner`.`id`)) left join `Vouchers` on(`Vouchers`.`projectId` = `Projects`.`id`)) left join `Users` `Participants` on(`Participants`.`id` = `Vouchers`.`participantId`)) group by `Projects`.`id`';
+const query5 = 'SELECT `Projects`.`id` AS `p_id`,`Projects`.`project_name` AS `project_name`,concat_ws(" ",`owner`.`firstname`,`owner`.`lastname`) AS `owner_name`,count(`Vouchers`.`id`) AS `nmbr_vouchers`,group_concat(concat_ws(" ",`Participants`.`firstname`,`Participants`.`lastname`) separator ",") AS `participants` from (((`Projects` join `Users` `owner` on(`Projects`.`ownerId` = `owner`.`id`)) left join `Vouchers` on(`Vouchers`.`projectId` = `Projects`.`id`)) left join `Users` `Participants` on(`Participants`.`id` = `Vouchers`.`participantId`)) where `Vouchers`.`participantId` is not null group by `Projects`.`id`';
+const query6 = 'SELECT `Users`.`email`,`Users`.`firstname`,`Users`.`lastname` from `Users` order by `Users`.`lastname`';
 
 module.exports = {
   async up(queryInterface, Sequelize) {

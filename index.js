@@ -1,26 +1,47 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path'),
-    http = require('http');
-
-const express = require('express');
 const app = express();
+
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const express = require('express');
 const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
+const passport = require('passport');
+const BasicStrategy = require('passport-http').BasicStrategy;
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const Sequelize = require('sequelize');
 
-// enable admin security
-const basicAuth = require('express-basic-auth')
+const models = require('./models');
+const sequelize = models.sequelize;
 
-var userList = {};
-userList[process.env.ADMIN_USER] = process.env.ADMIN_PWD;
+const sessionStore = new SequelizeStore({db: sequelize});
 
-app.use('/admin', basicAuth({
-    users: userList,
-    challenge: true,
-    realm: 'Admin stuff'
-}));
+app.use(express.static("public"));
+app.use(session({ secret: process.env.SECRET_KEY, cookie: { secure: true }, store: sessionStore}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.use(new BasicStrategy(
+  function(username, password, done) {
+    return done(null, { 'username': username, 'passport': passport });
+  }
+));
+
+app.use('/admin', passport.authenticate('basic', { }));
 
 // enable admin UI
 const adminUI = require('./admin');

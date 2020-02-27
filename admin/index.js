@@ -8,6 +8,11 @@ const reportParent = {
   icon: 'fa fa-stream',
 }
 
+const internalParent = {
+  name: 'Internal',
+  icon: 'fa fa-stream',
+}
+
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
@@ -27,6 +32,12 @@ const adminBroOptions = {
           // createdAt: { isVisible: { list: false } },
           // updatedAt: { isVisible: { list: false } }
         }
+      } 
+    },
+    { 
+    resource: db.Session, 
+      options: {
+        parent: internalParent,
       } 
     },
     { 
