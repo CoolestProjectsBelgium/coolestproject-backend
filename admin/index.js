@@ -6,6 +6,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({db: sequelize});
+var stream = require('stream');
 
 const reportParent = {
   name: 'Reporting',
@@ -74,6 +75,73 @@ const adminBroOptions = {
     { 
       resource: db.User, 
       options: {
+        actions: {
+          mailAction: {
+            actionType: 'record',
+            label: 'Resend login mail',
+            icon: 'fas fa-envelope',
+            isVisible: true,
+            handler: async (request, response, data) => {
+              if (!request.params.recordId || !data.record) {
+                throw new NotFoundError([
+                  'You have to pass "recordId" to Mail Action',
+                ].join('\n'), 'Action#handler')
+              }
+              try {
+                // test
+              } catch (error) {
+                if (error instanceof ValidationError && error.baseError) {
+                  return {
+                    record: data.record.toJSON(data.currentAdmin),
+                    notice: {
+                      message: error.baseError.message,
+                      type: 'error',
+                    },
+                  }
+                }
+                throw error
+              }
+              return {
+                record: data.record.toJSON(data.currentAdmin),
+                notice: {
+                  message: 'Login Mail send',
+                  type: 'success',
+                },
+              }
+            },
+            component: false,
+          },
+          export: {
+            actionType: 'resource',
+            label: 'Export',
+            icon: 'fas fa-file-export',
+            isVisible: true,
+            handler: async (request, response, data) => {
+              /*
+              if (!request.params.recordId || !data.record) {
+                throw new NotFoundError([
+                  'You have to pass "recordId" to Mail Action',
+                ].join('\n'), 'Action#handler')
+              } 
+              try {
+                // test
+              } catch (error) {
+                if (error instanceof ValidationError && error.baseError) {
+                  return {
+                    record: data.record.toJSON(data.currentAdmin),
+                    notice: {
+                      message: error.baseError.message,
+                      type: 'error',
+                    },
+                  }
+                }
+                throw error
+              }*/
+              return {}
+            },
+            component: AdminBro.bundle('../admin_components/export'),
+          }
+        },
         properties: {
           via: { type: 'richtext' },
           medical: { type: 'richtext' },

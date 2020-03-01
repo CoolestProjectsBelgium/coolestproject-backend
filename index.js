@@ -102,6 +102,11 @@ app.use('/projectinfo', function(req, res, next) {
 
 app.use(passport.initialize());
 */
+app.get('/download', function (req, res) {
+  res.setHeader('Content-Disposition','attachment; filename="text.txt"');
+  res.send('hello world');
+  res.sendStatus(200);
+})
 
 // enable admin UI
 const adminUI = require('./admin');
