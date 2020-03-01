@@ -3,9 +3,14 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Accounts', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
       email: {
         allowNull: false,
-        primaryKey: true,
         type: Sequelize.STRING(100)
       },
       password: {
@@ -20,6 +25,15 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
+
+    await queryInterface.addConstraint(
+      'Accounts',
+      ['email'],
+      {
+        type: 'unique',
+        name: 'email'
+      }
+    );
   },
 
   async down(queryInterface, Sequelize) {

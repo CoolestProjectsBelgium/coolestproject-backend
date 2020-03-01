@@ -42,14 +42,19 @@ const adminBroOptions = {
     resource: db.Session, 
       options: {
         parent: internalParent,
-      } 
+        actions: {
+          new: {
+            isVisible: false
+          }
+        } 
+      }
     },
     { 
       resource: db.Account, 
         options: {
-          parent: internalParent,
-        } 
-      },
+          parent: internalParent
+      } 
+    },
     { 
       resource: db.Project, 
       options: {
@@ -109,6 +114,7 @@ const adminBroOptions = {
       resource: db.useronly, 
       options: {
         name: "Users zonder project of medewerker)",
+        listProperties: ['id', 'firstname', 'lastname', 'email'],
         parent: reportParent,
         actions: {
           new: {
@@ -255,7 +261,7 @@ const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
     const user = await db.Account.findOne({ where: { email: email }});
     if(!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
-    return user;
+    return { 'email': user.email };
   },
   cookieName: 'adminbro',
   cookiePassword: process.env.SECRET_KEY

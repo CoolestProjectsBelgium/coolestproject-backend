@@ -10,17 +10,18 @@ module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
     email: {
         type: DataTypes.STRING(100),
-        primaryKey: true
+        unique: true
     },
     password: {
-        type: DataTypes.STRING
-    }
-  }, {
-    hooks: {
-      beforeCreate: (user) => {
-        const salt = bcrypt.genSaltSync();
-        user.password = bcrypt.hashSync(user.password, salt);
-      }
+        type: DataTypes.STRING,
+        get(){
+          return this.getDataValue('password')
+        },
+        set(password){
+          const salt = bcrypt.genSaltSync();
+          const pwd =  bcrypt.hashSync(password, salt);
+          this.setDataValue('password', pwd)
+        }
     }
   });
   Account.prototype.verifyPassword = async function(password) {

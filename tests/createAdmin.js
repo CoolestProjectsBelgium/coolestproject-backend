@@ -5,8 +5,8 @@ async function main(){
     // create user with project
     var admin = await dba.createAccount(
         {
-            username: 'admin',
-            password: "admin",
+            email: 'michael',
+            password: "netmwpas",
         }
     )
     console.log('created account: '+ admin.username);
