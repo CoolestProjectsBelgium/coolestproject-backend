@@ -1,47 +1,107 @@
 'use strict';
 
+const express = require('express');
 const app = express();
 
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const express = require('express');
 const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
-const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
-const session = require("express-session");
-const bodyParser = require("body-parser");
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const Sequelize = require('sequelize');
+
+//
+//const BasicStrategy = require('passport-http').BasicStrategy;
+
+//const session = require("express-session");
+//
+//const SequelizeStore = require('connect-session-sequelize')(session.Store);
+//const Sequelize = require('sequelize');
 
 const models = require('./models');
-const sequelize = models.sequelize;
+//const sequelize = models.sequelize;
 
+const Account = models.Account
+
+/*
 const sessionStore = new SequelizeStore({db: sequelize});
 
 app.use(express.static("public"));
-app.use(session({ secret: process.env.SECRET_KEY, cookie: { secure: true }, store: sessionStore}));
+app.use(session({ secret: process.env.SECRET_KEY, cookie: { secure: true }, maxAge:null, store: sessionStore, resave: false, saveUninitialized: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  done(null, user.username);
 });
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
+passport.deserializeUser(async function(username, done) {
+  try {
+    const user = await Account.findOne({ where: { username: username }});
+    if (!user) { return done(null, false); }
+    if (!user.verifyPassword(password)) { return done(null, false); }
+    done(null, user);
+  } catch(err) {
+    return done(err);
+  }
 });
 
 passport.use(new BasicStrategy(
-  function(username, password, done) {
-    return done(null, { 'username': username, 'passport': passport });
+  async function(username, password, done) {
+    try {
+      const user = await Account.findOne({ where: { username: username }});
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      done(null, user);
+    } catch(err) {
+      return done(err);
+    }
   }
 ));
 
-app.use('/admin', passport.authenticate('basic', { }));
+app.use('/admin', passport.authenticate('basic', {}));
+
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+
+const passport = require('passport');
+
+var opts = {}
+opts.jwtFromRequest = ExtractJwt.fromBodyField("jwt");
+opts.secretOrKey = process.env.SECRET_KEY;
+
+passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+  console.log(jwt_payload);
+  return done(null, {});
+}));
+
+app.use('/userinfo', function(req, res, next) {
+  passport.authenticate('jwt', {session: false}, function(err, user, info) {
+    if (err) return next(err);
+    next();
+  })(req, res, next);
+});
+
+app.use('/participants', function(req, res, next) {
+  passport.authenticate('jwt', {session: false}, function(err, user, info) {
+    if (err) return next(err);
+    next();
+  })(req, res, next);
+});
+
+app.use('/projectinfo', function(req, res, next) {
+  passport.authenticate('jwt', {session: false}, function(err, user, info) {
+    if (err) return next(err);
+    next();
+  })(req, res, next);
+});
+
+app.use(passport.initialize());
+*/
 
 // enable admin UI
 const adminUI = require('./admin');
