@@ -1,243 +1,51 @@
 'use strict';
 
-var fs = require('fs'),
-    path = require('path'),
-    http = require('http');
+const app = express();
 
-const express = require('express')
-var app = express(); //require('connect')();
-var swaggerTools = require('swagger-tools');
-var jsyaml = require('js-yaml');
-var serverPort = process.env.PORT || 8080;
+const fs = require('fs');
+const path = require('path');
+const http = require('http');
+const express = require('express');
+const swaggerTools = require('swagger-tools');
+const jsyaml = require('js-yaml');
+const serverPort = process.env.PORT || 8080;
+const passport = require('passport');
+const BasicStrategy = require('passport-http').BasicStrategy;
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const Sequelize = require('sequelize');
 
-// begin admin
-const AdminBro = require('admin-bro')
-const AdminBroSequelize = require('admin-bro-sequelizejs')
-AdminBro.registerAdapter(AdminBroSequelize)
+const models = require('./models');
+const sequelize = models.sequelize;
 
-const AdminBroExpress = require('admin-bro-expressjs')
+const sessionStore = new SequelizeStore({db: sequelize});
 
-const db = require('./models');
+app.use(express.static("public"));
+app.use(session({ secret: process.env.SECRET_KEY, cookie: { secure: true }, store: sessionStore}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-const reportParent = {
-  name: 'Reporting',
-  icon: 'fa fa-stream',
-}
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
 
-const adminBroOptions = {
-  databases: [db],
-  rootPath: '/admin',
-  branding: {
-    companyName: 'Coolest Projects',
-  },
-  resources: [
-    { 
-      resource: db.Registration, 
-      options: {
-        actions: {
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          // createdAt: { isVisible: { list: false } },
-          // updatedAt: { isVisible: { list: false } }
-        }
-      } 
-    },
-    { 
-      resource: db.Project, 
-      options: {
-        actions: {
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          internalp: { type: 'richtext' },
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-          internalp: { type: 'richtext' }
-        }
-      } 
-    },
-    { 
-      resource: db.User, 
-      options: {
-        properties: {
-          via: { type: 'richtext' },
-          medical: { type: 'richtext' },
-          internalu: { type: 'richtext' },
-          last_token: { isVisible: false },
-          id: { isVisible: { list: false } },
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-         /* photo_allowed: {
-            components: {
-              show: AdminBro.bundle('./admin_components/photos_allowed')
-            },
-            isVisible: {
-              show: true, view: false, edit: false, filter: false,
-            }
-          } */
-        }
-      } 
-    },
-    { 
-      resource: db.Voucher, 
-      options: {
-        actions: {
-          edit: {
-            isVisible: false
-          },
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-        }
-      } 
-    },
-     { 
-      resource: db.UserProjectView, 
-      options: {
-        name: "Projecten met medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserProjectViewAll, 
-      options: {
-        name: "Alle projecten met/zonder medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.tshirtsizes, 
-      options: {
-        name: "Aantal T-shirts per maat",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserNames, 
-      options: {
-        name: "Lijst gebruikers voor naam label",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.sex, 
-      options: {
-        name: "Aantal jongens/meisjes",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.taal, 
-      options: {
-        name: "Aantal talen",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    }
-  ]
-}
-const adminBro = new AdminBro(adminBroOptions)
-const router = AdminBroExpress.buildRouter(adminBro)
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
 
-const basicAuth = require('express-basic-auth')
+passport.use(new BasicStrategy(
+  function(username, password, done) {
+    return done(null, { 'username': username, 'passport': passport });
+  }
+));
 
-var userList = {};
-userList[process.env.ADMIN_USER] = process.env.ADMIN_PWD;
+app.use('/admin', passport.authenticate('basic', { }));
 
-app.use('/admin', basicAuth({
-    users: userList,
-    challenge: true,
-    realm: 'Admin stuff'
-}));
-
-app.use(adminBro.options.rootPath, router)
-// end admin
+// enable admin UI
+const adminUI = require('./admin');
+app.use('/admin', adminUI);
 
 //enable i18n
 const i18n = require("i18n")

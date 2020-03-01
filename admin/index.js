@@ -1,17 +1,15 @@
-'use strict';
-
 const AdminBro = require('admin-bro')
 const AdminBroSequelize = require('admin-bro-sequelizejs')
-AdminBro.registerAdapter(AdminBroSequelize)
-
 const AdminBroExpress = require('admin-bro-expressjs')
-const express = require('express')
-const app = express()
-
-const db = require('./models');
+const db = require('../models');
 
 const reportParent = {
   name: 'Reporting',
+  icon: 'fa fa-stream',
+}
+
+const internalParent = {
+  name: 'Internal',
   icon: 'fa fa-stream',
 }
 
@@ -34,6 +32,12 @@ const adminBroOptions = {
           // createdAt: { isVisible: { list: false } },
           // updatedAt: { isVisible: { list: false } }
         }
+      } 
+    },
+    { 
+    resource: db.Session, 
+      options: {
+        parent: internalParent,
       } 
     },
     { 
@@ -233,23 +237,9 @@ const adminBroOptions = {
     }
   ]
 }
-const adminBro = new AdminBro(adminBroOptions)
+AdminBro.registerAdapter(AdminBroSequelize)
 
-const router = AdminBroExpress.buildRouter(adminBro)
+const adminBro = new AdminBro(adminBroOptions);
+const router = AdminBroExpress.buildRouter(adminBro);
 
-// var serverPort = process.env.PORT || 8081;
-var serverPort = process.env.PORT || 3001;
-
-
-const basicAuth = require('express-basic-auth')
-
-var userList = {};
-userList[process.env.ADMIN_USER] = process.env.ADMIN_PWD;
-
-app.use('/admin', basicAuth({
-    users: userList,
-    challenge: true,
-    realm: 'Admin stuff'
-}));
-app.use(adminBro.options.rootPath, router)
-app.listen(serverPort, () => console.log('Running server'))
+module.exports = router
