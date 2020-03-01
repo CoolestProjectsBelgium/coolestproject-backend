@@ -1,1 +1,1 @@
-!function(){"use strict";AdminBro.UserComponents={}}();
+!function(n,e){"use strict";e=e&&e.hasOwnProperty("default")?e.default:e;AdminBro.UserComponents={},AdminBro.UserComponents.Component1=function(n){return e.createElement("a",{href:"/download"},"Download")}}(AdminBro,React);
