@@ -1,7 +1,11 @@
-const AdminBro = require('admin-bro')
-const AdminBroSequelize = require('admin-bro-sequelizejs')
-const AdminBroExpress = require('admin-bro-expressjs')
+const AdminBro = require('admin-bro');
+const AdminBroSequelize = require('admin-bro-sequelizejs');
+const AdminBroExpress = require('admin-bro-expressjs');
+const session = require("express-session");
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
+const sequelize = db.sequelize;
+const sessionStore = new SequelizeStore({db: sequelize});
 
 const reportParent = {
   name: 'Reporting',
@@ -40,6 +44,12 @@ const adminBroOptions = {
         parent: internalParent,
       } 
     },
+    { 
+      resource: db.Account, 
+        options: {
+          parent: internalParent,
+        } 
+      },
     { 
       resource: db.Project, 
       options: {
@@ -240,6 +250,17 @@ const adminBroOptions = {
 AdminBro.registerAdapter(AdminBroSequelize)
 
 const adminBro = new AdminBro(adminBroOptions);
-const router = AdminBroExpress.buildRouter(adminBro);
+const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+  async authenticate(email, password) {
+    const user = await db.Account.findOne({ where: { email: email }});
+    if(!user) { return null }
+    if (! await user.verifyPassword(password)) { return null }
+    return user;
+  },
+  cookieName: 'adminbro',
+  cookiePassword: process.env.SECRET_KEY
+}, null, {
+  store: sessionStore
+});
 
 module.exports = router

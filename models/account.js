@@ -8,7 +8,7 @@ const parseISO = require('date-fns/parseISO')
 
 module.exports = (sequelize, DataTypes) => {
   const Account = sequelize.define('Account', {
-    username: {
+    email: {
         type: DataTypes.STRING(100),
         primaryKey: true
     },
@@ -21,12 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       }
-    },
-    instanceMethods: {
-      validPassword: function(password) {
-        return bcrypt.compareSync(password, this.password);
-      }
-    }  
+    }
   });
+  Account.prototype.verifyPassword = async function(password) {
+    return await bcrypt.compareSync(password, this.password);
+  };
   return Account;
 };
