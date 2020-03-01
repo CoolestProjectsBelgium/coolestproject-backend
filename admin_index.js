@@ -91,6 +91,26 @@ const adminBroOptions = {
         }
       } 
     },
+    { 
+      resource: db.useronly, 
+      options: {
+        name: "Users zonder project of medewerker)",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
      { 
       resource: db.UserProjectView, 
       options: {

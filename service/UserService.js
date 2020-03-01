@@ -19,7 +19,7 @@ exports.userinfoGET = function(loginToken) {
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id:' + token.id);     
       var user = await dba.getUser(token.id);
-
+      logger.info("LoginLanguage:"+user.language+" email:"+user.email);
       resolve({
         language: user.language,
         firstname: user.firstname,
