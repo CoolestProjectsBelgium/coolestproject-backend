@@ -14,7 +14,7 @@ const reportParent = {
 
 const internalParent = {
   name: 'Internal',
-  icon: 'fa fa-stream',
+  icon: 'fa fa-exclamation-triangle',
 }
 
 const adminBroOptions = {
