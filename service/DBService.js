@@ -237,6 +237,14 @@ module.exports = {
     async createRegistration(registration) {
         return await Registration.create(registration);
     },
+        /**
+     * Get registration
+     * @param {Registration} registration
+     * @returns {Registration}
+     */
+    async getRegistration(registrationId) {
+        return await Registration.findByPk(registrationId);
+    },
     /**
      * Add registration
      * @param {Registration} registration

@@ -4,8 +4,11 @@ const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
+var dba = require('../service/DBService');
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({db: sequelize});
+var MailService = require('../service/MailService');
+var TokenService = require('../service/TokenService');
 var stream = require('stream');
 
 const reportParent = {
@@ -31,6 +34,40 @@ const adminBroOptions = {
         actions: {
           new: {
             isVisible: false
+          },
+          mailAction: {
+            actionType: 'record',
+            label: 'Resend confirmation mail',
+            icon: 'fas fa-envelope',
+            isVisible: true,
+            handler: async (request, response, data) => {
+              if (!request.params.recordId || !data.record) {
+                throw new NotFoundError([
+                  'You have to pass "recordId" to Mail Action',
+                ].join('\n'), 'Action#handler')
+              }
+              try {
+                const registrationToken = await TokenService.generateRegistrationToken(request.params.recordId);
+                const register = await dba.getRegistration(request.params.recordId)
+                MailService.registrationMail(register, registrationToken);
+              } catch (error) {
+                  return {
+                    record: data.record.toJSON(data.currentAdmin),
+                    notice: {
+                      message: error,
+                      type: 'error',
+                    },
+                  }
+              }
+              return {
+                record: data.record.toJSON(data.currentAdmin),
+                notice: {
+                  message: 'Re-registration mail sent',
+                  type: 'success',
+                },
+              }
+            },
+            component: false,
           }
         },
         properties: {
@@ -76,41 +113,6 @@ const adminBroOptions = {
       resource: db.User, 
       options: {
         actions: {
-          mailAction: {
-            actionType: 'record',
-            label: 'Resend login mail',
-            icon: 'fas fa-envelope',
-            isVisible: true,
-            handler: async (request, response, data) => {
-              if (!request.params.recordId || !data.record) {
-                throw new NotFoundError([
-                  'You have to pass "recordId" to Mail Action',
-                ].join('\n'), 'Action#handler')
-              }
-              try {
-                // test
-              } catch (error) {
-                if (error instanceof ValidationError && error.baseError) {
-                  return {
-                    record: data.record.toJSON(data.currentAdmin),
-                    notice: {
-                      message: error.baseError.message,
-                      type: 'error',
-                    },
-                  }
-                }
-                throw error
-              }
-              return {
-                record: data.record.toJSON(data.currentAdmin),
-                notice: {
-                  message: 'Login Mail send',
-                  type: 'success',
-                },
-              }
-            },
-            component: false,
-          },
           export: {
             actionType: 'resource',
             label: 'Export',
