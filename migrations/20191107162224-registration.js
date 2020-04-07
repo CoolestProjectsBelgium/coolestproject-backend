@@ -80,7 +80,7 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       project_lang: {
-        type: Sequelize.ENUM('nl','fr','en')
+        type: Sequelize.ENUM('nl','fr','en','niet bellen')
       },
       gsm: {
         type: Sequelize.STRING(13)
@@ -203,7 +203,7 @@ module.exports = {
         allowNull: true
       },
       project_lang: {
-        type: Sequelize.ENUM('nl','fr','en'),
+        type: Sequelize.ENUM('nl','fr','en','niet bellen'),
         allowNull: false
       },
       ownerId: {

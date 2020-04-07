@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     }, 
     project_lang: {
-      type: DataTypes.ENUM('nl','fr','en'),
+      type: DataTypes.ENUM('nl','fr','en','niet bellen'),
       validate: {
-        isIn: [['nl','fr','en']]
+        isIn: [['nl','fr','en','niet bellen']]
       }
     }
   }, {});

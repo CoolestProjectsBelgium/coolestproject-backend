@@ -8,7 +8,7 @@ const path = require('path');
 const http = require('http');
 const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
-const serverPort = process.env.PORT || 8080;
+const serverPort = process.env.PORT ||8080;
 
 //
 //const BasicStrategy = require('passport-http').BasicStrategy;
@@ -52,7 +52,8 @@ passport.use(new BasicStrategy(
     try {
       const user = await Account.findOne({ where: { username: username }});
       if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
+      console.log("conslog:"+password);
+      //if (!user.verifyPassword(password)) { return done(null, false); }
       done(null, user);
     } catch(err) {
       return done(err);
@@ -75,12 +76,13 @@ opts.jwtFromRequest = ExtractJwt.fromBodyField("jwt");
 opts.secretOrKey = process.env.SECRET_KEY;
 
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-  console.log(jwt_payload);
+  console.log("conslog:"+jwt_payload);
   return done(null, {});
 }));
 
 app.use('/userinfo', function(req, res, next) {
   passport.authenticate('jwt', {session: false}, function(err, user, info) {
+    console.log("conslog:"+jwt_payload);
     if (err) return next(err);
     next();
   })(req, res, next);
