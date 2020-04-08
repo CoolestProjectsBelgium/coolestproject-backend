@@ -74,6 +74,9 @@ exports.loginPOST = function (login) {
             {
               language: registration.language,
               postalcode: registration.postalcode,
+              street: registration.street,
+              house_number: registration.house_number,
+              bus_number: registration.bus_number,
               email: registration.email,
               gsm: registration.gsm,
               firstname: registration.firstname,
@@ -99,6 +102,9 @@ exports.loginPOST = function (login) {
             {
               language: registration.language,
               postalcode: registration.postalcode,
+              street: registration.street,
+              house_number: registration.house_number,
+              bus_number: registration.bus_number,
               email: registration.email,
               gsm: registration.gsm,
               firstname: registration.firstname,
