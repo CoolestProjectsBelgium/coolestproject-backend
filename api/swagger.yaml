@@ -387,7 +387,6 @@ definitions:
         - "nl"
         - "fr"
         - "en"
-        - "niet bellen"
       participants:
         type: "array"
         items:
@@ -497,7 +496,6 @@ definitions:
         - "nl"
         - "fr"
         - "en"
-        - "niet bellen"
       gsm:
         type: "string"
         example: "+32460789101"
