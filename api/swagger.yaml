@@ -409,6 +409,12 @@ definitions:
         example: 1000
         minimum: 1000
         maximum: 9999
+      house_number:
+        type: "string"
+      bus_number:
+        type: "string"
+      street:
+        type: "string"
       email:
         type: "string"
         format: "email"
