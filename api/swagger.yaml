@@ -561,3 +561,5 @@ definitions:
         format: "date"
       enviroment:
         type: "string"
+      submitURL:
+        type: "string"
