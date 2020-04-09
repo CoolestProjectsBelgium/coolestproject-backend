@@ -286,6 +286,12 @@ definitions:
         example: 1000
         minimum: 1000
         maximum: 9999
+      house_number:
+        type: "string"
+      bus_number:
+        type: "string"
+      street:
+        type: "string"
       language:
         type: "string"
         enum:
@@ -387,6 +393,11 @@ definitions:
         - "nl"
         - "fr"
         - "en"
+      info:
+        type: "string"
+        enum:
+        - "movie_received"
+        - ""
       participants:
         type: "array"
         items:
@@ -409,6 +420,12 @@ definitions:
         example: 1000
         minimum: 1000
         maximum: 9999
+      house_number:
+        type: "string"
+      bus_number:
+        type: "string"
+      street:
+        type: "string"
       email:
         type: "string"
         format: "email"

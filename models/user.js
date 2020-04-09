@@ -25,6 +25,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       allowNull: false
     },
+    street: {
+      type:  DataTypes.STRING(254),
+      allowNull: false
+    },
+    house_number: {
+      type:  DataTypes.STRING(20),
+      allowNull: false
+    },
+    bus_number: {
+      type:  DataTypes.STRING(20),
+      allowNull: true
+    },
     email: {
       type: DataTypes.STRING(254),
       validate: {

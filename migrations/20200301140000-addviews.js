@@ -4,7 +4,7 @@
 // https://docs.google.com/spreadsheets/u/0/create?usp=sheets_home&ths=true
 var back;
 const vname7 = 'useronly';
-const query7 = 'SELECT  `users`.`id`,`users`.`firstname`,`users`.`lastname`,`users`.`email` FROM `users` WHERE NOT EXISTS (SELECT `projects`.`ownerid` FROM `projects` WHERE `users`.`id` = `projects`.`ownerid`) AND NOT EXISTS (SELECT `vouchers`.`participantId` FROM `vouchers` WHERE `users`.`id` = `vouchers`.`participantId`)';
+const query7 = 'SELECT  `Users`.`id`,`Users`.`firstname`,`Users`.`lastname`,`Users`.`email` FROM `Users` WHERE NOT EXISTS (SELECT `Projects`.`ownerid` FROM `Projects` WHERE `Users`.`id` = `Projects`.`ownerid`) AND NOT EXISTS (SELECT `Vouchers`.`participantId` FROM `Vouchers` WHERE `Users`.`id` = `Vouchers`.`participantId`)';
 
 module.exports = {
   async up(queryInterface, Sequelize) {
