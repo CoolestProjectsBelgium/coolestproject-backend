@@ -393,6 +393,11 @@ definitions:
         - "nl"
         - "fr"
         - "en"
+      info:
+        type: "string"
+        enum:
+        - "movie_received"
+        - ""
       participants:
         type: "array"
         items:

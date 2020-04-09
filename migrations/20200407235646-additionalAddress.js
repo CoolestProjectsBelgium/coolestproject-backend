@@ -6,9 +6,11 @@ module.exports = {
     await queryInterface.addColumn('Users', 'house_number', Sequelize.STRING(20));
     await queryInterface.addColumn('Users', 'bus_number', Sequelize.STRING(20));
 
-    await queryInterface.addColumn('Registration', 'street', Sequelize.STRING(254));
-    await queryInterface.addColumn('Registration', 'house_number', Sequelize.STRING(20));
-    await queryInterface.addColumn('Registration', 'bus_number', Sequelize.STRING(20));
+    await queryInterface.addColumn('Projects', 'info', Sequelize.ENUM('movie_received'));
+
+    await queryInterface.addColumn('Registrations', 'street', Sequelize.STRING(254));
+    await queryInterface.addColumn('Registrations', 'house_number', Sequelize.STRING(20));
+    await queryInterface.addColumn('Registrations', 'bus_number', Sequelize.STRING(20));
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -16,7 +18,10 @@ module.exports = {
     await queryInterface.removeColumn('Users', 'house_number');
     await queryInterface.removeColumn('Users', 'bus_number');
 
-    await queryInterface.removeColumn('Registration', 'street');
-    await queryInterface.removeColumn('Registration', 'house_number');
-    await queryInterface.removeColumn('Registration', 'bus_number');
+    await queryInterface.removeColumn('Registrations', 'street');
+    await queryInterface.removeColumn('Registrations', 'house_number');
+    await queryInterface.removeColumn('Registrations', 'bus_number');
+
+    await queryInterface.removeColumn('Projects', 'info');
+
   }}

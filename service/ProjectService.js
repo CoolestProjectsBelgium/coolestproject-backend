@@ -17,7 +17,8 @@ async function getProjectDetails (userId) {
       project_lang: project.project_lang,
       own_project: ownProject,
       participants: [],
-      delete_possible: true
+      delete_possible: true,
+      info: project.info
     }
     // list vouchers & display participants
     var assignedTokens = 0;

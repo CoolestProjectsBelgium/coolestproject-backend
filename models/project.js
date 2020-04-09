@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     internalp: {
       type: DataTypes.STRING(1000),
       defaultValue: null
+    },
+    info: {
+      type: DataTypes.ENUM('movie_received'),
+      allowNull: true
     }, 
     project_lang: {
       type: DataTypes.ENUM('nl','fr','en'),
