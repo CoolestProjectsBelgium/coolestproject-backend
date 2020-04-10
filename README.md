@@ -43,13 +43,13 @@ npm run dev
 To view the Swagger UI interface:
 
 ```bash
-open http://localhost:8080/docs
+open http://localhost:3000/docs
 ```
 
 To view the Admin UI interface:
 
 ```bash
-open http://localhost:8080/admin
+open http://localhost:3000/admin
 ```
 
 ## Prepare the development environment
@@ -95,6 +95,9 @@ npx sequelize db:migrate
 ## Run migrations
 ```bash
 export DB=mysql://coolestproject:***@***/coolestproject
-npx sequelize db:migrate 
+s
 npx sequelize db:migrate:undo
+
+$Env:DB="mysql://coolestproject:***@***/coolestproject"
+npx sequelize db:migrate
 ```

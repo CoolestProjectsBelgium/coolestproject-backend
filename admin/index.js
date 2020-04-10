@@ -11,6 +11,9 @@ var MailService = require('../service/MailService');
 var TokenService = require('../service/TokenService');
 var stream = require('stream');
 
+
+const PER_PAGE_LIMIT = 500;
+
 const reportParent = {
   name: 'Reporting',
   icon: 'fa fa-stream',

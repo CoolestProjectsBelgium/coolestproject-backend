@@ -16,7 +16,8 @@ exports.settingsGET = function() {
             minAge: process.env.MIN_AGE || 0,
             guardianAge: process.env.GUARDIAN_AGE || 0,
             tshirtDate: new Date(process.env.TSHIRT_DATE),
-            enviroment: process.env.NODE_ENV
+            enviroment: process.env.NODE_ENV,
+            submitURL: process.env.SUBMIT_URL
         });
     })
 }

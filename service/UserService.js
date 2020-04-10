@@ -34,8 +34,12 @@ exports.userinfoGET = function(loginToken) {
         birthmonth: user.birthmonth,
         postalcode: user.postalcode,
         email: user.email,
+        street: user.street,
+        house_number: user.house_number,
+        bus_number: user.bus_number,
         email_guardian: user.email_guardian,
         delete_possible: await dba.isUserDeletable(user.id) });
+
 
     } catch (ex) {
       logger.error(ex);
@@ -92,6 +96,9 @@ exports.userinfoPATCH = function(loginToken, user) {
         via: u.via,
         medical: u.medical,
         gsm: u.gsm,
+        street: u.street,
+        house_number: u.house_number,
+        bus_number: u.bus_number,
         gsm_guardian: u.gsm_guardian,
         email_guardian: u.email_guardian
       });
