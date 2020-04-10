@@ -74,6 +74,7 @@ exports.loginPOST = function (login) {
             {
               language: registration.language,
               postalcode: registration.postalcode,
+              residence: registration.residence,
               street: registration.street,
               house_number: registration.house_number,
               bus_number: registration.bus_number,
@@ -104,6 +105,7 @@ exports.loginPOST = function (login) {
               postalcode: registration.postalcode,
               street: registration.street,
               house_number: registration.house_number,
+              residence: registration.residence,
               bus_number: registration.bus_number,
               email: registration.email,
               gsm: registration.gsm,
