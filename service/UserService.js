@@ -35,6 +35,7 @@ exports.userinfoGET = function(loginToken) {
         postalcode: user.postalcode,
         email: user.email,
         street: user.street,
+        residence: user.residence,
         house_number: user.house_number,
         bus_number: user.bus_number,
         email_guardian: user.email_guardian,
@@ -99,6 +100,7 @@ exports.userinfoPATCH = function(loginToken, user) {
         street: u.street,
         house_number: u.house_number,
         bus_number: u.bus_number,
+        residence: u.residence,
         gsm_guardian: u.gsm_guardian,
         email_guardian: u.email_guardian
       });

@@ -286,6 +286,8 @@ definitions:
         example: 1000
         minimum: 1000
         maximum: 9999
+      residence: 
+        type: "string"
       house_number:
         type: "string"
       bus_number:
@@ -421,6 +423,8 @@ definitions:
         minimum: 1000
         maximum: 9999
       house_number:
+        type: "string"
+      residence: 
         type: "string"
       bus_number:
         type: "string"
