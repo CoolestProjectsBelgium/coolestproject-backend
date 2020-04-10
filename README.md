@@ -94,8 +94,7 @@ npx sequelize db:migrate
 
 ## Run migrations
 ```bash
-export DB=mysql://coolestproject:***@***/coolestproject
-s
+export DB=mysql://coolestproject:***@***/coolestprojects
 npx sequelize db:migrate:undo
 
 $Env:DB="mysql://coolestproject:***@***/coolestproject"
