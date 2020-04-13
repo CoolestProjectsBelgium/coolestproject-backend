@@ -284,7 +284,7 @@ module.exports = {
                     { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
                 ] 
             },
-            { model: User, as: 'owner', attributes: ['firstname', 'lastname'] } 
+            { model: User, as: 'owner', attributes: ['firstname', 'lastname', 'email'] } 
         ]});
         // check other project via voucher
         if (project === null) {

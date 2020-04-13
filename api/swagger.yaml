@@ -400,6 +400,9 @@ definitions:
         enum:
         - "movie_received"
         - ""
+      email:
+        type: "string"
+        format: "email"
       participants:
         type: "array"
         items:
