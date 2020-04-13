@@ -48,6 +48,11 @@ async function getProjectDetails (userId) {
       projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
     }
 
+    //email of owner if you are the owner
+    if (ownProject) {
+      projectResult.email = project.owner.email;
+    }
+
     //delete is not possible when there are participants & it's your own project
     projectResult.delete_possible = ( ownProject && (assignedTokens === 0) ) || !ownProject;
 
