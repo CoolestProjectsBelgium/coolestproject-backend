@@ -108,7 +108,8 @@ const adminBroOptions = {
           internalp: { type: 'richtext' },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
-          internalp: { type: 'richtext' }
+          certificate: { type: 'textarea' },
+          offset: {},
         }
       } 
     },
@@ -156,7 +157,7 @@ const adminBroOptions = {
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
          /* photo_allowed: {
-            components: {
+            components: {r
               show: AdminBro.bundle('./admin_components/photos_allowed')
             },
             isVisible: {

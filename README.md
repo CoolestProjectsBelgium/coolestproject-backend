@@ -82,6 +82,11 @@ npx sequelize db:create
 npx sequelize db:migrate
 ```
 
+## Migrations with dotenv
+```bash
+npx dotenv sequelize db:migrate
+```
+
 ## Important folders
 
 * emails: folder with all the emails

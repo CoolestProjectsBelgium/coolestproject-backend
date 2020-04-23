@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(1000),
       defaultValue: null
     },
+    certificate: {
+      type: DataTypes.STRING(1000),
+      defaultValue: null
+    },
+    offset: {
+      type: DataTypes.INTEGER,
+      defaultValue: null
+    },
     info: {
       type: DataTypes.ENUM('movie_received'),
       allowNull: true
