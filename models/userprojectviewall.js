@@ -1,10 +1,10 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UserProjectViewAll = sequelize.define('UserProjectViewAll', {
-    P_id: {
-      type: DataTypes.STRING,
-      primaryKey: true
-  },
+      P_id: {
+        type: DataTypes.STRING,
+        primaryKey: true
+    },
     project_name: {
         type: DataTypes.STRING,
     },

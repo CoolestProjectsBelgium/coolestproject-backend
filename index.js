@@ -110,6 +110,11 @@ app.get('/download', function (req, res) {
   res.sendStatus(200);
 })
 
+// website integration 
+const websiteIntegration = require('./website');
+app.use('/website', websiteIntegration);
+
+
 // enable admin UI
 const adminUI = require('./admin');
 app.use('/admin', adminUI);
