@@ -10,6 +10,7 @@ const Project = models.Project;
 const User = models.User;
 const Voucher = models.Voucher;
 const Registration = models.Registration;
+const UserProjectViewAll = models.UserProjectViewAll;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 
@@ -338,5 +339,12 @@ module.exports = {
     async updateLastToken(user){
         user.last_token = new Date();
         await user.save();
-    }
+    },
+    /**
+     * Get lists of projects, with link for website
+     * @returns {Project}
+     */
+    async getProjects() {
+        return await UserProjectViewAll.findAll();
+    },
 };
