@@ -347,8 +347,6 @@ module.exports = {
      */
     async getProjects() {
        return await UserProjectVideo.findAll();
-       /*const { QueryTypes } = require('sequelize');
-        return await sequelize.query("SELECT * FROM `projects`", { type: QueryTypes.SELECT });*/
     },
     
 };
