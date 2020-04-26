@@ -18,8 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
     },
     youtube: {
-      type: DataTypes.STRING
-  },
+      type: DataTypes.STRING,
+      get(){
+       return process.env.GOOGLE_LINK + "&t=" + this.getDataValue('offset');
+      }
+    },
   }, {
     freezeTableName: true,
     timestamps: false
