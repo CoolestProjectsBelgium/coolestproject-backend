@@ -1,6 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UserProjectVideo = sequelize.define('UserProjectVideo', {
+    offset: {
+      type: DataTypes.STRING,
+    },
     project_name: {
       type: DataTypes.STRING,
     },
@@ -16,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     youtube: {
       type: DataTypes.STRING
-  }
+  },
   }, {
     freezeTableName: true,
     timestamps: false
