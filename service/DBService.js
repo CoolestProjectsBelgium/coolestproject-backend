@@ -11,6 +11,7 @@ const User = models.User;
 const Voucher = models.Voucher;
 const Registration = models.Registration;
 const UserProjectViewAll = models.UserProjectViewAll;
+const UserProjectVideo = models.UserProjectVideo;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 
@@ -345,6 +346,9 @@ module.exports = {
      * @returns {Project}
      */
     async getProjects() {
-        return await UserProjectViewAll.findAll();
+       return await UserProjectVideo.findAll();
+       /*const { QueryTypes } = require('sequelize');
+        return await sequelize.query("SELECT * FROM `projects`", { type: QueryTypes.SELECT });*/
     },
+    
 };

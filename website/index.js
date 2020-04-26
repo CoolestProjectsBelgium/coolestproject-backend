@@ -13,7 +13,12 @@ router.get('/projects', async function (req, res) {
     var projects = await dba.getProjects();
     projects.every(
         function (project) {
-            root.root().ele('project',  {'name': project.project_name, 'owner': project.owner_name, 'participants': project.participants});
+            console.log("Project:"+project.project_name);
+            root.root().ele('project',  {'name': project.project_name, 
+                                        'pid':project.projectid, 
+                                        'owner': project.owner_name, 
+                                        'participants': project.participants,
+                                        'YouTubeLink': project.youtube});
         }
     );
     const xml = root.end({ pretty: true});

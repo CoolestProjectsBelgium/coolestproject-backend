@@ -226,6 +226,26 @@ const adminBroOptions = {
       } 
     },
     { 
+      resource: db.UserProjectVideo, 
+      options: {
+        name: "Alle projecten met youtube link",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
       resource: db.UserProjectViewAll, 
       options: {
         name: "Alle projecten met/zonder medewerker",
