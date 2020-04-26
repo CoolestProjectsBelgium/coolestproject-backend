@@ -11,11 +11,9 @@ router.get('/projects', async function (req, res) {
     var root = create('projects');
 
     var projects = await dba.getProjects();
-    projects.every(
-        function (project) {
-            root.root().ele('project',  {'name': project.project_name, 'owner': project.owner_name, 'participants': project.participants});
-        }
-    );
+    for(project of projects){
+        root.root().ele('project',  {'name': project.get('project_name'),'descr': project.get('project_descr'), 'owner': project.owner.get('name'), 'link': process.env.GOOGLE_LINK + '&t=' + project.get('offset') + 's'});
+    }
     const xml = root.end({ pretty: true});
     res.send(xml)
 })
