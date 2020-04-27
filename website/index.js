@@ -4,7 +4,7 @@ var dba = require('../service/DBService');
 
 var router = express.Router()
 
-router.get('/projects', async function (req, res) {
+router.get('/projects.xml', async function (req, res) {
     res.set('Content-Type', 'text/xml');
 
     const { create } = require('xmlbuilder');
