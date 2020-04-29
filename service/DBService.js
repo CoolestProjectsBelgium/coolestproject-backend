@@ -346,7 +346,7 @@ module.exports = {
      * @returns {Project}
      */
     async getProjects() {
-       return await UserProjectVideo.findAll();
-    },
+        return await UserProjectVideo.findAll({where: {info:  "movie_received"}});
+     },
     
 };

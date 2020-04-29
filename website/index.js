@@ -8,15 +8,17 @@ router.get('/projects.xml', async function (req, res) {
     res.set('Content-Type', 'text/xml');
 
     const { create } = require('xmlbuilder');
-    var root = create('projects');
+    var root = create('projects.xml');
 
     var projects = await dba.getProjects();
     for(project of projects){
         root.root().ele('project',  {'ProjectName': project.get('project_name'),
-                                    'ProjectId': project.get('projectid'), 
-                                    'ProjectOwner': project.get('owner_name'), 
-                                    'Participants': project.get('participants'), 
-                                    'link': process.env.GOOGLE_LINK + '&t=' + project.get('offset') + 's'});
+                                    'ProjectID': project.get('ProjectID'),
+                                    'participants': project.get('participants'), 
+                                    'link': process.env.GOOGLE_LINK + '&t=' + project.get('OFFSET') + 's',
+                                    'Description': project.get('project_descr')
+                                    }
+                                );
     }
     const xml = root.end({ pretty: true});
     res.send(xml)
