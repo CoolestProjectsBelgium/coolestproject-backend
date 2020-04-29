@@ -1,26 +1,29 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UserProjectVideo = sequelize.define('UserProjectVideo', {
-    offset: {
+    OFFSET: {
       type: DataTypes.STRING,
     },
     project_name: {
       type: DataTypes.STRING,
     },
-    projectid: {
+    project_descr: {
+      type: DataTypes.STRING,
+    },
+    ProjectID: {
       type: DataTypes.STRING,
       primaryKey: true
-    },
-    owner_name: {
-        type: DataTypes.STRING
     },
     participants: {
         type: DataTypes.STRING
     },
+    info: {
+      type: DataTypes.STRING
+    },
     youtube: {
-      type: DataTypes.STRING,
+      type: DataTypes.VIRTUAL,
       get(){
-       return process.env.GOOGLE_LINK + "&t=" + this.getDataValue('offset');
+       return process.env.GOOGLE_LINK + "&t=" + this.getDataValue('OFFSET');
       }
     },
   }, {
