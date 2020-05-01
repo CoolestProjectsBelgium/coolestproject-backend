@@ -153,7 +153,7 @@ const adminBroOptions = {
           medical: { type: 'richtext' },
           internalu: { type: 'richtext' },
           last_token: { isVisible: false },
-          id: { isVisible: { list: false } },
+          id: { isVisible: { list: true } },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
          /* photo_allowed: {
