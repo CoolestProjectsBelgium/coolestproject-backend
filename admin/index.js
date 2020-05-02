@@ -116,6 +116,7 @@ const adminBroOptions = {
     { 
       resource: db.User, 
       options: {
+        listProperties: ['email', 'id', 'firstname','lastname','residence','gsm','email_guardian','gsm_guardian'],
         actions: {
           export: {
             actionType: 'resource',
@@ -123,26 +124,6 @@ const adminBroOptions = {
             icon: 'fas fa-file-export',
             isVisible: true,
             handler: async (request, response, data) => {
-              /*
-              if (!request.params.recordId || !data.record) {
-                throw new NotFoundError([
-                  'You have to pass "recordId" to Mail Action',
-                ].join('\n'), 'Action#handler')
-              } 
-              try {
-                // test
-              } catch (error) {
-                if (error instanceof ValidationError && error.baseError) {
-                  return {
-                    record: data.record.toJSON(data.currentAdmin),
-                    notice: {
-                      message: error.baseError.message,
-                      type: 'error',
-                    },
-                  }
-                }
-                throw error
-              }*/
               return {}
             },
             component: AdminBro.bundle('../admin_components/export'),
@@ -153,7 +134,6 @@ const adminBroOptions = {
           medical: { type: 'richtext' },
           internalu: { type: 'richtext' },
           last_token: { isVisible: false },
-          id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
          /* photo_allowed: {
@@ -170,6 +150,7 @@ const adminBroOptions = {
     { 
       resource: db.Voucher, 
       options: {
+        listProperties: ['id','participantId','projectId'],
         actions: {
           edit: {
             isVisible: false
