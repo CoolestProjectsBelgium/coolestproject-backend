@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.addColumn('Users', 'house_number', Sequelize.STRING(20));
     await queryInterface.addColumn('Users', 'bus_number', Sequelize.STRING(20));
 
-    await queryInterface.addColumn('Projects', 'info', Sequelize.ENUM('movie_received'));
+    await queryInterface.addColumn('Projects', 'info', Sequelize.ENUM('','movie_received'));
 
     await queryInterface.addColumn('Registrations', 'street', Sequelize.STRING(254));
     await queryInterface.addColumn('Registrations', 'house_number', Sequelize.STRING(20));
