@@ -12,6 +12,7 @@ const Voucher = models.Voucher;
 const Registration = models.Registration;
 const UserProjectViewAll = models.UserProjectViewAll;
 const UserProjectVideo = models.UserProjectVideo;
+const UserProjectVideoNew = models.UserProjectVideoNew;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 
@@ -342,11 +343,18 @@ module.exports = {
         await user.save();
     },
     /**
-     * Get lists of projects, with link for website
-     * @returns {Project}
+     * Get lists of projects, with link for website, first and last name
+     * @returns {Project.xml}
      */
     async getProjects() {
         return await UserProjectVideo.findAll({where: {info:  "movie_received"}});
+     },
+         /**
+     * Get lists of projects, with link for website, no lastname + age
+     * @returns {ProjectNew.xml}
+     */
+    async getProjectsNew() {
+        return await UserProjectVideoNew.findAll({where: {info:  "movie_received"}});
      },
     
 };

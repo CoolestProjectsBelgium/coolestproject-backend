@@ -114,7 +114,6 @@ app.get('/download', function (req, res) {
 const websiteIntegration = require('./website');
 app.use('/website', websiteIntegration);
 
-
 // enable admin UI
 const adminUI = require('./admin');
 app.use('/admin', adminUI);

@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null
     },
     info: {
-      type: DataTypes.ENUM('movie_received'),
+      type: DataTypes.ENUM('','movie_received'),
       allowNull: true
     }, 
     project_lang: {

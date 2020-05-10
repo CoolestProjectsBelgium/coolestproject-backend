@@ -4,10 +4,7 @@
 // https://docs.google.com/spreadsheets/u/0/create?usp=sheets_home&ths=true
 var back;
 const vname8 = 'userprojectvideo';
-/*
-const query8 = 'SELECT `Projects`.`project_name` AS `project_name`,`Projects`.`id` AS `projectId`,`Projects`.`offset` AS `offset`,concat_ws(" ",`owner`.`firstname`,`owner`.`lastname`) AS `owner_name`,group_concat(concat_ws(" " ,`Participants`.`firstname`,`Participants`.`lastname`) separator ",") AS `participants`," " AS `youtube` from (((`Projects` join `Users` `owner` on(`Projects`.`ownerId` = `owner`.`id`)) left join `Vouchers` on(`Vouchers`.`projectId` = `Projects`.`id`)) left join `Users` `Participants` on(`Participants`.`id` = `Vouchers`.`participantId`)) group by `Projects`.`project_name`';
-*/
-const query8 = 'SELECT `p`.`id` AS `ProjectID`,`p`.`project_name` AS `project_name`,concat(concat_ws(" ",`o`.`firstname`,`o`.`lastname`),concat(if(count(`pa`.`id`) > 0,",",""),group_concat(concat_ws(" ",`pa`.`firstname`,`pa`.`lastname`) separator ","))) AS `participants`,`p`.`project_descr` AS `project_descr`,`p`.`offset` AS `OFFSET`,`p`.`info` AS `info` FROM (((`projects` `p` join `users` `o` on(`o`.`id` = `p`.`ownerId`)) left join `vouchers` `v` on(`v`.`projectId` = `p`.`id` and `v`.`participantId` <> 0)) left join `users` `pa` on(`v`.`participantId` = `pa`.`id`)) GROUP BY `p`.`id`'
+const query8 = 'SELECT `p`.`id` AS `ProjectID`,`p`.`project_name` AS `project_name`,concat(concat_ws(" ",`o`.`firstname`,`o`.`lastname`),concat(if(count(`pa`.`id`) > 0,", ",""),group_concat(concat_ws(" ",`pa`.`firstname`,`pa`.`lastname`) separator ", "))) AS `participants`,`p`.`project_descr` AS `project_descr`,`p`.`offset` AS `OFFSET`,`p`.`info` AS `info` FROM (((`projects` `p` join `users` `o` on(`o`.`id` = `p`.`ownerId`)) left join `vouchers` `v` on(`v`.`projectId` = `p`.`id` and `v`.`participantId` <> 0)) left join `users` `pa` on(`v`.`participantId` = `pa`.`id`)) GROUP BY `p`.`id`'
 
 module.exports = {
   async up(queryInterface, Sequelize) {
