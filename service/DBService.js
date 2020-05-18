@@ -353,10 +353,10 @@ module.exports = {
      * Get lists of projects, with link for website, no lastname + age
      * @returns {ProjectNew.xml}
      */
-    /*
+    
     async getProjectsNew() {
         return await UserProjectVideoNew.findAll({where: {info:  "movie_received"}});
      },
-    //  
+      
     
 };
