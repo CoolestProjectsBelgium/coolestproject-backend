@@ -25,6 +25,7 @@ router.get('/projects.xml', async function (req, res) {
 })
 
 module.exports = router
+/*
 router.get('/projectsNew.xml', async function (req, res) {
     res.set('Content-Type', 'text/xml');
 
@@ -46,5 +47,5 @@ router.get('/projectsNew.xml', async function (req, res) {
 })
 
 module.exports = router
-
+*/
 
