@@ -4,7 +4,7 @@
   "description": "Coolest project event website",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm install",
+    "prestart": "sh ./start.sh",
     "start": "node index.js",
     "dev": "nodemon -r dotenv/config index.js",
     "dev2": "node -r dotenv/config index.js"
@@ -18,7 +18,7 @@
     "admin-bro": "*",
     "admin-bro-expressjs": "*",
     "admin-bro-sequelizejs": "*",
-    "bcrypt": "^4.0.0",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "connect": "^3.2.0",
     "connect-session-sequelize": "^6.1.1",
