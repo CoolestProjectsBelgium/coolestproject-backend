@@ -38,9 +38,9 @@ module.exports = {
             }
         }
     */
-   async createUserWithProject(userProject, registrationId) {
+    async createUserWithProject(userProject, registrationId) {
         var transaction = await sequelize.transaction();
-        var user = await User.create(userProject, { include: ['project'], transaction: transaction});
+        var user = await User.create(userProject, { include: ['project'], transaction: transaction });
         await Registration.destroy({ where: { id: registrationId }, transaction: transaction });
         await transaction.commit();
         return user;
@@ -86,7 +86,7 @@ module.exports = {
     async updateUser(changedFields, userId) {
         var user = await User.findByPk(userId);
         var result = await user.update(changedFields);
-        if(result === false){
+        if (result === false) {
             throw new Error('Update failed');
         }
         return result;
@@ -99,14 +99,14 @@ module.exports = {
     async getRegistration(registrationId) {
         var registration = await Registration.findByPk(registrationId);
         return registration
-    },    
+    },
     /**
      * Delete a user
      * @param {Number} userId 
      */
     async deleteUser(userId) {
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
-        if(project !== null) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+        if (project !== null) {
             logger.info("Project found: " + project.id);
             var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
             if (usedVoucher > 0) {
@@ -138,17 +138,17 @@ module.exports = {
      * @param {Number} userId 
      */
     async updateProject(changedFields, userId) {
-        var project = await Project.findOne({ where: { ownerId: userId }});
+        var project = await Project.findOne({ where: { ownerId: userId } });
         var result = project.update(changedFields);
-        if(result === false){
+        if (result === false) {
             throw new Error('Update failed');
         }
         return result;
     },
     async isUserDeletable(userId) {
         var result = true;
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
-        if(project !== null) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+        if (project !== null) {
             logger.info("Project found: " + project.id);
             var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
             if (usedVoucher > 0) {
@@ -164,8 +164,8 @@ module.exports = {
     async deleteProject(userId) {
         // delete project or voucher
         // only possible when there are no used vouchers
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
-        if(project !== null) {
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+        if (project !== null) {
             logger.info("Project found: " + project.id);
             var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
             if (usedVoucher > 0) {
@@ -184,7 +184,7 @@ module.exports = {
      * @returns {Voucher}
      */
     async createVoucher(userId) {
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         logger.info("Project found: " + project.id);
 
         var totalVouchers = await Voucher.count({ where: { projectId: project.id } });
@@ -201,7 +201,7 @@ module.exports = {
             });
         });
         return await Voucher.create({ projectId: project.id, id: token });
-    },    
+    },
     /**
      * Delete a participant from a project
      * @param {Number} projectId 
@@ -237,11 +237,11 @@ module.exports = {
     async createRegistration(registration) {
         return await Registration.create(registration);
     },
-        /**
-     * Get registration
-     * @param {Registration} registration
-     * @returns {Registration}
-     */
+    /**
+ * Get registration
+ * @param {Registration} registration
+ * @returns {Registration}
+ */
     async getRegistration(registrationId) {
         return await Registration.findByPk(registrationId);
     },
@@ -251,7 +251,7 @@ module.exports = {
      * @returns {Registration}
      */
     async getUser(userId) {
-        return await User.findByPk(userId);
+        return User.findByPk(userId);
     },
     /**
      * Add registration
@@ -259,15 +259,17 @@ module.exports = {
      * @returns {Registration}
      */
     async getVouchers(userId) {
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id']});
+        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         let vouchers = [];
         if (project !== null) {
             logger.info("Project found: " + project.id);
-            vouchers = await Voucher.findAll({ where: { projectId: project.id }, attributes: ['id'], include: [{
-                model: User,
-                as: 'participant',
-                attributes: ['firstname', 'lastname']
-            }]});
+            vouchers = await Voucher.findAll({
+                where: { projectId: project.id }, attributes: ['id'], include: [{
+                    model: User,
+                    as: 'participant',
+                    attributes: ['firstname', 'lastname']
+                }]
+            });
         }
         return vouchers;
     },
@@ -278,31 +280,37 @@ module.exports = {
      */
     async getProject(userId) {
         // first look for own project
-        let project = await Project.findOne({ where: { ownerId: userId }, include: [
-            { model: Voucher, 
-                include: [
-                    { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
-                ] 
-            },
-            { model: User, as: 'owner', attributes: ['firstname', 'lastname'] } 
-        ]});
+        let project = await Project.findOne({
+            where: { ownerId: userId }, include: [
+                {
+                    model: Voucher,
+                    include: [
+                        { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
+                    ]
+                },
+                { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
+            ]
+        });
         // check other project via voucher
         if (project === null) {
-            const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId']});
+            const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId'] });
             if (voucher !== null) {
                 logger.info("Project found: " + voucher.projectId);
-                project = await Project.findByPk(voucher.projectId, { include: [
-                    { model: Voucher, 
-                        include: [
-                            { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
-                        ] 
-                    },
-                { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
-                ]});
+                project = await Project.findByPk(voucher.projectId, {
+                    include: [
+                        {
+                            model: Voucher,
+                            include: [
+                                { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
+                            ]
+                        },
+                        { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
+                    ]
+                });
             }
         }
         return project;
-    },   
+    },
     /**
      * Check if email adress exists in User records table
      * @param {String} email
@@ -327,7 +335,7 @@ module.exports = {
                     {
                         email_guardian: email
                     }
-                ]    
+                ]
             }
         });
     },
@@ -335,7 +343,7 @@ module.exports = {
      * Update token
      * @param {User} user
      */
-    async updateLastToken(user){
+    async updateLastToken(user) {
         user.last_token = new Date();
         await user.save();
     }

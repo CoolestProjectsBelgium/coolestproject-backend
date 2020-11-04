@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 
+const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -10,103 +11,63 @@ const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 
-//
-//const BasicStrategy = require('passport-http').BasicStrategy;
-
-//const session = require("express-session");
-//
-//const SequelizeStore = require('connect-session-sequelize')(session.Store);
-//const Sequelize = require('sequelize');
-
-const models = require('./models');
-//const sequelize = models.sequelize;
-
-const Account = models.Account
-
-/*
-const sessionStore = new SequelizeStore({db: sequelize});
-
-app.use(express.static("public"));
-app.use(session({ secret: process.env.SECRET_KEY, cookie: { secure: true }, maxAge:null, store: sessionStore, resave: false, saveUninitialized: true }));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser(function(user, done) {
-  done(null, user.username);
-});
-
-passport.deserializeUser(async function(username, done) {
-  try {
-    const user = await Account.findOne({ where: { username: username }});
-    if (!user) { return done(null, false); }
-    if (!user.verifyPassword(password)) { return done(null, false); }
-    done(null, user);
-  } catch(err) {
-    return done(err);
-  }
-});
-
-passport.use(new BasicStrategy(
-  async function(username, password, done) {
-    try {
-      const user = await Account.findOne({ where: { username: username }});
-      if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
-      done(null, user);
-    } catch(err) {
-      return done(err);
-    }
-  }
-));
-
-app.use('/admin', passport.authenticate('basic', {}));
-
+const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
+const dba = require('./service/DBService');
 
-const passport = require('passport');
+// JWT token via passport logic (move outside of swagger implementation)
+app.use(passport.initialize());
+app.use(passport.session());
 
-var opts = {}
-opts.jwtFromRequest = ExtractJwt.fromBodyField("jwt");
+const opts = {}
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.SECRET_KEY;
-
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-  console.log(jwt_payload);
-  return done(null, {});
+passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
+  try {
+    const user = await dba.getUser(jwt_payload.id);
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false);
+    }
+  } catch (err) {
+    return done(err, false);
+  }
 }));
 
-app.use('/userinfo', function(req, res, next) {
-  passport.authenticate('jwt', {session: false}, function(err, user, info) {
-    if (err) return next(err);
-    next();
-  })(req, res, next);
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
 });
 
-app.use('/participants', function(req, res, next) {
-  passport.authenticate('jwt', {session: false}, function(err, user, info) {
-    if (err) return next(err);
-    next();
-  })(req, res, next);
+passport.deserializeUser(async function (id, done) {
+  try {
+    const user = await dba.getUser(user.id);
+    return done(null, user);
+  } catch (err) {
+    return done(err, false);
+  }
 });
 
-app.use('/projectinfo', function(req, res, next) {
-  passport.authenticate('jwt', {session: false}, function(err, user, info) {
-    if (err) return next(err);
-    next();
-  })(req, res, next);
-});
+const corsOptions = {
+  origin: process.env.URL,
+  optionsSuccessStatus: 200
+}
 
-app.use(passport.initialize());
-*/
+app.use(cors(corsOptions))
+
+/*
 app.get('/download', function (req, res) {
-  res.setHeader('Content-Disposition','attachment; filename="text.txt"');
+  res.setHeader('Content-Disposition', 'attachment; filename="text.txt"');
   res.send('hello world');
   res.sendStatus(200);
-})
+}) */
+
+// secured by JWT tokens
+app.use('/userinfo', passport.authenticate('jwt'))
+app.use('/projectinfo', passport.authenticate('jwt'))
+app.use('/participants', passport.authenticate('jwt'))
 
 // enable admin UI
 const adminUI = require('./admin');
@@ -115,7 +76,7 @@ app.use('/admin', adminUI);
 //enable i18n
 const i18n = require("i18n")
 i18n.configure({
-  locales:['en', 'nl', 'fr'],
+  locales: ['en', 'nl', 'fr'],
   directory: __dirname + '/locales'
 });
 
@@ -127,7 +88,7 @@ var options = {
 };
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
-var spec = fs.readFileSync(path.join(__dirname,'api/swagger.yaml'), 'utf8');
+var spec = fs.readFileSync(path.join(__dirname, 'api/swagger.yaml'), 'utf8');
 var swaggerDoc = jsyaml.safeLoad(spec);
 
 // Initialize the Swagger middleware

@@ -12,14 +12,10 @@ var dba = require('../service/DBService');
  *
  * returns User
  **/
-exports.userinfoGET = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoGET = function (user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info("LoginToken:"+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id:' + token.id);     
-      var user = await dba.getUser(token.id);
-      logger.info("LoginLanguage:"+user.language+" email:"+user.email);
+      logger.info("LoginLanguage:" + user.language + " email:" + user.email);
       resolve({
         language: user.language,
         firstname: user.firstname,
@@ -35,7 +31,8 @@ exports.userinfoGET = function(loginToken) {
         postalcode: user.postalcode,
         email: user.email,
         email_guardian: user.email_guardian,
-        delete_possible: await dba.isUserDeletable(user.id) });
+        delete_possible: await dba.isUserDeletable(user.id)
+      });
 
     } catch (ex) {
       logger.error(ex);
@@ -52,13 +49,9 @@ exports.userinfoGET = function(loginToken) {
  *
  * returns User
  **/
-exports.userinfoPATCH = function(loginToken, user) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoPATCH = function (logged_in_user, user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-
       // remove fields that are not allowed to change (be paranoid)
       delete user.email;
       delete user.mandatory_approvals;
@@ -68,11 +61,11 @@ exports.userinfoPATCH = function(loginToken, user) {
         logger.info('tshirt date is passed');
         delete user.t_size;
       }
-      
+
       // cleanup guardian fields when not needed anymore
       const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
-      console.log("minGuardian:"+minGuardian+"this.birthmonth:"+parseISO(user.birthmonth))
-      if (minGuardian > parseISO(user.birthmonth)) { 
+      console.log("minGuardian:" + minGuardian + "this.birthmonth:" + parseISO(user.birthmonth))
+      if (minGuardian > parseISO(user.birthmonth)) {
         logger.info('remove guardian information');
         user.gsm_guardian = null;
         user.email_guardian = null;
@@ -110,14 +103,10 @@ exports.userinfoPATCH = function(loginToken, user) {
  *
  * returns User
  **/
-exports.userinfoDELETE = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoDELETE = function (logged_in_user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-
-      var u = await dba.deleteUser(token.id);
+      var u = await dba.deleteUser(logged_in_user.id);
       resolve(u);
     } catch (ex) {
       logger.error(ex);
