@@ -13,28 +13,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    internalp: {
-      type: DataTypes.STRING(1000),
-      defaultValue: null
-    }, 
     project_lang: {
-      type: DataTypes.ENUM('nl','fr','en'),
+      type: DataTypes.ENUM('nl', 'fr', 'en'),
       validate: {
-        isIn: [['nl','fr','en']]
+        isIn: [['nl', 'fr', 'en']]
       }
+    },
+    max_tokens: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {});
-  Project.associate = function(models) {
+  Project.associate = function (models) {
     Project.belongsTo(models.User, { as: 'owner' });
     Project.belongsToMany(models.User, {
-        as: 'participant',
-        through: {
-          model: models.Voucher,
-          unique: false
-        },
-        foreignKey: 'participantId',
-        otherKey: 'projectId',
-        constraints: false
+      as: 'participant',
+      through: {
+        model: models.Voucher,
+        unique: false
+      },
+      foreignKey: 'participantId',
+      otherKey: 'projectId',
+      constraints: false
     })
     Project.hasMany(models.Voucher, { foreignKey: 'projectId' })
   };

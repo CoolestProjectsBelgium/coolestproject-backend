@@ -3,9 +3,9 @@
 const logger = require('pino')()
 const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+var dba = require('../dba');
 
-async function getProjectDetails (userId) {
+async function getProjectDetails(userId) {
   const project = await dba.getProject(userId);
   if (project !== null) {
     const ownProject = (userId === project.ownerId);
@@ -26,7 +26,7 @@ async function getProjectDetails (userId) {
       if (!ownProject && voucher.participant === null) {
         return
       }
-      let line = {}      
+      let line = {}
       if (voucher.participant) {
         line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
         if (userId === voucher.participant.id) {
@@ -48,7 +48,7 @@ async function getProjectDetails (userId) {
     }
 
     //delete is not possible when there are participants & it's your own project
-    projectResult.delete_possible = ( ownProject && (assignedTokens === 0) ) || !ownProject;
+    projectResult.delete_possible = (ownProject && (assignedTokens === 0)) || !ownProject;
 
     return projectResult;
   }
@@ -60,8 +60,8 @@ async function getProjectDetails (userId) {
  * projectId Integer projectid.
  * returns Project
  **/
-exports.projectinfoGET = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoGET = function (loginToken) {
+  return new Promise(async function (resolve, reject) {
     try {
       logger.info("LoginToken:" + loginToken);
       var token = await TokenService.validateToken(loginToken);
@@ -82,10 +82,10 @@ exports.projectinfoGET = function(loginToken) {
  *
  * returns Project
  **/
-exports.projectinfoPATCH = function(loginToken, project) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoPATCH = function (loginToken, project) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
+      logger.info('LoginToken: ' + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       await dba.updateProject(project, token.id);
@@ -105,13 +105,13 @@ exports.projectinfoPATCH = function(loginToken, project) {
  *
  * returns Project
  **/
-exports.projectinfoPOST = function(loginToken, project) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoPOST = function (loginToken, project) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
+      logger.info('LoginToken: ' + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
-      if(project.project_code){
+      if (project.project_code) {
         await dba.addParticipantProject(token.id, project.project_code);
       } else {
         await dba.createProject(project, token.id);
@@ -132,10 +132,10 @@ exports.projectinfoPOST = function(loginToken, project) {
  *
  * returns User
  **/
-exports.projectinfoDELETE = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoDELETE = function (loginToken) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
+      logger.info('LoginToken: ' + loginToken);
       var token = await TokenService.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var u = await dba.deleteProject(token.id);

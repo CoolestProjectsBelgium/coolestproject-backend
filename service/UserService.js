@@ -5,7 +5,7 @@ const parseISO = require('date-fns/parseISO')
 const logger = require('pino')()
 const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+var dba = require('../dba');
 
 /**
  * get userinfo for the logged in user

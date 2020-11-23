@@ -98,3 +98,5 @@ export DB=mysql://coolestproject:***@***/coolestproject
 npx sequelize db:migrate 
 npx sequelize db:migrate:undo
 ```
+
+## npx sequelize db:seed:all

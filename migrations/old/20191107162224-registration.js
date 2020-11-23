@@ -54,10 +54,10 @@ module.exports = {
       },
       t_size: {
         type: Sequelize.ENUM(
-          'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
-          'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
-          'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
-          'male_medium','male_large','male_xl','male_xxl','male_3xl'
+          'female_M116', 'female_M122', 'female_M128', 'female_M134', 'female_M146', 'female_M152', 'female_M158', 'female_M164',
+          'female_M170', 'female_M176', 'female_medium', 'female_large', 'female_xl', 'male_M116', 'male_M122', 'male_M128', 'male_M134',
+          'male_M140', 'male_M146', 'male_M152', 'male_M158', 'male_M164', 'male_M170', 'male_M176', 'male_Xsmall', 'male_small',
+          'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
         ),
         allowNull: false
       },
@@ -80,7 +80,7 @@ module.exports = {
         type: Sequelize.STRING(100)
       },
       project_lang: {
-        type: Sequelize.ENUM('nl','fr','en')
+        type: Sequelize.ENUM('nl', 'fr', 'en')
       },
       gsm: {
         type: Sequelize.STRING(13)
@@ -151,10 +151,10 @@ module.exports = {
       },
       t_size: {
         type: Sequelize.ENUM(
-          'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
-          'female_M170','female_M176','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
-          'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
-          'male_medium','male_large','male_xl','male_xxl','male_3xl'    
+          'female_M116', 'female_M122', 'female_M128', 'female_M134', 'female_M146', 'female_M152', 'female_M158', 'female_M164',
+          'female_M170', 'female_M176', 'female_medium', 'female_large', 'female_xl', 'male_M116', 'male_M122', 'male_M128', 'male_M134',
+          'male_M140', 'male_M146', 'male_M152', 'male_M158', 'male_M164', 'male_M170', 'male_M176', 'male_Xsmall', 'male_small',
+          'male_medium', 'male_large', 'male_xl', 'male_xxl', 'male_3xl'
         ),
         allowNull: false
       },
@@ -203,7 +203,7 @@ module.exports = {
         allowNull: true
       },
       project_lang: {
-        type: Sequelize.ENUM('nl','fr','en'),
+        type: Sequelize.ENUM('nl', 'fr', 'en'),
         allowNull: false
       },
       ownerId: {
@@ -214,9 +214,9 @@ module.exports = {
           as: 'ownerId'
         },
         onDelete: 'cascade',
-        allowNull: false        
+        allowNull: false
       }
-    }); 
+    });
 
     await queryInterface.createTable('Vouchers', {
       id: {
@@ -240,7 +240,7 @@ module.exports = {
           as: 'projectId'
         },
         onDelete: 'cascade',
-        allowNull: false 
+        allowNull: false
       },
       participantId: {
         type: Sequelize.INTEGER,
@@ -250,13 +250,13 @@ module.exports = {
           as: 'participantId'
         },
         onDelete: 'cascade',
-        allowNull: true 
+        allowNull: true
       }
-    });    
+    });
 
     await queryInterface.addConstraint(
       'Vouchers',
-      ['projectId','participantId'],
+      ['projectId', 'participantId'],
       {
         type: 'unique',
         name: 'project_participants'

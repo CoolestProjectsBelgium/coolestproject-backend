@@ -8,9 +8,6 @@ const path = require('path');
 const transport = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
- // debug: true,
- // authMethod: 'LOGIN',
- // requiredTLS: true,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
@@ -18,6 +15,16 @@ const transport = nodemailer.createTransport({
 });
 
 module.exports = {
+  async welcomeMailOwner(participant) {
+
+  },
+  async welcomeMailParticipant(user) {
+
+  },
+  async registrationMail(user, registrationToken) {
+
+  }
+  /*
   async registrationMail(user, registrationToken) {
     const email = new Email({
       message: {
@@ -26,13 +33,13 @@ module.exports = {
       send: true, // This opens the browser to show the mail
       transport: transport,
       i18n: {
-        locales:['en', 'nl', 'fr'],
+        locales: ['en', 'nl', 'fr'],
         directory: path.join(__dirname, '..', 'locales')
       }
     });
     const token = await registrationToken
     var result = await email.send({
-      template: user.language +'_A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
+      template: user.language + '_A1_VraagVoorActivatie',//'A2_WelcomeNaActivatie','A1_VraagVoorActivatie', 'A3_DeleteProject,
       message: {
         to: user.email,
         cc: user.email_guardian
@@ -47,22 +54,22 @@ module.exports = {
     });
     return result;
   },
-  async loginMail(user,token) {
-      console.log("Login requested sent to "+user.email+" env:"+env)
-      const email = new Email({
+  async loginMail(user, token) {
+    console.log("Login requested sent to " + user.email + " env:" + env)
+    const email = new Email({
       message: {
         from: process.env.EMAIL,
       },
       send: true, // This opens the browser to show the mail
       transport: transport,
       i18n: {
-        locales:['en', 'nl', 'fr'],
+        locales: ['en', 'nl', 'fr'],
         directory: path.join(__dirname, '..', 'locales')
       }
     });
 
     var result = await email.send({
-      template: user.language +'_A4_VraagToken',
+      template: user.language + '_A4_VraagToken',
       message: {
         to: user.email,
         cc: user.email_guardian
@@ -83,13 +90,13 @@ module.exports = {
       send: true, // This opens the browser to show the mail ....
       transport: transport,
       i18n: {
-        locales:['en', 'nl', 'fr'],
+        locales: ['en', 'nl', 'fr'],
         directory: path.join(__dirname, '..', 'locales')
       }
     });
 
     var result = await email.send({
-      template: user.language +'_A2_WelcomeNaActivatie',
+      template: user.language + '_A2_WelcomeNaActivatie',
       message: {
         to: user.email,
         cc: user.email_guardian
@@ -97,11 +104,12 @@ module.exports = {
       locals: {
         locale: user.language,
         name: user.firstname, //+ ' ' + user.lastname,
-        cpid: "CP."+user.project.id,
+        cpid: "CP." + user.project.id,
         cptitle: user.project.project_name,
         urlActivated: process.env.URL + 'login?token=' + token
       }
     });
     return result;
   }
+  */
 }

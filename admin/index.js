@@ -4,9 +4,9 @@ const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
-var dba = require('../service/DBService');
+var dba = require('../dba');
 const sequelize = db.sequelize;
-const sessionStore = new SequelizeStore({db: sequelize});
+const sessionStore = new SequelizeStore({ db: sequelize });
 var MailService = require('../service/MailService');
 var TokenService = require('../service/TokenService');
 var stream = require('stream');
@@ -28,8 +28,8 @@ const adminBroOptions = {
     companyName: 'Coolest Projects',
   },
   resources: [
-    { 
-      resource: db.Registration, 
+    {
+      resource: db.Registration,
       options: {
         actions: {
           new: {
@@ -40,7 +40,7 @@ const adminBroOptions = {
             label: 'Resend confirmation mail',
             icon: 'fas fa-envelope',
             isVisible: true,
-            handler: async (request, response, data) => {
+            handler: async (request, response, data) => { /*
               if (!request.params.recordId || !data.record) {
                 throw new NotFoundError([
                   'You have to pass "recordId" to Mail Action',
@@ -51,13 +51,13 @@ const adminBroOptions = {
                 const register = await dba.getRegistration(request.params.recordId)
                 MailService.registrationMail(register, registrationToken);
               } catch (error) {
-                  return {
-                    record: data.record.toJSON(data.currentAdmin),
-                    notice: {
-                      message: error,
-                      type: 'error',
-                    },
-                  }
+                return {
+                  record: data.record.toJSON(data.currentAdmin),
+                  notice: {
+                    message: error,
+                    type: 'error',
+                  },
+                }
               }
               return {
                 record: data.record.toJSON(data.currentAdmin),
@@ -65,36 +65,39 @@ const adminBroOptions = {
                   message: 'Re-registration mail sent',
                   type: 'success',
                 },
-              }
+              } */
             },
             component: false,
           }
         },
         properties: {
-          // createdAt: { isVisible: { list: false } },
-          // updatedAt: { isVisible: { list: false } }
+          mandatory_approvals: { isArray: true, availableValues: [{ "label": "ok", "value": "ok" }] },
+          general_questions: {
+            isArray: true, availableValues: [{ "label": "photo", "value": "photo" }
+              , { "label": "contact", "value": "contact" }, { "label": "no_photo", "value": "no_photo" }, { "label": "no_contact", "value": "no_contact" }]
+          }
         }
-      } 
+      }
     },
-    { 
-    resource: db.Session, 
+    {
+      resource: db.Session,
       options: {
         parent: internalParent,
         actions: {
           new: {
             isVisible: false
           }
-        } 
+        }
       }
     },
-    { 
-      resource: db.Account, 
-        options: {
-          parent: internalParent
-      } 
+    {
+      resource: db.Account,
+      options: {
+        parent: internalParent
+      }
     },
-    { 
-      resource: db.Project, 
+    {
+      resource: db.Project,
       options: {
         actions: {
           new: {
@@ -102,69 +105,30 @@ const adminBroOptions = {
           }
         },
         properties: {
-          internalp: { type: 'richtext' },
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } },
-          internalp: { type: 'richtext' }
         }
-      } 
+      }
     },
-    { 
-      resource: db.User, 
+    {
+      resource: db.User,
       options: {
-        actions: {
-          export: {
-            actionType: 'resource',
-            label: 'Export',
-            icon: 'fas fa-file-export',
-            isVisible: true,
-            handler: async (request, response, data) => {
-              /*
-              if (!request.params.recordId || !data.record) {
-                throw new NotFoundError([
-                  'You have to pass "recordId" to Mail Action',
-                ].join('\n'), 'Action#handler')
-              } 
-              try {
-                // test
-              } catch (error) {
-                if (error instanceof ValidationError && error.baseError) {
-                  return {
-                    record: data.record.toJSON(data.currentAdmin),
-                    notice: {
-                      message: error.baseError.message,
-                      type: 'error',
-                    },
-                  }
-                }
-                throw error
-              }*/
-              return {}
-            },
-            component: AdminBro.bundle('../admin_components/export'),
-          }
-        },
         properties: {
           via: { type: 'richtext' },
           medical: { type: 'richtext' },
-          internalu: { type: 'richtext' },
+          mandatory_approvals: { isArray: true, availableValues: [{ "label": "ok", "value": "ok" }] },
+          general_questions: {
+            isArray: true, availableValues: [{ "label": "photo", "value": "photo" }
+              , { "label": "contact", "value": "contact" }, { "label": "no_photo", "value": "no_photo" }, { "label": "no_contact", "value": "no_contact" }]
+          },
           last_token: { isVisible: false },
-          id: { isVisible: { list: false } },
           createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-         /* photo_allowed: {
-            components: {
-              show: AdminBro.bundle('./admin_components/photos_allowed')
-            },
-            isVisible: {
-              show: true, view: false, edit: false, filter: false,
-            }
-          } */
+          updatedAt: { isVisible: { list: false } }
         }
-      } 
+      }
     },
-    { 
-      resource: db.Voucher, 
+    {
+      resource: db.Voucher,
       options: {
         actions: {
           edit: {
@@ -178,148 +142,7 @@ const adminBroOptions = {
           createdAt: { isVisible: { list: false } },
           updatedAt: { isVisible: { list: false } }
         }
-      } 
-    },
-    { 
-      resource: db.useronly, 
-      options: {
-        name: "Users zonder project of medewerker)",
-        listProperties: ['id', 'firstname', 'lastname', 'email'],
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-     { 
-      resource: db.UserProjectView, 
-      options: {
-        name: "Projecten met medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserProjectViewAll, 
-      options: {
-        name: "Alle projecten met/zonder medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.tshirtsizes, 
-      options: {
-        name: "Aantal T-shirts per maat",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserNames, 
-      options: {
-        name: "Lijst gebruikers voor naam label",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.sex, 
-      options: {
-        name: "Aantal jongens/meisjes",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.taal, 
-      options: {
-        name: "Aantal talen",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
+      }
     }
   ]
 }
@@ -328,8 +151,8 @@ AdminBro.registerAdapter(AdminBroSequelize)
 const adminBro = new AdminBro(adminBroOptions);
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
   async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email }});
-    if(!user) { return null }
+    const user = await db.Account.findOne({ where: { email: email } });
+    if (!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
     return { 'email': user.email };
   },

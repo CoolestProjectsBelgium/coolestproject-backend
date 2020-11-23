@@ -8,7 +8,9 @@ const parseISO = require('date-fns/parseISO')
 logger.debug('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
 logger.debug('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
 
-
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   const Registration = sequelize.define('Registration', {
     language: {
@@ -49,50 +51,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     general_questions: {
-      type: DataTypes.STRING(50),
-      get() {
-        try{
-          return JSON.parse(this.getDataValue('general_questions'));
-        } catch (error) {
-          return null;    
-        }
-        
-      },
-      set(value) {
-        this.setDataValue('general_questions', JSON.stringify(value));
-      },
-      validate: {
-        isJSON(value) {
-          try {
-            JSON.parse(value);
-          } catch (error) {
-            throw new Error('JSON is not valid');
-          }
-        }
-      }
+      type: DataTypes.JSON
     },
     mandatory_approvals: {
       allowNull: false,
-      type: DataTypes.STRING(10),
-      get() {
-        try{
-          return JSON.parse(this.getDataValue('mandatory_approvals'));
-        } catch (error) {
-          return null;    
-        }
-      },
-      set(value) {
-        this.setDataValue('mandatory_approvals', JSON.stringify(value));
-      },
-      validate: {
-        isJSON(value) {
-          try {
-            JSON.parse(value);
-          } catch (error) {
-            throw new Error('JSON is not valid');
-          }
-        }
-      }
+      type: DataTypes.JSON
     },
     birthmonth: {
       allowNull: false,
@@ -100,20 +63,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isAfter: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10),
         isBefore: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10)
-      }
-    },
-    t_size: {
-      type: DataTypes.ENUM(
-        'female_M116','female_M122','female_M128','female_M134','female_M146','female_M152','female_M158','female_M164',
-        'female_M170','female_M176','female_xs','female_medium','female_large','female_xl','male_M116','male_M122','male_M128','male_M134',
-        'male_M140','male_M146','male_M152','male_M158','male_M164','male_M170','male_M176','male_Xsmall','male_small',
-        'male_medium','male_large','male_xl','male_xxl','male_3xl', 'kid_3/4' , 'kid_5/6', 'kid_7/8', 
-        'kid_9/11', 'kid_12/14', 'male_4xl', 'male_5xl', 'female_2xl', 'female_3xl'  
-      ),
-      allowNull: false,
-      validate: {
-        isIn: [['kid_3/4' , 'kid_5/6', 'kid_7/8', 'kid_9/11', 'kid_12/14','female_xs', 'female_medium','female_large',
-          'female_xl','female_2xl','female_3xl', 'male_Xsmall','male_small', 'male_medium','male_large','male_xl','male_xxl','male_3xl','male_4xl','male_5xl']]
       }
     },
     via: DataTypes.STRING,
@@ -185,10 +134,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       guardianRequirement() {
         const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
-        console.log("Guardian age:"+ minGuardian)
+        console.log("Guardian age:" + minGuardian)
         // check if guardian information is filled in
-        if (minGuardian > this.birthmonth) { 
-          if ( this.gsm_guardian === null || this.email_guardian === null ){
+        if (minGuardian > this.birthmonth) {
+          if (this.gsm_guardian === null || this.email_guardian === null) {
             throw new Error('You need guardian information');
           }
         }
@@ -196,7 +145,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   Registration.associate = function (models) {
-    // associations can be defined here
+    Registration.belongsTo(models.TShirt, { as: 'size', optional: false });
   };
   return Registration;
 };

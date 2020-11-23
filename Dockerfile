@@ -1,4 +1,4 @@
-FROM node:15
+FROM node:14
 
 WORKDIR /usr/src/app
 
@@ -9,4 +9,4 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "run dev" ]
+CMD [ "npm", "run development" ]

@@ -1,6 +1,6 @@
-var dba = require('../service/DBService');
+var dba = require('../dba');
 
-async function main(){
+async function main() {
 
     // create registration with own project
     var registration = await dba.createRegistration(
@@ -11,10 +11,10 @@ async function main(){
             "lastname": "Doe",
             "sex": "m",
             "general_questions": [
-              "photo"
+                "photo"
             ],
             "mandatory_approvals": [
-              "ok"
+                "ok"
             ],
             "birthmonth": "2010-11-24",
             "t_size": "female_small",
@@ -30,7 +30,7 @@ async function main(){
             "email_guardian": "test@test.be"
         }
     );
-    console.log('register' + registration.id );
+    console.log('register' + registration.id);
 
     // create registration with own project
     var registration = await dba.createRegistration(
@@ -41,10 +41,10 @@ async function main(){
             "lastname": "Doe",
             "sex": "m",
             "general_questions": [
-              "photo"
+                "photo"
             ],
             "mandatory_approvals": [
-              "ok"
+                "ok"
             ],
             "birthmonth": "2010-11-24",
             "t_size": "female_small",
@@ -57,7 +57,7 @@ async function main(){
             "email_guardian": "test@test.be"
         }
     );
-    console.log('register' + registration.id );    
+    console.log('register' + registration.id);
 
     // create user with project
     var owner = await dba.createUserWithProject(
@@ -78,9 +78,9 @@ async function main(){
             }
         }
     );
-    console.log('created user: '+ owner.id);
-    console.log('created project: '+ owner.project.id);
-    
+    console.log('created user: ' + owner.id);
+    console.log('created project: ' + owner.project.id);
+
     // create vouchers for friends to join
     var voucher1 = await dba.createVoucher(
         owner.project.id
@@ -89,7 +89,7 @@ async function main(){
     var voucher2 = await dba.createVoucher(
         owner.project.id
     );
-    
+
     // friends join
     var participant1 = await dba.createUserWithVoucher(
         {
@@ -120,13 +120,13 @@ async function main(){
         }, voucher2.id
     );
     console.log('created participant 2:' + participant2.id)
-    
+
     // delete participant 2
     var deleteParticipant2 = await dba.deleteUser(
         participant2.id
     );
     console.log('delete participant 2 + token related to user:' + participant2.id)
-    
+
     // owner deletes account + all dependent records
     var deleteOwner = await dba.deleteUser(
         owner.id
@@ -139,11 +139,11 @@ async function main(){
             project_name: 'test',
             project_descr: 'aaa',
             project_type: 'project type',
-            ownerId: participant1.id 
+            ownerId: participant1.id
         }
     );
     console.log('created project ' + project2.id);
-    
+
     //user changes some info on the project
     project2 = await dba.updateProject(
         {
@@ -151,17 +151,17 @@ async function main(){
         },
         project2.id
     );
-    
+
     //users chages some info on his profile
     participant1 = await dba.updateUser(
         {
-            firstname: 'hello world'   
+            firstname: 'hello world'
         },
         participant1.id
     );
 
 }
 
-main().catch(function(error){
+main().catch(function (error) {
     console.error(error);
 });
