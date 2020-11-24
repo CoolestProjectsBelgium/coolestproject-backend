@@ -190,13 +190,13 @@ class DBA {
      * @returns {Promise<Boolean>} Delete ok ?
      */
     async deleteUser(userId) {
-        var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
-        if (project !== null) {
-            logger.info("Project found: " + project.id);
-            var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
-            if (usedVoucher > 0) {
-                throw new Error('Delete not possible tokens in use');
-            }
+        const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+        if (project === null) {
+            throw new Error('Project not found');
+        }
+        const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
+        if (usedVoucher > 0) {
+            throw new Error('Delete not possible tokens in use');
         }
         return await User.destroy({ where: { id: userId } });
     }
@@ -228,11 +228,7 @@ class DBA {
      */
     async updateProject(changedFields, userId) {
         const project = await Project.findOne({ where: { ownerId: userId } });
-        const result = project.update(changedFields);
-        if (result === false) {
-            throw new Error('Update failed');
-        }
-        return result;
+        return project.update(changedFields);
     }
 
     /**
@@ -243,13 +239,13 @@ class DBA {
         await sequelize.transaction(
             async (t) => {
                 var result = true;
-                var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-                if (project !== null) {
-                    logger.info("Project found: " + project.id);
-                    var usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
-                    if (usedVoucher > 0) {
-                        result = false;
-                    }
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
+                if (project === null) {
+                    throw Error("Project not found")
+                }
+                const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
+                if (usedVoucher > 0) {
+                    result = false;
                 }
                 return result
             }
@@ -268,7 +264,6 @@ class DBA {
             async (t) => {
                 const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
                 if (project !== null) {
-                    logger.info("Project found: " + project.id);
                     const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
                     if (usedVoucher > 0) {
                         throw new Error('Delete not possible tokens in use');
@@ -293,11 +288,11 @@ class DBA {
             async (t) => {
                 const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
                 if (project === null) {
-                    throw new Error('No project found for this user');
+                    throw new Error('No project found');
                 }
 
                 var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
-                if (totalVouchers >= MAX_VOUCHERS) {
+                if (totalVouchers >= project.max_voucher) {
                     throw new Error('Max token reached');
                 }
 
@@ -333,7 +328,7 @@ class DBA {
     async addParticipantProject(userId, voucherId) {
         const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
         if (voucher === null) {
-            throw new Error('Token not found of incorrect');
+            throw new Error('Voucher not found');
         }
         await voucher.setParticipant(userId);
         return await voucher.getParticipant();
@@ -375,7 +370,6 @@ class DBA {
         var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         let vouchers = [];
         if (project !== null) {
-            logger.info("Project found: " + project.id);
             vouchers = await Voucher.findAll({
                 where: { projectId: project.id }, attributes: ['id'], include: [{
                     model: User,
@@ -408,26 +402,26 @@ class DBA {
         // check other project via voucher
         if (project === null) {
             const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId'] });
-            if (voucher !== null) {
-                logger.info("Project found: " + voucher.projectId);
-                project = await Project.findByPk(voucher.projectId, {
-                    include: [
-                        {
-                            model: Voucher,
-                            include: [
-                                { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
-                            ]
-                        },
-                        { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
-                    ]
-                });
+            if (voucher === null) {
+                throw Error("Voucher not found")
             }
+            project = await Project.findByPk(voucher.projectId, {
+                include: [
+                    {
+                        model: Voucher,
+                        include: [
+                            { model: User, as: 'participant', attributes: ['firstname', 'lastname', 'id'] }
+                        ]
+                    },
+                    { model: User, as: 'owner', attributes: ['firstname', 'lastname'] }
+                ]
+            });
         }
         return project;
     }
 
     /**
-     * Check if email adress exists in User records table
+     * Check if email address exists in User records table
      * @param {String} email
      * @returns {Promise<Boolean>} 
      */
