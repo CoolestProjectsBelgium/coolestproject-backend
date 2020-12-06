@@ -1,4 +1,4 @@
-const dba = require('../../dba');
+const DBA = require('../../dba');
 
 exports.command = `voucher`
 exports.desc = `Voucher related commands`
@@ -10,7 +10,7 @@ exports.builder = (yargs) => {
         },
         async (argv) => {
             try {
-                const voucher = await dba.createVoucher(argv.userId);
+                const voucher = await DBA.createVoucher(argv.userId);
                 console.log(`Voucher created for user  ${argv.userId} token ${voucher.id}`);
 
             } catch (error) {

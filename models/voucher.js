@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Voucher.belongsTo(models.Project, { as: 'project' });
       Voucher.belongsTo(models.User, { as: 'participant' })
+      Voucher.belongsTo(models.Event, { as: 'event', optional: false });
     }
   };
   Voucher.init({

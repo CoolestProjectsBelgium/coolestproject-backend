@@ -7,74 +7,77 @@ const db = require('../models');
 var dba = require('../dba');
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({ db: sequelize });
-var MailService = require('../service/MailService');
-var TokenService = require('../service/TokenService');
 var stream = require('stream');
 
-const reportParent = {
-  name: 'Reporting',
-  icon: 'fa fa-stream',
+const projectParent = {
+  name: 'Projects',
+  icon: 'Roadmap'
 }
 
-const internalParent = {
-  name: 'Internal',
-  icon: 'fa fa-exclamation-triangle',
+const eventParent = {
+  name: 'Event Settings',
+  icon: 'Events'
+}
+
+const registerParent = {
+  name: 'Website Registrations',
+  icon: 'Flow'
+}
+
+const votingParent = {
+  name: 'Voting',
+  icon: 'Event'
+}
+
+const planningParent = {
+  name: 'On-site Planning',
+  icon: 'Location'
+}
+
+const adminParent = {
+  name: 'Administration',
+  icon: 'Identification'
 }
 
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
+  dashboard: {
+    handler: async () => {
+      const evt = await dba.getEventActive()
+      return evt
+    },
+    component: AdminBro.bundle('./components/dashboard')
+  },
   branding: {
     companyName: 'Coolest Projects',
   },
   resources: [
     {
-      resource: db.Registration,
+      resource: db.Event,
       options: {
+        navigation: eventParent,
         actions: {
-          new: {
-            isVisible: false
-          },
-          mailAction: {
+          setActive: {
+            icon: 'View',
             actionType: 'record',
-            label: 'Resend confirmation mail',
-            icon: 'fas fa-envelope',
-            isVisible: true,
-            handler: async (request, response, data) => { /*
-              if (!request.params.recordId || !data.record) {
-                throw new NotFoundError([
-                  'You have to pass "recordId" to Mail Action',
-                ].join('\n'), 'Action#handler')
-              }
+            component: false,
+            handler: async (request, response, data) => {
+              const { record, resource, currentAdmin, h } = data
               try {
-                const registrationToken = await TokenService.generateRegistrationToken(request.params.recordId);
-                const register = await dba.getRegistration(request.params.recordId)
-                MailService.registrationMail(register, registrationToken);
-              } catch (error) {
+                const evt = await dba.setEventActive(request.params.recordId)
                 return {
-                  record: data.record.toJSON(data.currentAdmin),
+                  record: record.toJSON(currentAdmin),
+                  redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
                   notice: {
-                    message: error,
-                    type: 'error',
+                    message: `Event ${evt.id} is active`,
+                    type: 'success',
                   },
                 }
+              } catch (error) {
+                throw error
               }
-              return {
-                record: data.record.toJSON(data.currentAdmin),
-                notice: {
-                  message: 'Re-registration mail sent',
-                  type: 'success',
-                },
-              } */
-            },
-            component: false,
-          }
-        },
-        properties: {
-          mandatory_approvals: { isArray: true, availableValues: [{ "label": "ok", "value": "ok" }] },
-          general_questions: {
-            isArray: true, availableValues: [{ "label": "photo", "value": "photo" }
-              , { "label": "contact", "value": "contact" }, { "label": "no_photo", "value": "no_photo" }, { "label": "no_contact", "value": "no_contact" }]
+            }
           }
         }
       }
@@ -82,70 +85,135 @@ const adminBroOptions = {
     {
       resource: db.Session,
       options: {
-        parent: internalParent,
-        actions: {
-          new: {
-            isVisible: false
-          }
-        }
+        navigation: adminParent
       }
     },
     {
       resource: db.Account,
       options: {
-        parent: internalParent
+        navigation: adminParent
+      }
+    },
+    {
+      resource: db.Table,
+      options: {
+        navigation: planningParent
+      }
+    },
+    {
+      resource: db.ProjectTable,
+      options: {
+        navigation: planningParent,
+        actions: {
+          new: {
+            actionType: 'resource',
+            handler: async (request, response, context) => {
+              const { resource, h, currentAdmin, translateMessage } = context
+              if (request.method === 'post') {
+                let record = await resource.build(request.payload ? request.payload : {})
+
+                await resource.create(record.params)
+
+                if (record.isValid()) {
+                  return {
+                    redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
+                    notice: {
+                      message: translateMessage('successfullyCreated', resource.id()),
+                      type: 'success',
+                    },
+                    record: record.toJSON(currentAdmin),
+                  }
+                }
+                return {
+                  record: record.toJSON(currentAdmin),
+                  notice: {
+                    message: translateMessage('thereWereValidationErrors', resource.id()),
+                    type: 'error',
+                  },
+                }
+              }
+              // TODO: add wrong implementation error
+              throw new Error('new action can be invoked only via `post` http method')
+            },
+          }
+        }
+      }
+    },
+    {
+      resource: db.Vote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.VoteCategory,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.ExternVote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.Award,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.Question,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.Registration,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.TShirt,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.QuestionUser,
+      options: {
+        navigation: registerParent
       }
     },
     {
       resource: db.Project,
       options: {
-        actions: {
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-        }
+        navigation: projectParent
       }
     },
     {
       resource: db.User,
       options: {
-        properties: {
-          via: { type: 'richtext' },
-          medical: { type: 'richtext' },
-          mandatory_approvals: { isArray: true, availableValues: [{ "label": "ok", "value": "ok" }] },
-          general_questions: {
-            isArray: true, availableValues: [{ "label": "photo", "value": "photo" }
-              , { "label": "contact", "value": "contact" }, { "label": "no_photo", "value": "no_photo" }, { "label": "no_contact", "value": "no_contact" }]
-          },
-          last_token: { isVisible: false },
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-        }
+        navigation: projectParent
       }
     },
     {
       resource: db.Voucher,
       options: {
-        actions: {
-          edit: {
-            isVisible: false
-          },
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-        }
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Attachment,
+      options: {
+        navigation: projectParent
       }
     }
   ]
 }
+
 AdminBro.registerAdapter(AdminBroSequelize)
 
 const adminBro = new AdminBro(adminBroOptions);

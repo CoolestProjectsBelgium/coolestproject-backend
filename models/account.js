@@ -1,13 +1,22 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
 
 const bcrypt = require("bcrypt");
-const logger = require('pino')()
-const addYears = require('date-fns/addYears')
-const addDays = require('date-fns/addDays')
-const parseISO = require('date-fns/parseISO')
 
 module.exports = (sequelize, DataTypes) => {
-  const Account = sequelize.define('Account', {
+  class Account extends Model {
+
+    verifyPassword(password) {
+      return bcrypt.compareSync(password, this.password);
+    };
+
+    static associate(models) {
+      // define association here
+    }
+  };
+  Account.init({
     email: {
       type: DataTypes.STRING(100),
       unique: true
@@ -24,9 +33,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     account_type: DataTypes.ENUM('super_admin', 'admin', 'jury')
+  }, {
+    sequelize,
+    modelName: 'Account',
   });
-  Account.prototype.verifyPassword = async function (password) {
-    return await bcrypt.compareSync(password, this.password);
-  };
   return Account;
 };

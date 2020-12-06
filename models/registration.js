@@ -1,32 +1,22 @@
 'use strict';
-
-const logger = require('pino')()
-const addYears = require('date-fns/addYears')
-const addDays = require('date-fns/addDays')
-const parseISO = require('date-fns/parseISO')
-
-logger.debug('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
-logger.debug('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
-
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  const Registration = sequelize.define('Registration', {
+  class Registration extends Model {
+    static associate(models) {
+      Registration.belongsTo(models.TShirt, { as: 'size', optional: false });
+      Registration.belongsTo(models.Event, { as: 'event', optional: false });
+    }
+  };
+  Registration.init({
     language: {
       type: DataTypes.ENUM('nl', 'fr', 'en'),
       allowNull: false,
       validate: {
         isIn: [['nl', 'fr', 'en']]
       }
-    },
-    postalcode: {
-      type: DataTypes.INTEGER,
-      validate: {
-        min: 1000,
-        max: 9999,
-      },
-      allowNull: false
     },
     email: {
       type: DataTypes.STRING(254),
@@ -50,20 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['m', 'f', 'x']]
       }
     },
-    general_questions: {
-      type: DataTypes.JSON
-    },
-    mandatory_approvals: {
-      allowNull: false,
-      type: DataTypes.JSON
-    },
     birthmonth: {
       allowNull: false,
-      type: DataTypes.DATEONLY,
-      validate: {
-        isAfter: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10),
-        isBefore: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10)
-      }
+      type: DataTypes.DATEONLY
     },
     via: DataTypes.STRING,
     medical: {
@@ -107,45 +86,30 @@ module.exports = (sequelize, DataTypes) => {
       isEmail: true,
       defaultValue: null,
     },
-  }, {
-    validate: {
-      hasGSM() {
-        if (this.gsm === null && this.gsm_guardian === null) {
-          throw new Error('GSM or GSM Guardian is required')
-        }
+    // address info
+    postalcode: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 1000,
+        max: 9999,
       },
-      hasEmail() {
-        if (this.email_guardian === null && this.email === null) {
-          throw new Error('Email or Email Guardian is required')
-        }
-      },
-      projectOrVoucher() {
-        // user had own project
-        if (this.project_code === null) {
-          if (this.project_name === null || this.project_descr === null || this.project_lang === null) {
-            throw new Error('You need a project token or a project');
-          }
-          // user joins existing project
-        } else {
-          if (this.project_name !== null || this.project_descr !== null || this.project_lang !== null) {
-            throw new Error('You need a project token or a project');
-          }
-        }
-      },
-      guardianRequirement() {
-        const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
-        console.log("Guardian age:" + minGuardian)
-        // check if guardian information is filled in
-        if (minGuardian > this.birthmonth) {
-          if (this.gsm_guardian === null || this.email_guardian === null) {
-            throw new Error('You need guardian information');
-          }
-        }
-      }
+      allowNull: false
+    },
+    municipality_name: {
+      type: DataTypes.STRING(30)
+    },
+    street: {
+      type: DataTypes.STRING(100)
+    },
+    house_number: {
+      type: DataTypes.STRING(20)
+    },
+    box_number: {
+      type: DataTypes.STRING(20)
     }
+  }, {
+    sequelize,
+    modelName: 'Registration',
   });
-  Registration.associate = function (models) {
-    Registration.belongsTo(models.TShirt, { as: 'size', optional: false });
-  };
   return Registration;
 };

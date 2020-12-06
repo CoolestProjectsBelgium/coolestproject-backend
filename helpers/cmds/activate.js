@@ -1,4 +1,4 @@
-const dba = require('../../dba');
+const DBA = require('../../dba');
 
 exports.command = `activate`
 exports.desc = `Create Account via registration`
@@ -9,7 +9,7 @@ exports.builder = (yargs) => {
 exports.handler = async function (argv) {
     try {
         // create registration with own project
-        const user = await dba.createUserFromRegistration(argv.registrationId);
+        const user = await DBA.createUserFromRegistration(argv.registrationId);
         console.log('User with id ' + user.id + ' created from registration id ' + argv.registrationId);
 
     } catch (error) {

@@ -1,4 +1,4 @@
-const dba = require('../../dba');
+const DBA = require('../../dba');
 const randomstring = require("randomstring");
 
 exports.command = `register`
@@ -75,12 +75,13 @@ exports.handler = async function (argv) {
             }
         }
 
-        var registration = await dba.createRegistration(registrationValues);
+        var registration = await DBA.createRegistration(registrationValues);
         console.log('Registration ' + registration.id + ' created');
 
     } catch (error) {
-        for (var err of error.errors) {
-            console.error(err.message)
+        console.error(error.message);
+        for (var err of error.errors || []) {
+            console.error(err.message);
         }
     }
 }

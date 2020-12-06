@@ -1,3 +1,3 @@
 AdminBro.UserComponents = {}
-import Component1 from '../admin_components/export'
+import Component1 from '../admin/components/dashboard'
 AdminBro.UserComponents.Component1 = Component1

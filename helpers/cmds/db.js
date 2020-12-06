@@ -1,4 +1,6 @@
 const models = require('../../models');
+const { Umzug } = require('umzug');
+
 const sequelize = models.sequelize;
 
 exports.command = `init_db`

@@ -2,22 +2,24 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class TShirt extends Model {
+  class Award extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TShirt.belongsTo(models.Event, { as: 'event', optional: false });
+      Award.belongsTo(models.Event, {});
+      Award.belongsTo(models.Project, {});
     }
   };
-  TShirt.init({
-    name: { type: DataTypes.CHAR(15), unique: true },
+  Award.init({
+    name: { type: DataTypes.STRING }
   }, {
     sequelize,
-    modelName: 'TShirt',
+    modelName: 'Award',
   });
-  return TShirt;
+  return Award;
 };

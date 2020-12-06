@@ -1,38 +1,55 @@
 'use strict';
-
-const logger = require('pino')()
-const addYears = require('date-fns/addYears')
-const addDays = require('date-fns/addDays')
-const parseISO = require('date-fns/parseISO')
-
-logger.debug('isAfter: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10))
-logger.debug('isBefore: ' + addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10))
-
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      User.hasOne(models.Project, { as: 'project', foreignKey: 'ownerId' });
+      User.belongsToMany(models.Project, {
+        as: 'participant',
+        through: {
+          model: models.Voucher,
+          unique: false
+        },
+        foreignKey: 'participantId',
+        otherKey: 'projectId'
+      });
+      User.belongsTo(models.TShirt, { as: 'size', optional: false });
+      User.belongsTo(models.Event, { as: 'event', optional: false });
+    }
+  };
+  User.init({
     language: {
       type: DataTypes.ENUM('nl', 'fr', 'en'),
       allowNull: false,
-      validate: {
-        isIn: [['nl', 'fr', 'en']]
-      }
+      validate: { isIn: [['nl', 'fr', 'en']] }
     },
     postalcode: {
       type: DataTypes.INTEGER,
-      validate: {
-        min: 1000,
-        max: 9999,
-      },
+      validate: { min: 1000, max: 9999, },
       allowNull: false
+    },
+    municipality_name: {
+      type: DataTypes.STRING(30)
+    },
+    street: {
+      type: DataTypes.STRING(100)
+    },
+    house_number: {
+      type: DataTypes.STRING(20)
+    },
+    box_number: {
+      type: DataTypes.STRING(20)
     },
     email: {
       type: DataTypes.STRING(254),
-      validate: {
-        isEmail: true
-      },
+      validate: { isEmail: true },
       defaultValue: null,
       unique: true
     },
@@ -51,20 +68,9 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['m', 'f', 'x']]
       }
     },
-    general_questions: {
-      type: DataTypes.JSON
-    },
-    mandatory_approvals: {
-      allowNull: false,
-      type: DataTypes.JSON
-    },
     birthmonth: {
       allowNull: false,
-      type: DataTypes.DATEONLY,
-      validate: {
-        isAfter: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MAX_AGE), -1).toISOString().substr(0, 10),
-        isBefore: addDays(addYears(parseISO(process.env.START_DATE), -1 * process.env.MIN_AGE), 1).toISOString().substr(0, 10)
-      }
+      type: DataTypes.DATEONLY
     },
     last_token: {
       allowNull: true,
@@ -89,41 +95,8 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: null,
     }
   }, {
-    validate: {
-      hasGSM() {
-        if (this.gsm === null && this.gsm_guardian === null) {
-          throw new Error('GSM or GSM Guardian is required')
-        }
-      },
-      hasEmail() {
-        if (this.email_guardian === null && this.email === null) {
-          throw new Error('Email or Email Guardian is required')
-        }
-      },
-      guardianRequirement() {
-        const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE)
-        console.log("minGuardian:" + minGuardian + "this.birthmonth:" + parseISO(this.birthmonth))
-        // check if guardian information is filled in
-        if (minGuardian < parseISO(this.birthmonth)) {
-          if (this.gsm_guardian === null || this.email_guardian === null) {
-            throw new Error('You need guardian information');
-          }
-        }
-      }
-    }
+    sequelize,
+    modelName: 'User',
   });
-  User.associate = function (models) {
-    User.hasOne(models.Project, { as: 'project', foreignKey: 'ownerId' });
-    User.belongsToMany(models.Project, {
-      as: 'participant',
-      through: {
-        model: models.Voucher,
-        unique: false
-      },
-      foreignKey: 'participantId',
-      otherKey: 'projectId'
-    });
-    User.belongsTo(models.TShirt, { as: 'size', optional: false });
-  };
   return User;
 };
