@@ -1,6 +1,6 @@
 'use strict';
 
-const logger = require('pino')()
+const DBA = require('../dba');
 const respondWithCode = require('../utils/writer').respondWithCo
 
 /**
@@ -8,14 +8,15 @@ const respondWithCode = require('../utils/writer').respondWithCo
  *
  * returns Settings
  **/
-exports.settingsGET = function() {
-    return new Promise(async function(resolve, reject) {
+exports.settingsGET = function () {
+    return new Promise(async function (resolve, reject) {
+        const event = await DBA.getEventActive();
         resolve({
-            startDateEvent: new Date(process.env.START_DATE),
-            maxAge: process.env.MAX_AGE || 0,
-            minAge: process.env.MIN_AGE || 0,
-            guardianAge: process.env.GUARDIAN_AGE || 0,
-            tshirtDate: new Date(process.env.TSHIRT_DATE),
+            startDateEvent: event.startDate.toISOString().substring(0, 10),
+            maxAge: event.maxAge,
+            minAge: event.minAge,
+            guardianAge: event.minGuardianAge,
+            tshirtDate: event.startDate.toISOString().substring(0, 10),
             enviroment: process.env.NODE_ENV
         });
     })
