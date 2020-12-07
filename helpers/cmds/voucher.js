@@ -5,7 +5,7 @@ exports.desc = `Voucher related commands`
 
 exports.builder = (yargs) => {
     yargs.command('create <userId>', 'Create voucher for project',
-        (yargs) => { },
+        () => { },
         async (argv) => {
             try {
                 const voucher = await DBA.createVoucher(argv.userId);
