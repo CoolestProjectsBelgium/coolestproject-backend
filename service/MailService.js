@@ -21,8 +21,54 @@ module.exports = {
   async welcomeMailParticipant(user) {
 
   },
+  async testMail() {
+    const email = new Email({
+      message: {
+        from: process.env.EMAIL,
+      },
+      send: true, // This opens the browser to show the mail
+      transport: transport,
+      i18n: {
+        locales: ['en', 'nl', 'fr'],
+        directory: path.join(__dirname, '..', 'locales')
+      }
+    });
+    var result = await email.send({
+      template: 'registrationMail',
+      message: {
+        to: 'test@test.be'
+      },
+      locals: {}
+    });
+    return result;
+  },
   async registrationMail(user, registrationToken) {
-
+    const email = new Email({
+      message: {
+        from: process.env.EMAIL,
+      },
+      send: true, // This opens the browser to show the mail
+      transport: transport,
+      i18n: {
+        locales: ['en', 'nl', 'fr'],
+        directory: path.join(__dirname, '..', 'locales')
+      }
+    });
+    const token = await registrationToken
+    var result = await email.send({
+      template: 'registrationMail',
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        locale: user.language,
+        name: user.firstname,
+        title: user.project_name,
+        url: process.env.URL + 'login?token=' + token
+      }
+    });
+    return result;
   }
   /*
   async registrationMail(user, registrationToken) {

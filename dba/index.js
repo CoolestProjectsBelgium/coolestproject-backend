@@ -288,13 +288,13 @@ class DBA {
     static async createVoucher(userId) {
         return await sequelize.transaction(
             async (t) => {
-                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id', 'eventId', 'max_tokens'], lock: true });
                 if (project === null) {
                     throw new Error('No project found');
                 }
 
                 var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
-                if (totalVouchers >= project.max_voucher) {
+                if (totalVouchers >= project.max_tokens) {
                     throw new Error('Max token reached');
                 }
 
@@ -306,7 +306,7 @@ class DBA {
                         resolve(buffer.toString('hex'));
                     });
                 });
-                return await Voucher.create({ projectId: project.id, id: token });
+                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
             }
         );
     }

@@ -13,5 +13,6 @@
   "we are very pleased that you want to participate on the next ": "we are very pleased that you want to participate on the next ",
   "We are very pleased that you want to participate on the next ": "We are very pleased that you want to participate on the next ",
   "WelcomeToken": "WelcomeToken",
-  "LoginToken": "LoginToken"
+  "LoginToken": "LoginToken",
+  "namespace:my.key": "namespace:my.key"
 }
