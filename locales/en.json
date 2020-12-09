@@ -6,9 +6,7 @@
   "You can find all the info on Coolest Project on our {{ link }} website .": "You can find all the info on Coolest Project on our {{ link }} website .",
   "Your parents will also receive this mail and they have to confirm your\n            participation.</p>": "Your parents will also receive this mail and they have to confirm your\n            participation.</p>",
   "<a href=\"{{hash.link}}\">Activation Link</a>": "<a href=\"{{hash.link}}\">Activation Link</a>",
-  "Click this {{link}} to activate your project.": "Click this {{link}} to activate your project.",
+  "Click this {{{hash.link}}} to activate your project.": "Click this {{{hash.link}}} to activate your project.",
   "Be sure to click this activation link within 2 days to ensure your participation.\n            Your registration will expire after 2 days and you will need to register again.\n            You should receive a second mail then, with some more information you need to get your project on rails.": "Be sure to click this activation link within 2 days to ensure your participation.\n            Your registration will expire after 2 days and you will need to register again.\n            You should receive a second mail then, with some more information you need to get your project on rails.",
-  "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>\n        <p><strong>Coolest Project team</strong>": "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>\n        <p><strong>Coolest Project team</strong>",
-  "Click this {{{link}}} to activate your project.": "Click this {{{link}}} to activate your project.",
-  "Click this {{{hash.link}}} to activate your project.": "Click this {{{hash.link}}} to activate your project."
+  "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>\n        <p><strong>Coolest Project team</strong>": "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>\n        <p><strong>Coolest Project team</strong>"
 }
