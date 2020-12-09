@@ -1,7 +1,7 @@
 'use strict';
 
 const logger = require('pino')()
-const TokenService = require('./TokenService');
+const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../dba');
 
@@ -64,7 +64,7 @@ exports.projectinfoGET = function (loginToken) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info("LoginToken:" + loginToken);
-      var token = await TokenService.validateToken(loginToken);
+      var token = await Token.validateToken(loginToken);
       logger.info('user id:' + token.id);
       resolve(await getProjectDetails(token.id));
     } catch (ex) {
@@ -86,7 +86,7 @@ exports.projectinfoPATCH = function (loginToken, project) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
+      var token = await Token.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       await dba.updateProject(project, token.id);
       resolve(await getProjectDetails(token.id));
@@ -109,7 +109,7 @@ exports.projectinfoPOST = function (loginToken, project) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
+      var token = await Token.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       if (project.project_code) {
         await dba.addParticipantProject(token.id, project.project_code);
@@ -136,7 +136,7 @@ exports.projectinfoDELETE = function (loginToken) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
+      var token = await Token.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var u = await dba.deleteProject(token.id);
       resolve(u);

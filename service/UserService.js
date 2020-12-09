@@ -3,9 +3,8 @@
 const addYears = require('date-fns/addYears')
 const parseISO = require('date-fns/parseISO')
 const logger = require('pino')()
-const TokenService = require('./TokenService');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../dba');
+var DBA = require('../dba');
 
 /**
  * get userinfo for the logged in user
@@ -31,7 +30,7 @@ exports.userinfoGET = function (user) {
         postalcode: user.postalcode,
         email: user.email,
         email_guardian: user.email_guardian,
-        delete_possible: await dba.isUserDeletable(user.id)
+        delete_possible: await DBA.isUserDeletable(user.id)
       });
 
     } catch (ex) {
@@ -70,7 +69,7 @@ exports.userinfoPATCH = function (logged_in_user, user) {
         user.gsm_guardian = null;
         user.email_guardian = null;
       }
-      var u = await dba.updateUser(user, token.id);
+      var u = await DBA.updateUser(user, token.id);
       resolve({
         general_questions: u.general_questions,
         mandatory_approvals: u.mandatory_approvals,
@@ -106,7 +105,7 @@ exports.userinfoPATCH = function (logged_in_user, user) {
 exports.userinfoDELETE = function (logged_in_user) {
   return new Promise(async function (resolve, reject) {
     try {
-      var u = await dba.deleteUser(logged_in_user.id);
+      var u = await DBA.deleteUser(logged_in_user.id);
       resolve(u);
     } catch (ex) {
       logger.error(ex);

@@ -2,10 +2,10 @@
 
 const logger = require('pino')();
 const addSeconds = require('date-fns/addSeconds');
-const TokenService = require('./TokenService');
+const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode;
-var dba = require('../dba');
-var MailService = require('./MailService');
+var DBA = require('../dba');
+var Mail = require('../mailer');
 
 /**
  * Ask for logintoken via mail
@@ -16,7 +16,7 @@ exports.mailLoginPOST = function (login) {
   return new Promise(async function (resolve, reject) {
     logger.info('login requested for: ' + login.email);
     try {
-      var users = await dba.getUsersViaMail(login.email);
+      var users = await DBA.getUsersViaMail(login.email);
       for (const user of users) {
         logger.info('user found: ' + user.id);
         // only one token every n seconds
@@ -26,9 +26,9 @@ exports.mailLoginPOST = function (login) {
         }
         if (new Date() > tokenTime) {
           // generate new token for user
-          await dba.updateLastToken(user);
-          const token = await TokenService.generateLoginToken(user.id);
-          await MailService.loginMail(user, token);
+          await DBA.updateLastToken(user);
+          const token = await Token.generateLoginToken(user.id);
+          await Mail.loginMail(user, token);
         } else {
           logger.info('Token requested but time is not passed yet: ' + user.email);
         }
@@ -48,7 +48,7 @@ exports.mailLoginPOST = function (login) {
  **/
 exports.loginPOST = function (user) {
   return new Promise(async function (resolve, reject) {
-    const token = await TokenService.generateLoginToken(user.id);
+    const token = await Token.generateLoginToken(user.id);
     resolve({ api_key: token, expires: addSeconds(new Date(), process.env.TOKEN_VALID_TIME || 0), language: user.language });
   });
 }

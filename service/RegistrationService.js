@@ -2,13 +2,13 @@
 
 const logger = require('pino')()
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../dba');
+var DBA = require('../dba');
 
 var models = require('../models');
 var Registration = models.Registration;
 
-var MailService = require('./MailService');
-var TokenService = require('./TokenService');
+var Mail = require('../mailer');
+var Token = require('../jwts');
 
 /**
  * Create new registration
@@ -27,10 +27,10 @@ exports.registerPOST = function (registration) {
      **/
     try {
       // Check if email exists if so ignore registration
-      if (!(await dba.doesEmailExists(registration.email))) {
-        const register = await dba.createRegistration(registration);
-        const registrationToken = await TokenService.generateRegistrationToken(register.id);
-        MailService.registrationMail(register, registrationToken);
+      if (!(await DBA.doesEmailExists(registration.email))) {
+        const register = await DBA.createRegistration(registration);
+        const registrationToken = await Token.generateRegistrationToken(register.id);
+        Mail.registrationMail(register, registrationToken);
       } else {
         logger.error("user tried to register with same email: " + registration.email);
       }

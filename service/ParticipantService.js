@@ -1,7 +1,7 @@
 'use strict';
 
 const logger = require('pino')()
-const TokenService = require('./TokenService');
+const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
 var dba = require('../dba');
 
@@ -13,7 +13,7 @@ exports.participantPOST = function (loginToken) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
+      var token = await Token.validateToken(loginToken);
       logger.info('user id: ' + token.id);
       var v = await dba.createVoucher(token.id);
       resolve(null);

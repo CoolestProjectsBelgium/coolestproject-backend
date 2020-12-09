@@ -2,6 +2,14 @@
 
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
+
+const helpers = require('handlebars-helpers');
+
+const cons = require('consolidate');
+const handlebars = require('handlebars');
+
+//var i18n = helpers.i18n()
+
 const env = process.env.NODE_ENV || 'development';
 const path = require('path');
 
@@ -11,28 +19,118 @@ const transport = nodemailer.createTransport({
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
+  },
+  language: 'en'
+});
+
+const email = new Email({
+  message: {
+    from: process.env.EMAIL,
+  },
+  send: true,
+  preview: false,
+  transport: transport,
+  i18n: {
+    locales: ['en', 'nl', 'fr'],
+    directory: path.join(__dirname, '..', 'locales')
+  },
+  views: {
+    options: {
+      extension: 'handlebars'
+    }
   }
 });
 
 class Mailer {
-  static async testMail() {
-    const email = new Email({
+  static async loginMail(user, token) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'login'),
       message: {
-        from: process.env.EMAIL,
+        to: user.email,
+        cc: user.email_guardian
       },
-      send: true,
-      preview: false,
-      transport: transport,
-      i18n: {
-        locales: ['en', 'nl', 'fr'],
-        directory: path.join(__dirname, '..', 'locales')
-      },
-      views: {
-        options: {
-          extension: 'handlebars'
-        }
+      locals: {
+        user,
+        token
       }
     });
+    return result;
+  }
+  static async welcomeMailOwner(user, token) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'welcomeMailOwner'),
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        user,
+        token
+      }
+    });
+    return result;
+  }
+  static async welcomeMailParticipant(user, token) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'welcomeMailParticipant'),
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        user,
+        token
+      }
+    });
+    return result;
+  }
+  static async warningNoProject(user) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'warningNoProject'),
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        user
+      }
+    });
+    return result;
+  }
+  static async deadlineApproaching(user) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'deadlineApproaching'),
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        user
+      }
+    });
+    return result;
+  }
+  static async activationMail(registration, token, event) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'activationMail'),
+      message: {
+        to: registration.email,
+        cc: registration.email_guardian
+      },
+      locals: {
+        locale: 'en',
+        registration: {
+          firstname: registration.firstname,
+          email_guardian: registration.email_guardian,
+          year: event.startDate.getFullYear()
+        },
+        url: process.env.URL + `?token=${token}`,
+        website: 'https://coolestprojects.be'
+      }
+    });
+    return result;
+  }
+  static async testMail() {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'test'),
       message: {
