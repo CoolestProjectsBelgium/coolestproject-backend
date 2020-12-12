@@ -11,8 +11,7 @@ module.exports = {
         project_descr: 'Dit is zo leuk',
         project_type: 'test',
         project_lang: 'nl',
-        max_tokens: 2,
-        userId: 1
+        max_tokens: 2
       },
     ], {});
   },

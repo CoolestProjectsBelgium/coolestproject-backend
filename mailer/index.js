@@ -3,10 +3,7 @@
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 
-const helpers = require('handlebars-helpers');
 
-const cons = require('consolidate');
-const handlebars = require('handlebars');
 
 //var i18n = helpers.i18n()
 
@@ -42,21 +39,26 @@ const email = new Email({
 });
 
 class Mailer {
-  static async loginMail(user, token) {
+  static async loginMail(user, token, event) {
     const result = await email.send({
-      template: path.join(__dirname, '..', 'emails', 'login'),
+      template: path.join(__dirname, '..', 'emails', 'loginMail'),
       message: {
         to: user.email,
         cc: user.email_guardian
       },
       locals: {
-        user,
-        token
+        login: {
+          firstname: user.firstname,
+          email_guardian: user.email_guardian,
+          year: event.startDate.getFullYear()
+        },
+        url: process.env.URL + `?token=${token}`,
+        website: 'https://coolestprojects.be'
       }
     });
     return result;
   }
-  static async welcomeMailOwner(user, token) {
+  static async welcomeMailOwner(user, project, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'welcomeMailOwner'),
       message: {
@@ -64,22 +66,60 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-        user,
-        token
+        year: event.startDate.getFullYear(),
+        user: {
+          firstname: user.firstname      
+        },
+        project: {
+          id: project.id,
+          title: project.project_name
+        },
+        url: process.env.URL,
+        website: 'https://coolestprojects.be'
       }
     });
     return result;
   }
-  static async welcomeMailParticipant(user, token) {
+  static async welcomeMailCoWorker(user, project, event) {
     const result = await email.send({
-      template: path.join(__dirname, '..', 'emails', 'welcomeMailParticipant'),
+      template: path.join(__dirname, '..', 'emails', 'welcomeMailCoWorker'),
       message: {
         to: user.email,
         cc: user.email_guardian
       },
       locals: {
-        user,
-        token
+        year: event.startDate.getFullYear(),
+        user: {
+          firstname: user.firstname      
+        },
+        project: {
+          id: project.id,
+          title: project.project_name
+        },
+        url: process.env.URL,
+        website: 'https://coolestprojects.be'
+      }
+    });
+    return result;
+  }
+  static async deleteMail(user, project, event) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'deleteMail'),
+      message: {
+        to: user.email,
+        cc: user.email_guardian
+      },
+      locals: {
+        year: event.startDate.getFullYear(),
+        user: {
+          firstname: user.firstname      
+        },
+        project: {
+          id: project.id,
+          title: project.project_name
+        },
+        url: process.env.URL,
+        website: 'https://coolestprojects.be'
       }
     });
     return result;
@@ -127,6 +167,27 @@ class Mailer {
         url: process.env.URL + `?token=${token}`,
         website: 'https://coolestprojects.be'
       }
+    });
+    return result;
+  }
+  static async ask4TokenMail(users, token, event) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'ask4TokenMail'),
+      message: {
+        to: users.email,
+        cc: users.email_guardian
+      },
+      locals: {
+        locale: 'en',
+        users: {
+          firstname: users.firstname,
+          email_guardian: users.email_guardian,
+          year: event.startDate.getFullYear()
+        },
+        url: process.env.URL + `?token=${token}`,
+        website: 'https://coolestprojects.be'
+      }
+    
     });
     return result;
   }

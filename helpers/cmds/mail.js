@@ -32,4 +32,97 @@ exports.builder = (yargs) => {
             }
         }
     )
+    yargs.command('ask4TokenMail <userid>', 'Send token mail',
+    () => { },
+    async (argv) => {
+        try {
+            const user = await DBA.getUser(argv.userid);
+            const event = await DBA.getEventActive();
+            const token = await Tokens.generateLoginToken(argv.userid);
+            const mail = await Mailer.ask4TokenMail(user, token, event);
+            console.log(`Token Mail was send ${mail}`);
+
+        } catch (error) {
+            console.log(error.message)
+            for (var err of error.errors || []) {
+                console.error(err.message)
+            }
+        }
+    }
+)
+    yargs.command('welcomeMailOwner <userid>', 'Send welcome mail owner',
+    () => { },
+    async (argv) => {
+        try {
+            const user = await DBA.getUser(argv.userid);
+            const event = await DBA.getEventActive();
+            const project = await DBA.getProject(argv.userid);
+            const mail = await Mailer.welcomeMailOwner(user, project, event);
+            console.log(`Welcome mail owner was send ${mail}`);
+
+        } catch (error) {
+            console.log(error.message)
+            for (var err of error.errors || []) {
+                console.error(err.message)
+            }
+        }
+    }
+   
+)
+yargs.command('welcomeMailCoWorker <userid>', 'Send welcome mail CoWorker',
+() => { },
+async (argv) => {
+    try {
+        const user = await DBA.getUser(argv.userid);
+        const event = await DBA.getEventActive();
+        const project = await DBA.getProject(argv.userid);
+        const mail = await Mailer.welcomeMailCoWorker(user, project, event);
+        console.log(`Welcome mail coworker was send ${mail}`);
+
+    } catch (error) {
+        console.log(error.message)
+        for (var err of error.errors || []) {
+            console.error(err.message)
+        }
+    }
+}
+
+)
+yargs.command('deleteMail <userid>', 'Send delete mail CoWorker',
+() => { },
+async (argv) => {
+    try {
+        const user = await DBA.getUser(argv.userid);
+        const event = await DBA.getEventActive();
+        const project = await DBA.getProject(argv.userid);
+        const mail = await Mailer.deleteMail(user, project, event);
+        console.log(`Delete mail coworker was send ${mail}`);
+
+    } catch (error) {
+        console.log(error.message)
+        for (var err of error.errors || []) {
+            console.error(err.message)
+        }
+    }
+}
+
+)
+yargs.command('loginMail <email>', 'Send login mail',
+() => { },
+async (argv) => {
+    try {
+        const user = await DBA.getUsersViaMail(argv.email);
+        const event = await DBA.getEventActive();
+        const token = await Tokens.generateLoginToken(user.id);
+        const mail = await Mailer.loginMail(user, token, event);
+        console.log(`Login mail was send ${mail}`);
+
+    } catch (error) {
+        console.log(error.message)
+        for (var err of error.errors || []) {
+            console.error(err.message)
+        }
+    }
+}
+)
 };
