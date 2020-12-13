@@ -39,7 +39,7 @@ const email = new Email({
 });
 
 class Mailer {
-  static async welcomeMailOwner(user, project, event) {
+  static async welcomeMailOwner(user, project, event, token) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'welcomeMailOwner'),
       message: {
@@ -61,7 +61,7 @@ class Mailer {
     });
     return result;
   }
-  static async welcomeMailCoWorker(user, project, event) {
+  static async welcomeMailCoWorker(user, project, event, token) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'welcomeMailCoWorker'),
       message: {
