@@ -12,7 +12,7 @@ var dba = require('../dba');
 exports.participantPOST = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      var v = await dba.createVoucher(user.id);
+      await dba.createVoucher(user.id);
       resolve(null);
     } catch (ex) {
       logger.error(ex);

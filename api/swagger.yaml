@@ -1,19 +1,20 @@
 ---
 swagger: "2.0"
 info:
-  description: "This api exposes the api's for the Coolestproject registration website,\
+  description:
+    "This api exposes the api's for the Coolestproject registration website,\
     \ voting system, event setup."
   version: "0.0.4"
   title: "Coolestprojects registration"
 tags:
-- name: "registration"
-- name: "login"
-- name: "user"
+  - name: "registration"
+  - name: "login"
+  - name: "user"
 paths:
   /settings:
     get:
       tags:
-      - "settings"
+        - "settings"
       summary: "Get settings"
       operationId: "settingsGET"
       responses:
@@ -25,16 +26,16 @@ paths:
   /register:
     post:
       tags:
-      - "registration"
+        - "registration"
       summary: "Create new registration"
       operationId: "registerPOST"
       parameters:
-      - in: "body"
-        name: "registration"
-        description: "The registration to create."
-        required: false
-        schema:
-          $ref: "#/definitions/Registration"
+        - in: "body"
+          name: "registration"
+          description: "The registration to create."
+          required: false
+          schema:
+            $ref: "#/definitions/Registration"
       responses:
         200:
           description: "OK"
@@ -46,7 +47,7 @@ paths:
   /participants:
     post:
       tags:
-      - "project"
+        - "project"
       summary: "Create new participant"
       operationId: "participantPOST"
       parameters: []
@@ -58,12 +59,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
-      x-swagger-router-controller: "Participant"              
+        - loginToken: []
+      x-swagger-router-controller: "Participant"
   /userinfo:
     get:
       tags:
-      - "user"
+        - "user"
       summary: "get userinfo for the logged in user"
       operationId: "userinfoGET"
       parameters: []
@@ -77,20 +78,20 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "User"
     patch:
       tags:
         - "user"
       summary: "update user"
-      operationId: "userinfoPATCH"  
+      operationId: "userinfoPATCH"
       parameters:
-      - in: "body"
-        name: "user"
-        description: "User info"
-        required: false
-        schema:
-          $ref: "#/definitions/User"
+        - in: "body"
+          name: "user"
+          description: "User info"
+          required: false
+          schema:
+            $ref: "#/definitions/User"
       responses:
         200:
           description: "OK"
@@ -101,13 +102,13 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "User"
     delete:
       tags:
         - "user"
       summary: "delete user"
-      operationId: "userinfoDELETE" 
+      operationId: "userinfoDELETE"
       responses:
         200:
           description: "OK"
@@ -116,12 +117,12 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "User"
   /projectinfo:
     get:
       tags:
-      - "project"
+        - "project"
       summary: "get projectinfo for the logged in user"
       operationId: "projectinfoGET"
       parameters: []
@@ -135,20 +136,20 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "Project"
     patch:
       tags:
         - "project"
       summary: "update project"
-      operationId: "projectinfoPATCH"  
+      operationId: "projectinfoPATCH"
       parameters:
-      - in: "body"
-        name: "project"
-        description: "Project info"
-        required: false
-        schema:
-          $ref: "#/definitions/Project"
+        - in: "body"
+          name: "project"
+          description: "Project info"
+          required: false
+          schema:
+            $ref: "#/definitions/Project"
       responses:
         200:
           description: "OK"
@@ -159,20 +160,20 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "Project"
     post:
       tags:
         - "project"
       summary: "update project"
-      operationId: "projectinfoPOST"  
+      operationId: "projectinfoPOST"
       parameters:
-      - in: "body"
-        name: "project"
-        description: "Project info"
-        required: false
-        schema:
-          $ref: "#/definitions/Project"
+        - in: "body"
+          name: "project"
+          description: "Project info"
+          required: false
+          schema:
+            $ref: "#/definitions/Project"
       responses:
         200:
           description: "OK"
@@ -183,13 +184,13 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
-      x-swagger-router-controller: "Project"      
+        - loginToken: []
+      x-swagger-router-controller: "Project"
     delete:
       tags:
         - "project"
       summary: "delete project"
-      operationId: "projectinfoDELETE" 
+      operationId: "projectinfoDELETE"
       responses:
         200:
           description: "OK"
@@ -198,21 +199,21 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       security:
-      - loginToken: []
+        - loginToken: []
       x-swagger-router-controller: "Project"
   /login:
     post:
       tags:
-      - "login"
+        - "login"
       summary: "Login / Activate account"
       operationId: "loginPOST"
       parameters:
-      - in: "body"
-        name: "login"
-        description: "Login information"
-        required: false
-        schema:
-          $ref: "#/definitions/LoginActivate"
+        - in: "body"
+          name: "login"
+          description: "Login information"
+          required: false
+          schema:
+            $ref: "#/definitions/LoginActivate"
       responses:
         200:
           description: "OK"
@@ -222,16 +223,16 @@ paths:
   /mailToken:
     post:
       tags:
-      - "login"
+        - "login"
       summary: "Get new token to login"
       operationId: "mailLoginPOST"
       parameters:
-      - in: "body"
-        name: "login"
-        description: "email address"
-        required: true
-        schema:
-          $ref: "#/definitions/LoginMail"
+        - in: "body"
+          name: "login"
+          description: "email address"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginMail"
       responses:
         200:
           description: "OK"
@@ -253,17 +254,17 @@ definitions:
       language:
         type: "string"
         enum:
-        - "nl"
-        - "fr"
-        - "en"
+          - "nl"
+          - "fr"
+          - "en"
     example:
       expires: "2000-01-23T04:56:07.000+00:00"
       api_key: "api_key"
   Error:
     type: "object"
     required:
-    - "code"
-    - "message"
+      - "code"
+      - "message"
     properties:
       code:
         type: "string"
@@ -272,7 +273,7 @@ definitions:
   Voucher:
     type: "object"
     required:
-    - "code"
+      - "code"
     properties:
       code:
         type: "string"
@@ -289,9 +290,9 @@ definitions:
       language:
         type: "string"
         enum:
-        - "nl"
-        - "fr"
-        - "en"
+          - "nl"
+          - "fr"
+          - "en"
       email:
         type: "string"
         format: "email"
@@ -304,9 +305,9 @@ definitions:
       sex:
         type: "string"
         enum:
-        - "m"
-        - "f"
-        - "x"
+          - "m"
+          - "f"
+          - "x"
       gsm:
         type: "string"
         example: "+32460789101"
@@ -316,36 +317,15 @@ definitions:
         items:
           type: "string"
           enum:
-          - "photo"
-          - "contact"
-          - "no_photo"
-          - "no_contact"
+            - "photo"
+            - "contact"
+            - "no_photo"
+            - "no_contact"
       birthmonth:
         type: "string"
         format: "date"
       t_size:
         type: "string"
-        enum:
-        - "kid_3/4"
-        - "kid_5/6"
-        - "kid_7/8"
-        - "kid_9/11"
-        - "kid_12/14"
-        - "female_medium"
-        - "female_xs"
-        - "female_large"
-        - "female_xl"
-        - "female_2xl"
-        - "female_3xl"
-        - "male_Xsmall"
-        - "male_small"
-        - "male_medium"
-        - "male_large"
-        - "male_xl"
-        - "male_xxl"
-        - "male_3xl"	
-        - "male_4xl"
-        - "male_5xl"
       gsm_guardian:
         type: "string"
         example: "+32460789101"
@@ -361,6 +341,14 @@ definitions:
         maxLength: 255
       delete_possible:
         type: "boolean"
+      street:
+        type: "string"
+      house_number:
+        type: "string"
+      municipality_name:
+        type: "string"
+      box_number:
+        type: "string"
   Project:
     type: "object"
     properties:
@@ -384,9 +372,9 @@ definitions:
       project_lang:
         type: "string"
         enum:
-        - "nl"
-        - "fr"
-        - "en"
+          - "nl"
+          - "fr"
+          - "en"
       participants:
         type: "array"
         items:
@@ -396,13 +384,13 @@ definitions:
   Registration:
     type: "object"
     required:
-    - "birthmonth"
-    - "firstname"
-    - "lastname"
-    - "mandatory_approvals"
-    - "postalcode"
-    - "sex"
-    - "language"
+      - "birthmonth"
+      - "firstname"
+      - "lastname"
+      - "mandatory_approvals"
+      - "postalcode"
+      - "sex"
+      - "language"
     properties:
       postalcode:
         type: "integer"
@@ -421,56 +409,35 @@ definitions:
       sex:
         type: "string"
         enum:
-        - "m"
-        - "f"
-        - "x"
+          - "m"
+          - "f"
+          - "x"
       language:
         type: "string"
         enum:
-        - "nl"
-        - "fr"
-        - "en"
+          - "nl"
+          - "fr"
+          - "en"
       general_questions:
         type: "array"
         items:
           type: "string"
           enum:
-          - "photo"
-          - "contact"
-          - "no_photo"
-          - "no_contact"
+            - "photo"
+            - "contact"
+            - "no_photo"
+            - "no_contact"
       mandatory_approvals:
         type: "array"
         items:
           type: "string"
           enum:
-          - "ok"
+            - "ok"
       birthmonth:
         type: "string"
         format: "date"
       t_size:
         type: "string"
-        enum:
-        - "kid_3/4"
-        - "kid_5/6"
-        - "kid_7/8"
-        - "kid_9/11"
-        - "kid_12/14"
-        - "female_medium"
-        - "female_xs"
-        - "female_large"
-        - "female_xl"
-        - "female_2xl"
-        - "female_3xl"
-        - "male_Xsmall"
-        - "male_small"
-        - "male_medium"
-        - "male_large"
-        - "male_xl"
-        - "male_xxl"
-        - "male_3xl"	
-        - "male_4xl"
-        - "male_5xl"
       via:
         type: "string"
         maxLength: 200
@@ -485,17 +452,25 @@ definitions:
         maxLength: 4000
       project_type:
         type: "string"
-        maxLength: 100  
+        maxLength: 100
       project_code:
         type: "string"
         maxLength: 36
         minLength: 36
+      street:
+        type: "string"
+      house_number:
+        type: "string"
+      municipality_name:
+        type: "string"
+      box_number:
+        type: "string"
       project_lang:
         type: "string"
         enum:
-        - "nl"
-        - "fr"
-        - "en"
+          - "nl"
+          - "fr"
+          - "en"
       gsm:
         type: "string"
         example: "+32460789101"

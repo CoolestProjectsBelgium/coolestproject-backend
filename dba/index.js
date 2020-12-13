@@ -3,6 +3,9 @@
 const cls = require('cls-hooked');
 const namespace = cls.createNamespace('coolestproject');
 
+const addYears = require('date-fns/addYears');
+const parseISO = require('date-fns/parseISO');
+
 const models = require('../models');
 const crypto = require('crypto');
 
@@ -54,7 +57,11 @@ class DBA {
                             gsm_guardian: registration.gsm_guardian,
                             email_guardian: registration.email_guardian,
                             general_questions: registration.general_questions,
-                            eventId: registration.eventId
+                            eventId: registration.eventId,
+                            street: registration.street,
+                            municipality_name: registration.municipality_name,
+                            house_number: registration.house_number,
+                            box_number: registration.box_number,
                         },
                         registration.project_code,
                         registration.id
@@ -80,6 +87,10 @@ class DBA {
                             email_guardian: registration.email_guardian,
                             general_questions: registration.general_questions,
                             eventId: registration.eventId,
+                            municipality_name: registration.municipality_name,
+                            street: registration.street,
+                            house_number: registration.house_number,
+                            box_number: registration.box_number,
                             project: {
                                 project_name: registration.project_name,
                                 project_descr: registration.project_descr,
@@ -173,7 +184,18 @@ class DBA {
      * @returns {Promise<Boolean>} updated successfully
      */
     static async updateUser(changedFields, userId) {
-        var user = await User.findByPk(userId);
+        // remove fields that are not allowed to change (be paranoid)
+        delete changedFields.email;
+        delete changedFields.mandatory_approvals;
+
+        // cleanup guardian fields when not needed anymore
+        const event = await DBA.getEventActive();
+        const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
+        if (minGuardian > parseISO(changedFields.birthmonth)) {
+            changedFields.gsm_guardian = null;
+            changedFields.email_guardian = null;
+        }
+        const user = await User.findByPk(userId);
         return await user.update(changedFields);
     }
 

@@ -16,7 +16,7 @@ var Token = require('../jwts');
  * user RegistrationRequest The user to create. (optional)
  * no response value expected for this operation
  **/
-exports.registerPOST = function (registration) {
+exports.registerPOST = function (registration_fields) {
   return new Promise(async function (resolve, reject) {
 
     /** 
@@ -27,10 +27,11 @@ exports.registerPOST = function (registration) {
      **/
     try {
       // Check if email exists if so ignore registration
-      if (!(await DBA.doesEmailExists(registration.email))) {
-        const register = await DBA.createRegistration(registration);
-        const registrationToken = await Token.generateRegistrationToken(register.id);
-        //Mail.registrationMail(register, registrationToken);
+      if (!(await DBA.doesEmailExists(registration_fields.email))) {
+        const registration = await DBA.createRegistration(registration_fields);
+        const token = await Token.generateRegistrationToken(registration.id);
+        const event = await DBA.getEventActive();
+        Mail.activationMail(registration, token, event);
       } else {
         logger.error("user tried to register with same email: " + registration.email);
       }

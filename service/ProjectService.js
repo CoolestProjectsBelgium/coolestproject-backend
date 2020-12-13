@@ -135,8 +135,8 @@ exports.projectinfoDELETE = function (user) {
       const project = await DBA.getProject(user.id);
       const event = await DBA.getEventActive();
       const deleteSuccess = await DBA.deleteProject(user.id);
-
       Mailer.deleteMail(user, project, event);
+
       resolve(deleteSuccess);
     } catch (ex) {
       logger.error(ex);

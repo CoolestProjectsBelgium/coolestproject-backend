@@ -17,7 +17,7 @@ module.exports.userinfoGET = function userinfoGET(req, res, next) {
 module.exports.userinfoPATCH = function userinfoPATCH(req, res, next) {
   var logged_in_user = req.user;
   var user = req.swagger.params['user'].value;
-  User.userinfoPATCH(logged_in_user, user)
+  User.userinfoPATCH(user, logged_in_user)
     .then(function (response) {
       utils.writeJson(res, response);
     })

@@ -1,9 +1,7 @@
 'use strict';
 
-const addYears = require('date-fns/addYears')
-const parseISO = require('date-fns/parseISO')
-const logger = require('pino')()
-const respondWithCode = require('../utils/writer').respondWithCode
+const logger = require('pino')();
+const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 /**
@@ -28,6 +26,10 @@ exports.userinfoGET = function (user) {
         via: user.via,
         birthmonth: user.birthmonth,
         postalcode: user.postalcode,
+        street: user.street,
+        house_number: user.house_number,
+        box_number: user.box_number,
+        municipality_name: user.municipality_name,
         email: user.email,
         email_guardian: user.email_guardian,
         delete_possible: await DBA.isUserDeletable(user.id)
@@ -48,40 +50,11 @@ exports.userinfoGET = function (user) {
  *
  * returns User
  **/
-exports.userinfoPATCH = function (logged_in_user, user) {
+exports.userinfoPATCH = function (changed_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      // remove fields that are not allowed to change (be paranoid)
-      delete user.email;
-      delete user.mandatory_approvals;
-
-      // cleanup guardian fields when not needed anymore
-      const event = DBA.getEventActive();
-      const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
-      console.log("minGuardian:" + minGuardian + "this.birthmonth:" + parseISO(user.birthmonth))
-      if (minGuardian > parseISO(user.birthmonth)) {
-        logger.info('remove guardian information');
-        user.gsm_guardian = null;
-        user.email_guardian = null;
-      }
-      var u = await DBA.updateUser(user, token.id);
-      resolve({
-        general_questions: u.general_questions,
-        mandatory_approvals: u.mandatory_approvals,
-        language: u.language,
-        postalcode: u.postalcode,
-        email: u.email,
-        firstname: u.firstname,
-        lastname: u.lastname,
-        sex: u.sex,
-        birthmonth: u.birthmonth,
-        t_size: u.t_size,
-        via: u.via,
-        medical: u.medical,
-        gsm: u.gsm,
-        gsm_guardian: u.gsm_guardian,
-        email_guardian: u.email_guardian
-      });
+      await DBA.updateUser(changed_fields, user.id);
+      resolve(await DBA.getUser(user.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
