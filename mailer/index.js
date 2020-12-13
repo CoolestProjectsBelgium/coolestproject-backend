@@ -140,13 +140,12 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
-        locale: 'en',
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `?token=${token}`,
+        url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
     });
@@ -160,7 +159,6 @@ class Mailer {
         cc: users.email_guardian
       },
       locals: {
-        locale: 'en',
         users: {
           firstname: users.firstname,
           email_guardian: users.email_guardian,

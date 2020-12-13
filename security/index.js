@@ -16,16 +16,16 @@ module.exports = function (app) {
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-            // user login
+           
+                // user login
             let user = null;
             let participant = null;
             let owner = null;
-            if (jwt_payload.id !== null) {
+            if (jwt_payload.id !== undefined) {
                 user = await DBA.getUser(jwt_payload.id);
-
+                
                 // create user
-            } else if (jwt_payload.registrationId !== null) {
-
+            } else if (jwt_payload.registrationId !== undefined) {
                 let userId = -1;
                 // get registration
                 const registration = await DBA.getRegistration(jwt_payload.registrationId);
