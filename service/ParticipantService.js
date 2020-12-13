@@ -9,13 +9,10 @@ var dba = require('../dba');
  * Create Voucher for participant
  * returns Voucher
  **/
-exports.participantPOST = function (loginToken) {
+exports.participantPOST = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await Token.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      var v = await dba.createVoucher(token.id);
+      var v = await dba.createVoucher(user.id);
       resolve(null);
     } catch (ex) {
       logger.error(ex);

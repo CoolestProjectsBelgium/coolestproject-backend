@@ -3,9 +3,9 @@
 var utils = require('../utils/writer.js');
 var Participant = require('../service/ParticipantService');
 
-module.exports.participantPOST = function participantPOST (req, res, next) {
-  var loginToken = req.headers.api_key;
-  Participant.participantPOST(loginToken)
+module.exports.participantPOST = function participantPOST(req, res, next) {
+  const user = req.user
+  Participant.participantPOST(user)
     .then(function (response) {
       utils.writeJson(res, response);
     })

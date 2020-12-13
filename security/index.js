@@ -92,10 +92,12 @@ module.exports = function (app) {
             }
 
             // send welcome mails if user is new
+            const event = await DBA.getEventActive();
             if (owner) {
-                Mail.welcomeMailOwner(owner);
+                const project = await DBA.getProject(user.id);
+                Mail.welcomeMailOwner(owner, project, event);
             } else if (participant) {
-                Mail.welcomeMailParticipant(participant);
+                Mail.welcomeMailCoWorker(participant, project, event);
             }
 
             // check if user is found

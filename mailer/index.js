@@ -52,7 +52,7 @@ class Mailer {
           email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `?token=${token}`,
+        url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
     });
@@ -68,7 +68,7 @@ class Mailer {
       locals: {
         year: event.startDate.getFullYear(),
         user: {
-          firstname: user.firstname      
+          firstname: user.firstname
         },
         project: {
           id: project.id,
@@ -90,7 +90,7 @@ class Mailer {
       locals: {
         year: event.startDate.getFullYear(),
         user: {
-          firstname: user.firstname      
+          firstname: user.firstname
         },
         project: {
           id: project.id,
@@ -112,7 +112,7 @@ class Mailer {
       locals: {
         year: event.startDate.getFullYear(),
         user: {
-          firstname: user.firstname      
+          firstname: user.firstname
         },
         project: {
           id: project.id,
@@ -184,10 +184,10 @@ class Mailer {
           email_guardian: users.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `?token=${token}`,
+        url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
-    
+
     });
     return result;
   }

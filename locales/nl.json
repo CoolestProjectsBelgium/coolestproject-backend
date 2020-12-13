@@ -95,5 +95,6 @@
   "-Invite co-workers to your project by clicking the button \"CO-WORKER\" ": "-Invite co-workers to your project by clicking the button \"CO-WORKER\" ",
   "-Invite co-workers to your project by clicking the button \\'CO-WORKERS\\'' ": "-Invite co-workers to your project by clicking the button \\'CO-WORKERS\\'' ",
   "-Invite co-workers to your project by clicking the button \\'CO-WORKERS\\' ": "-Invite co-workers to your project by clicking the button \\'CO-WORKERS\\' ",
-  "-Invite co-workers to your project by clicking the button 'CO-WORKERS' ": "-Invite co-workers to your project by clicking the button 'CO-WORKERS' "
+  "-Invite co-workers to your project by clicking the button 'CO-WORKERS' ": "-Invite co-workers to your project by clicking the button 'CO-WORKERS' ",
+  "Please, use the following link to open your project in your browser\n\n{{{hash.link}}}\n\nto activate your project.": "Please, use the following link to open your project in your browser\n\n{{{hash.link}}}\n\nto activate your project."
 }
