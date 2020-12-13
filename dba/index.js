@@ -209,7 +209,10 @@ class DBA {
      * @returns {Promise<Project>} created account
      */
     static async createProject(project, userId) {
+        const event = await DBA.getEventActive();
         project.ownerId = userId;
+        project.max_tokens = event.maxVoucher;
+
         return await Project.create(project);
     }
 
@@ -240,16 +243,15 @@ class DBA {
     static async isUserDeletable(userId) {
         return await sequelize.transaction(
             async (t) => {
-                var result = true;
                 const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-                if (project === null) {
-                    throw Error("Project not found")
+                if (project == null) {
+                    return true;
                 }
                 const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
                 if (usedVoucher > 0) {
-                    result = false;
+                    return false;
                 }
-                return result
+                return true;
             }
         );
     }
@@ -421,7 +423,7 @@ class DBA {
         if (project === null) {
             const voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['projectId'] });
             if (voucher === null) {
-                throw Error("Voucher not found")
+                return; //nothing exists on DB -> frontend redirects to no project page
             }
             project = await Project.findByPk(voucher.projectId, {
                 include: [

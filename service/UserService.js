@@ -55,13 +55,8 @@ exports.userinfoPATCH = function (logged_in_user, user) {
       delete user.email;
       delete user.mandatory_approvals;
 
-      // remove non editable fields after specific date
-      if (parseISO(process.env.TSHIRT_DATE) < new Date()) {
-        logger.info('tshirt date is passed');
-        delete user.t_size;
-      }
-
       // cleanup guardian fields when not needed anymore
+      const event = DBA.getEventActive();
       const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
       console.log("minGuardian:" + minGuardian + "this.birthmonth:" + parseISO(user.birthmonth))
       if (minGuardian > parseISO(user.birthmonth)) {
