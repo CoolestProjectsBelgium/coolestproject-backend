@@ -5,6 +5,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const DBA = require('../dba');
+const Token = require('../jwts');
 const Mail = require('../mailer');
 
 module.exports = function (app) {
@@ -16,14 +17,14 @@ module.exports = function (app) {
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-           
-                // user login
+
+            // user login
             let user = null;
             let participant = null;
             let owner = null;
             if (jwt_payload.id !== undefined) {
                 user = await DBA.getUser(jwt_payload.id);
-                
+
                 // create user
             } else if (jwt_payload.registrationId !== undefined) {
                 let userId = -1;
@@ -93,11 +94,12 @@ module.exports = function (app) {
 
             // send welcome mails if user is new
             const event = await DBA.getEventActive();
+            const token = await Token.generateLoginToken(user.id);
             if (owner) {
                 const project = await DBA.getProject(user.id);
-                Mail.welcomeMailOwner(owner, project, event);
+                Mail.welcomeMailOwner(owner, project, event, token);
             } else if (participant) {
-                Mail.welcomeMailCoWorker(participant, project, event);
+                Mail.welcomeMailCoWorker(participant, project, event, token);
             }
 
             // check if user is found

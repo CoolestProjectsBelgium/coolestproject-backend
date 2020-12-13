@@ -69,6 +69,7 @@ class DBA {
                     userId = participant.id
                 } else {
                     // create user with project
+                    const event = await this.getEvent(registration.eventId);
                     const owner = await this.createUserWithProject(
                         {
                             language: registration.language,
@@ -96,7 +97,7 @@ class DBA {
                                 project_descr: registration.project_descr,
                                 project_type: registration.project_type,
                                 project_lang: registration.project_lang,
-                                max_voucher: MAX_VOUCHERS
+                                max_voucher: event.maxVoucher
                             }
                         },
                         registration.id
@@ -522,6 +523,14 @@ class DBA {
                 return await event.save();
             }
         );
+    }
+    /**
+     * get event by id
+     * @param {Number} eventId
+     * @returns {Promise<Event>}
+     */
+    static async getEvent(eventId) {
+        return await Event.findByPk(eventId);
     }
 
     /**

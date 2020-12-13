@@ -55,7 +55,7 @@ class Mailer {
           id: project.id,
           title: project.project_name
         },
-        url: process.env.URL,
+        url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
     });
@@ -77,7 +77,7 @@ class Mailer {
           id: project.id,
           title: project.project_name
         },
-        url: process.env.URL,
+        url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
     });
