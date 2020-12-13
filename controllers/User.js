@@ -5,6 +5,7 @@ var User = require('../service/UserService');
 
 module.exports.userinfoGET = function userinfoGET(req, res, next) {
   var logged_in_user = req.user;
+  //console.log(req)
   User.userinfoGET(logged_in_user)
     .then(function (response) {
       utils.writeJson(res, response);

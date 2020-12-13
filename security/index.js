@@ -92,10 +92,12 @@ module.exports = function (app) {
             }
 
             // send welcome mails if user is new
+            const event = await DBA.getEventActive();
             if (owner) {
-                Mail.welcomeMailOwner(owner);
+                const project = await DBA.getProject(user.id);
+                Mail.welcomeMailOwner(owner, project, event);
             } else if (participant) {
-                Mail.welcomeMailParticipant(participant);
+                Mail.welcomeMailCoWorker(participant, project, event);
             }
 
             // check if user is found
@@ -111,10 +113,12 @@ module.exports = function (app) {
     }));
 
     passport.serializeUser(function (user, done) {
+        console.log(user)
         done(null, user.id);
     });
 
     passport.deserializeUser(async function (id, done) {
+        console.log(id)
         try {
             const user = await DBA.getUser(user.id);
             return done(null, user);
@@ -123,9 +127,10 @@ module.exports = function (app) {
         }
     });
 
-    app.use('/userinfo', passport.authenticate('jwt'))
     app.use('/projectinfo', passport.authenticate('jwt'))
     app.use('/participants', passport.authenticate('jwt'))
+    app.use('/login', passport.authenticate('jwt'))
+    app.use('/userinfo', passport.authenticate('jwt'))
 }
 
 

@@ -26,9 +26,10 @@ exports.mailLoginPOST = function (login) {
         }
         if (new Date() > tokenTime) {
           // generate new token for user
-          await DBA.updateLastToken(user);
+          await DBA.updateLastToken(user.id);
           const token = await Token.generateLoginToken(user.id);
-          await Mail.loginMail(user, token);
+          const event = await DBA.getEventActive();
+          await Mail.ask4TokenMail(user, token, event);
         } else {
           logger.info('Token requested but time is not passed yet: ' + user.email);
         }
