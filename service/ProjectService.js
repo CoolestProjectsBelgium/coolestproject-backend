@@ -85,8 +85,8 @@ exports.projectinfoGET = function (user) {
 exports.projectinfoPATCH = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      await DBA.updateProject(project, user.id);
-      resolve(await getProjectDetails(token.id));
+      await DBA.updateProject(project_fields, user.id);
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -98,7 +98,7 @@ exports.projectinfoPATCH = function (project_fields, user) {
 }
 
 /**
- * create the projectinfo
+ * return project (Was created during login)
  *
  * returns Project
  **/
