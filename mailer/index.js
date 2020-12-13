@@ -140,6 +140,7 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
+
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
