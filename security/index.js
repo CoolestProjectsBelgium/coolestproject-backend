@@ -111,10 +111,12 @@ module.exports = function (app) {
     }));
 
     passport.serializeUser(function (user, done) {
+        console.log(user)
         done(null, user.id);
     });
 
     passport.deserializeUser(async function (id, done) {
+        console.log(id)
         try {
             const user = await DBA.getUser(user.id);
             return done(null, user);
@@ -123,9 +125,10 @@ module.exports = function (app) {
         }
     });
 
-    app.use('/userinfo', passport.authenticate('jwt'))
     app.use('/projectinfo', passport.authenticate('jwt'))
     app.use('/participants', passport.authenticate('jwt'))
+    app.use('/login', passport.authenticate('jwt'))
+    app.use('/userinfo', passport.authenticate('jwt'))
 }
 
 

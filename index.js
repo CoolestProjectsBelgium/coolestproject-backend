@@ -11,6 +11,9 @@ const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
+
 const corsOptions = {
   origin: process.env.URL,
   optionsSuccessStatus: 200

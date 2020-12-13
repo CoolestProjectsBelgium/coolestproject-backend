@@ -60,13 +60,10 @@ async function getProjectDetails(userId) {
  * projectId Integer projectid.
  * returns Project
  **/
-exports.projectinfoGET = function (loginToken) {
+exports.projectinfoGET = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info("LoginToken:" + loginToken);
-      var token = await Token.validateToken(loginToken);
-      logger.info('user id:' + token.id);
-      resolve(await getProjectDetails(token.id));
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -82,13 +79,10 @@ exports.projectinfoGET = function (loginToken) {
  *
  * returns Project
  **/
-exports.projectinfoPATCH = function (loginToken, project) {
+exports.projectinfoPATCH = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await Token.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      await dba.updateProject(project, token.id);
+      await dba.updateProject(project, user.id);
       resolve(await getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
@@ -132,13 +126,10 @@ exports.projectinfoPOST = function (loginToken, project) {
  *
  * returns User
  **/
-exports.projectinfoDELETE = function (loginToken) {
+exports.projectinfoDELETE = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await Token.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      var u = await dba.deleteProject(token.id);
+      var u = await dba.deleteProject(user.id);
       resolve(u);
     } catch (ex) {
       logger.error(ex);

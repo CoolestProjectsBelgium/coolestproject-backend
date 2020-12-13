@@ -3,10 +3,10 @@
 var utils = require('../utils/writer.js');
 var Project = require('../service/ProjectService');
 
-module.exports.projectinfoPATCH = function projectinfoPATCH (req, res, next) {
-  var loginToken = req.headers.api_key;
+module.exports.projectinfoPATCH = function projectinfoPATCH(req, res, next) {
+  const user = req.user
   var project = req.swagger.params['project'].value;
-  Project.projectinfoPATCH(loginToken, project)
+  Project.projectinfoPATCH(project, user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -14,10 +14,10 @@ module.exports.projectinfoPATCH = function projectinfoPATCH (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-module.exports.projectinfoPOST = function projectinfoPOST (req, res, next) {
-  var loginToken = req.headers.api_key;
+module.exports.projectinfoPOST = function projectinfoPOST(req, res, next) {
+  const user = req.user
   var project = req.swagger.params['project'].value;
-  Project.projectinfoPOST(loginToken, project)
+  Project.projectinfoPOST(project, user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -25,9 +25,9 @@ module.exports.projectinfoPOST = function projectinfoPOST (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-module.exports.projectinfoDELETE = function projectinfoDELETE (req, res, next) {
-  var loginToken = req.headers.api_key;
-  Project.projectinfoDELETE(loginToken)
+module.exports.projectinfoDELETE = function projectinfoDELETE(req, res, next) {
+  const user = req.user
+  Project.projectinfoDELETE(user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -35,9 +35,9 @@ module.exports.projectinfoDELETE = function projectinfoDELETE (req, res, next) {
       utils.writeJson(res, response);
     });
 };
-module.exports.projectinfoGET = function projectinfoGET (req, res, next) {
-  var loginToken = req.headers.api_key;
-  Project.projectinfoGET(loginToken)
+module.exports.projectinfoGET = function projectinfoGET(req, res, next) {
+  const user = req.user
+  Project.projectinfoGET(user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
