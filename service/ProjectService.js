@@ -3,12 +3,15 @@
 const logger = require('pino')()
 const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../dba');
+var DBA = require('../dba');
+const Mailer = require('../mailer');
+const db = require('../models');
 
 async function getProjectDetails(userId) {
-  const project = await dba.getProject(userId);
+  const project = await DBA.getProject(userId);
   if (project !== null) {
     const ownProject = (userId === project.ownerId);
+    const maxTokens = project.max_tokens;
     logger.info("participant:" + project);
     var projectResult = {
       project_name: project.project_name,
@@ -44,7 +47,7 @@ async function getProjectDetails(userId) {
     }
     // count remaining tokens
     if (ownProject) {
-      projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
+      projectResult.remaining_tokens = maxTokens - projectResult.participants.length;
     }
 
     //delete is not possible when there are participants & it's your own project
@@ -82,7 +85,7 @@ exports.projectinfoGET = function (user) {
 exports.projectinfoPATCH = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      await dba.updateProject(project, user.id);
+      await DBA.updateProject(project, user.id);
       resolve(await getProjectDetails(token.id));
     } catch (ex) {
       logger.error(ex);
@@ -99,18 +102,10 @@ exports.projectinfoPATCH = function (project_fields, user) {
  *
  * returns Project
  **/
-exports.projectinfoPOST = function (loginToken, project) {
+exports.projectinfoPOST = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await Token.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      if (project.project_code) {
-        await dba.addParticipantProject(token.id, project.project_code);
-      } else {
-        await dba.createProject(project, token.id);
-      }
-      resolve(await getProjectDetails(token.id));
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -129,8 +124,12 @@ exports.projectinfoPOST = function (loginToken, project) {
 exports.projectinfoDELETE = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      var u = await dba.deleteProject(user.id);
-      resolve(u);
+      const project = await DBA.getProject(user.id);
+      const event = await DBA.getEventActive();
+      const deleteSuccess = await DBA.deleteProject(user.id);
+
+      Mailer.deleteMail(user, project, event);
+      resolve(deleteSuccess);
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {

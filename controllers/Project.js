@@ -16,8 +16,7 @@ module.exports.projectinfoPATCH = function projectinfoPATCH(req, res, next) {
 };
 module.exports.projectinfoPOST = function projectinfoPOST(req, res, next) {
   const user = req.user
-  var project = req.swagger.params['project'].value;
-  Project.projectinfoPOST(project, user)
+  Project.projectinfoPOST(user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
