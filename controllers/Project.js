@@ -5,7 +5,7 @@ var Project = require('../service/ProjectService');
 
 module.exports.projectinfoPATCH = function projectinfoPATCH(req, res, next) {
   const user = req.user
-  var project = req.swagger.params['project'].value;
+  const project = req.swagger.params['project'].value;
   Project.projectinfoPATCH(project, user)
     .then(function (response) {
       utils.writeJson(res, response);
@@ -16,7 +16,8 @@ module.exports.projectinfoPATCH = function projectinfoPATCH(req, res, next) {
 };
 module.exports.projectinfoPOST = function projectinfoPOST(req, res, next) {
   const user = req.user
-  Project.projectinfoPOST(user)
+  const project = req.swagger.params['project'].value;
+  Project.projectinfoPOST(project, user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
