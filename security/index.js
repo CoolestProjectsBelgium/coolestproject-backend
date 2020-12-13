@@ -24,16 +24,15 @@ module.exports = function (app) {
             let owner = null;
             if (jwt_payload.id !== undefined) {
                 user = await DBA.getUser(jwt_payload.id);
+                if (user == null) {
+                    return done(null, false);
+                }
 
                 // create user
             } else if (jwt_payload.registrationId !== undefined) {
                 let userId = -1;
                 // get registration
                 const registration = await DBA.getRegistration(jwt_payload.registrationId);
-                // no registration found in our table (already created)
-                if (registration === null) {
-                    return done(null, false);
-                }
                 if (registration.project_code) {
                     // create user and add to existing project
                     participant = await DBA.createUserWithVoucher(
@@ -94,7 +93,7 @@ module.exports = function (app) {
 
             // send welcome mails if user is new
             const event = await DBA.getEventActive();
-            const token = await Token.generateLoginToken(user.id);
+            const token = await Token.generateLoginToken(userId);
             if (owner) {
                 const project = await DBA.getProject(user.id);
                 Mail.welcomeMailOwner(owner, project, event, token);
