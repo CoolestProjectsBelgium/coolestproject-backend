@@ -14,7 +14,7 @@ paths:
   /tshirts:
     get:
       tags:
-        - "tshirts"
+        - "valuehelps"
       summary: "Get TShirts"
       operationId: "tshirtGET"
       responses:
@@ -26,7 +26,7 @@ paths:
   /questions:
     get:
       tags:
-        - "questions"
+        - "valuehelps"
       summary: "Get Questions"
       operationId: "questionGET"
       responses:
@@ -35,7 +35,6 @@ paths:
           schema:
             $ref: "#/definitions/Question"
       x-swagger-router-controller: "Question"
-
   /settings:
     get:
       tags:
