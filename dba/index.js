@@ -16,9 +16,12 @@ const bcrypt = require("bcrypt");
 
 const Account = models.Account;
 const Project = models.Project;
+const Question = models.Question;
 const User = models.User;
 const Voucher = models.Voucher;
 const Event = models.Event;
+const TShirt = models.TShirt;
+const TShirtGroup = models.TShirtGroup;
 const Registration = models.Registration;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
@@ -524,6 +527,7 @@ class DBA {
             }
         );
     }
+
     /**
      * get event by id
      * @param {Number} eventId
@@ -555,6 +559,44 @@ class DBA {
             }
         })
     }
+
+    /**
+     * get active event
+     * @returns {Promise<TShirt>}
+     */
+    static async getTshirts() {
+        const event = await this.getEventActive();
+        if (event === null) {
+            throw new Error('No event found');
+        }
+        return await TShirt.findAll({
+            attributes: ['id', 'name'],
+            include: { model: TShirtGroup, as: 'group', attributes: ['id', 'name'] },
+            where: { eventId: event.id }
+        });
+    }
+
+    /**
+     * get active event
+     * @returns {Promise<object>}
+     */
+    static async getQuestions() {
+        const event = await this.getEventActive();
+        if (event === null) {
+            throw new Error('No event found');
+        }
+        return {
+            required: await Question.findAll({
+                attributes: ['id', 'name'],
+                where: { eventId: event.id, mandatory: true }
+            }),
+            optional: await Question.findAll({
+                attributes: ['id', 'name'],
+                where: { eventId: event.id, mandatory: { [Op.not]: true } }
+            })
+        }
+    }
+
 }
 
 module.exports = DBA
