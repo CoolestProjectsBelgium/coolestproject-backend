@@ -11,6 +11,30 @@ tags:
   - name: "login"
   - name: "user"
 paths:
+  /tshirts:
+    get:
+      tags:
+        - "valuehelps"
+      summary: "Get TShirts"
+      operationId: "tshirtGET"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Tshirt"
+      x-swagger-router-controller: "Tshirts"
+  /questions:
+    get:
+      tags:
+        - "valuehelps"
+      summary: "Get Questions"
+      operationId: "questionGET"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Question"
+      x-swagger-router-controller: "Question"
   /settings:
     get:
       tags:
@@ -519,3 +543,30 @@ definitions:
         format: "date"
       enviroment:
         type: "string"
+  Tshirt:
+    type: "array"
+    items:
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+  Question:
+    type: "object"
+    properties:
+      required:
+        type: "array"
+        items:
+          properties:
+            id:
+              type: "string"
+            name:
+              type: "string"
+      optional:
+        type: "array"
+        items:
+          properties:
+            id:
+              type: "string"
+            name:
+              type: "string"
