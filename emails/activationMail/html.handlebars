@@ -8,16 +8,17 @@
     <div class="container-fluid">
         <h1>{{t "Hi {{hash.firstname}}" firstname=registration.firstname }},</h1>
 
-        <p>{{{t "We are very pleased that you want to participate on the next {{{hash.title}}} a VIRTUAL edition, so
+        <p>{{{t "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so
             that will be extra special !"
             title=(t "<strong>{{ hash.title }} {{hash.year}}</strong>"
-            title="Projects Belgium" year=registration.year) }}}</p>
-        <p>{{{t "You can find all the info on Coolest Project on our {{ link }} website ." link=(t '<a href="{{hash.website}}">Coolest Projects {{hash.year}}</a>' website=website year=registration.year ) }}}
+            title="Coolest Projects Belgium" year=registration.year) }}}</p>
+        <p>{{{t "You can find all the info on Coolest Project on our {{ link }} website ." link=(t '<a
+                href="{{hash.website}}">Coolest Projects {{hash.year}}</a>' website=website year=registration.year ) }}}
         </p>
         {{#if registration.email_guardian}}
         <p>{{{t "Your parents will also receive this mail and they have to confirm your
             participation.</p>"}}}
-            {{/if}}
+        {{/if}}
         <p>
             <strong>{{{t "Click this {{{hash.link}}} to activate your project." link=(t "<a
                     href=\"{{hash.link}}\">Activation Link</a>" link=url ) }}}</strong>
