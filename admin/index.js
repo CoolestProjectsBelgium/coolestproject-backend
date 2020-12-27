@@ -54,6 +54,18 @@ const adminBroOptions = {
   },
   resources: [
     {
+      resource: db.Session,
+      options: {
+        navigation: adminParent
+      }
+    },
+    {
+      resource: db.Account,
+      options: {
+        navigation: adminParent
+      }
+    },
+    {
       resource: db.Event,
       options: {
         navigation: eventParent,
@@ -81,17 +93,77 @@ const adminBroOptions = {
           }
         }
       }
-    },
+    }, 
     {
-      resource: db.Session,
+      resource: db.Question,
       options: {
-        navigation: adminParent
+        navigation: registerParent
       }
     },
     {
-      resource: db.Account,
+      resource: db.TShirt,
       options: {
-        navigation: adminParent
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.QuestionUser,
+      options: {
+        navigation: registerParent
+      }
+    },
+        {
+      resource: db.Registration,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Project,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.User,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Voucher,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Attachment,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Vote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.VoteCategory,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.ExternVote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.Award,
+      options: {
+        navigation: votingParent
       }
     },
     {
@@ -137,78 +209,6 @@ const adminBroOptions = {
             },
           }
         }
-      }
-    },
-    {
-      resource: db.Vote,
-      options: {
-        navigation: votingParent
-      }
-    },
-    {
-      resource: db.VoteCategory,
-      options: {
-        navigation: votingParent
-      }
-    },
-    {
-      resource: db.ExternVote,
-      options: {
-        navigation: votingParent
-      }
-    },
-    {
-      resource: db.Award,
-      options: {
-        navigation: votingParent
-      }
-    },
-    {
-      resource: db.Question,
-      options: {
-        navigation: registerParent
-      }
-    },
-    {
-      resource: db.Registration,
-      options: {
-        navigation: registerParent
-      }
-    },
-    {
-      resource: db.TShirt,
-      options: {
-        navigation: registerParent
-      }
-    },
-    {
-      resource: db.QuestionUser,
-      options: {
-        navigation: registerParent
-      }
-    },
-    {
-      resource: db.Project,
-      options: {
-        navigation: projectParent
-      }
-    },
-    {
-      resource: db.User,
-      options: {
-        navigation: projectParent
-      }
-    },
-    {
-      resource: db.Voucher,
-      options: {
-        navigation: projectParent
-      }
-    },
-    {
-      resource: db.Attachment,
-      options: {
-        navigation: projectParent
       }
     }
   ]
