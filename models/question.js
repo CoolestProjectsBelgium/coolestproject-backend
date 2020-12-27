@@ -12,12 +12,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Question.belongsTo(models.Event, { as: 'event', optional: false });
-      Question.belongsToMany(models.User, { through: models.QuestionUser }); // A BelongsToMany B through the junction table C
+      Question.belongsToMany(models.User, { through: models.QuestionUser });
+      Question.hasMany(models.QuestionTranslation)
     }
   };
   Question.init({
     name: { type: DataTypes.CHAR(30), unique: true },
-    mandatory: DataTypes.BOOLEAN
+    mandatory: DataTypes.BOOLEAN,
+
   }, {
     sequelize,
     modelName: 'Question',

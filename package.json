@@ -18,6 +18,7 @@
   "license": "MIT License",
   "private": true,
   "dependencies": {
+    "accept-language-parser": "^1.5.0",
     "admin-bro": "*",
     "admin-bro-expressjs": "*",
     "admin-bro-sequelizejs": "*",
@@ -34,6 +35,7 @@
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-formidable": "^1.2.0",
+    "express-request-language": "^1.1.15",
     "express-session": "^1.17.0",
     "handlebars": "^4.7.6",
     "handlebars-helpers": "^0.10.0",

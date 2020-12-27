@@ -10,9 +10,18 @@ const http = require('http');
 const swaggerTools = require('swagger-tools');
 const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
+const requestLanguage = require('express-request-language');
 
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 app.use(cookieParser())
+app.use(requestLanguage({
+  languages: ['en', 'fr', 'nl'],
+  cookie: {
+    name: 'language',
+    options: { maxAge: 24 * 3600 * 1000 },
+    url: '/languages/{language}'
+  }
+}));
 
 const corsOptions = {
   origin: process.env.URL,

@@ -108,8 +108,8 @@ export const Dashboard = () => {
                         <Box ml="xl">
                             <H4>Users</H4>
                             <H5>{data.total_users} Users</H5>
-                            <H5>{data.total_males} Females</H5>
-                            <H5>{data.total_females} Males</H5>
+                            <H5>{data.total_males} Males</H5>
+                            <H5>{data.total_females} Females</H5>
                         </Box>
                     </Card>
                 </Box>

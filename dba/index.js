@@ -25,6 +25,7 @@ const TShirtGroup = models.TShirtGroup;
 const Registration = models.Registration;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
+const QuestionTranslation = models.QuestionTranslation;
 
 const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0
 
@@ -577,24 +578,50 @@ class DBA {
     }
 
     /**
-     * get active event
+     * get questions
      * @returns {Promise<object>}
      */
-    static async getQuestions() {
+    static async getQuestions(language) {
         const event = await this.getEventActive();
         if (event === null) {
             throw new Error('No event found');
         }
-        return {
-            required: await Question.findAll({
-                attributes: ['id', 'name'],
-                where: { eventId: event.id, mandatory: true }
-            }),
-            optional: await Question.findAll({
-                attributes: ['id', 'name'],
-                where: { eventId: event.id, mandatory: { [Op.not]: true } }
-            })
+        // const mandatoryQuestions = await Question.findAll({ attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true } })
+        const optionalQuestions = await Question.findAll({
+            attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
+            , include: [{ model: QuestionTranslation, where: { language: language }, attributes: ['description', 'positive', 'negative'] }]
+        })
+        return optionalQuestions.map((q) => {
+            return {
+                'id': q.id,
+                'name': q.name,
+                'description': q.QuestionTranslations[0].description,
+                'positive': q.QuestionTranslations[0].positive,
+                'negative': q.QuestionTranslations[0].negative
+            }
+        })
+    }
+
+    /**
+     * get approvals
+     * @returns {Promise<object>}
+     */
+    static async getApprovals(language) {
+        const event = await this.getEventActive();
+        if (event === null) {
+            throw new Error('No event found');
         }
+        const mandatoryQuestions = await Question.findAll({
+            attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true }
+            , include: [{ model: QuestionTranslation, where: { language: language }, attributes: ['description', 'positive', 'negative'] }]
+        })
+        return mandatoryQuestions.map((q) => {
+            return {
+                'id': q.id,
+                'name': q.name,
+                'description': q.QuestionTranslations[0].description
+            }
+        })
     }
 
 }
