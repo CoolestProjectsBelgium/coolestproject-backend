@@ -101,6 +101,12 @@ const adminBroOptions = {
       }
     },
     {
+      resource: db.TShirtGroup,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
       resource: db.TShirt,
       options: {
         navigation: registerParent
