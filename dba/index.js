@@ -435,7 +435,7 @@ class DBA {
      */
     static async getProject(userId) {
         // first look for own project
-        const project = await Project.findOne({
+        var project = await Project.findOne({
             where: { ownerId: userId }, include: [
                 {
                     model: Voucher,

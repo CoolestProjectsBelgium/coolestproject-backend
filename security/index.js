@@ -101,8 +101,8 @@ module.exports = function (app) {
             }
 
             const token = await Token.generateLoginToken(userId);
+            const project = await DBA.getProject(user.id);
             if (owner) {
-                const project = await DBA.getProject(user.id);
                 Mail.welcomeMailOwner(owner, project, event, token);
             } else if (participant) {
                 Mail.welcomeMailCoWorker(participant, project, event, token);
