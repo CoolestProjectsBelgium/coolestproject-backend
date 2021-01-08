@@ -40,6 +40,7 @@ module.exports = function (app) {
                     // create user and add to existing project
                     participant = await DBA.createUserWithVoucher(
                         {
+                            eventId: registration.eventId,
                             language: registration.language,
                             postalcode: registration.postalcode,
                             email: registration.email,
@@ -49,7 +50,7 @@ module.exports = function (app) {
                             sex: registration.sex,
                             birthmonth: registration.birthmonth,
                             mandatory_approvals: registration.mandatory_approvals,
-                            t_size: registration.t_size,
+                            sizeId: registration.sizeId,
                             via: registration.via,
                             medical: registration.medical,
                             gsm_guardian: registration.gsm_guardian,
@@ -64,6 +65,7 @@ module.exports = function (app) {
                     // create user with project
                     owner = await DBA.createUserWithProject(
                         {
+                            eventId: registration.eventId,
                             language: registration.language,
                             postalcode: registration.postalcode,
                             email: registration.email,
@@ -73,7 +75,7 @@ module.exports = function (app) {
                             sex: registration.sex,
                             birthmonth: registration.birthmonth,
                             mandatory_approvals: registration.mandatory_approvals,
-                            t_size: registration.t_size,
+                            sizeId: registration.sizeId,
                             via: registration.via,
                             medical: registration.medical,
                             gsm_guardian: registration.gsm_guardian,
@@ -83,7 +85,8 @@ module.exports = function (app) {
                                 project_name: registration.project_name,
                                 project_descr: registration.project_descr,
                                 project_type: registration.project_type,
-                                project_lang: registration.project_lang
+                                project_lang: registration.project_lang,
+                                max_tokens: registration.max_tokens
                             }
                         },
                         registration.id

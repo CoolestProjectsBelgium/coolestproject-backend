@@ -106,6 +106,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     box_number: {
       type: DataTypes.STRING(20)
+    },
+    max_tokens: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     sequelize,

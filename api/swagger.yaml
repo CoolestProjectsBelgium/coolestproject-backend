@@ -465,7 +465,7 @@ definitions:
       birthmonth:
         type: "string"
         format: "date"
-      t_size:
+      sizeId:
         type: integer
       via:
         type: "string"
