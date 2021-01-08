@@ -35,6 +35,18 @@ paths:
           schema:
             $ref: "#/definitions/Question"
       x-swagger-router-controller: "Question"
+  /approvals:
+    get:
+      tags:
+        - "valuehelps"
+      summary: "Get Approvals"
+      operationId: "approvalGET"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Approval"
+      x-swagger-router-controller: "Approval"
   /settings:
     get:
       tags:
@@ -445,23 +457,16 @@ definitions:
       general_questions:
         type: "array"
         items:
-          type: "string"
-          enum:
-            - "photo"
-            - "contact"
-            - "no_photo"
-            - "no_contact"
+          type: integer
       mandatory_approvals:
         type: "array"
         items:
-          type: "string"
-          enum:
-            - "ok"
+          type: integer
       birthmonth:
         type: "string"
         format: "date"
       t_size:
-        type: "string"
+        type: integer
       via:
         type: "string"
         maxLength: 200
@@ -552,21 +557,26 @@ definitions:
         name:
           type: "string"
   Question:
-    type: "object"
-    properties:
-      required:
-        type: "array"
-        items:
-          properties:
-            id:
-              type: "string"
-            name:
-              type: "string"
-      optional:
-        type: "array"
-        items:
-          properties:
-            id:
-              type: "string"
-            name:
-              type: "string"
+    type: "array"
+    items:
+      properties:
+        id:
+          type: "number"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        positive:
+          type: "string"
+        negative:
+          type: "string"
+  Approval:
+    type: "array"
+    items:
+      properties:
+        id:
+          type: "number"
+        name:
+          type: "string"
+        description:
+          type: "string"

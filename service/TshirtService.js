@@ -17,7 +17,7 @@ exports.tshirtGET = function () {
                 return {
                     group: group_name,
                     items: tshirts.filter(item => item.group = group_name).map(
-                        item => { return { id: item.id, name: item.name } })
+                        sub => { return { id: sub.id, name: sub.name } })
                 }
             });
             resolve(t);
