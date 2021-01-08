@@ -17,22 +17,25 @@ module.exports = function (app) {
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {
-
             // user login
             let user = null;
             let participant = null;
             let owner = null;
+            let userId = -1;
             if (jwt_payload.id !== undefined) {
                 user = await DBA.getUser(jwt_payload.id);
                 if (user == null) {
-                    return done(null, false);
+                    return done('User not found', false);
                 }
 
                 // create user
             } else if (jwt_payload.registrationId !== undefined) {
-                let userId = -1;
                 // get registration
                 const registration = await DBA.getRegistration(jwt_payload.registrationId);
+                if (registration == null) {
+                    return done('Registration not found', false);
+                }
+
                 if (registration.project_code) {
                     // create user and add to existing project
                     participant = await DBA.createUserWithVoucher(
@@ -93,6 +96,10 @@ module.exports = function (app) {
 
             // send welcome mails if user is new
             const event = await DBA.getEventActive();
+            if (event == null) {
+                return done('Event not active', false);
+            }
+
             const token = await Token.generateLoginToken(userId);
             if (owner) {
                 const project = await DBA.getProject(user.id);
@@ -105,7 +112,7 @@ module.exports = function (app) {
             if (user) {
                 return done(null, user);
             } else {
-                return done(null, false);
+                return done('User not found', false);
             }
 
         } catch (err) {
@@ -114,12 +121,10 @@ module.exports = function (app) {
     }));
 
     passport.serializeUser(function (user, done) {
-        console.log(user)
         done(null, user.id);
     });
 
     passport.deserializeUser(async function (id, done) {
-        console.log(id)
         try {
             const user = await DBA.getUser(user.id);
             return done(null, user);
