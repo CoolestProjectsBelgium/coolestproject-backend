@@ -73,7 +73,6 @@ class DBA {
                     userId = participant.id
                 } else {
                     // create user with project
-                    const event = await this.getEvent(registration.eventId);
                     const owner = await this.createUserWithProject(
                         {
                             language: registration.language,
@@ -97,11 +96,12 @@ class DBA {
                             house_number: registration.house_number,
                             box_number: registration.box_number,
                             project: {
+                                eventId: registration.eventId,
                                 project_name: registration.project_name,
                                 project_descr: registration.project_descr,
                                 project_type: registration.project_type,
                                 project_lang: registration.project_lang,
-                                max_voucher: event.maxVoucher
+                                max_tokens: registration.max_tokens,
                             }
                         },
                         registration.id
@@ -236,7 +236,8 @@ class DBA {
      * @returns {Promise<Project>} created account
      */
     static async createProject(project, userId) {
-        const event = await DBA.getEventActive();
+        const user = await User.findByPk(userId);
+        const event = await user.getEvent();
         project.ownerId = userId;
         project.max_tokens = event.maxVoucher;
 
@@ -379,6 +380,7 @@ class DBA {
                     throw new Error('No Active event found');
                 }
                 registrationValues.eventId = event.id;
+                registrationValues.max_tokens = event.maxVoucher;
 
                 // check for waiting list
                 const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
