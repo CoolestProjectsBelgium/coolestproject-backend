@@ -357,9 +357,10 @@ definitions:
             - "contact"
             - "no_photo"
             - "no_contact"
-      birthmonth:
-        type: "string"
-        format: "date"
+      year:
+        type: "integer"
+      month:
+        type: "integer"
       t_size:
         type: "string"
       gsm_guardian:
@@ -420,7 +421,8 @@ definitions:
   Registration:
     type: "object"
     required:
-      - "birthmonth"
+      - "year"
+      - "month"
       - "firstname"
       - "lastname"
       - "mandatory_approvals"
@@ -462,9 +464,10 @@ definitions:
         type: "array"
         items:
           type: integer
-      birthmonth:
-        type: "string"
-        format: "date"
+      year:
+        type: "integer"
+      month:
+        type: "integer"
       sizeId:
         type: integer
       via:

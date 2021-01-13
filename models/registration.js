@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Registration.belongsTo(models.TShirt, { as: 'size', optional: false });
       Registration.belongsTo(models.Event, { as: 'event', optional: false });
+      Registration.hasMany(models.QuestionRegistration, { as: 'questions' });
     }
   };
   Registration.init({

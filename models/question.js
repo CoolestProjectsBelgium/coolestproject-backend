@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Question.belongsTo(models.Event, { as: 'event', optional: false });
+      Question.belongsTo(models.Event);
       Question.belongsToMany(models.User, { through: models.QuestionUser });
       Question.hasMany(models.QuestionTranslation)
     }

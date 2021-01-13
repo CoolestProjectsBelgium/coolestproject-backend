@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      QuestionUser.belongsTo(models.Question, { foreignKey: { allowNull: false } });
-      QuestionUser.belongsTo(models.User, { foreignKey: { allowNull: false } });
+      QuestionUser.belongsTo(models.Question, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
+      QuestionUser.belongsTo(models.User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
     }
   };
   QuestionUser.init({

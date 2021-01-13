@@ -13,25 +13,43 @@ exports.userinfoGET = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
       logger.info("LoginLanguage:" + user.language + " email:" + user.email);
+
+      const questions = await user.getQuestions();
+      const general_questions = [];
+      const mandatory_approvals = [];
+
+      for (const question of questions) {
+        const q = await question.getQuestion();
+        if (q.mandatory) {
+          mandatory_approvals.push(q.id)
+        } else {
+          general_questions.push(q.id)
+        }
+      }
+      const birthDate = new Date(user.birthmonth)
       resolve({
         language: user.language,
+        year: birthDate.getFullYear(),
+        month: birthDate.getMonth(),
+        email: user.email,
         firstname: user.firstname,
         lastname: user.lastname,
-        gsm: user.gsm,
-        general_questions: user.general_questions,
-        gsm_guardian: user.gsm_guardian,
-        medical: user.medical,
         sex: user.sex,
-        t_size: user.t_size,
+        gsm: user.gsm,
         via: user.via,
-        birthmonth: user.birthmonth,
-        postalcode: user.postalcode,
-        street: user.street,
-        house_number: user.house_number,
-        box_number: user.box_number,
-        municipality_name: user.municipality_name,
-        email: user.email,
+        medical: user.medical,
         email_guardian: user.email_guardian,
+        gsm_guardian: user.gsm_guardian,
+        t_size: user.sizeId,
+        general_questions: general_questions,
+        mandatory_approvals: mandatory_approvals,
+        contact: {
+          postalcode: user.postalcode,
+          street: user.street,
+          house_number: user.house_number,
+          bus_number: user.box_number,
+          municipality_name: user.municipality_name
+        },
         delete_possible: await DBA.isUserDeletable(user.id)
       });
 

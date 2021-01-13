@@ -15,6 +15,8 @@ Sequelize.useCLS(namespace);
 const bcrypt = require("bcrypt");
 
 const Account = models.Account;
+const QuestionRegistration = models.QuestionRegistration;
+const QuestionUser = models.QuestionUser;
 const Project = models.Project;
 const Question = models.Question;
 const User = models.User;
@@ -54,18 +56,17 @@ class DBA {
                             lastname: registration.lastname,
                             sex: registration.sex,
                             birthmonth: registration.birthmonth,
-                            mandatory_approvals: registration.mandatory_approvals,
                             sizeId: registration.sizeId,
                             via: registration.via,
                             medical: registration.medical,
                             gsm_guardian: registration.gsm_guardian,
                             email_guardian: registration.email_guardian,
-                            general_questions: registration.general_questions,
                             eventId: registration.eventId,
                             street: registration.street,
                             municipality_name: registration.municipality_name,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
+                            questions: registration.questions.map(i => { return { QuestionId: i.QuestionId } }),
                         },
                         registration.project_code,
                         registration.id
@@ -83,7 +84,6 @@ class DBA {
                             lastname: registration.lastname,
                             sex: registration.sex,
                             birthmonth: registration.birthmonth,
-                            mandatory_approvals: registration.mandatory_approvals,
                             sizeId: registration.sizeId,
                             via: registration.via,
                             medical: registration.medical,
@@ -95,6 +95,7 @@ class DBA {
                             street: registration.street,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
+                            questions: registration.questions.map(i => { return { QuestionId: i.QuestionId } }),
                             project: {
                                 eventId: registration.eventId,
                                 project_name: registration.project_name,
@@ -147,7 +148,10 @@ class DBA {
         }
     */
     static async createUserWithProject(userProject, registrationId) {
-        const user = await User.create(userProject, { include: ['project'] });
+        console.log(userProject)
+        const user = await User.create(userProject, {
+            include: ['project', { model: QuestionUser, as: 'questions' }]
+        });
         await Registration.destroy({ where: { id: registrationId } });
         return user;
     }
@@ -176,7 +180,7 @@ class DBA {
             throw new Error(`Token ${voucherId} not found`);
         }
         const user = await User.create(user_data);
-        await voucher.setParticipant(user);
+        await voucher.setParticipant(user, { include: [{ model: QuestionUser, as: 'questions' }] });
         await Registration.destroy({ where: { id: registrationId } });
 
         return user;
@@ -194,13 +198,14 @@ class DBA {
         delete changedFields.mandatory_approvals;
 
         // cleanup guardian fields when not needed anymore
-        const event = await DBA.getEventActive();
+        const user = await User.findByPk(userId);
+        const event = await user.getEvent();
+
         const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
         if (minGuardian > parseISO(changedFields.birthmonth)) {
             changedFields.gsm_guardian = null;
             changedFields.email_guardian = null;
         }
-        const user = await User.findByPk(userId);
         return await user.update(changedFields);
     }
 
@@ -382,12 +387,33 @@ class DBA {
                 registrationValues.eventId = event.id;
                 registrationValues.max_tokens = event.maxVoucher;
 
+                // validate mandatory fields for registration 
+                // TODO check if question are for the event & mandatory is filled in
+                const possibleQuestions = await event.getQuestions();
+                console.log(possibleQuestions);
+
+                // map the questions to the correct table
+                const answers = [];
+                answers.push(...registrationValues.general_questions.map(QuestionId => { return { QuestionId } }));
+                answers.push(...registrationValues.mandatory_approvals.map(QuestionId => { return { QuestionId } }));
+                registrationValues.questions = answers;
+
+                delete registrationValues.general_questions;
+                delete registrationValues.mandatory_approvals;
+
+                // to month (set hour to 12)
+                registrationValues.birthmonth
+                    = new Date(registrationValues.year, registrationValues.month, 12);
+
+                delete registrationValues.year;
+                delete registrationValues.month;
+
                 // check for waiting list
                 const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
                 if (registration_count >= event.maxRegistration) {
                     registrationValues.waiting_list = true;
                 }
-                return await Registration.create(registrationValues);
+                return await Registration.create(registrationValues, { include: [{ model: models.QuestionRegistration, as: 'questions' }] });
             }
         );
     }
@@ -398,7 +424,11 @@ class DBA {
      * @returns {Promise<Registration>}
      */
     static async getRegistration(registrationId) {
-        return await Registration.findByPk(registrationId, { lock: true });
+        return await Registration.findByPk(registrationId, {
+            lock: true,
+            include: [{ model: QuestionRegistration, as: 'questions' },
+            { model: Event, as: 'event' }]
+        });
     }
 
     /**
