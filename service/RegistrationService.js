@@ -29,12 +29,12 @@ exports.registerPOST = function (registration_fields) {
       const registration = await DBA.createRegistration(registration_fields);
 
       // Check if email exists if so ignore registration
-      if (!(await DBA.doesEmailExists(registration_fields.email))) {
+      if (!(await DBA.doesEmailExists(registration_fields.user.email))) {
         const token = await Token.generateRegistrationToken(registration.id);
         const event = await DBA.getEventActive();
         Mail.activationMail(registration, token, event);
       } else {
-        logger.error("user tried to register with same email: " + registration.email);
+        logger.error("user tried to register with same email: " + registration.user.email);
       }
       resolve();
 

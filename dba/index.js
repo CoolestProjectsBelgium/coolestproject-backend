@@ -195,14 +195,32 @@ class DBA {
     static async updateUser(changedFields, userId) {
         // remove fields that are not allowed to change (be paranoid)
         delete changedFields.email;
+
+        // map questions
+        changedFields.questions = changedFields.mandatory_approvals.concat(changedFields.general_questions).map(i => { return { QuestionId: i.QuestionId } })
         delete changedFields.mandatory_approvals;
+        delete changedFields.general_questions;
+
+        //flatten address
+        const address = changedFields.address;
+        changedFields.postalcode = address.postalcode;
+        changedFields.street = address.street;
+        changedFields.house_number = address.house_number;
+        changedFields.bus_number = address.bus_number;
+        changedFields.municipality_name = address.municipality_name;
+        delete changedFields.address;
 
         // cleanup guardian fields when not needed anymore
         const user = await User.findByPk(userId);
         const event = await user.getEvent();
 
+        // create date
+        const birthmonth = new Date(changedFields.year, changedFields.month, 1)
+        delete changedFields.year;
+        delete changedFields.month;
+
         const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
-        if (minGuardian > parseISO(changedFields.birthmonth)) {
+        if (minGuardian > birthmonth) {
             changedFields.gsm_guardian = null;
             changedFields.email_guardian = null;
         }
@@ -384,36 +402,69 @@ class DBA {
                 if (event === null) {
                     throw new Error('No Active event found');
                 }
-                registrationValues.eventId = event.id;
-                registrationValues.max_tokens = event.maxVoucher;
+                const dbValues = {};
+                dbValues.eventId = event.id;
+                dbValues.max_tokens = event.maxVoucher;
+
+                //flatten user + guardian
+                const user = registrationValues.user;
+                dbValues.language = user.language;
+                dbValues.email = user.email;
+                dbValues.firstname = user.firstname;
+                dbValues.lastname = user.lastname;
+                dbValues.sex = user.sex;
+                dbValues.birthmonth = user.birthmonth;
+                dbValues.via = user.via;
+                dbValues.medical = user.medical;
+                dbValues.gsm = user.gsm;
+                dbValues.gsm_guardian = user.gsm_guardian;
+                dbValues.email_guardian = user.email_guardian;
+                dbValues.sizeId = user.sizeId;
+
+                // to month (set hour to 12)
+                dbValues.birthmonth
+                    = new Date(user.year, user.month, 12);
+
+                // map the questions to the correct table
+                const answers = [];
+                answers.push(...user.general_questions.map(QuestionId => { return { QuestionId } }));
+                answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId } }));
+                dbValues.questions = answers;
+
+                //flatten address
+                const address = user.address;
+                dbValues.postalcode = address.postalcode;
+                dbValues.street = address.street;
+                dbValues.house_number = address.house_number;
+                dbValues.bus_number = address.bus_number;
+                dbValues.municipality_name = address.municipality_name;
+
+                //flatten own project
+                const ownProject = registrationValues.project.own_project;
+                if (ownProject) {
+                    dbValues.project_name = ownProject.project_name;
+                    dbValues.project_descr = ownProject.project_descr;
+                    dbValues.project_type = ownProject.project_type;
+                    dbValues.project_lang = ownProject.project_lang;
+                }
+
+                //flatten other project
+                const otherProject = registrationValues.project.other_project;
+                if (otherProject) {
+                    dbValues.project_code = otherProject.project_code;
+                }
 
                 // validate mandatory fields for registration 
                 // TODO check if question are for the event & mandatory is filled in
                 const possibleQuestions = await event.getQuestions();
                 console.log(possibleQuestions);
 
-                // map the questions to the correct table
-                const answers = [];
-                answers.push(...registrationValues.general_questions.map(QuestionId => { return { QuestionId } }));
-                answers.push(...registrationValues.mandatory_approvals.map(QuestionId => { return { QuestionId } }));
-                registrationValues.questions = answers;
-
-                delete registrationValues.general_questions;
-                delete registrationValues.mandatory_approvals;
-
-                // to month (set hour to 12)
-                registrationValues.birthmonth
-                    = new Date(registrationValues.year, registrationValues.month, 12);
-
-                delete registrationValues.year;
-                delete registrationValues.month;
-
                 // check for waiting list
                 const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
                 if (registration_count >= event.maxRegistration) {
-                    registrationValues.waiting_list = true;
+                    dbValues.waiting_list = true;
                 }
-                return await Registration.create(registrationValues, { include: [{ model: models.QuestionRegistration, as: 'questions' }] });
+                return await Registration.create(dbValues, { include: [{ model: models.QuestionRegistration, as: 'questions' }] });
             }
         );
     }

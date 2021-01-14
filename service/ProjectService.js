@@ -1,6 +1,5 @@
 'use strict';
 
-const logger = require('pino')()
 const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
 var DBA = require('../dba');
@@ -11,27 +10,29 @@ const db = require('../models');
  * Get project based on userId
  *
  * userId Integer User id.
- * returns Object project id's with all fields for UI
+ * returns Object project id's with all fields for UI 
  **/
 async function getProjectDetails(userId) {
   const project = await DBA.getProject(userId);
   if (project == null) {
     return;
   }
-  const ownProject = (userId === project.ownerId);
-  const maxTokens = project.max_tokens;
-  logger.info("participant:" + project);
-  var projectResult = {
-    project_name: project.project_name,
-    project_descr: project.project_descr,
-    project_type: project.project_type,
-    project_lang: project.project_lang,
-    own_project: ownProject,
-    participants: [],
-    delete_possible: true
+  const projectResult = {
+    own_project: {
+      project_name: project.project_name,
+      project_descr: project.project_descr,
+      project_type: project.project_type,
+      project_lang: project.project_lang,
+      participants: [],
+      delete_possible: false,
+      own_project: (userId === project.ownerId)
+    }
   }
-  // list vouchers & display participants
-  var assignedTokens = 0;
+
+  const ownProject = projectResult.own_project.own_project;
+  const maxTokens = project.max_tokens;
+  let assignedTokens = 0;
+
   project.Vouchers.forEach((voucher) => {
     // only show participants to non owners
     if (!ownProject && voucher.participant === null) {
@@ -47,19 +48,21 @@ async function getProjectDetails(userId) {
     } else {
       line.id = voucher.id;
     }
-    projectResult.participants.push(line);
-  })
+    projectResult.own_project.participants.push(line);
+  });
+
   // owner if you are not the owner
-  if (project.owner) {
-    projectResult.project_owner = project.owner.firstname + ' ' + project.owner.lastname;
+  const ownerUser = await project.getOwner();
+  if (ownerUser) {
+    projectResult.own_project.project_owner = ownerUser.firstname + ' ' + ownerUser.lastname;
   }
   // count remaining tokens
   if (ownProject) {
-    projectResult.remaining_tokens = maxTokens - projectResult.participants.length;
+    projectResult.own_project.remaining_tokens = maxTokens - projectResult.own_project.participants.length;
   }
 
   //delete is not possible when there are participants & it's your own project
-  projectResult.delete_possible = (ownProject && (assignedTokens === 0)) || !ownProject;
+  projectResult.own_project.delete_possible = (ownProject && (assignedTokens === 0)) || !ownProject;
 
   return projectResult;
 }
@@ -75,7 +78,6 @@ exports.projectinfoGET = function (user) {
     try {
       resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -92,10 +94,17 @@ exports.projectinfoGET = function (user) {
 exports.projectinfoPATCH = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      await DBA.updateProject(project_fields, user.id);
+      // flatten the response
+      const ownProject = project_fields.own_project
+      const project = {
+        project_name: ownProject.project_name,
+        project_descr: ownProject.project_descr,
+        project_type: ownProject.project_type,
+        project_lang: ownProject.project_lang,
+      }
+      await DBA.updateProject(project, user.id);
       resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -105,17 +114,30 @@ exports.projectinfoPATCH = function (project_fields, user) {
 }
 
 /**
- * create project for existing user
+ * create project for existing user or add user to project
  *
  * returns Project
  **/
 exports.projectinfoPOST = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      await DBA.createProject(project_fields, user.id);
+      const project = {}
+      const ownProject = project_fields.own_project
+      const otherProject = project_fields.other_project
+
+      if (ownProject) {
+        // create new project for this user
+        project.project_name = ownProject.project_name;
+        project.project_descr = ownProject.project_descr;
+        project.project_type = ownProject.project_type;
+        project.project_lang = ownProject.project_lang;
+        await DBA.createProject(project, user.id);
+      } else if (otherProject) {
+        // add user to voucher
+        await DBA.addParticipantProject(user.id, otherProject.project_code);
+      }
       resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -133,13 +155,12 @@ exports.projectinfoDELETE = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
       const project = await DBA.getProject(user.id);
-      const event = await DBA.getEventActive();
+      const event = await user.getEvent();
       const deleteSuccess = await DBA.deleteProject(user.id);
       Mailer.deleteMail(user, project, event);
 
       resolve(deleteSuccess);
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
