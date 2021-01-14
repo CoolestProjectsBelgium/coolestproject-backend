@@ -224,6 +224,8 @@ class DBA {
             changedFields.gsm_guardian = null;
             changedFields.email_guardian = null;
         }
+        changedFields.sizeId = changedFields.t_size;
+
         return await user.update(changedFields);
     }
 
