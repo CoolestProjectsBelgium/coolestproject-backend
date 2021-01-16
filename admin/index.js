@@ -118,10 +118,71 @@ const adminBroOptions = {
         navigation: registerParent
       }
     },
-        {
-      resource: db.Registration,
+    {
+      resource: db.Registration, 
       options: {
-        navigation: projectParent
+      navigation: projectParent,
+      actions: {
+        new: {
+          isVisible: false
+        },
+        mailAction: {
+          actionType: 'record',
+          label: 'Resend confirmation mail',
+          icon: 'fa-email',
+          isVisible: true,
+          handler: async (request, response, data) => {
+            if (!request.params.recordId || !data.record) {
+              throw new NotFoundError([
+                'You have to pass "recordId" to Mail Action',
+              ].join('\n'), 'Action#handler');
+            }
+            try {
+              console.log('1----------resend mail request.params.recordId:',request.params.recordId);
+              //const registration = await DBA.getRegistration(request.params.recordId);
+              console.log('2----------resend mail request.params.recordId:');
+              //const event = await DBA.getEventActive();
+              console.log('3----------resend mail request.params.recordId:');
+              //const token = await Tokens.generateRegistrationToken(registration);
+              //const mail = await Mailer.activationMail(registration, token, event);
+              console.log(`Mail was send `);//${mail}
+
+
+
+
+              //const registrationToken = await TokenService.generateRegistrationToken(request.params.recordId);
+             // console.log('----------reg:',register, registrationToken);
+             // const register = await dba.getRegistration(request.params.recordId);
+             // console.log('----------reg:',register, registrationToken);
+             // MailService.registrationMail(register, registrationToken);
+            //  const mail = await Mailer.activationMail(register, registrationToken, 1);
+             // console.log('----------reg:',register, registrationToken);
+            } catch (error) {
+                return {
+                  record: data.record.toJSON(data.currentAdmin),
+                  notice: {
+                    message: error,
+                    type: 'error',
+                  },
+                }
+            }
+            return {
+              record: data.record.toJSON(data.currentAdmin),
+              notice: {
+                message: 'Re-registration mail sent',
+                type: 'success',
+              },
+            }
+          },
+          component: false,
+        }
+      },
+      properties: {
+        // createdAt: { isVisible: { list: false } },
+        // updatedAt: { isVisible: { list: false } }
+      }
+    
+
       }
     },
     {
