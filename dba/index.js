@@ -148,7 +148,6 @@ class DBA {
         }
     */
     static async createUserWithProject(userProject, registrationId) {
-        console.log(userProject)
         const user = await User.create(userProject, {
             include: ['project', { model: QuestionUser, as: 'questions' }]
         });
@@ -421,7 +420,7 @@ class DBA {
                 dbValues.gsm = user.gsm;
                 dbValues.gsm_guardian = user.gsm_guardian;
                 dbValues.email_guardian = user.email_guardian;
-                dbValues.sizeId = user.sizeId;
+                dbValues.sizeId = user.t_size;
 
                 // to month (set hour to 12)
                 dbValues.birthmonth
