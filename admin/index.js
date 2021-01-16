@@ -9,6 +9,7 @@ const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
 var Mail = require('../mailer');
+const Token = require('../jwts');
 
 const projectParent = {
   name: 'Projects',
@@ -130,7 +131,7 @@ const adminBroOptions = {
           mailAction: {
             actionType: 'record',
             label: 'Resend confirmation mail',
-            icon: 'fa-email',
+            icon: 'fa-envelope',
             isVisible: true,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
@@ -139,17 +140,18 @@ const adminBroOptions = {
                 ].join('\n'), 'Action#handler');
               }
               try {
-                const registration = await DBA.getRegistration(request.params.recordId);
-                const event = await registration.getEvent();
-                const token = await Token.generateRegistrationToken(registration.id);
-                Mail.activationMail(registration, token, event);
-                console.log(`Mail was send `);
+               const registration = await DBA.getRegistration(request.params.recordId);
+               const event = await registration.getEvent();
+               const token = await Token.generateRegistrationToken(registration.id);
+               const mail = await Mail.activationMail(registration, token, event);
+               console.log(`Mail was send ${mail}`);
+               //console.log(mail);
               } catch (error) {
-                return {
+               return {
                   record: data.record.toJSON(data.currentAdmin),
                   notice: {
-                    message: error,
-                    type: 'error',
+                  message: error,
+                   type: 'error',
                   },
                 }
               }
