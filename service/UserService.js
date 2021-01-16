@@ -4,6 +4,50 @@ const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 /**
+ * Get User
+ **/
+async function getUserDetails(user) {
+  const questions = await user.getQuestions();
+  const general_questions = [];
+  const mandatory_approvals = [];
+
+  for (const question of questions) {
+    const q = await question.getQuestion();
+    if (q.mandatory) {
+      mandatory_approvals.push(q.id)
+    } else {
+      general_questions.push(q.id)
+    }
+  }
+  const birthDate = new Date(user.birthmonth)
+  return {
+    language: user.language,
+    year: birthDate.getFullYear(),
+    month: birthDate.getMonth(),
+    email: user.email,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    sex: user.sex,
+    gsm: user.gsm,
+    via: user.via,
+    medical: user.medical,
+    email_guardian: user.email_guardian,
+    gsm_guardian: user.gsm_guardian,
+    t_size: user.sizeId,
+    general_questions: general_questions,
+    mandatory_approvals: mandatory_approvals,
+    address: {
+      postalcode: user.postalcode + "",
+      street: user.street,
+      house_number: user.house_number,
+      bus_number: user.box_number,
+      municipality_name: user.municipality_name
+    },
+    delete_possible: await DBA.isUserDeletable(user.id)
+  };
+}
+
+/**
  * get userinfo for the logged in user
  *
  * returns User
@@ -11,45 +55,7 @@ var DBA = require('../dba');
 exports.userinfoGET = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      const questions = await user.getQuestions();
-      const general_questions = [];
-      const mandatory_approvals = [];
-
-      for (const question of questions) {
-        const q = await question.getQuestion();
-        if (q.mandatory) {
-          mandatory_approvals.push(q.id)
-        } else {
-          general_questions.push(q.id)
-        }
-      }
-      const birthDate = new Date(user.birthmonth)
-      resolve({
-        language: user.language,
-        year: birthDate.getFullYear(),
-        month: birthDate.getMonth(),
-        email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        sex: user.sex,
-        gsm: user.gsm,
-        via: user.via,
-        medical: user.medical,
-        email_guardian: user.email_guardian,
-        gsm_guardian: user.gsm_guardian,
-        t_size: user.sizeId,
-        general_questions: general_questions,
-        mandatory_approvals: mandatory_approvals,
-        address: {
-          postalcode: user.postalcode + "",
-          street: user.street,
-          house_number: user.house_number,
-          bus_number: user.box_number,
-          municipality_name: user.municipality_name
-        },
-        delete_possible: await DBA.isUserDeletable(user.id)
-      });
-
+      resolve(await getUserDetails(user));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -69,7 +75,7 @@ exports.userinfoPATCH = function (changed_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
       await DBA.updateUser(changed_fields, user.id);
-      resolve(await DBA.getUser(user.id));
+      resolve(await getUserDetails(await DBA.getUser(user.id)));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
