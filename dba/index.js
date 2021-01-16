@@ -13,6 +13,7 @@ const Sequelize = require('sequelize');
 Sequelize.useCLS(namespace);
 
 const bcrypt = require("bcrypt");
+const { constants } = require('buffer');
 
 const Account = models.Account;
 const QuestionRegistration = models.QuestionRegistration;
@@ -671,18 +672,22 @@ class DBA {
         if (event === null) {
             throw new Error('No event found');
         }
-        // const mandatoryQuestions = await Question.findAll({ attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true } })
         const optionalQuestions = await Question.findAll({
             attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
-            , include: [{ model: QuestionTranslation, where: { language: language }, attributes: ['description', 'positive', 'negative'] }]
+            , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]
         })
         return optionalQuestions.map((q) => {
+            // default to nl when no translation was found
+            let languageIndex = q.QuestionTranslations.findIndex((x) => x.language === language);
+            if (languageIndex == -1) {
+                languageIndex = q.QuestionTranslations.findIndex((x) => x.language === 'nl');
+            }
             return {
                 'id': q.id,
                 'name': q.name,
-                'description': q.QuestionTranslations[0].description,
-                'positive': q.QuestionTranslations[0].positive,
-                'negative': q.QuestionTranslations[0].negative
+                'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name),
+                'positive': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].positive : `positive ${q.name}`),
+                'negative': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].negative : `negative ${q.name}`),
             }
         })
     }
@@ -698,13 +703,18 @@ class DBA {
         }
         const mandatoryQuestions = await Question.findAll({
             attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true }
-            , include: [{ model: QuestionTranslation, where: { language: language }, attributes: ['description', 'positive', 'negative'] }]
+            , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description'] }]
         })
         return mandatoryQuestions.map((q) => {
+            // default to nl when no translation was found
+            let languageIndex = q.QuestionTranslations.findIndex(x => x.language === language);
+            if (languageIndex == -1) {
+                languageIndex = q.QuestionTranslations.findIndex(x => x.language === 'nl');
+            }
             return {
                 'id': q.id,
                 'name': q.name,
-                'description': q.QuestionTranslations[0].description
+                'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name)
             }
         })
     }
