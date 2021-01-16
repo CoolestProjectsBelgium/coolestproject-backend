@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       TShirt.belongsTo(models.Event, { as: 'event', optional: false });
       TShirt.belongsTo(models.TShirtGroup, { as: 'group', optional: false });
+      TShirt.hasMany(models.TShirtTranslation)
     }
   };
   TShirt.init({
