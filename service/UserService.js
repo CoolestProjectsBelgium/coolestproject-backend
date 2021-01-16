@@ -1,6 +1,5 @@
 'use strict';
 
-const logger = require('pino')();
 const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
@@ -12,8 +11,6 @@ var DBA = require('../dba');
 exports.userinfoGET = function (user) {
   return new Promise(async function (resolve, reject) {
     try {
-      logger.info("LoginLanguage:" + user.language + " email:" + user.email);
-
       const questions = await user.getQuestions();
       const general_questions = [];
       const mandatory_approvals = [];
@@ -43,8 +40,8 @@ exports.userinfoGET = function (user) {
         t_size: user.sizeId,
         general_questions: general_questions,
         mandatory_approvals: mandatory_approvals,
-        contact: {
-          postalcode: user.postalcode,
+        address: {
+          postalcode: user.postalcode + "",
           street: user.street,
           house_number: user.house_number,
           bus_number: user.box_number,

@@ -201,7 +201,7 @@ paths:
     post:
       tags:
         - "project"
-      summary: "update project"
+      summary: "create project"
       operationId: "projectinfoPOST"
       parameters:
         - in: "body"
@@ -306,23 +306,19 @@ definitions:
         type: "string"
       message:
         type: "string"
-  Voucher:
-    type: "object"
-    required:
-      - "code"
-    properties:
-      code:
-        type: "string"
   User:
     type: "object"
+    required:
+      - "year"
+      - "month"
+      - "firstname"
+      - "lastname"
+      - "mandatory_approvals"
+      - "sex"
+      - "language"
     properties:
       id:
         type: "integer"
-      postalcode:
-        type: "integer"
-        example: 1000
-        minimum: 1000
-        maximum: 9999
       language:
         type: "string"
         enum:
@@ -351,18 +347,17 @@ definitions:
       general_questions:
         type: "array"
         items:
-          type: "string"
-          enum:
-            - "photo"
-            - "contact"
-            - "no_photo"
-            - "no_contact"
+          type: "integer"
+      mandatory_approvals:
+        type: "array"
+        items:
+          type: "integer"
       year:
         type: "integer"
       month:
         type: "integer"
       t_size:
-        type: "string"
+        type: "integer"
       gsm_guardian:
         type: "string"
         example: "+32460789101"
@@ -378,28 +373,30 @@ definitions:
         maxLength: 255
       delete_possible:
         type: "boolean"
-      street:
+      address:
+        $ref: "#/definitions/Address"
+  OtherProject:
+    type: "object"
+    properties:
+      project_code:
         type: "string"
-      house_number:
-        type: "string"
-      municipality_name:
-        type: "string"
-      box_number:
-        type: "string"
+        maxLength: 36
+        minLength: 36
   Project:
     type: "object"
     properties:
       own_project:
-        type: "boolean"
+        $ref: "#/definitions/OwnProject"
+      other_project:
+        $ref: "#/definitions/OtherProject"
+  OwnProject:
+    type: "object"
+    properties:
       project_id:
         type: "integer"
       project_name:
         type: "string"
         maxLength: 100
-      project_code:
-        type: "string"
-        maxLength: 36
-        minLength: 36
       project_descr:
         type: "string"
         maxLength: 4000
@@ -420,100 +417,11 @@ definitions:
         type: "boolean"
   Registration:
     type: "object"
-    required:
-      - "year"
-      - "month"
-      - "firstname"
-      - "lastname"
-      - "mandatory_approvals"
-      - "postalcode"
-      - "sex"
-      - "language"
     properties:
-      postalcode:
-        type: "integer"
-        example: 1000
-        minimum: 1000
-        maximum: 9999
-      email:
-        type: "string"
-        format: "email"
-      firstname:
-        type: "string"
-        example: "Jane"
-      lastname:
-        type: "string"
-        example: "Doe"
-      sex:
-        type: "string"
-        enum:
-          - "m"
-          - "f"
-          - "x"
-      language:
-        type: "string"
-        enum:
-          - "nl"
-          - "fr"
-          - "en"
-      general_questions:
-        type: "array"
-        items:
-          type: integer
-      mandatory_approvals:
-        type: "array"
-        items:
-          type: integer
-      year:
-        type: "integer"
-      month:
-        type: "integer"
-      sizeId:
-        type: integer
-      via:
-        type: "string"
-        maxLength: 200
-      medical:
-        type: "string"
-        maxLength: 255
-      project_name:
-        type: "string"
-        maxLength: 100
-      project_descr:
-        type: "string"
-        maxLength: 4000
-      project_type:
-        type: "string"
-        maxLength: 100
-      project_code:
-        type: "string"
-        maxLength: 36
-        minLength: 36
-      street:
-        type: "string"
-      house_number:
-        type: "string"
-      municipality_name:
-        type: "string"
-      box_number:
-        type: "string"
-      project_lang:
-        type: "string"
-        enum:
-          - "nl"
-          - "fr"
-          - "en"
-      gsm:
-        type: "string"
-        example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
-      gsm_guardian:
-        type: "string"
-        example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
-      email_guardian:
-        type: "string"
-        format: "email"
+      user:
+        $ref: "#/definitions/User"
+      project:
+        $ref: "#/definitions/Project"
   LoginActivate:
     type: "object"
     properties:
@@ -559,6 +467,21 @@ definitions:
           type: "string"
         name:
           type: "string"
+  Address:
+    type: "object"
+    required:
+      - "postalcode"
+    properties:
+      street:
+        type: "string"
+      house_number:
+        type: "string"
+      municipality_name:
+        type: "string"
+      box_number:
+        type: "string"
+      postalcode:
+        type: "string"
   Question:
     type: "array"
     items:

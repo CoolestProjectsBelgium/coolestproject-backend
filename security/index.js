@@ -31,15 +31,11 @@ module.exports = function (app) {
                 if (user == null) {
                     return done('User not found', false);
                 }
-
-                // send welcome mails if user is new
-                const event = await DBA.getEventActive();
-                if (event == null) {
-                    return done('Event not active', false);
-                }
-
+                const event = await user.getEvent();
                 const token = await Token.generateLoginToken(user.id);
                 const project = await DBA.getProject(user.id);
+
+                // send welcome mails if user is new
                 if (project.ownerId = user.id) {
                     Mail.welcomeMailOwner(user, project, event, token);
                 } else {
@@ -66,6 +62,7 @@ module.exports = function (app) {
         }
     });
 
+    // secure 
     app.use('/projectinfo', passport.authenticate('jwt'))
     app.use('/participants', passport.authenticate('jwt'))
     app.use('/login', passport.authenticate('jwt'))
