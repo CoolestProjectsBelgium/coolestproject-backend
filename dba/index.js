@@ -217,6 +217,7 @@ class DBA {
         const birthmonth = new Date(changedFields.year, changedFields.month, 1)
         delete changedFields.year;
         delete changedFields.month;
+        changedFields.birthmonth = birthmonth;
 
         const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
         if (minGuardian > birthmonth) {
