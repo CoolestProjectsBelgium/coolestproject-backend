@@ -11,21 +11,19 @@ const respondWithCode = require('../utils/writer').respondWithCode
 exports.settingsGET = function () {
     return new Promise(async function (resolve, reject) {
         const event = await DBA.getEventActive();
-        if (event !== null) {
-            resolve({
-                startDateEvent: event.startDate.toISOString().substring(0, 10),
-                maxAge: event.maxAge,
-                minAge: event.minAge,
-                guardianAge: event.minGuardianAge,
-                tshirtDate: event.startDate.toISOString().substring(0, 10),
-                enviroment: process.env.NODE_ENV
-            });
-        } else {
-            reject(new respondWithCode(500, {
+        if (event === null) {
+            reject(new respondWithCode(404, {
                 code: 0,
-                message: 'Backend error'
+                message: 'No Active event found'
             }));
         }
-
+        resolve({
+            startDateEvent: event.startDate.toISOString().substring(0, 10),
+            maxAge: event.maxAge,
+            minAge: event.minAge,
+            guardianAge: event.minGuardianAge,
+            tshirtDate: event.startDate.toISOString().substring(0, 10),
+            enviroment: process.env.NODE_ENV
+        });
     })
 }

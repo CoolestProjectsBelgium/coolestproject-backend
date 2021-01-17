@@ -4,7 +4,7 @@ const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 /**
- * Tranform internal format to external
+ * Transform internal format to external
  **/
 async function getUserDetails(user) {
   const questions = await user.getQuestions();
