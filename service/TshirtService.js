@@ -13,7 +13,7 @@ exports.tshirtGET = function (language) {
         try {
             const tshirts = await DBA.getTshirts(language);
             const groups = await DBA.getTshirtsGroups(language);
-            const result = {};
+            const result = [];
 
             // loop over group
             groups.forEach((group, index) => {
@@ -25,7 +25,7 @@ exports.tshirtGET = function (language) {
                 const tshirt = tshirts.filter((tshirt) => tshirt.group.name === group.name)
                 const key = ((t[languageIndex]) ? t[languageIndex].description : group.name);
                 // transform tshirt
-                result[key] = tshirt.map((tshirt) => {
+                const items = tshirt.map((tshirt) => {
                     const t = tshirt.TShirtTranslations;
                     let languageIndex = t.findIndex((x) => x.language === language);
                     if (languageIndex == -1) {
@@ -33,6 +33,7 @@ exports.tshirtGET = function (language) {
                     }
                     return { id: tshirt.id, name: ((t[languageIndex]) ? t[languageIndex].description : tshirt.name) }
                 })
+                result.push({ group: key, items: items })
             });
             resolve(result);
         } catch (error) {
