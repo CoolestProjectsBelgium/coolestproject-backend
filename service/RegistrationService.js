@@ -26,12 +26,11 @@ exports.registerPOST = function (registration_fields) {
      * 3) check if the registration is for a minor (extra approval flow via guardian email)
      **/
     try {
-      const registration = await DBA.createRegistration(registration_fields);
-
       // Check if email exists if so ignore registration
-      if (!(await DBA.doesEmailExists(registration_fields.user.email))) {
+      const event = await DBA.getEventActive();
+      if (!(await DBA.doesEmailExists(registration_fields.user.email, event))) {
+        const registration = await DBA.createRegistration(registration_fields);
         const token = await Token.generateRegistrationToken(registration.id);
-        const event = await DBA.getEventActive();
         Mail.activationMail(registration, token, event);
       } else {
         logger.error("user tried to register with same email: " + registration.user.email);

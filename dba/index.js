@@ -560,8 +560,8 @@ class DBA {
      * @param {String} email
      * @returns {Promise<Boolean>} 
      */
-    static async doesEmailExists(emailAddress) {
-        const count = await User.count({ where: { email: emailAddress } });
+    static async doesEmailExists(emailAddress, event) {
+        const count = await User.count({ where: { email: emailAddress, eventId: event.id } });
         return count !== 0;
     }
     /**
@@ -569,7 +569,7 @@ class DBA {
      * @param {String} email
      * @returns {Promise<User>}
      */
-    static async getUsersViaMail(email) {
+    static async getUsersViaMail(email, event) {
         return await User.findAll({
             where: {
                 [Op.or]: [
@@ -579,7 +579,8 @@ class DBA {
                     {
                         email_guardian: email
                     }
-                ]
+                ],
+                eventId: event.id
             }
         });
     }
