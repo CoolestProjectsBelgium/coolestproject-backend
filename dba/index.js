@@ -672,29 +672,6 @@ class DBA {
         if (event === null) {
             throw new Error('No event found');
         }
-        /*
-        return await TShirtGroup.findAll({
-            attributes: ['id', 'name'],
-            include: [
-                {
-                    model: TShirt,
-                    attributes: ['id', 'name'],
-                    as: 'group',
-                    include: [
-                        {
-                            model: TShirtTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description']
-                        }
-                    ],
-                    required: false
-                },
-                {
-                    model: TShirtGroupTranslation,
-                    where: { [Op.or]: [{ language: language }, { language: 'nl' }] },
-                    required: false,
-                    attributes: ['language', 'description']
-                }
-            ]
-        }); */
         return await TShirt.findAll({
             attributes: ['id', 'name'],
             include: [
@@ -724,13 +701,13 @@ class DBA {
         }
         const optionalQuestions = await Question.findAll({
             attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
-            , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]
+            , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: process.env.LANG }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]
         })
         return optionalQuestions.map((q) => {
             // default to nl when no translation was found
             let languageIndex = q.QuestionTranslations.findIndex((x) => x.language === language);
             if (languageIndex == -1) {
-                languageIndex = q.QuestionTranslations.findIndex((x) => x.language === 'nl');
+                languageIndex = q.QuestionTranslations.findIndex((x) => x.language === process.env.LANG);
             }
             return {
                 'id': q.id,
