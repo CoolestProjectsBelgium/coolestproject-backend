@@ -29,6 +29,8 @@ const Registration = models.Registration;
 const sequelize = models.sequelize;
 const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
+const TShirtTranslation = models.TShirtTranslation;
+const TShirtGroupTranslation = models.TShirtGroupTranslation;
 
 const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0
 
@@ -647,20 +649,68 @@ class DBA {
         })
     }
 
+    static async getTshirtsGroups(language) {
+        return await TShirtGroup.findAll({
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: TShirtGroupTranslation,
+                    where: { [Op.or]: [{ language: language }, { language: 'nl' }] },
+                    required: false,
+                    attributes: ['language', 'description']
+                }
+            ]
+        });
+    }
+
     /**
      * get active event
      * @returns {Promise<TShirt>}
      */
-    static async getTshirts() {
+    static async getTshirts(language) {
         const event = await this.getEventActive();
         if (event === null) {
             throw new Error('No event found');
         }
+        /*
+        return await TShirtGroup.findAll({
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: TShirt,
+                    attributes: ['id', 'name'],
+                    as: 'group',
+                    include: [
+                        {
+                            model: TShirtTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description']
+                        }
+                    ],
+                    required: false
+                },
+                {
+                    model: TShirtGroupTranslation,
+                    where: { [Op.or]: [{ language: language }, { language: 'nl' }] },
+                    required: false,
+                    attributes: ['language', 'description']
+                }
+            ]
+        }); */
         return await TShirt.findAll({
             attributes: ['id', 'name'],
-            include: { model: TShirtGroup, as: 'group', attributes: ['id', 'name'] },
+            include: [
+                {
+                    model: TShirtGroup, as: 'group', attributes: ['id', 'name'], required: false,
+                    include: [
+                        { model: TShirtGroupTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description'] }
+                    ]
+                },
+                {
+                    model: TShirtTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description']
+                },
+            ],
             where: { eventId: event.id }
         });
+
     }
 
     /**

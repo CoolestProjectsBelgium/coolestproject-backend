@@ -46,7 +46,7 @@ const adminBroOptions = {
   rootPath: '/admin',
   dashboard: {
     handler: async () => {
-      const evt = await dba.getEventActive()
+      const evt = await DBA.getEventActive()
       return evt
     },
     component: AdminBro.bundle('./components/dashboard')
@@ -79,7 +79,7 @@ const adminBroOptions = {
             handler: async (request, response, data) => {
               const { record, resource, currentAdmin, h } = data
               try {
-                const evt = await dba.setEventActive(request.params.recordId)
+                const evt = await DBA.setEventActive(request.params.recordId)
                 return {
                   record: record.toJSON(currentAdmin),
                   redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
@@ -140,18 +140,18 @@ const adminBroOptions = {
                 ].join('\n'), 'Action#handler');
               }
               try {
-               const registration = await DBA.getRegistration(request.params.recordId);
-               const event = await registration.getEvent();
-               const token = await Token.generateRegistrationToken(registration.id);
-               const mail = await Mail.activationMail(registration, token, event);
-               console.log(`Mail was send ${mail}`);
-               //console.log(mail);
+                const registration = await DBA.getRegistration(request.params.recordId);
+                const event = await registration.getEvent();
+                const token = await Token.generateRegistrationToken(registration.id);
+                const mail = await Mail.activationMail(registration, token, event);
+                console.log(`Mail was send ${mail}`);
+                //console.log(mail);
               } catch (error) {
-               return {
+                return {
                   record: data.record.toJSON(data.currentAdmin),
                   notice: {
-                  message: error,
-                   type: 'error',
+                    message: error,
+                    type: 'error',
                   },
                 }
               }
