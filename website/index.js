@@ -1,4 +1,5 @@
 
+/*
 const express = require('express');
 var dba = require('../service/DBService');
 
@@ -14,7 +15,7 @@ router.get('/projects.xml', async function (req, res) {
     for(project of projects){
         root.root().ele('project',  {'ProjectName': project.get('project_name'),
                                     'ProjectID': project.get('ProjectID'),
-                                    'participants': project.get('participants'), 
+                                    'participants': project.get('participants'),
                                     'link': process.env.GOOGLE_LINK + '&t=' + project.get('OFFSET') + 's',
                                     'Description': project.get('project_descr')
                                     }
@@ -35,7 +36,7 @@ router.get('/projectsNew.xml', async function (req, res) {
     for(project of projects){
         root.root().ele('project',  {'ProjectName': project.get('project_name'),
                                     'ProjectID': project.get('ProjectID'),
-                                    'participants': project.get('participants'), 
+                                    'participants': project.get('participants'),
                                     'link': process.env.GOOGLE_LINK + '&t=' + project.get('OFFSET') + 's',
                                     'Description': project.get('project_descr')
                                     }
@@ -46,5 +47,6 @@ router.get('/projectsNew.xml', async function (req, res) {
 })
 
 module.exports = router
+*/
 
 
