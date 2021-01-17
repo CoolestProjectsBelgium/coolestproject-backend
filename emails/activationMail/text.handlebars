@@ -1,0 +1,32 @@
+{{t "Hi {{hash.firstname}}" firstname=registration.firstname }},
+
+{{{t "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so
+that will be extra special !"
+title=(t "{{ hash.title }} {{hash.year}}"
+title="Coolest Projects Belgium" year=registration.year) }}}
+
+
+{{{t "You can find all the info on Coolest Projects {{hash.year}} on our website \"{{{hash.link}}}\""
+link=(t '{{{hash.website}}}' website=website) year=registration.year}}}
+
+
+{{#if registration.email_guardian}}
+{{{t "Your parents will also receive this mail and they have to confirm your participation."}}}
+{{/if}}
+
+{{{t "Cat & paste this link between \"...\"
+
+\"{{{hash.url}}}\"
+
+into your browser to activate your project." url=url}}}
+
+{{t "Be sure to click this activation link within 2 days to ensure your participation.
+
+Your registration will expire after 2 days and you will need to register again.
+
+You should receive a second mail then, with some more information you need to get your project on rails."}}
+
+{{{t "Good luck, {{hash.firstname}}, we’re looking forward to your project activation!"
+firstname=registration.firstname }}}
+
+{{t "Coolest Project team" }}

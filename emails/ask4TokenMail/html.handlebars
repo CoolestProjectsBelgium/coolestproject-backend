@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" data-inline />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1>{{{t "Hi {{hash.firstname}}" firstname=users.firstname }}},</h1>
+        <p>
+            <strong>{{{t "Please, use the following link to open your project in your browser {{{hash.link}}} to
+                open your project." link=(t "<a href=\"{{hash.link}}\">Go2MyProject</a>" link=url )
+                }}}</strong>
+        </p>
+        <p><strong>{{t "Coolest Project team" }} </strong></p>
+
+    </div>
+</body>
+
+</html>

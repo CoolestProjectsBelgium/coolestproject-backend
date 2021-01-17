@@ -1,0 +1,33 @@
+{{t "Hi {{hash.firstname}}" firstname=user.firstname }},
+
+{{{t "you have successfully activated your project with the title '{{hash.ptitle}}' as project owner.
+Your project is created with the following ID: #'{{{hash.cpid}}}'"
+ptitle=project.title cpid=project.id}}}
+
+
+{{{t "If you want to make changes on your project or if you would like to invite co-workers on your project
+please Cat & paste this link between \"...\"
+
+\"{{{hash.url}}}\"
+
+into your browser to activate your project." url=url}}}
+
+
+{{t "You can now "}}
+
+{{t "-Change your personal data(except the eMail, age,...)"}}
+{{t "-Change your project name and description"}}
+{{{t "-Invite co-workers to your project by clicking the button 'CO-WORKERS' "}}}
+{{t "-Delete all co-workers to your project by pushing the delete button behind all co-worker"}}
+{{t "-Delete single co-workers to your project by clicking the delete button behind this one co-worker"}}
+{{t "-Delete your project (co-workers will then receive a mail to create their own project"}}
+
+
+{{{t "You will find all the information on Coolest Projects {{hash.year}} on our website \"{{{hash.link}}}\""
+link=(t '{{{hash.website}}}' website=website
+) year=year}}}
+
+{{{t "Good luck, {{hash.firstname}} we’re looking forward to your project development."
+firstname=user.firstname }}}
+
+{{t "Coolest Project team" }}
