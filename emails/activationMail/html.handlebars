@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" data-inline />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1>{{t "Hi {{hash.firstname}}" firstname=registration.firstname }},</h1>
+
+        <p>{{{t "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so
+            that will be extra special !"
+            title=(t "<strong>{{ hash.title }} {{hash.year}}</strong>"
+            title="Coolest Projects Belgium" year=registration.year) }}}</p>
+        <p>{{{t "You can find all the info on Coolest Project on our {{ link }} website ." link=(t '<a
+                href="{{hash.website}}">Coolest Projects {{hash.year}}</a>' website=website year=registration.year ) }}}
+        </p>
+        {{#if registration.email_guardian}}
+        <p>{{{t "Your parents will also receive this mail and they have to confirm your
+            participation.</p>"}}}
+        {{/if}}
+        <p>
+            <strong>{{{t "Click this {{{hash.link}}} to activate your project." link=(t "<a
+                    href=\"{{hash.link}}\">Activation Link</a>" link=url ) }}}</strong>
+        </p>
+
+        <p>{{t "Be sure to click this activation link within 2 days to ensure your participation.
+            Your registration will expire after 2 days and you will need to register again.
+            You should receive a second mail then, with some more information you need to get your project on rails."}}
+        </p>
+
+        <p>{{{t "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>
+        <p><strong>Coolest Project team</strong>" firstname=registration.firstname }}}</p>
+
+    </div>
+</body>
+
+</html>

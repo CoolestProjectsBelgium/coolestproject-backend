@@ -1,21 +1,18 @@
 'use strict';
 
 const logger = require('pino')()
-const TokenService = require('./TokenService');
+const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+var dba = require('../dba');
 
 /**
  * Create Voucher for participant
  * returns Voucher
  **/
-exports.participantPOST = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.participantPOST = function (user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      var v = await dba.createVoucher(token.id);
+      await dba.createVoucher(user.id);
       resolve(null);
     } catch (ex) {
       logger.error(ex);

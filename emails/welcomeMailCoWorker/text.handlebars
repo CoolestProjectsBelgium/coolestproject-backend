@@ -1,0 +1,24 @@
+{{{t "Hi {{hash.firstname}}," firstname=user.firstname }}}
+
+{{{t "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.
+This project is created with the following ID: #'{{hash.cpid}}'"
+ptitle=project.title cpid=project.id}}}
+
+{{{t "Only the project owner can make changes to the project.
+Please use the following link: {{{hash.link}}} to start your browser."
+link=(t "\"{{hash.link}}\"" link=url ) }}}
+
+{{{t "You can now "}}}
+
+{{{t "- Change your personal data(except the eMail, age,...)"}}}
+{{{t "- View the project information"}}}
+{{{t "- Leave the project and create your own"}}}
+
+{{{t "You will find all the information on Coolest Project on our website \"{{{hash.link}}}"
+link=(t '{{hash.link}}"' link=website) }}}
+
+
+{{{t "Good luck, {{hash.firstname}} we’re looking forward to your project development."
+firstname=user.firstname }}}
+
+{{{t "Coolest Project team" }}}

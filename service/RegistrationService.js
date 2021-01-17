@@ -2,13 +2,13 @@
 
 const logger = require('pino')()
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+var DBA = require('../dba');
 
 var models = require('../models');
 var Registration = models.Registration;
 
-var MailService = require('./MailService');
-var TokenService = require('./TokenService');
+var Mail = require('../mailer');
+var Token = require('../jwts');
 
 /**
  * Create new registration
@@ -16,7 +16,7 @@ var TokenService = require('./TokenService');
  * user RegistrationRequest The user to create. (optional)
  * no response value expected for this operation
  **/
-exports.registerPOST = function (registration) {
+exports.registerPOST = function (registration_fields) {
   return new Promise(async function (resolve, reject) {
 
     /** 
@@ -26,13 +26,15 @@ exports.registerPOST = function (registration) {
      * 3) check if the registration is for a minor (extra approval flow via guardian email)
      **/
     try {
+      const registration = await DBA.createRegistration(registration_fields);
+
       // Check if email exists if so ignore registration
-      if (!(await dba.doesEmailExists(registration.email))) {
-        const register = await dba.createRegistration(registration);     
-        const registrationToken = await TokenService.generateRegistrationToken(register.id);
-        MailService.registrationMail(register, registrationToken);
+      if (!(await DBA.doesEmailExists(registration_fields.user.email))) {
+        const token = await Token.generateRegistrationToken(registration.id);
+        const event = await DBA.getEventActive();
+        Mail.activationMail(registration, token, event);
       } else {
-        logger.error("user tried to register with same email: "+registration.email);
+        logger.error("user tried to register with same email: " + registration.user.email);
       }
       resolve();
 
