@@ -1,20 +1,27 @@
 'use strict';
-
-const bcrypt = require("bcrypt");
-const logger = require('pino')()
-const addYears = require('date-fns/addYears')
-const addDays = require('date-fns/addDays')
-const parseISO = require('date-fns/parseISO')
+const {
+  Model
+} = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  const Table = sequelize.define('Table', {
-    tableNumber: {
-        type: DataTypes.INTEGER,
-        unique: true
+  class Table extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      Table.belongsTo(models.Event, { as: 'event', optional: false });
     }
-  },{});
-  Table.associate = function(models) {
-    Table.belongsTo(models.Project, { as: 'project' });
   };
+  Table.init({
+    name: { type: DataTypes.CHAR(15), unique: true },
+    location: DataTypes.CHAR(20),
+    maxPlaces: DataTypes.INTEGER,
+    requirements: DataTypes.JSON,
+  }, {
+    sequelize,
+    modelName: 'Table',
+  });
   return Table;
 };

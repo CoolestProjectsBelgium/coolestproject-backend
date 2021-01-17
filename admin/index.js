@@ -4,36 +4,126 @@ const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
-var dba = require('../service/DBService');
+var DBA = require('../dba');
 const sequelize = db.sequelize;
-const sessionStore = new SequelizeStore({db: sequelize});
-var MailService = require('../service/MailService');
-var TokenService = require('../service/TokenService');
+const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
+var Mail = require('../mailer');
+const Token = require('../jwts');
 
-
-const PER_PAGE_LIMIT = 500;
-
-const reportParent = {
-  name: 'Reporting',
-  icon: 'fa fa-stream',
+const projectParent = {
+  name: 'Projects',
+  icon: 'Roadmap'
 }
 
-const internalParent = {
-  name: 'Internal',
-  icon: 'fa fa-exclamation-triangle',
+const eventParent = {
+  name: 'Event Settings',
+  icon: 'Events'
+}
+
+const registerParent = {
+  name: 'Website Registrations',
+  icon: 'Flow'
+}
+
+const votingParent = {
+  name: 'Voting',
+  icon: 'Event'
+}
+
+const planningParent = {
+  name: 'On-site Planning',
+  icon: 'Location'
+}
+
+const adminParent = {
+  name: 'Administration',
+  icon: 'Identification'
 }
 
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
+  dashboard: {
+    handler: async () => {
+      const evt = await DBA.getEventActive()
+      return evt
+    },
+    component: AdminBro.bundle('./components/dashboard')
+  },
   branding: {
     companyName: 'Coolest Projects',
   },
   resources: [
-    { 
-      resource: db.Registration, 
+    {
+      resource: db.Session,
       options: {
+        navigation: adminParent
+      }
+    },
+    {
+      resource: db.Account,
+      options: {
+        navigation: adminParent
+      }
+    },
+    {
+      resource: db.Event,
+      options: {
+        navigation: eventParent,
+        actions: {
+          setActive: {
+            icon: 'View',
+            actionType: 'record',
+            component: false,
+            handler: async (request, response, data) => {
+              const { record, resource, currentAdmin, h } = data
+              try {
+                const evt = await DBA.setEventActive(request.params.recordId)
+                return {
+                  record: record.toJSON(currentAdmin),
+                  redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
+                  notice: {
+                    message: `Event ${evt.id} is active`,
+                    type: 'success',
+                  },
+                }
+              } catch (error) {
+                throw error
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      resource: db.Question,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.TShirtGroup,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.TShirt,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.QuestionUser,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.Registration,
+      options: {
+        navigation: projectParent,
         actions: {
           new: {
             isVisible: false
@@ -41,26 +131,29 @@ const adminBroOptions = {
           mailAction: {
             actionType: 'record',
             label: 'Resend confirmation mail',
-            icon: 'fas fa-envelope',
+            icon: 'fa-envelope',
             isVisible: true,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
                 throw new NotFoundError([
                   'You have to pass "recordId" to Mail Action',
-                ].join('\n'), 'Action#handler')
+                ].join('\n'), 'Action#handler');
               }
               try {
-                const registrationToken = await TokenService.generateRegistrationToken(request.params.recordId);
-                const register = await dba.getRegistration(request.params.recordId)
-                MailService.registrationMail(register, registrationToken);
+                const registration = await DBA.getRegistration(request.params.recordId);
+                const event = await registration.getEvent();
+                const token = await Token.generateRegistrationToken(registration.id);
+                const mail = await Mail.activationMail(registration, token, event);
+                console.log(`Mail was send ${mail}`);
+                //console.log(mail);
               } catch (error) {
-                  return {
-                    record: data.record.toJSON(data.currentAdmin),
-                    notice: {
-                      message: error,
-                      type: 'error',
-                    },
-                  }
+                return {
+                  record: data.record.toJSON(data.currentAdmin),
+                  notice: {
+                    message: error,
+                    type: 'error',
+                  },
+                }
               }
               return {
                 record: data.record.toJSON(data.currentAdmin),
@@ -77,284 +170,113 @@ const adminBroOptions = {
           // createdAt: { isVisible: { list: false } },
           // updatedAt: { isVisible: { list: false } }
         }
-      } 
-    },
-    { 
-    resource: db.Session, 
-      options: {
-        parent: internalParent,
-        actions: {
-          new: {
-            isVisible: false
-          }
-        } 
+
+
       }
     },
-    { 
-      resource: db.Account, 
-        options: {
-          parent: internalParent
-      } 
-    },
-    { 
-      resource: db.Project, 
+    {
+      resource: db.Project,
       options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.User,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Voucher,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Attachment,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.Vote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.VoteCategory,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.ExternVote,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.Award,
+      options: {
+        navigation: votingParent
+      }
+    },
+    {
+      resource: db.Table,
+      options: {
+        navigation: planningParent
+      }
+    },
+    {
+      resource: db.ProjectTable,
+      options: {
+        navigation: planningParent,
         actions: {
           new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          internalp: { type: 'richtext' },
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-          certificate: { type: 'textarea' },
-          offset: {},
-        }
-      } 
-    },
-    { 
-      resource: db.User, 
-      options: {
-        listProperties: ['email', 'id', 'firstname','lastname','residence','gsm','email_guardian','gsm_guardian'],
-        actions: {
-          export: {
             actionType: 'resource',
-            label: 'Export',
-            icon: 'fas fa-file-export',
-            isVisible: true,
-            handler: async (request, response, data) => {
-              return {}
+            handler: async (request, response, context) => {
+              const { resource, h, currentAdmin, translateMessage } = context
+              if (request.method === 'post') {
+                let record = await resource.build(request.payload ? request.payload : {})
+
+                await resource.create(record.params)
+
+                if (record.isValid()) {
+                  return {
+                    redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
+                    notice: {
+                      message: translateMessage('successfullyCreated', resource.id()),
+                      type: 'success',
+                    },
+                    record: record.toJSON(currentAdmin),
+                  }
+                }
+                return {
+                  record: record.toJSON(currentAdmin),
+                  notice: {
+                    message: translateMessage('thereWereValidationErrors', resource.id()),
+                    type: 'error',
+                  },
+                }
+              }
+              // TODO: add wrong implementation error
+              throw new Error('new action can be invoked only via `post` http method')
             },
-            component: AdminBro.bundle('../admin_components/export'),
           }
-        },
-        properties: {
-          via: { type: 'richtext' },
-          medical: { type: 'richtext' },
-          internalu: { type: 'richtext' },
-          last_token: { isVisible: false },
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } },
-         /* photo_allowed: {
-            components: {r
-              show: AdminBro.bundle('./admin_components/photos_allowed')
-            },
-            isVisible: {
-              show: true, view: false, edit: false, filter: false,
-            }
-          } */
         }
-      } 
-    },
-    { 
-      resource: db.Voucher, 
-      options: {
-        listProperties: ['id','participantId','projectId'],
-        actions: {
-          edit: {
-            isVisible: false
-          },
-          new: {
-            isVisible: false
-          }
-        },
-        properties: {
-          createdAt: { isVisible: { list: false } },
-          updatedAt: { isVisible: { list: false } }
-        }
-      } 
-    },
-    { 
-      resource: db.useronly, 
-      options: {
-        name: "Users zonder project of medewerker)",
-        listProperties: ['id', 'firstname', 'lastname', 'email'],
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-     { 
-      resource: db.UserProjectView, 
-      options: {
-        name: "Projecten met medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserProjectVideo, 
-      options: {
-        name: "Alle projecten met youtube link",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserProjectVideoNew, 
-      options: {
-        name: "Alle projecten met youtube link",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserProjectViewAll, 
-      options: {
-        name: "Alle projecten met/zonder medewerker",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.tshirtsizes, 
-      options: {
-        name: "Aantal T-shirts per maat",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.UserNames, 
-      options: {
-        name: "Lijst gebruikers voor naam label",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.sex, 
-      options: {
-        name: "Aantal jongens/meisjes",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
-    },
-    { 
-      resource: db.taal, 
-      options: {
-        name: "Aantal talen",
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      } 
+      }
     }
   ]
 }
+
 AdminBro.registerAdapter(AdminBroSequelize)
 
 const adminBro = new AdminBro(adminBroOptions);
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
   async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email }});
-    if(!user) { return null }
+    const user = await db.Account.findOne({ where: { email: email } });
+    if (!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
     return { 'email': user.email };
   },

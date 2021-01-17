@@ -1,63 +1,70 @@
 'use strict';
 
-const logger = require('pino')()
-const TokenService = require('./TokenService');
+const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+var DBA = require('../dba');
+const Mailer = require('../mailer');
+const db = require('../models');
 
-async function getProjectDetails (userId) {
-  const project = await dba.getProject(userId);
-  if (project !== null) {
-    const ownProject = (userId === project.ownerId);
-    logger.info("participant:" + project);
-    var projectResult = {
+/**
+ * Get project based on userId
+ *
+ * userId Integer User id.
+ * returns Object project id's with all fields for UI 
+ **/
+async function getProjectDetails(userId) {
+  const project = await DBA.getProject(userId);
+  if (project == null) {
+    return;
+  }
+  const projectResult = {
+    own_project: {
       project_name: project.project_name,
       project_descr: project.project_descr,
       project_type: project.project_type,
       project_lang: project.project_lang,
-      own_project: ownProject,
       participants: [],
-      delete_possible: true,
-      info: project.info
+      delete_possible: false,
+      own_project: (userId === project.ownerId)
     }
-    // list vouchers & display participants
-    var assignedTokens = 0;
-    project.Vouchers.forEach((voucher) => {
-      // only show participants to non owners
-      if (!ownProject && voucher.participant === null) {
-        return
-      }
-      let line = {}      
-      if (voucher.participant) {
-        line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
-        if (userId === voucher.participant.id) {
-          line.self = true;
-        }
-        assignedTokens++;
-      } else {
-        line.id = voucher.id;
-      }
-      projectResult.participants.push(line);
-    })
-    // owner if you are not the owner
-    if (project.owner) {
-      projectResult.project_owner = project.owner.firstname + ' ' + project.owner.lastname;
-    }
-    // count remaining tokens
-    if (ownProject) {
-      projectResult.remaining_tokens = process.env.MAX_VOUCHERS - projectResult.participants.length;
-    }
-
-    //email of owner if you are the owner
-    if (ownProject) {
-      projectResult.email = project.owner.email;
-    }
-
-    //delete is not possible when there are participants & it's your own project
-    projectResult.delete_possible = ( ownProject && (assignedTokens === 0) ) || !ownProject;
-
-    return projectResult;
   }
+
+  const ownProject = projectResult.own_project.own_project;
+  const maxTokens = project.max_tokens;
+  let assignedTokens = 0;
+
+  project.Vouchers.forEach((voucher) => {
+    // only show participants to non owners
+    if (!ownProject && voucher.participant === null) {
+      return
+    }
+    let line = {}
+    if (voucher.participant) {
+      line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
+      if (userId === voucher.participant.id) {
+        line.self = true;
+      }
+      assignedTokens++;
+    } else {
+      line.id = voucher.id;
+    }
+    projectResult.own_project.participants.push(line);
+  });
+
+  // owner if you are not the owner
+  const ownerUser = await project.getOwner();
+  if (ownerUser) {
+    projectResult.own_project.project_owner = ownerUser.firstname + ' ' + ownerUser.lastname;
+  }
+  // count remaining tokens
+  if (ownProject) {
+    projectResult.own_project.remaining_tokens = maxTokens - projectResult.own_project.participants.length;
+  }
+
+  //delete is not possible when there are participants & it's your own project
+  projectResult.own_project.delete_possible = (ownProject && (assignedTokens === 0)) || !ownProject;
+
+  return projectResult;
 }
 
 /**
@@ -66,15 +73,11 @@ async function getProjectDetails (userId) {
  * projectId Integer projectid.
  * returns Project
  **/
-exports.projectinfoGET = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoGET = function (user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info("LoginToken:" + loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id:' + token.id);
-      resolve(await getProjectDetails(token.id));
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -88,16 +91,20 @@ exports.projectinfoGET = function(loginToken) {
  *
  * returns Project
  **/
-exports.projectinfoPATCH = function(loginToken, project) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoPATCH = function (project_fields, user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      await dba.updateProject(project, token.id);
-      resolve(await getProjectDetails(token.id));
+      // flatten the response
+      const ownProject = project_fields.own_project
+      const project = {
+        project_name: ownProject.project_name,
+        project_descr: ownProject.project_descr,
+        project_type: ownProject.project_type,
+        project_lang: ownProject.project_lang,
+      }
+      await DBA.updateProject(project, user.id);
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -107,24 +114,30 @@ exports.projectinfoPATCH = function(loginToken, project) {
 }
 
 /**
- * create the projectinfo
+ * create project for existing user or add user to project
  *
  * returns Project
  **/
-exports.projectinfoPOST = function(loginToken, project) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoPOST = function (project_fields, user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      if(project.project_code){
-        await dba.addParticipantProject(token.id, project.project_code);
-      } else {
-        await dba.createProject(project, token.id);
+      const project = {}
+      const ownProject = project_fields.own_project
+      const otherProject = project_fields.other_project
+
+      if (ownProject) {
+        // create new project for this user
+        project.project_name = ownProject.project_name;
+        project.project_descr = ownProject.project_descr;
+        project.project_type = ownProject.project_type;
+        project.project_lang = ownProject.project_lang;
+        await DBA.createProject(project, user.id);
+      } else if (otherProject) {
+        // add user to voucher
+        await DBA.addParticipantProject(user.id, otherProject.project_code);
       }
-      resolve(await getProjectDetails(token.id));
+      resolve(await getProjectDetails(user.id));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -138,16 +151,16 @@ exports.projectinfoPOST = function(loginToken, project) {
  *
  * returns User
  **/
-exports.projectinfoDELETE = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.projectinfoDELETE = function (user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-      var u = await dba.deleteProject(token.id);
-      resolve(u);
+      const project = await DBA.getProject(user.id);
+      const event = await user.getEvent();
+      const deleteSuccess = await DBA.deleteProject(user.id);
+      Mailer.deleteMail(user, project, event);
+
+      resolve(deleteSuccess);
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'

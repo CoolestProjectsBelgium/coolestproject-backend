@@ -1,47 +1,61 @@
 'use strict';
 
-const addYears = require('date-fns/addYears')
-const parseISO = require('date-fns/parseISO')
-const logger = require('pino')()
-const TokenService = require('./TokenService');
-const respondWithCode = require('../utils/writer').respondWithCode
-var dba = require('../service/DBService');
+const respondWithCode = require('../utils/writer').respondWithCode;
+var DBA = require('../dba');
+
+/**
+ * Transform internal format to external
+ **/
+async function getUserDetails(user) {
+  const questions = await user.getQuestions();
+  const general_questions = [];
+  const mandatory_approvals = [];
+
+  for (const question of questions) {
+    const q = await question.getQuestion();
+    if (q.mandatory) {
+      mandatory_approvals.push(q.id)
+    } else {
+      general_questions.push(q.id)
+    }
+  }
+  const birthDate = new Date(user.birthmonth)
+  return {
+    language: user.language,
+    year: birthDate.getFullYear(),
+    month: birthDate.getMonth(),
+    email: user.email,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    sex: user.sex,
+    gsm: user.gsm,
+    via: user.via,
+    medical: user.medical,
+    email_guardian: user.email_guardian,
+    gsm_guardian: user.gsm_guardian,
+    t_size: user.sizeId,
+    general_questions: general_questions,
+    mandatory_approvals: mandatory_approvals,
+    address: {
+      postalcode: user.postalcode + "",
+      street: user.street,
+      house_number: user.house_number,
+      bus_number: user.box_number,
+      municipality_name: user.municipality_name
+    },
+    delete_possible: await DBA.isUserDeletable(user.id)
+  };
+}
 
 /**
  * get userinfo for the logged in user
  *
  * returns User
  **/
-exports.userinfoGET = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoGET = function (user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info("LoginToken:"+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id:' + token.id);     
-      var user = await dba.getUser(token.id);
-      logger.info("LoginLanguage:"+user.language+" email:"+user.email);
-      resolve({
-        language: user.language,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        gsm: user.gsm,
-        general_questions: user.general_questions,
-        gsm_guardian: user.gsm_guardian,
-        medical: user.medical,
-        sex: user.sex,
-        t_size: user.t_size,
-        via: user.via,
-        birthmonth: user.birthmonth,
-        postalcode: user.postalcode,
-        email: user.email,
-        street: user.street,
-        residence: user.residence,
-        house_number: user.house_number,
-        bus_number: user.bus_number,
-        email_guardian: user.email_guardian,
-        delete_possible: await dba.isUserDeletable(user.id) });
-
-
+      resolve(await getUserDetails(user));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -57,53 +71,11 @@ exports.userinfoGET = function(loginToken) {
  *
  * returns User
  **/
-exports.userinfoPATCH = function(loginToken, user) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoPATCH = function (changed_fields, user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: ' + loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-
-      // remove fields that are not allowed to change (be paranoid)
-      delete user.email;
-      delete user.mandatory_approvals;
-
-      // remove non editable fields after specific date
-      if (parseISO(process.env.TSHIRT_DATE) < new Date()) {
-        logger.info('tshirt date is passed');
-        delete user.t_size;
-      }
-      
-      // cleanup guardian fields when not needed anymore
-      const minGuardian = addYears(parseISO(process.env.START_DATE), -1 * process.env.GUARDIAN_AGE);
-      console.log("minGuardian:"+minGuardian+"this.birthmonth:"+parseISO(user.birthmonth))
-      if (minGuardian > parseISO(user.birthmonth)) { 
-        logger.info('remove guardian information');
-        user.gsm_guardian = null;
-        user.email_guardian = null;
-      }
-      var u = await dba.updateUser(user, token.id);
-      resolve({
-        general_questions: u.general_questions,
-        mandatory_approvals: u.mandatory_approvals,
-        language: u.language,
-        postalcode: u.postalcode,
-        email: u.email,
-        firstname: u.firstname,
-        lastname: u.lastname,
-        sex: u.sex,
-        birthmonth: u.birthmonth,
-        t_size: u.t_size,
-        via: u.via,
-        medical: u.medical,
-        gsm: u.gsm,
-        street: u.street,
-        house_number: u.house_number,
-        bus_number: u.bus_number,
-        residence: u.residence,
-        gsm_guardian: u.gsm_guardian,
-        email_guardian: u.email_guardian
-      });
+      await DBA.updateUser(changed_fields, user.id);
+      resolve(await getUserDetails(await DBA.getUser(user.id)));
     } catch (ex) {
       logger.error(ex);
       reject(new respondWithCode(500, {
@@ -119,14 +91,10 @@ exports.userinfoPATCH = function(loginToken, user) {
  *
  * returns User
  **/
-exports.userinfoDELETE = function(loginToken) {
-  return new Promise(async function(resolve, reject) {
+exports.userinfoDELETE = function (logged_in_user) {
+  return new Promise(async function (resolve, reject) {
     try {
-      logger.info('LoginToken: '+loginToken);
-      var token = await TokenService.validateToken(loginToken);
-      logger.info('user id: ' + token.id);
-
-      var u = await dba.deleteUser(token.id);
+      var u = await DBA.deleteUser(logged_in_user.id);
       resolve(u);
     } catch (ex) {
       logger.error(ex);
