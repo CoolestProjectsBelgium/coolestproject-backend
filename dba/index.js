@@ -649,6 +649,20 @@ class DBA {
         })
     }
 
+    static async getTshirtsGroups(language) {
+        return await TShirtGroup.findAll({
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: TShirtGroupTranslation,
+                    where: { [Op.or]: [{ language: language }, { language: 'nl' }] },
+                    required: false,
+                    attributes: ['language', 'description']
+                }
+            ]
+        });
+    }
+
     /**
      * get active event
      * @returns {Promise<TShirt>}
@@ -658,6 +672,29 @@ class DBA {
         if (event === null) {
             throw new Error('No event found');
         }
+        /*
+        return await TShirtGroup.findAll({
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: TShirt,
+                    attributes: ['id', 'name'],
+                    as: 'group',
+                    include: [
+                        {
+                            model: TShirtTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description']
+                        }
+                    ],
+                    required: false
+                },
+                {
+                    model: TShirtGroupTranslation,
+                    where: { [Op.or]: [{ language: language }, { language: 'nl' }] },
+                    required: false,
+                    attributes: ['language', 'description']
+                }
+            ]
+        }); */
         return await TShirt.findAll({
             attributes: ['id', 'name'],
             include: [
@@ -673,6 +710,7 @@ class DBA {
             ],
             where: { eventId: event.id }
         });
+
     }
 
     /**
