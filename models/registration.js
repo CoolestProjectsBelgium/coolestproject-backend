@@ -58,6 +58,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    internalinfo: {
+      type: DataTypes.STRING(2000),
+      allowNull: true
+    },
     project_name: {
       type: DataTypes.STRING(100),
       defaultValue: null

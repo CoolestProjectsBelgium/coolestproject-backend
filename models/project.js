@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    project_internalinfo: {
+    internalinfo: {
       type: DataTypes.STRING(2000),
       allowNull: true
     },
