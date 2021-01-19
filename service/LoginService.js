@@ -15,8 +15,9 @@ var Mail = require('../mailer');
 exports.mailLoginPOST = function (login) {
   return new Promise(async function (resolve, reject) {
     logger.info('login requested for: ' + login.email);
+    const event = await DBA.getEventActive();
     try {
-      var users = await DBA.getUsersViaMail(login.email);
+      var users = await DBA.getUsersViaMail(login.email, event);
       for (const user of users) {
         logger.info('user found: ' + user.id);
         // only one token every n seconds
