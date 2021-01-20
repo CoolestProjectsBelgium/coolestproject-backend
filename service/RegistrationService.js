@@ -32,13 +32,10 @@ exports.registerPOST = function (registration_fields) {
         const registration = await DBA.createRegistration(registration_fields);
         const token = await Token.generateRegistrationToken(registration.id);
         Mail.activationMail(registration, token, event);
-      } else {
-        logger.error("user tried to register with same email: " + registration.user.email);
       }
       resolve();
 
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
