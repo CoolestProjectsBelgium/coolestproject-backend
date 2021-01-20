@@ -22,7 +22,15 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.TShirt, { as: 'size', optional: false });
       User.belongsTo(models.Event, { as: 'event', optional: false });
-      User.hasMany(models.QuestionUser, { as: 'questions' });
+      User.belongsToMany(models.Question, {
+        as: 'questions',
+        through: {
+          model: models.QuestionUser,
+          unique: false
+        },
+        foreignKey: 'UserId',
+        otherKey: 'QuestionId'
+      });
     }
   };
   User.init({

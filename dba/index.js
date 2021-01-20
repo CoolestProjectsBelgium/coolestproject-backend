@@ -152,7 +152,7 @@ class DBA {
     */
     static async createUserWithProject(userProject, registrationId) {
         const user = await User.create(userProject, {
-            include: ['project', { model: QuestionUser, as: 'questions' }]
+            include: ['project', { model: Question, as: 'questions' }]
         });
         await Registration.destroy({ where: { id: registrationId } });
         return user;
@@ -200,11 +200,6 @@ class DBA {
         // remove fields that are not allowed to change (be paranoid)
         delete changedFields.email;
 
-        // map questions
-        changedFields.questions = changedFields.mandatory_approvals.concat(changedFields.general_questions).map(i => { return { QuestionId: i.QuestionId } })
-        delete changedFields.mandatory_approvals;
-        delete changedFields.general_questions;
-
         //flatten address
         const address = changedFields.address;
         changedFields.postalcode = address.postalcode;
@@ -215,8 +210,14 @@ class DBA {
         delete changedFields.address;
 
         // cleanup guardian fields when not needed anymore
-        const user = await User.findByPk(userId, { include: [{ model: QuestionUser, as: 'questions' }] });
+        const user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
         const event = await user.getEvent();
+
+        await user.setQuestions(changedFields.mandatory_approvals.concat(changedFields.general_questions));
+
+        // map questions
+        delete changedFields.mandatory_approvals;
+        delete changedFields.general_questions;
 
         // create date
         const birthmonth = new Date(changedFields.year, changedFields.month, 1)

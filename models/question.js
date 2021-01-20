@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Question.belongsTo(models.Event);
-      Question.belongsToMany(models.User, { through: models.QuestionUser });
+      Question.belongsToMany(models.User, { through: models.QuestionUser, as: 'users' });
+      Question.belongsToMany(models.Registration, { through: models.QuestionRegistration, as: 'registration' });
       Question.hasMany(models.QuestionTranslation)
     }
   };
