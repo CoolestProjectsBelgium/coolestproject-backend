@@ -197,42 +197,44 @@ class DBA {
      * @returns {Promise<Boolean>} updated successfully
      */
     static async updateUser(changedFields, userId) {
-        // remove fields that are not allowed to change (be paranoid)
-        delete changedFields.email;
+        return await sequelize.transaction(async (t) => {
+            // remove fields that are not allowed to change (be paranoid)
+            delete changedFields.email;
 
-        //flatten address
-        const address = changedFields.address;
-        changedFields.postalcode = address.postalcode;
-        changedFields.street = address.street;
-        changedFields.house_number = address.house_number;
-        changedFields.bus_number = address.bus_number;
-        changedFields.municipality_name = address.municipality_name;
-        delete changedFields.address;
+            //flatten address
+            const address = changedFields.address;
+            changedFields.postalcode = address.postalcode;
+            changedFields.street = address.street;
+            changedFields.house_number = address.house_number;
+            changedFields.bus_number = address.bus_number;
+            changedFields.municipality_name = address.municipality_name;
+            delete changedFields.address;
 
-        // cleanup guardian fields when not needed anymore
-        const user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
-        const event = await user.getEvent();
+            // cleanup guardian fields when not needed anymore
+            const user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
+            const event = await user.getEvent();
 
-        await user.setQuestions(changedFields.mandatory_approvals.concat(changedFields.general_questions));
+            await user.setQuestions(changedFields.mandatory_approvals.concat(changedFields.general_questions));
 
-        // map questions
-        delete changedFields.mandatory_approvals;
-        delete changedFields.general_questions;
+            // map questions
+            delete changedFields.mandatory_approvals;
+            delete changedFields.general_questions;
 
-        // create date
-        const birthmonth = new Date(changedFields.year, changedFields.month, 1)
-        delete changedFields.year;
-        delete changedFields.month;
-        changedFields.birthmonth = birthmonth;
+            // create date
+            const birthmonth = new Date(changedFields.year, changedFields.month, 1)
+            delete changedFields.year;
+            delete changedFields.month;
+            changedFields.birthmonth = birthmonth;
 
-        const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
-        if (minGuardian > birthmonth) {
-            changedFields.gsm_guardian = null;
-            changedFields.email_guardian = null;
-        }
-        changedFields.sizeId = changedFields.t_size;
+            const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
+            if (minGuardian > birthmonth) {
+                changedFields.gsm_guardian = null;
+                changedFields.email_guardian = null;
+            }
+            changedFields.sizeId = changedFields.t_size;
 
-        return await user.update(changedFields);
+            return await user.update(changedFields);
+        })
     }
 
     /**
