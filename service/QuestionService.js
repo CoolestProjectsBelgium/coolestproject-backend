@@ -9,7 +9,7 @@ const parser = require('accept-language-parser');
  *
  * returns Settings
  **/
-exports.questionGET = function (language) {
+exports.questionGET = function (language, user) {
     return new Promise(async function (resolve, reject) {
         try {
             const questions = await DBA.getQuestions(language.substring(0, 2));
