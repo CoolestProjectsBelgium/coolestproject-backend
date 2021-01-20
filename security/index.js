@@ -8,12 +8,20 @@ const DBA = require('../dba');
 const Token = require('../jwts');
 const Mail = require('../mailer');
 
+const cookieExtractor = function (req) {
+    var token = null;
+    if (req && req.cookies) {
+        token = req.cookies['jwt'];
+    }
+    return token;
+};
+
 module.exports = function (app) {
     app.use(passport.initialize());
     app.use(passport.session());
 
     const opts = {}
-    opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+    opts.jwtFromRequest = ExtractJwt.fromExtractors([cookieExtractor, ExtractJwt.fromAuthHeaderAsBearerToken()]);
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {

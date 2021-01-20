@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     days_remaining: DataTypes.VIRTUAL,
     total_users: DataTypes.VIRTUAL,
     total_males: DataTypes.VIRTUAL,
-    total_females: DataTypes.VIRTUAL
+    total_females: DataTypes.VIRTUAL,
+    azure_storage_container: DataTypes.STRING(20)
   }, {
     sequelize,
     modelName: 'Event',

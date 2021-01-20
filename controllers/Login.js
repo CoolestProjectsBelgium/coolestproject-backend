@@ -5,7 +5,7 @@ var Login = require('../service/LoginService');
 
 module.exports.loginPOST = function loginPOST(req, res, next) {
   const logged_in_user = req.user;
-  Login.loginPOST(logged_in_user)
+  Login.loginPOST(logged_in_user, res)
     .then(function (response) {
       utils.writeJson(res, response);
     })

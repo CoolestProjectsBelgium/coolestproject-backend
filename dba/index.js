@@ -181,8 +181,10 @@ class DBA {
         if (voucher === null) {
             throw new Error(`Token ${voucherId} not found`);
         }
-        const user = await User.create(user_data);
-        await voucher.setParticipant(user, { include: [{ model: QuestionUser, as: 'questions' }] });
+        const user = await User.create(user_data, {
+            include: [{ model: QuestionUser, as: 'questions' }]
+        });
+        await voucher.setParticipant(user);
         await Registration.destroy({ where: { id: registrationId } });
 
         return user;

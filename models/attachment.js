@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   Attachment.init({
     name: DataTypes.STRING(50),
-    type: DataTypes.ENUM('movie', 'link')
+    confirmed: DataTypes.BOOLEAN,
+    internal: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Attachment',

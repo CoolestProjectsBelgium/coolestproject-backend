@@ -25,7 +25,8 @@ app.use(requestLanguage({
 
 const corsOptions = {
   origin: process.env.URL,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  credentials: true
 }
 
 app.use(cors(corsOptions))
