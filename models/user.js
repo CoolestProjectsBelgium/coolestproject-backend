@@ -90,6 +90,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(13),
       defaultValue: null
     },
+    internalinfo: {
+      type: DataTypes.STRING(2000),
+      defaultValue: null,
+    },
     email_guardian: {
       type: DataTypes.STRING(254),
       isEmail: true,

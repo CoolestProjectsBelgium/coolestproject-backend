@@ -44,7 +44,7 @@ module.exports = function (app) {
                 const project = await DBA.getProject(user.id);
 
                 // send welcome mails if user is new
-                if (project.ownerId = user.id) {
+                if (project.ownerId == user.id) {
                     Mail.welcomeMailOwner(user, project, event, token);
                 } else {
                     Mail.welcomeMailCoWorker(user, project, event, token);
