@@ -22,7 +22,7 @@ module.exports = function (app) {
     app.use(passport.session());
 
     const opts = {}
-    opts.jwtFromRequest = ExtractJwt.fromExtractors([cookieExtractor, ExtractJwt.fromAuthHeaderAsBearerToken()]);
+    opts.jwtFromRequest = ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeaderAsBearerToken(), cookieExtractor]);
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {
