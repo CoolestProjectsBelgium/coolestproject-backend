@@ -11,7 +11,7 @@ const respondWithCode = require('../utils/writer').respondWithCode
 exports.settingsGET = function () {
     return new Promise(async function (resolve, reject) {
         const event = await DBA.getEventActive();
-        if (event === null) {
+        if (!event) {
             reject(new respondWithCode(404, {
                 code: 0,
                 message: 'No Active event found'

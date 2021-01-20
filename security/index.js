@@ -3,6 +3,7 @@
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const AnonymousStrategy = require('passport-anonymous').Strategy;
 
 const DBA = require('../dba');
 const Token = require('../jwts');
@@ -56,6 +57,7 @@ module.exports = function (app) {
             return done(err, false);
         }
     }));
+    passport.use(new AnonymousStrategy());
 
     passport.serializeUser(function (user, done) {
         done(null, user.id);
@@ -75,6 +77,10 @@ module.exports = function (app) {
     app.use('/participants', passport.authenticate('jwt'))
     app.use('/login', passport.authenticate('jwt'))
     app.use('/userinfo', passport.authenticate('jwt'))
+
+    //optional
+    app.use('/questions', passport.authenticate(['jwt', 'anonymous']))
+    app.use('/tshirts', passport.authenticate(['jwt', 'anonymous']))
 }
 
 
