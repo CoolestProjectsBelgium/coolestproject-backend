@@ -215,7 +215,7 @@ class DBA {
         delete changedFields.address;
 
         // cleanup guardian fields when not needed anymore
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(userId, { include: [{ model: QuestionUser, as: 'questions' }] });
         const event = await user.getEvent();
 
         // create date
