@@ -253,8 +253,8 @@ class DBA {
      */
     static async deleteUser(userId) {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
-        if (project === null) {
-            throw new Error('Project not found');
+        if (project) {
+            throw new Error('Project found');
         }
         const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
         if (usedVoucher > 0) {
@@ -305,7 +305,7 @@ class DBA {
         return await sequelize.transaction(
             async (t) => {
                 const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-                if (project == null) {
+                if (!project) {
                     return true;
                 }
                 const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
