@@ -101,9 +101,22 @@ const adminBroOptions = {
       options: {
         navigation: registerParent
       }
+      
+    },
+    {
+      resource: db.QuestionTranslation,
+      options: {
+        navigation: registerParent
+      }
     },
     {
       resource: db.TShirtGroup,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.TShirtGroupTranslation,
       options: {
         navigation: registerParent
       }
@@ -115,11 +128,12 @@ const adminBroOptions = {
       }
     },
     {
-      resource: db.QuestionUser,
+      resource: db.TShirtTranslation,
       options: {
         navigation: registerParent
       }
     },
+
     {
       resource: db.Registration,
       options: {
@@ -188,6 +202,18 @@ const adminBroOptions = {
     },
     {
       resource: db.Voucher,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.QuestionUser,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.QuestionRegistration,
       options: {
         navigation: projectParent
       }
