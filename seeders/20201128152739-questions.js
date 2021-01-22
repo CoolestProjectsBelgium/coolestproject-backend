@@ -8,9 +8,15 @@ module.exports = {
       { name: 'Approved', mandatory: true, createdAt: new Date(), updatedAt: new Date(), eventId: 1 }
     ], {});
     await queryInterface.bulkInsert('QuestionTranslations', [
-      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'No Photo description', positive: 'Yes to photo', negative: 'No to photo', questionId: 1 },
-      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'No Contact description', positive: 'Yes to contact', negative: 'No to contact', questionId: 2 },
-      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Approve general', positive: 'Yes', negative: 'No', questionId: 3 },
+      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Is coderdojo allowed to take photos/videos during the event?', positive: 'Yes to photo', negative: 'No to photo', questionId: 1 },
+      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Can coderdojo send information in the future?', positive: 'Yes to contact', negative: 'No to contact', questionId: 2 },
+      { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Be sure to read our rules. Do you agree?', positive: 'Yes', negative: 'No', questionId: 3 },
+      { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Coderdojo peut-il prendre des photos / vidéos pendant l'événement?", positive: 'Oui à la photo', negative: 'Non à la photo', questionId: 1 },
+      { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Coderdojo peut-il envoyer des informations à l'avenir?", positive: "C'est permis", negative: "Plutôt pas", questionId: 2 },
+      { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Assurez-vous de lire nos règles. Êtes-vous d'accord?", positive: 'Qui', negative: 'Non', questionId: 3 },
+      { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Mag coderdojo photos/videos nemen tijdens het evenement?', positive: ' Het mag', negative: 'Neen geen photo/video', questionId: 1 },
+      { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Mag coderdojo in de toekomst informatie toesturen?', positive: 'Het mag', negative: 'Neen,liever niet', questionId: 2 },
+      { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Lees zeker onze regels. Ga je akkoord?', positive: 'Ja', negative: 'Neen', questionId: 3 },
     ], {});
   },
   down: async (queryInterface, Sequelize) => {
