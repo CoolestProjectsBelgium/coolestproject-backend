@@ -71,6 +71,8 @@ const adminBroOptions = {
       resource: db.Event,
       options: {
         navigation: eventParent,
+        listProperties: ['id', 'event_title','current', 'startDate','maxVouchers','t_proj','maxRegistration','minAge',
+                        'maxAge','minGuardianAge','days_remaining','overd_reg','t_users','pending','waiting_list'],
         actions: {
           setActive: {
             icon: 'View',
@@ -145,7 +147,7 @@ const adminBroOptions = {
           mailAction: {
             actionType: 'record',
             label: 'Resend confirmation mail',
-            icon: 'fa-envelope',
+            icon: 'fas fa-envelope',
             isVisible: true,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
