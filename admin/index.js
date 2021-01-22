@@ -73,6 +73,12 @@ const adminBroOptions = {
         navigation: eventParent,
         listProperties: ['id', 'event_title','current', 'startDate','maxVouchers','t_proj','maxRegistration','minAge',
                         'maxAge','minGuardianAge','days_remaining','overd_reg','t_users','pending','waiting_list'],
+        properties:{
+          event_title: {
+            isTitle:true,
+            label: 'event' 
+          }
+        },
         actions: {
           setActive: {
             icon: 'View',
