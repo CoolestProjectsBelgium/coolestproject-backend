@@ -197,6 +197,12 @@ const adminBroOptions = {
       }
     },
     {
+      resource: db.QuestionRegistration,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
       resource: db.Project,
       options: {
         navigation: projectParent
@@ -209,19 +215,13 @@ const adminBroOptions = {
       }
     },
     {
-      resource: db.Voucher,
-      options: {
-        navigation: projectParent
-      }
-    },
-    {
       resource: db.QuestionUser,
       options: {
         navigation: projectParent
       }
     },
     {
-      resource: db.QuestionRegistration,
+      resource: db.Voucher,
       options: {
         navigation: projectParent
       }
