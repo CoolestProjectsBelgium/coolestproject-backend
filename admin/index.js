@@ -144,6 +144,9 @@ const adminBroOptions = {
 
     {
       resource: db.Registration,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent,
         actions: {
@@ -204,12 +207,18 @@ const adminBroOptions = {
     },
     {
       resource: db.Project,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent
       }
     },
     {
       resource: db.User,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent
       }

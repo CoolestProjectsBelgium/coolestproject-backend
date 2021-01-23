@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.TShirt, { as: 'size', optional: false });
       User.belongsTo(models.Event, { as: 'event', optional: false });
+      User.hasMany(models.QuestionUser, { as: 'questions_user' });
       User.belongsToMany(models.Question, {
         as: 'questions',
         through: {
