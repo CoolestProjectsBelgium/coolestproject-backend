@@ -14,21 +14,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Event.init({
-    startDate: DataTypes.DATE,
+    azure_storage_container: DataTypes.STRING(20),
     minAge: DataTypes.INTEGER,
     maxAge: DataTypes.INTEGER,
     minGuardianAge: DataTypes.INTEGER,
     maxRegistration: DataTypes.INTEGER,
     maxVoucher: DataTypes.INTEGER,
-    current: DataTypes.BOOLEAN,
-    pending_users: DataTypes.VIRTUAL,
-    overdue_registration: DataTypes.VIRTUAL,
+    pending: DataTypes.VIRTUAL,
+    overd_reg: DataTypes.VIRTUAL,
     waiting_list: DataTypes.VIRTUAL,
     days_remaining: DataTypes.VIRTUAL,
-    total_users: DataTypes.VIRTUAL,
+    t_proj: DataTypes.VIRTUAL,
+    t_users: DataTypes.VIRTUAL,
     total_males: DataTypes.VIRTUAL,
     total_females: DataTypes.VIRTUAL,
-    azure_storage_container: DataTypes.STRING(20)
+    current: DataTypes.BOOLEAN,
+    startDate: DataTypes.DATE,
+    event_title: DataTypes.STRING(25)
   }, {
     sequelize,
     modelName: 'Event',

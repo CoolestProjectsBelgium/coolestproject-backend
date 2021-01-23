@@ -71,6 +71,8 @@ const adminBroOptions = {
       resource: db.Event,
       options: {
         navigation: eventParent,
+        listProperties: ['id', 'event_title','current', 'startDate','maxVouchers','t_proj','maxRegistration','minAge',
+                        'maxAge','minGuardianAge','days_remaining','overd_reg','t_users','pending','waiting_list'],
         actions: {
           setActive: {
             icon: 'View',
@@ -101,9 +103,22 @@ const adminBroOptions = {
       options: {
         navigation: registerParent
       }
+      
+    },
+    {
+      resource: db.QuestionTranslation,
+      options: {
+        navigation: registerParent
+      }
     },
     {
       resource: db.TShirtGroup,
+      options: {
+        navigation: registerParent
+      }
+    },
+    {
+      resource: db.TShirtGroupTranslation,
       options: {
         navigation: registerParent
       }
@@ -115,11 +130,12 @@ const adminBroOptions = {
       }
     },
     {
-      resource: db.QuestionUser,
+      resource: db.TShirtTranslation,
       options: {
         navigation: registerParent
       }
     },
+
     {
       resource: db.Registration,
       options: {
@@ -131,7 +147,7 @@ const adminBroOptions = {
           mailAction: {
             actionType: 'record',
             label: 'Resend confirmation mail',
-            icon: 'fa-envelope',
+            icon: 'fas fa-envelope',
             isVisible: true,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
@@ -188,6 +204,18 @@ const adminBroOptions = {
     },
     {
       resource: db.Voucher,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.QuestionUser,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
+      resource: db.QuestionRegistration,
       options: {
         navigation: projectParent
       }
