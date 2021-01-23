@@ -97,6 +97,45 @@ paths:
       security:
         - loginToken: []
       x-swagger-router-controller: "Participant"
+  /attachments:
+    post:
+      tags:
+        - "project"
+      summary: "Create new attachment"
+      operationId: "attachmentPOST"
+      parameters: []
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+        - loginToken: []
+      x-swagger-router-controller: "Attachment"
+    delete:
+      tags:
+        - "project"
+      summary: "delete attachment"
+      operationId: "attachmentDELETE"
+      parameters:
+        - in: "body"
+          name: "attachment"
+          description: "Attachment info"
+          required: false
+          schema:
+            $ref: "#/definitions/Attachment"
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+        - loginToken: []
+      x-swagger-router-controller: "Attachment"
   /userinfo:
     get:
       tags:
@@ -389,6 +428,10 @@ definitions:
         $ref: "#/definitions/OwnProject"
       other_project:
         $ref: "#/definitions/OtherProject"
+      attachments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Attachment"
   OwnProject:
     type: "object"
     properties:
@@ -506,3 +549,15 @@ definitions:
           type: "string"
         description:
           type: "string"
+  Attachment:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      confirmed:
+        type: "boolean"
+      type:
+        type: "string"
+        enum:
+          - "link"
+          - "movie"
