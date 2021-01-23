@@ -31,6 +31,7 @@ const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
 const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
+const Attachment = models.Attachment;
 
 const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0
 
@@ -370,6 +371,71 @@ class DBA {
                     });
                 });
                 return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+            }
+        );
+    }
+
+    /**
+     * Create a attachment for a project
+     * @param {Number} userId 
+     */
+    static async createAttachment(userId) {
+        return await sequelize.transaction(
+            async (t) => {
+
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+                if (project === null) {
+                    throw new Error('No project found');
+                }
+                /*
+                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
+                if (totalVouchers >= project.max_tokens) {
+                    throw new Error('Max token reached');
+                }
+
+                var token = await new Promise(function (resolve, reject) {
+                    crypto.randomBytes(18, function (error, buffer) {
+                        if (error) {
+                            reject(error);
+                        }
+                        resolve(buffer.toString('hex'));
+                    });
+                });
+                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+                */
+                return await Attachment.create({ projectId: project.id, name: 'Test attachement' })
+            }
+        );
+    }
+    /**
+     * Create a attachment for a project
+     * @param {Number} attachmentId 
+     */
+    static async deleteAttachment(attachmentId) {
+        return await sequelize.transaction(
+            async (t) => {
+
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+                if (project === null) {
+                    throw new Error('No project found');
+                }
+                /*
+                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
+                if (totalVouchers >= project.max_tokens) {
+                    throw new Error('Max token reached');
+                }
+
+                var token = await new Promise(function (resolve, reject) {
+                    crypto.randomBytes(18, function (error, buffer) {
+                        if (error) {
+                            reject(error);
+                        }
+                        resolve(buffer.toString('hex'));
+                    });
+                });
+                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+                */
+                return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
             }
         );
     }
