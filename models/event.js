@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Event extends Model {
     /**
@@ -20,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     minGuardianAge: DataTypes.INTEGER,
     maxRegistration: DataTypes.INTEGER,
     maxVoucher: DataTypes.INTEGER,
-    pending: DataTypes.VIRTUAL,
-    overd_reg: DataTypes.VIRTUAL,
+    pending_user: DataTypes.VIRTUAL,
+    overdue_registration: DataTypes.VIRTUAL,
     waiting_list: DataTypes.VIRTUAL,
     days_remaining: DataTypes.VIRTUAL,
     t_proj: DataTypes.VIRTUAL,

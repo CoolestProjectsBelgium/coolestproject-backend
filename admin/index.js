@@ -73,6 +73,12 @@ const adminBroOptions = {
         navigation: eventParent,
         listProperties: ['id', 'event_title','current', 'startDate','maxVouchers','t_proj','maxRegistration','minAge',
                         'maxAge','minGuardianAge','days_remaining','overd_reg','t_users','pending','waiting_list'],
+        properties:{
+          event_title: {
+            isTitle:true,
+            label: 'event' 
+          }
+        },
         actions: {
           setActive: {
             icon: 'View',
@@ -138,6 +144,9 @@ const adminBroOptions = {
 
     {
       resource: db.Registration,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent,
         actions: {
@@ -191,19 +200,25 @@ const adminBroOptions = {
       }
     },
     {
+      resource: db.QuestionRegistration,
+      options: {
+        navigation: projectParent
+      }
+    },
+    {
       resource: db.Project,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent
       }
     },
     {
       resource: db.User,
-      options: {
-        navigation: projectParent
-      }
-    },
-    {
-      resource: db.Voucher,
+      properties: {
+        internalinfo: { type: 'richtext' },
+      },
       options: {
         navigation: projectParent
       }
@@ -215,7 +230,7 @@ const adminBroOptions = {
       }
     },
     {
-      resource: db.QuestionRegistration,
+      resource: db.Voucher,
       options: {
         navigation: projectParent
       }

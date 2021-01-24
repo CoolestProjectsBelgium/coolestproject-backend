@@ -17,7 +17,7 @@ app.use(cookieParser())
 app.use(requestLanguage({
   languages: ['en', 'fr', 'nl'],
   cookie: {
-    name: 'language',
+    name: 'i18n_redirected',
     options: { maxAge: 24 * 3600 * 1000 },
     url: '/languages/{language}'
   }
