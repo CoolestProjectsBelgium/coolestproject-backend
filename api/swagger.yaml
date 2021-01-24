@@ -535,6 +535,7 @@ definitions:
         type: "string"
       postalcode:
         type: "string"
+        maxLength: 4
   Question:
     type: "array"
     items:
