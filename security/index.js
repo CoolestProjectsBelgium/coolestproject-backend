@@ -76,6 +76,7 @@ module.exports = function (app) {
     app.use('/projectinfo', passport.authenticate('jwt'))
     app.use('/participants', passport.authenticate('jwt'))
     app.use('/login', passport.authenticate('jwt'))
+    app.use('/logout', passport.authenticate('jwt'))
     app.use('/userinfo', passport.authenticate('jwt'))
 
     //optional

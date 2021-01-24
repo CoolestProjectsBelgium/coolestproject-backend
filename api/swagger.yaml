@@ -295,6 +295,16 @@ paths:
           schema:
             $ref: "#/definitions/Login"
       x-swagger-router-controller: "Login"
+  /logout:
+    post:
+      tags:
+        - "login"
+      summary: "delete Login"
+      operationId: "logoutPOST"
+      responses:
+        200:
+          description: "OK"
+      x-swagger-router-controller: "Logout"
   /mailToken:
     post:
       tags:
