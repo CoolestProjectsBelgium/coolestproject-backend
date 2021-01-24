@@ -70,7 +70,7 @@ class DBA {
                             municipality_name: registration.municipality_name,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
-                            questions: registration.questions.map(i => { return { QuestionId: i.QuestionId } }),
+                            questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId } }),
                         },
                         registration.project_code,
                         registration.id
@@ -99,7 +99,7 @@ class DBA {
                             street: registration.street,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
-                            questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId} }),
+                            questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId } }),
                             project: {
                                 eventId: registration.eventId,
                                 project_name: registration.project_name,
@@ -183,7 +183,7 @@ class DBA {
             throw new Error(`Token ${voucherId} not found`);
         }
         const user = await User.create(user_data, {
-            include: [{ model: Question, as: 'questions' }]
+            include: [{ model: QuestionUser, as: 'questions_user' }]
         });
         await voucher.setParticipant(user);
         await Registration.destroy({ where: { id: registrationId } });
