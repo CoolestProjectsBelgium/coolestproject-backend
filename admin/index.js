@@ -16,6 +16,16 @@ const projectParent = {
   icon: 'Roadmap'
 }
 
+const reportParent = {
+  name: 'Reporting',
+  icon: 'fa fa-stream',
+}
+
+const internalParent = {
+  name: 'Internal',
+  icon: 'fa fa-exclamation-triangle',
+}
+
 const eventParent = {
   name: 'Event Settings',
   icon: 'Events'
@@ -144,9 +154,6 @@ const adminBroOptions = {
 
     {
       resource: db.Registration,
-      properties: {
-        internalinfo: { type: 'richtext' },
-      },
       options: {
         navigation: projectParent,
         actions: {
@@ -192,13 +199,13 @@ const adminBroOptions = {
           }
         },
         properties: {
+          internalinfo: { type: 'richtext' }
           // createdAt: { isVisible: { list: false } },
           // updatedAt: { isVisible: { list: false } }
         }
-
-
       }
     },
+
     {
       resource: db.QuestionRegistration,
       options: {
@@ -207,27 +214,27 @@ const adminBroOptions = {
     },
     {
       resource: db.Project,
-      properties: {
-        internalinfo: { type: 'richtext' },
-      },
       options: {
-        navigation: projectParent
+        navigation: projectParent,
+        properties: {
+          internalinfo: { type: 'richtext' }
+        }
       }
     },
     {
       resource: db.User,
-      properties: {
-        internalinfo: { type: 'richtext' },
-      },
       options: {
-        navigation: projectParent
+        navigation: projectParent,
+        properties: {
+          internalinfo: { type: 'richtext'}
+        }
       }
     },
     {
       resource: db.QuestionUser,
       options: {
         navigation: projectParent
-      }
+    }
     },
     {
       resource: db.Voucher,

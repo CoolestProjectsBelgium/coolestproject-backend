@@ -90,11 +90,13 @@ exports.userinfoPATCH = function (changed_fields, user) {
  **/
 exports.userinfoDELETE = function (logged_in_user) {
   return new Promise(async function (resolve, reject) {
+    console.log('delete user log:',logged_in_user)
     try {
       var u = await DBA.deleteUser(logged_in_user.id);
+
       resolve(u);
     } catch (ex) {
-      logger.error(ex);
+      console.log('delete user log:',ex)
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
