@@ -31,6 +31,7 @@ const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
 const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
+const Attachment = models.Attachment;
 
 const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0
 
@@ -69,7 +70,7 @@ class DBA {
                             municipality_name: registration.municipality_name,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
-                            questions: registration.questions.map(i => { return { QuestionId: i.QuestionId } }),
+                            questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId } }),
                         },
                         registration.project_code,
                         registration.id
@@ -98,7 +99,7 @@ class DBA {
                             street: registration.street,
                             house_number: registration.house_number,
                             box_number: registration.box_number,
-                            questions: registration.questions.map(i => { return { QuestionId: i.QuestionId } }),
+                            questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId } }),
                             project: {
                                 eventId: registration.eventId,
                                 project_name: registration.project_name,
@@ -152,7 +153,7 @@ class DBA {
     */
     static async createUserWithProject(userProject, registrationId) {
         const user = await User.create(userProject, {
-            include: ['project', { model: QuestionUser, as: 'questions' }]
+            include: ['project', { model: QuestionUser, as: 'questions_user' }]
         });
         await Registration.destroy({ where: { id: registrationId } });
         return user;
@@ -181,8 +182,10 @@ class DBA {
         if (voucher === null) {
             throw new Error(`Token ${voucherId} not found`);
         }
-        const user = await User.create(user_data);
-        await voucher.setParticipant(user, { include: [{ model: QuestionUser, as: 'questions' }] });
+        const user = await User.create(user_data, {
+            include: [{ model: QuestionUser, as: 'questions_user' }]
+        });
+        await voucher.setParticipant(user);
         await Registration.destroy({ where: { id: registrationId } });
 
         return user;
@@ -195,41 +198,44 @@ class DBA {
      * @returns {Promise<Boolean>} updated successfully
      */
     static async updateUser(changedFields, userId) {
-        // remove fields that are not allowed to change (be paranoid)
-        delete changedFields.email;
+        return await sequelize.transaction(async (t) => {
+            // remove fields that are not allowed to change (be paranoid)
+            delete changedFields.email;
 
-        // map questions
-        changedFields.questions = changedFields.mandatory_approvals.concat(changedFields.general_questions).map(i => { return { QuestionId: i.QuestionId } })
-        delete changedFields.mandatory_approvals;
-        delete changedFields.general_questions;
+            //flatten address
+            const address = changedFields.address;
+            changedFields.postalcode = address.postalcode;
+            changedFields.street = address.street;
+            changedFields.house_number = address.house_number;
+            changedFields.bus_number = address.bus_number;
+            changedFields.municipality_name = address.municipality_name;
+            delete changedFields.address;
 
-        //flatten address
-        const address = changedFields.address;
-        changedFields.postalcode = address.postalcode;
-        changedFields.street = address.street;
-        changedFields.house_number = address.house_number;
-        changedFields.bus_number = address.bus_number;
-        changedFields.municipality_name = address.municipality_name;
-        delete changedFields.address;
+            // cleanup guardian fields when not needed anymore
+            const user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
+            const event = await user.getEvent();
 
-        // cleanup guardian fields when not needed anymore
-        const user = await User.findByPk(userId);
-        const event = await user.getEvent();
+            await user.setQuestions(changedFields.mandatory_approvals.concat(changedFields.general_questions));
 
-        // create date
-        const birthmonth = new Date(changedFields.year, changedFields.month, 1)
-        delete changedFields.year;
-        delete changedFields.month;
-        changedFields.birthmonth = birthmonth;
+            // map questions
+            delete changedFields.mandatory_approvals;
+            delete changedFields.general_questions;
 
-        const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
-        if (minGuardian > birthmonth) {
-            changedFields.gsm_guardian = null;
-            changedFields.email_guardian = null;
-        }
-        changedFields.sizeId = changedFields.t_size;
+            // create date
+            const birthmonth = new Date(changedFields.year, changedFields.month, 1)
+            delete changedFields.year;
+            delete changedFields.month;
+            changedFields.birthmonth = birthmonth;
 
-        return await user.update(changedFields);
+            const minGuardian = addYears(event.startDate, -1 * event.minGuardianAge);
+            if (minGuardian > birthmonth) {
+                changedFields.gsm_guardian = null;
+                changedFields.email_guardian = null;
+            }
+            changedFields.sizeId = changedFields.t_size;
+
+            return await user.update(changedFields);
+        })
     }
 
     /**
@@ -248,12 +254,8 @@ class DBA {
      */
     static async deleteUser(userId) {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
-        if (project === null) {
-            throw new Error('Project not found');
-        }
-        const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
-        if (usedVoucher > 0) {
-            throw new Error('Delete not possible tokens in use');
+        if (project) {
+            throw new Error('Project found');
         }
         return await User.destroy({ where: { id: userId } });
     }
@@ -300,7 +302,7 @@ class DBA {
         return await sequelize.transaction(
             async (t) => {
                 const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-                if (project == null) {
+                if (!project) {
                     return true;
                 }
                 const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
@@ -365,6 +367,71 @@ class DBA {
                     });
                 });
                 return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+            }
+        );
+    }
+
+    /**
+     * Create a attachment for a project
+     * @param {Number} userId 
+     */
+    static async createAttachment(userId) {
+        return await sequelize.transaction(
+            async (t) => {
+
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+                if (project === null) {
+                    throw new Error('No project found');
+                }
+                /*
+                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
+                if (totalVouchers >= project.max_tokens) {
+                    throw new Error('Max token reached');
+                }
+
+                var token = await new Promise(function (resolve, reject) {
+                    crypto.randomBytes(18, function (error, buffer) {
+                        if (error) {
+                            reject(error);
+                        }
+                        resolve(buffer.toString('hex'));
+                    });
+                });
+                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+                */
+                return await Attachment.create({ projectId: project.id, name: 'Test attachement' })
+            }
+        );
+    }
+    /**
+     * Create a attachment for a project
+     * @param {Number} attachmentId 
+     */
+    static async deleteAttachment(attachmentId) {
+        return await sequelize.transaction(
+            async (t) => {
+
+                const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+                if (project === null) {
+                    throw new Error('No project found');
+                }
+                /*
+                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
+                if (totalVouchers >= project.max_tokens) {
+                    throw new Error('Max token reached');
+                }
+
+                var token = await new Promise(function (resolve, reject) {
+                    crypto.randomBytes(18, function (error, buffer) {
+                        if (error) {
+                            reject(error);
+                        }
+                        resolve(buffer.toString('hex'));
+                    });
+                });
+                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
+                */
+                return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
             }
         );
     }
@@ -560,8 +627,8 @@ class DBA {
      * @param {String} email
      * @returns {Promise<Boolean>} 
      */
-    static async doesEmailExists(emailAddress) {
-        const count = await User.count({ where: { email: emailAddress } });
+    static async doesEmailExists(emailAddress, event) {
+        const count = await User.count({ where: { email: emailAddress, eventId: event.id } });
         return count !== 0;
     }
     /**
@@ -569,7 +636,7 @@ class DBA {
      * @param {String} email
      * @returns {Promise<User>}
      */
-    static async getUsersViaMail(email) {
+    static async getUsersViaMail(email, event) {
         return await User.findAll({
             where: {
                 [Op.or]: [
@@ -579,7 +646,8 @@ class DBA {
                     {
                         email_guardian: email
                     }
-                ]
+                ],
+                eventId: event.id
             }
         });
     }

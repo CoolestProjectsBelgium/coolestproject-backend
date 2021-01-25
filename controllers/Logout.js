@@ -1,12 +1,11 @@
 'use strict';
 
 var utils = require('../utils/writer.js');
-var Tshirts = require('../service/TshirtService');
+var Logout = require('../service/LogoutService');
 
-module.exports.tshirtGET = function tshirtGET(req, res, next) {
-  const l = req.language;
-  const user = req.user
-  Tshirts.tshirtGET(l, user)
+module.exports.logoutPOST = function logoutPOST(req, res, next) {
+  const logged_in_user = req.user;
+  Logout.logoutPOST(logged_in_user, res)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -14,3 +13,5 @@ module.exports.tshirtGET = function tshirtGET(req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+

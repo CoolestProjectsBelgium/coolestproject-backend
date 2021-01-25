@@ -15,8 +15,9 @@ var Mail = require('../mailer');
 exports.mailLoginPOST = function (login) {
   return new Promise(async function (resolve, reject) {
     logger.info('login requested for: ' + login.email);
+    const event = await DBA.getEventActive();
     try {
-      var users = await DBA.getUsersViaMail(login.email);
+      var users = await DBA.getUsersViaMail(login.email, event);
       for (const user of users) {
         logger.info('user found: ' + user.id);
         // only one token every n seconds
@@ -28,7 +29,6 @@ exports.mailLoginPOST = function (login) {
           // generate new token for user
           await DBA.updateLastToken(user.id);
           const token = await Token.generateLoginToken(user.id);
-          const event = await DBA.getEventActive();
           await Mail.ask4TokenMail(user, token, event);
         } else {
           logger.info('Token requested but time is not passed yet: ' + user.email);
@@ -40,17 +40,19 @@ exports.mailLoginPOST = function (login) {
       reject(new respondWithCode(500, { code: 0, message: 'Backend error' }));
     }
   });
-}
+};
 /**
  * Login / Activate account
  *
  * registration Registration The registration to create. (optional)
  * returns Login
  **/
-exports.loginPOST = function (user) {
+exports.loginPOST = function (user, response) {
   return new Promise(async function (resolve, reject) {
     const token = await Token.generateLoginToken(user.id);
-    resolve({ api_key: token, expires: addSeconds(new Date(), process.env.TOKEN_VALID_TIME || 0), language: user.language });
+    const expires = addSeconds(Date.now(), 172800 || 0);
+    response.cookie('jwt', token, { maxAge: 172800 * 1000, httpOnly: true }); //, secure: process.env.SECURE_COOKIE 
+    resolve({ expires, language: user.language });
   });
-}
+};
 

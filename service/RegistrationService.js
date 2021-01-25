@@ -1,7 +1,7 @@
 'use strict';
 
-const logger = require('pino')()
-const respondWithCode = require('../utils/writer').respondWithCode
+const logger = require('pino')();
+const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 var models = require('../models');
@@ -26,20 +26,18 @@ exports.registerPOST = function (registration_fields) {
      * 3) check if the registration is for a minor (extra approval flow via guardian email)
      **/
     try {
-      const registration = await DBA.createRegistration(registration_fields);
-
       // Check if email exists if so ignore registration
-      if (!(await DBA.doesEmailExists(registration_fields.user.email))) {
-        const token = await Token.generateRegistrationToken(registration.id);
-        const event = await DBA.getEventActive();
-        Mail.activationMail(registration, token, event);
-      } else {
-        logger.error("user tried to register with same email: " + registration.user.email);
+      const event = await DBA.getEventActive();
+      if (!(await DBA.doesEmailExists(registration_fields.user.email, event))) {
+        const registration = await DBA.createRegistration(registration_fields);
+        if(!registration.waiting_list){
+          const token = await Token.generateRegistrationToken(registration.id);
+          Mail.activationMail(registration, token, event);
+        }
       }
       resolve();
 
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -47,4 +45,4 @@ exports.registerPOST = function (registration_fields) {
     }
 
   });
-}
+};

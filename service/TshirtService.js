@@ -8,7 +8,7 @@ const respondWithCode = require('../utils/writer').respondWithCode
  *
  * returns TShirts
  **/
-exports.tshirtGET = function (language) {
+exports.tshirtGET = function (language, user) {
     return new Promise(async function (resolve, reject) {
         try {
             const tshirts = await DBA.getTshirts(language);

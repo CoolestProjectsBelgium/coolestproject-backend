@@ -12,11 +12,10 @@ async function getUserDetails(user) {
   const mandatory_approvals = [];
 
   for (const question of questions) {
-    const q = await question.getQuestion();
-    if (q.mandatory) {
-      mandatory_approvals.push(q.id)
+    if (question.mandatory) {
+      mandatory_approvals.push(question.id)
     } else {
-      general_questions.push(q.id)
+      general_questions.push(question.id)
     }
   }
   const birthDate = new Date(user.birthmonth)
@@ -57,7 +56,6 @@ exports.userinfoGET = function (user) {
     try {
       resolve(await getUserDetails(user));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -77,7 +75,6 @@ exports.userinfoPATCH = function (changed_fields, user) {
       await DBA.updateUser(changed_fields, user.id);
       resolve(await getUserDetails(await DBA.getUser(user.id)));
     } catch (ex) {
-      logger.error(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
@@ -93,11 +90,13 @@ exports.userinfoPATCH = function (changed_fields, user) {
  **/
 exports.userinfoDELETE = function (logged_in_user) {
   return new Promise(async function (resolve, reject) {
+    console.log('delete user log:',logged_in_user)
     try {
       var u = await DBA.deleteUser(logged_in_user.id);
+
       resolve(u);
     } catch (ex) {
-      logger.error(ex);
+      console.log('delete user log:',ex)
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'

@@ -1,0 +1,27 @@
+'use strict';
+const {
+    Model
+} = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+    class AzureBlob extends Model {
+        static associate(models) {
+            AzureBlob.belongsTo(models.Attachment, {});
+        }
+    };
+    AzureBlob.init({
+        container_name: {
+            type: DataTypes.STRING(100),
+            unique: true
+        },
+        blob_name: {
+            type: DataTypes.STRING(100),
+            unique: true
+        },
+        size: DataTypes.FLOAT(12, 9)
+    }, {
+        sequelize,
+        modelName: 'AzureBlob',
+    });
+    return AzureBlob;
+};

@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isEmail: true
       },
-      defaultValue: null
+      defaultValue: null,
+      unique: true
     },
     firstname: {
       type: DataTypes.STRING,
@@ -57,6 +58,10 @@ module.exports = (sequelize, DataTypes) => {
     waiting_list: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    internalinfo: {
+      type: DataTypes.STRING(2000),
+      allowNull: true
     },
     project_name: {
       type: DataTypes.STRING(100),

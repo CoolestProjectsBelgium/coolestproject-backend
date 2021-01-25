@@ -16,7 +16,7 @@ app.use(cookieParser())
 app.use(requestLanguage({
   languages: ['en', 'fr', 'nl'],
   cookie: {
-    name: 'language',
+    name: 'i18n_redirected',
     options: { maxAge: 24 * 3600 * 1000 },
     url: '/languages/{language}'
   }
@@ -24,7 +24,8 @@ app.use(requestLanguage({
 
 const corsOptions = {
   origin: process.env.URL,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  credentials: true
 }
 
 app.use(cors(corsOptions))

@@ -22,7 +22,16 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.belongsTo(models.TShirt, { as: 'size', optional: false });
       User.belongsTo(models.Event, { as: 'event', optional: false });
-      User.hasMany(models.QuestionUser, { as: 'questions' });
+      User.hasMany(models.QuestionUser, { as: 'questions_user' });
+      User.belongsToMany(models.Question, {
+        as: 'questions',
+        through: {
+          model: models.QuestionUser,
+          unique: false
+        },
+        foreignKey: 'UserId',
+        otherKey: 'QuestionId'
+      });
     }
   };
   User.init({
@@ -89,6 +98,10 @@ module.exports = (sequelize, DataTypes) => {
     gsm_guardian: {
       type: DataTypes.STRING(13),
       defaultValue: null
+    },
+    internalinfo: {
+      type: DataTypes.STRING(2000),
+      defaultValue: null,
     },
     email_guardian: {
       type: DataTypes.STRING(254),

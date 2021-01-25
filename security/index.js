@@ -3,17 +3,26 @@
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const AnonymousStrategy = require('passport-anonymous').Strategy;
 
 const DBA = require('../dba');
 const Token = require('../jwts');
 const Mail = require('../mailer');
+
+const cookieExtractor = function (req) {
+    var token = null;
+    if (req && req.cookies) {
+        token = req.cookies['jwt'];
+    }
+    return token;
+};
 
 module.exports = function (app) {
     app.use(passport.initialize());
     app.use(passport.session());
 
     const opts = {}
-    opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+    opts.jwtFromRequest = ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeaderAsBearerToken(), cookieExtractor]);
     opts.secretOrKey = process.env.SECRET_KEY;
     passport.use(new JwtStrategy(opts, async function (jwt_payload, done) {
         try {
@@ -36,7 +45,7 @@ module.exports = function (app) {
                 const project = await DBA.getProject(user.id);
 
                 // send welcome mails if user is new
-                if (project.ownerId = user.id) {
+                if (project.ownerId == user.id) {
                     Mail.welcomeMailOwner(user, project, event, token);
                 } else {
                     Mail.welcomeMailCoWorker(user, project, event, token);
@@ -48,6 +57,7 @@ module.exports = function (app) {
             return done(err, false);
         }
     }));
+    passport.use(new AnonymousStrategy());
 
     passport.serializeUser(function (user, done) {
         done(null, user.id);
@@ -66,7 +76,12 @@ module.exports = function (app) {
     app.use('/projectinfo', passport.authenticate('jwt'))
     app.use('/participants', passport.authenticate('jwt'))
     app.use('/login', passport.authenticate('jwt'))
+    app.use('/logout', passport.authenticate('jwt'))
     app.use('/userinfo', passport.authenticate('jwt'))
+
+    //optional
+    app.use('/questions', passport.authenticate(['jwt', 'anonymous']))
+    app.use('/tshirts', passport.authenticate(['jwt', 'anonymous']))
 }
 
 
