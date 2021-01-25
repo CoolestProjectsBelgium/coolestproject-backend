@@ -257,10 +257,6 @@ class DBA {
         if (project) {
             throw new Error('Project found');
         }
-        const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } } });
-        if (usedVoucher > 0) {
-            throw new Error('Delete not possible tokens in use');
-        }
         return await User.destroy({ where: { id: userId } });
     }
 
