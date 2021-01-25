@@ -3,5 +3,9 @@
         "**/*.code-search": false,
         "**/bower_components": false,
         "**/node_modules": false
-    }
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["javascript"]
 }
