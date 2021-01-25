@@ -40,7 +40,7 @@ exports.mailLoginPOST = function (login) {
       reject(new respondWithCode(500, { code: 0, message: 'Backend error' }));
     }
   });
-}
+};
 /**
  * Login / Activate account
  *
@@ -50,9 +50,9 @@ exports.mailLoginPOST = function (login) {
 exports.loginPOST = function (user, response) {
   return new Promise(async function (resolve, reject) {
     const token = await Token.generateLoginToken(user.id);
-    const expires = addSeconds(Date.now(), 172800 || 0)
+    const expires = addSeconds(Date.now(), 172800 || 0);
     response.cookie('jwt', token, { maxAge: 172800 * 1000, httpOnly: true }); //, secure: process.env.SECURE_COOKIE 
     resolve({ expires, language: user.language });
   });
-}
+};
 

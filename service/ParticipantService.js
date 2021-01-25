@@ -1,8 +1,8 @@
 'use strict';
 
-const logger = require('pino')()
+const logger = require('pino')();
 const Token = require('../jwts');
-const respondWithCode = require('../utils/writer').respondWithCode
+const respondWithCode = require('../utils/writer').respondWithCode;
 var dba = require('../dba');
 
 /**
@@ -21,7 +21,7 @@ exports.participantPOST = function (user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
 

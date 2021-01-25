@@ -1,7 +1,7 @@
 'use strict';
 
-const logger = require('pino')()
-const respondWithCode = require('../utils/writer').respondWithCode
+const logger = require('pino')();
+const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 var models = require('../models');
@@ -45,4 +45,4 @@ exports.registerPOST = function (registration_fields) {
     }
 
   });
-}
+};
