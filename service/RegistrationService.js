@@ -1,7 +1,7 @@
 'use strict';
 
-const logger = require('pino')()
-const respondWithCode = require('../utils/writer').respondWithCode
+const logger = require('pino')();
+const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
 var models = require('../models');
@@ -30,8 +30,10 @@ exports.registerPOST = function (registration_fields) {
       const event = await DBA.getEventActive();
       if (!(await DBA.doesEmailExists(registration_fields.user.email, event))) {
         const registration = await DBA.createRegistration(registration_fields);
-        const token = await Token.generateRegistrationToken(registration.id);
-        Mail.activationMail(registration, token, event);
+        if(!registration.waiting_list){
+          const token = await Token.generateRegistrationToken(registration.id);
+          Mail.activationMail(registration, token, event);
+        }
       }
       resolve();
 
@@ -43,4 +45,4 @@ exports.registerPOST = function (registration_fields) {
     }
 
   });
-}
+};
