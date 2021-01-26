@@ -1,5 +1,5 @@
 {
-  "Hi {{hash.firstname}}": "Hi {{hash.firstname}}",
+  "Hi {{hash.firstname}}": "Hello {{hash.firstname}}",
   "<strong>{{ hash.title }} {{hash.year}}</strong>": "<strong>{{ hash.title }} {{hash.year}}</strong>",
   "We are very pleased that you want to participate on the next {{{hash.title}}} a VIRTUAL edition, so\n            that will be extra special !": "We are very pleased that you want to participate on the next {{{hash.title}}} a VIRTUAL edition, so\n            that will be extra special !",
   "<a href=\"{{hash.website}}\">Coolest Projects {{year}}</a>": "<a href=\"{{hash.website}}\">Coolest Projects {{year}}</a>",
@@ -111,12 +111,12 @@
   "Your parents will also receive this mail and they have to confirm your\nparticipation.": "Your parents will also receive this mail and they have to confirm your\nparticipation.",
   "Click this \"{{hash.url}}\" to activate your project.": "Click this \"{{hash.url}}\" to activate your project.",
   "Good luck, {{hash.firstname}}we’re looking forward to your project activation!": "Good luck, {{hash.firstname}}we’re looking forward to your project activation!",
-  "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\n            that will be extra special !": "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\n            that will be extra special !",
+  "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\n            that will be extra special !": "We are very pleased that you want to participate on the next {{{hash.title}}} an  1 HYBRIDE edition, so\n            that will be extra special !",
   "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>": "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>",
   "Click this \"{{{hash.url}}}\" to activate your project.": "Click this \"{{{hash.url}}}\" to activate your project.",
   "Good luck, {{hash.firstname}}, we’re looking forward to your project activation!": "Good luck, {{hash.firstname}}, we’re looking forward to your project activation!",
   "Click this\n\"{{{hash.url}}}\"\nto activate your project.": "Click this\n\"{{{hash.url}}}\"\nto activate your project.",
-  "We are very pleased that you want to participate on the next Coolest {{{hash.title}}} an HYBRIDE edition, so\nthat will be extra special !": "We are very pleased that you want to participate on the next Coolest {{{hash.title}}} an HYBRIDE edition, so\nthat will be extra special !",
+  "We are very pleased that you want to participate on the next Coolest {{{hash.title}}} an HYBRIDE edition, so\nthat will be extra special !": "We are very pleased that you want to participate on the next Coolest {{{hash.title}}} an 2 HYBRIDE edition, so\nthat will be extra special !",
   "Click this\n\n\"{{{hash.url}}}\"\n\nto activate your project.": "Click this\n\n\"{{{hash.url}}}\"\n\nto activate your project.",
   "Your parents will also receive this mail and they have to confirm your participation.": "Your parents will also receive this mail and they have to confirm your participation.",
   "Cat & paste this link between \"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "Cat & paste this link between \"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.",
@@ -128,5 +128,6 @@
   "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n": "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n",
   "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                work further on your project.": "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                work further on your project.",
   "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.": "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.",
-  "If you want to make changes on your project or if you would like to invite co-workers on your project\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your project or if you would like to invite co-workers on your project\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project."
+  "If you want to make changes on your project or if you would like to invite co-workers on your project\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your project or if you would like to invite co-workers on your project\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.",
+  "Welcome to confirm your participation": "Welcome to confirm your participation"
 }

@@ -17,7 +17,7 @@ const transport = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
   },
-  language: 'en'
+  language: 'nl'
 });
 
 const email = new Email({
@@ -47,6 +47,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -69,6 +70,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -91,6 +93,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -110,6 +113,7 @@ class Mailer {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'warningNoProject'),
       message: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         to: user.email,
         cc: user.email_guardian
       },
@@ -127,6 +131,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         user
       }
     });
@@ -140,7 +145,7 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
-
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
@@ -160,6 +165,7 @@ class Mailer {
         cc: users.email_guardian
       },
       locals: {
+        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
         users: {
           firstname: users.firstname,
           email_guardian: users.email_guardian,
