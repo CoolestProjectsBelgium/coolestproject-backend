@@ -51,7 +51,12 @@ exports.loginPOST = function (user, response) {
   return new Promise(async function (resolve, reject) {
     const token = await Token.generateLoginToken(user.id);
     const expires = addSeconds(Date.now(), 172800 || 0);
-    response.cookie('jwt', token, { maxAge: 172800 * 1000, httpOnly: true, sameSite: 'None', secure: process.env.SECURE_COOKIE || true }); //, secure: process.env.SECURE_COOKIE 
+    response.cookie('jwt', token, { 
+      maxAge: 172800 * 1000, 
+      httpOnly: true, 
+      sameSite: 'None', 
+      secure: process.env.SECURE_COOKIE || true,
+      domain: process.env.DOMAIN_COOKIE  });
     resolve({ expires, language: user.language });
   });
 };
