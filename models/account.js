@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
@@ -24,12 +24,12 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       get() {
-        return this.getDataValue('password')
+        return this.getDataValue('password');
       },
       set(password) {
         const salt = bcrypt.genSaltSync();
         const pwd = bcrypt.hashSync(password, salt);
-        this.setDataValue('password', pwd)
+        this.setDataValue('password', pwd);
       }
     },
     account_type: DataTypes.ENUM('super_admin', 'admin', 'jury')
