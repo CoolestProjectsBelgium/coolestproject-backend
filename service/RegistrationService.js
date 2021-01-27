@@ -1,6 +1,5 @@
 'use strict';
 
-const logger = require('pino')();
 const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
@@ -38,6 +37,7 @@ exports.registerPOST = function (registration_fields) {
       resolve();
 
     } catch (ex) {
+      console.log(ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
