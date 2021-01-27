@@ -14,7 +14,7 @@ module.exports = {
       { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Coderdojo peut-il prendre des photos / vidéos pendant l'événement?", positive: 'Oui à la photo', negative: 'Non à la photo', questionId: 1 },
       { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Coderdojo peut-il vous contacter à l'avenir?", positive: "C'est permis", negative: "Plutôt pas", questionId: 2 },
       { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: "Assurez-vous de lire nos règles. Êtes-vous d'accord?", positive: 'Qui', negative: 'Non', questionId: 3 },
-      { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: "Mag coderdojo foto's/videos nemen tijdens het evenement?", positive: ' Het mag', negative: 'Neen, liever niet', questionId: 1 },
+      { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: "Mag coderdojo foto's/videos nemen tijdens het evenement?", positive: 'Ja dat mag', negative: 'Neen, liever niet', questionId: 1 },
       { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Mag Coderdojo je contacteren in de toekomst?', positive: 'Ja dat mag', negative: 'Neen, liever niet', questionId: 2 },
       { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Lees zeker onze regels. Ga je akkoord?', positive: 'Ja', negative: 'Neen', questionId: 3 },
     ], {});
