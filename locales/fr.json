@@ -41,5 +41,21 @@
   "Good luck, {{hash.firstname}} we’re looking forward to your project development.": "Good luck, {{hash.firstname}} we’re looking forward to your project development.",
   "Be sure to activativate": "Be sure to activativate",
   "Be sure to activate": "Be sure to activate",
-  "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!": "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!"
+  "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!": "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!",
+  "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.\n            This project is created with the following ID: #'{{{hash.cpid}}}'": "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.\n            This project is created with the following ID: #'{{{hash.cpid}}}'",
+  "Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.",
+  "View the project information": "View the project information",
+  "Leave the project and create your own": "Leave the project and create your own",
+  "Hi {{hash.firstname}},": "Hi {{hash.firstname}},",
+  "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.\nThis project is created with the following ID: #'{{hash.cpid}}'": "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.\nThis project is created with the following ID: #'{{hash.cpid}}'",
+  "\"{{hash.link}}\"": "\"{{hash.link}}\"",
+  "Only the project owner can make changes to the project.\nPlease use the following link: {{{hash.link}}} to start your browser.": "Only the project owner can make changes to the project.\nPlease use the following link: {{{hash.link}}} to start your browser.",
+  "- Change your personal data(except the eMail, age,...)": "- Change your personal data(except the eMail, age,...)",
+  "- View the project information": "- View the project information",
+  "- Leave the project and create your own": "- Leave the project and create your own",
+  "{{hash.link}}\"": "{{hash.link}}\"",
+  "You will find all the information on Coolest Project on our website \"{{{hash.link}}}": "You will find all the information on Coolest Project on our website \"{{{hash.link}}}",
+  "<a href=\"{{hash.link}}\">Go2MyProject</a>": "<a href=\"{{hash.link}}\">Go2MyProject</a>",
+  "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.": "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.",
+  "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n": "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n"
 }
