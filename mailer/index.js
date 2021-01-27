@@ -47,7 +47,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -70,7 +70,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -93,7 +93,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -113,7 +113,7 @@ class Mailer {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'warningNoProject'),
       message: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         to: user.email,
         cc: user.email_guardian
       },
@@ -131,7 +131,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         user
       }
     });
@@ -145,7 +145,7 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: registration.language,
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
@@ -165,7 +165,7 @@ class Mailer {
         cc: users.email_guardian
       },
       locals: {
-        locale: 'nl', // <------ CUSTOMIZE LOCALE HERE 
+        locale: user.language,
         users: {
           firstname: users.firstname,
           email_guardian: users.email_guardian,
