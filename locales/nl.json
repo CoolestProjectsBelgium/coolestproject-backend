@@ -82,5 +82,13 @@
   "you have successfully <strong>DELETED</strong> your participation in the project with\n            the title '{{hash.ptitle}}' and project ID: #'{{{hash.cpid}}}'.": "Het verwijderen van jouw deelname aan het project, met titel '{{hash.ptitle}}' is gelukt.",
   "You can anytime register your own project or paricipate in another project\n            (you need then the code of the project owner) via the project page.": "Je kunt op elk moment je eigen project registreren of deelnemen aan een ander project\n (je hebt dan de code van de projecteigenaar nodig).",
   "If you do not enter your own project or participate in another project\n            your registration will then be deleted after closing the coolest project registration.": "Als je niet je eigen project aanmeldt of niet meedoet aan een ander project\n, wordt je registratie verwijderd na het sluiten van de coolste projectregistratie.",
-  "If you have any further question please contact our team via\n            an email to <b>mailto:info@coolestproject.be</b>.": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website."
+  "If you have any further question please contact our team via\n            an email to <b>mailto:info@coolestproject.be</b>.": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website.",
+  "Your parents will also receive this mail and they have to confirm your\n            participation.</p>": "Je ouders zullen deze mail ook ontvangen en ze moeten je \n deelname bevestigen. </p> ",
+  "Your parents will also receive this mail and they have to confirm your participation.": "Je ouders zullen deze mail ook ontvangen en ze moeten je deelname bevestigen.",
+  "You can now text ": "You can now text ",
+  "You can now CoW": "You can now CoW",
+  "You can now text": "You can now text",
+  "You can now text2 ": "You can now text2 ",
+  "You can now text CoW": "You can now text CoW",
+  "Only the project owner can make changes to the project.": "Only the project owner can make changes to the project."
 }
