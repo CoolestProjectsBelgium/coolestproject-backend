@@ -47,11 +47,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -74,11 +70,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -101,11 +93,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -125,11 +113,7 @@ class Mailer {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'warningNoProject'),
       message: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         to: user.email,
         cc: user.email_guardian
       },
@@ -147,11 +131,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         user
       }
     });
@@ -165,11 +145,7 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: registration.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
@@ -189,11 +165,7 @@ class Mailer {
         cc: users.email_guardian
       },
       locals: {
-<<<<<<< HEAD
-        locale: 'fr', // <------ CUSTOMIZE LOCALE HERE 
-=======
         locale: user.language,
->>>>>>> 133c47b29f3ae0a221869390a0b16b6a211dbc6a
         users: {
           firstname: users.firstname,
           email_guardian: users.email_guardian,
