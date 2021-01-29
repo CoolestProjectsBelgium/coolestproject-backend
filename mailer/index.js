@@ -157,24 +157,23 @@ class Mailer {
     });
     return result;
   }
-  static async ask4TokenMail(users, token, event) {
+  static async ask4TokenMail(user, token, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'ask4TokenMail'),
       message: {
-        to: users.email,
-        cc: users.email_guardian
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
         locale: user.language,
         users: {
-          firstname: users.firstname,
-          email_guardian: users.email_guardian,
+          firstname: user.firstname,
+          email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
         url: process.env.URL + `/login?token=${token}`,
         website: 'https://coolestprojects.be'
       }
-
     });
     return result;
   }
