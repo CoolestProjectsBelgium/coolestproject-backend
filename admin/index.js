@@ -81,8 +81,8 @@ const adminBroOptions = {
       resource: db.Event,
       options: {
         navigation: eventParent,
-        listProperties: ['id', 'event_title','current', 'startDate','maxVouchers','t_proj','maxRegistration','minAge',
-                        'maxAge','minGuardianAge','days_remaining','overd_reg','t_users','pending','waiting_list'],
+        listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
+                        'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
         properties:{
           event_title: {
             isTitle:true,

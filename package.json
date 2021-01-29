@@ -9,6 +9,9 @@
     "development": "nodemon index.js",
     "test": "mocha"
   },
+  "nodemonConfig": {
+    "ignore": ["locales/*.json"]
+  },
   "keywords": [
     "swagger"
   ],
