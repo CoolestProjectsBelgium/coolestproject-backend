@@ -166,7 +166,7 @@ class Mailer {
       },
       locals: {
         locale: user.language,
-        users: {
+        user: {
           firstname: user.firstname,
           email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()

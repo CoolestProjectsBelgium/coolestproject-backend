@@ -17,6 +17,7 @@ exports.mailLoginPOST = function (login) {
     logger.info('login requested for: ' + login.email);
     const event = await DBA.getEventActive();
     try {
+      console.log('Event:',event);
       var users = await DBA.getUsersViaMail(login.email, event);
       for (const user of users) {
         logger.info('user found: ' + user.id);

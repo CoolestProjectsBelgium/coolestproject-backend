@@ -75,5 +75,9 @@
   "You can now text2 ": "You can now text2 ",
   "You can now text CoW": "You can now text CoW",
   "Only the project owner can make changes to the project.": "Only the project owner can make changes to the project.",
-  "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project."
+  "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.",
+  "Welcome to your project as project owner": "Welcome to your project as project owner",
+  "Welcome to your project as co-worker": "Welcome to your project as co-worker",
+  "You deleted your project participation": "You deleted your project participation",
+  "Receive a token to login into your project": "Receive a token to login into your project"
 }
