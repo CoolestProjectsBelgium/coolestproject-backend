@@ -38,6 +38,8 @@ const email = new Email({
   }
 });
 
+const websiteUrl = 'https://coolestprojects.be';
+
 class Mailer {
   static async welcomeMailOwner(user, project, event, token) {
     const result = await email.send({
@@ -57,7 +59,7 @@ class Mailer {
           title: project.project_name
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -80,7 +82,7 @@ class Mailer {
           title: project.project_name
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -104,7 +106,7 @@ class Mailer {
         },
         is_owner: project.ownerId == user.id,
         url: process.env.URL,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -152,29 +154,28 @@ class Mailer {
           year: event.startDate.getFullYear()
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
   }
-  static async ask4TokenMail(users, token, event) {
+  static async ask4TokenMail(user, token, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'ask4TokenMail'),
       message: {
-        to: users.email,
-        cc: users.email_guardian
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
         locale: user.language,
         users: {
-          firstname: users.firstname,
-          email_guardian: users.email_guardian,
+          firstname: user.firstname,
+          email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
-
     });
     return result;
   }

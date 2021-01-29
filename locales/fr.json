@@ -20,7 +20,7 @@
   "\"{{hash.link}}\"": "\"{{hash.link}}\"",
   "Good luck, {{hash.firstname}} we’re looking forward to your project development.": "Si vous avez d'autres questions, veuillez consulter la section FAQ sur notre site web:\"https://coolestprojects.be\"",
   "//Title//ask4TokenMail": "//Request for token mail",
-  "<a href=\"{{hash.link}}\">Go2MyProject</a>": "Veuillez utiliser <a href=\"{{hash.link}}\">Go2MyProject</a> pour ouvrir votre page. ",
+  "<a href=\"{{hash.link}}\">Go2MyProject</a>": "Veuillez utiliser <a href=\"{{hash.link}}\">Go2MyProject</a> pour démarrer votre navigateur.",
   "Please, use the following link to open your project in your browser {{{hash.link}}} to\n open your project.": "Si vous avez d'autres questions, veuillez consulter la section FAQ sur notre site web& (lien).",
   "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n": "copiez et collez ce lien entre \"...\"\n\n\"{{{hash.url}}}\"\n\ndans votre navigateur.",
   "//Title//deleteMail": "//deleteMail",
@@ -33,7 +33,7 @@
   "you have successfully activated your project with the title '{{hash.ptitle}}' as project owner.\n            Your project is created with the following ID: #'{{{hash.cpid}}}'": "Vous avez supprimé avec succès le projet avec le titre '{{hash.ptitle}}'.",
   "If you want to make changes on your project or if you would like to invite co-workers on your project\n            please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "",
   "you have successfully joined the project with the title '{{hash.ptitle}}' as coworker.\n            This project is created with the following ID: #'{{{hash.cpid}}}'": "Vous avez supprimé avec succès le projet avec le titre '{{hash.ptitle}}'.",
-  "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.": "\n             <a href=\"{{hash.link}}\">Go2MyProject</a> pour démarrer votre navigateur.",
+  "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.": "{{{hash.link}}} \n                ",
   "You can anytime register your own project or paricipate in another project\n            (you need then the code of the project owner) via the project page.": "",
   "If you do not enter your own project or participate in another project\n            your registration will then be deleted after closing the coolest project registration.": "",
   "Your parents will also receive this mail and they have to confirm your\n            participation.</p>": "Vos parents recevront également cet e-mail et devront confirmer votre participation.</p>: https://www.coolestprojects.be/faq-fr/ ",
@@ -61,7 +61,7 @@
   "Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "Seul le propriétaire du projet peut apporter des modifications au projet.\n             <a href=\"{{hash.url}}\">Go2MyProject</a> pour démarrer votre navigateur.",
   "View the project information": "Afficher les informations du projet",
   "Leave the project and create your own": "Quittez le projet et créez le vôtre",
-  "Only the project owner can make changes to the project.\nPlease use the following link: {{{hash.link}}} to start your browser.": "Seul le propriétaire du projet peut apporter des modifications au projet.\n             <a href=\"{{hash.url}}\">Go2MyProject</a> pour démarrer votre navigateur.",
+  "Only the project owner can make changes to the project.\nPlease use the following link: {{{hash.link}}} to start your browser.": "Seul le propriétaire du projet peut apporter des modifications au projet.\n             <a href=\"{{hash.url}}\">Go2MyProject</a> er votre navigateur.",
   "- Change your personal data(except the eMail, age,...)": "- Changer tes données personnelles (sauf l’email, l’age,...)",
   "- Change your project name and description": "- Changer le nom et la description de ton projet",
   "- Invite co-workers to your project by clicking the button 'CO-WORKERS' ": "- Inviter des collaborateurs en appuyant sur le bouton \"CO-WORKERS\"",
@@ -78,5 +78,6 @@
   "You cannot use the project link any more to visit the project.": "You cannot use the project link anymore to visit the project.",
   "You can anytime register your own project or paricipate in another project\n(you need then the code of the project owner) via the project page.": "",
   "If you do not enter your own project or participate in another project\nyour registration will then be deleted after closing the coolest project registration.": "",
-  "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your user\nplease Cut & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project."
+  "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.",
+  "Your parents will also receive this mail and they have to confirm your participation.": "Your parents will also receive this mail and they have to confirm your participation."
 }
