@@ -116,6 +116,7 @@ export const Dashboard = () => {
                             <H5>{data.total_users} Users</H5>
                             <H5>{data.total_males} Males</H5>
                             <H5>{data.total_females} Females</H5>
+                            <H5>{data.total_X} X</H5>
                         </Box>
                     </Card>
                 </Box>
