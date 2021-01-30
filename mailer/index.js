@@ -173,7 +173,8 @@ class Mailer {
           email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `/login?token=${token}`,
+        url: process.env.URL +((user.language != 'nl') ? '/' + user.language:'') + `/login?token=${token}`,
+        //url: process.env.URL + '/' + user.language + `/login?token=${token}`,
         website: websiteUrl
       }
     });
