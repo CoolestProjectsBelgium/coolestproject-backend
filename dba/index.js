@@ -704,6 +704,7 @@ class DBA {
       where: { current: true }, attributes: {
         include: [
           [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'overdue_registration'],
           [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
           [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
           [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],

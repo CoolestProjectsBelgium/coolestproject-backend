@@ -17,7 +17,7 @@ const transport = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
   },
-  language: 'en'
+  language: 'nl'
 });
 
 const email = new Email({
@@ -38,6 +38,8 @@ const email = new Email({
   }
 });
 
+const websiteUrl = 'https://coolestprojects.be';
+
 class Mailer {
   static async welcomeMailOwner(user, project, event, token) {
     const result = await email.send({
@@ -47,6 +49,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -56,7 +59,7 @@ class Mailer {
           title: project.project_name
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -69,6 +72,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -78,7 +82,7 @@ class Mailer {
           title: project.project_name
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -91,6 +95,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: user.language,
         year: event.startDate.getFullYear(),
         user: {
           firstname: user.firstname
@@ -101,7 +106,7 @@ class Mailer {
         },
         is_owner: project.ownerId == user.id,
         url: process.env.URL,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
@@ -110,6 +115,7 @@ class Mailer {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'warningNoProject'),
       message: {
+        locale: user.language,
         to: user.email,
         cc: user.email_guardian
       },
@@ -127,6 +133,7 @@ class Mailer {
         cc: user.email_guardian
       },
       locals: {
+        locale: user.language,
         user
       }
     });
@@ -140,35 +147,36 @@ class Mailer {
         cc: registration.email_guardian
       },
       locals: {
-
+        locale: registration.language,
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
           year: event.startDate.getFullYear()
         },
         url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        website: websiteUrl
       }
     });
     return result;
   }
-  static async ask4TokenMail(users, token, event) {
+  static async ask4TokenMail(user, token, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'ask4TokenMail'),
       message: {
-        to: users.email,
-        cc: users.email_guardian
+        to: user.email,
+        cc: user.email_guardian
       },
       locals: {
-        users: {
-          firstname: users.firstname,
-          email_guardian: users.email_guardian,
+        locale: user.language,
+        user: {
+          firstname: user.firstname,
+          email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `/login?token=${token}`,
-        website: 'https://coolestprojects.be'
+        url: process.env.URL +((user.language != 'nl') ? '/' + user.language:'') + `/login?token=${token}`,
+        //url: process.env.URL + '/' + user.language + `/login?token=${token}`,
+        website: websiteUrl
       }
-
     });
     return result;
   }

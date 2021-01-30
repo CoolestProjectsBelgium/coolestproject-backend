@@ -22,23 +22,21 @@ exports.builder = (yargs) => {
         for (var err of error.errors || []) {
           console.error(err.message);
         }
-      }
-    }
-  );
-  yargs.command('ask4TokenMail <userid>', 'Send token mail',
-    () => { },
-    async (argv) => {
-      try {
-        const user = await DBA.getUser(argv.userid);
-        const event = await DBA.getEventActive();
-        const token = await Tokens.generateLoginToken(argv.userid);
-        const mail = await Mailer.ask4TokenMail(user, token, event);
-        console.log(`Token Mail was send ${mail}`);
-
-      } catch (error) {
-        console.log(error.message);
-        for (var err of error.errors || []) {
-          console.error(err.message);
+    )
+    yargs.command('ask4TokenMail <userid>', 'Send token mail',
+        () => { },
+        async (argv) => {
+            try {
+                const user = await DBA.getUser(argv.userid);
+                const event = await DBA.getEventActive();
+                const token = await Tokens.generateLoginToken(argv.userid);
+                const mail = await Mailer.ask4TokenMail(user, token, event);
+            } catch (error) {
+                console.log('user:', argv.userid,error.message)
+                for (var err of error.errors || []) {
+                    console.error(err.message)
+                }
+            }
         }
       }
     }
@@ -80,21 +78,25 @@ exports.builder = (yargs) => {
       }
     }
 
-  );
-  yargs.command('deleteMail <userid>', 'Send delete mail CoWorker',
-    () => { },
-    async (argv) => {
-      try {
-        const user = await DBA.getUser(argv.userid);
-        const event = await DBA.getEventActive();
-        const project = await DBA.getProject(argv.userid);
-        const mail = await Mailer.deleteMail(user, project, event);
-        console.log(`Delete mail coworker was send ${mail}`);
+    )
+    yargs.command('deleteMail <userid>', 'Send delete mail CoWorker',
+        () => { },
+        async (argv) => {
+            try {
+                const user = await DBA.getUser(argv.userid);
+                console.log(`Delete0 mail coworker was send ${user}`);
+                const event = await DBA.getEventActive();
+                const project = await DBA.getProject(argv.userid);
+                const mail = await Mailer.deleteMail(user, project, event);
+                console.log(`Delete mail coworker was send ${mail}`);
 
-      } catch (error) {
-        console.log(error.message);
-        for (var err of error.errors || []) {
-          console.error(err.message);
+            } catch (error) {
+                console.log('user:',argv.userid,error.message)
+                //console.log(error.message)
+                for (var err of error.errors || []) {
+                    console.error(err.message)
+                }
+            }
         }
       }
     }

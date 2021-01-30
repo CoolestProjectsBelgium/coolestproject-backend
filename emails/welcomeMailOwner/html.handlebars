@@ -15,16 +15,13 @@
         <p>{{{t "If you want to make changes on your project or if you would like to invite co-workers on your project
             please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser." url=url}}}
         </p>
-        <p>{{t "You can now "}}
+        <p>{{{t "Only the project owner can make changes to the project.
+            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser." url=url}}}
+        </p>
         <ul>
             <li>{{t "Change your personal data(except the eMail, age,...)"}}</li>
             <li>{{t "Change your project name and description"}}</li>
             <li>{{t "Invite co-workers to your project by clicking the button 'CO-WORKERS'"}}</li>
-            <li>{{t "Delete all co-workers to your project by pushing the delete button behind all co-worker"}}</li>
-            <li>
-                {{t "Delete single co-workers to your project by clicking the delete button behind this one co-worker"}}
-            </li>
-            <li>{{t "Delete your project (co-workers will then receive a mail to create their own project"}}</li>
         </ul>
         <p>{{{t "You will find all the information on Coolest Project on our website {{{hash.link}}}"
             link=(t '<a href="{{hash.website}}">Coolest Projects {{hash.year}}</a>' website=website

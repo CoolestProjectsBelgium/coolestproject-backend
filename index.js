@@ -11,8 +11,8 @@ const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 const requestLanguage = require('express-request-language');
 
-const cookieParser = require('cookie-parser')
-app.use(cookieParser())
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.use(requestLanguage({
   languages: ['en', 'fr', 'nl'],
   cookie: {
@@ -26,9 +26,9 @@ const corsOptions = {
   origin: process.env.URL,
   optionsSuccessStatus: 200,
   credentials: true
-}
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 // secure routes
 require('./security')(app);
@@ -42,7 +42,7 @@ const adminUI = require('./admin');
 app.use('/admin', adminUI);
 
 //enable i18n
-const i18n = require("i18n")
+const i18n = require('i18n');
 i18n.configure({
   locales: ['en', 'nl', 'fr'],
   directory: __dirname + '/locales'

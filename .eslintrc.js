@@ -8,6 +8,7 @@ module.exports = {
     'ecmaVersion': 2017
   },
   'env': {
-    'es6': true
+    'es6': true,
+    'node': true
   }
 };
