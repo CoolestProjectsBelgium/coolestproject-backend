@@ -79,5 +79,7 @@
   "Welcome to your project as project owner": "Welcome to your project as project owner",
   "Welcome to your project as co-worker": "Welcome to your project as co-worker",
   "You deleted your project participation": "You deleted your project participation",
-  "Receive a token to login into your project": "Receive a token to login into your project"
+  "Receive a token to login into your project": "Receive a token to login into your project",
+  "Coolest Projects Team": "Coolest Projects Team",
+  "COW_Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "COW_Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser."
 }
