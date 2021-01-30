@@ -84,15 +84,15 @@ exports.builder = (yargs) => {
         async (argv) => {
             try {
                 const user = await DBA.getUser(argv.userid);
-                console.log(`Delete0 mail coworker was send ${user}`);
+                //console.log(`Delete0 mail coworker was send ${user}`);
                 const event = await DBA.getEventActive();
                 const project = await DBA.getProject(argv.userid);
                 const mail = await Mailer.deleteMail(user, project, event);
                 console.log(`Delete mail coworker was send ${mail}`);
 
             } catch (error) {
-                console.log('user:',argv.userid,error.message)
-                //console.log(error.message)
+                //console.log('user:',argv.userid,error.message)
+                console.log(error.message)
                 for (var err of error.errors || []) {
                     console.error(err.message)
                 }
