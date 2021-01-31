@@ -93,10 +93,10 @@
   "You can now text CoW": "",
   "Only the project owner can make changes to the project.": "Enkel de project eigenaar kan info over het project aanpassen.",
   "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "Please Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.",
-  "Welcome to your project as project owner": "Welcome to your project as project owner",
-  "Welcome to your project as co-worker": "Welcome to your project as co-worker",
-  "You deleted your project participation": "You deleted your project participation",
-  "Receive a token to login into your project": "Receive a token to login into your project",
+  "Welcome to your project as project owner": "Welkom!",
+  "Welcome to your project as co-worker": "Welkom!",
+  "You deleted your project participation": "Bevestiging verwijderen van jouw project",
+  "Receive a token to login into your project": "Jouw login link",
   "Coolest Projects Team": "Coolest Projects Team Belgium",
   "COW_Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "Enkel de project eigenaar kan info over het project aanpassen.\n            Gebruik deze link <a href=\"{{hash.url}}\">Go2MyProject</a> om je pagina te openen. Via deze weg kan je volgende aanpassingen doen:"
 }
