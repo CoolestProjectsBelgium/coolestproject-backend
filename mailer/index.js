@@ -58,7 +58,7 @@ class Mailer {
           id: project.id,
           title: project.project_name
         },
-        url: process.env.URL + `/login?token=${token}`,
+        url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
         website: websiteUrl
       }
     });
@@ -81,7 +81,7 @@ class Mailer {
           id: project.id,
           title: project.project_name
         },
-        url: process.env.URL + `/login?token=${token}`,
+        url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
         website: websiteUrl
       }
     });
@@ -105,7 +105,7 @@ class Mailer {
           title: project.project_name
         },
         is_owner: project.ownerId == user.id,
-        url: process.env.URL,
+        url: Mailer.baseUrlWithLanguage(user),
         website: websiteUrl
       }
     });
@@ -153,7 +153,7 @@ class Mailer {
           email_guardian: registration.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL + `/login?token=${token}`,
+        url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
         website: websiteUrl
       }
     });
@@ -173,12 +173,15 @@ class Mailer {
           email_guardian: user.email_guardian,
           year: event.startDate.getFullYear()
         },
-        url: process.env.URL +((user.language != 'nl') ? '/' + user.language:'') + `/login?token=${token}`,
-        //url: process.env.URL + '/' + user.language + `/login?token=${token}`,
+        url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
         website: websiteUrl
       }
     });
     return result;
+  }
+
+  static baseUrlWithLanguage(user) {
+    return process.env.URL + ((user.language != 'nl') ? '/' + user.language : '');
   }
 }
 
