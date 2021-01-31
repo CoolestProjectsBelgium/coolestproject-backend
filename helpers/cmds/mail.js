@@ -22,6 +22,8 @@ exports.builder = (yargs) => {
         for (var err of error.errors || []) {
           console.error(err.message);
         }
+      }
+    }
     )
     yargs.command('ask4TokenMail <userid>', 'Send token mail',
         () => { },
@@ -38,26 +40,24 @@ exports.builder = (yargs) => {
                 }
             }
         }
-      }
-    }
-  );
-  yargs.command('welcomeMailOwner <userid>', 'Send welcome mail owner',
-    () => { },
-    async (argv) => {
-      try {
-        const user = await DBA.getUser(argv.userid);
-        const event = await DBA.getEventActive();
-        const project = await DBA.getProject(argv.userid);
-        const mail = await Mailer.welcomeMailOwner(user, project, event);
-        console.log(`Welcome mail owner was send ${mail}`);
+    )
+    yargs.command('welcomeMailOwner <userid>', 'Send welcome mail owner',
+      () => { },
+      async (argv) => {
+        try {
+          const user = await DBA.getUser(argv.userid);
+          const event = await DBA.getEventActive();
+          const project = await DBA.getProject(argv.userid);
+          const mail = await Mailer.welcomeMailOwner(user, project, event);
+          console.log(`Welcome mail owner was send ${mail}`);
 
-      } catch (error) {
-        console.log(error.message);
-        for (var err of error.errors || []) {
-          console.error(err.message);
+        } catch (error) {
+          console.log(error.message);
+          for (var err of error.errors || []) {
+            console.error(err.message);
+          }
         }
       }
-    }
 
   );
   yargs.command('welcomeMailCoWorker <userid>', 'Send welcome mail CoWorker',
@@ -97,8 +97,6 @@ exports.builder = (yargs) => {
                     console.error(err.message)
                 }
             }
-        }
       }
-    }
-  );
+  )
 };
