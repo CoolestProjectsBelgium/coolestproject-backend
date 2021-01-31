@@ -14,12 +14,12 @@ const requestLanguage = require('express-request-language');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 app.use(requestLanguage({
-  languages: ['en', 'fr', 'nl'],
-  cookie: {
+  languages: ['en', 'fr', 'nl']
+  /* cookie: {
     name: 'i18n_redirected',
     options: { maxAge: 24 * 3600 * 1000 },
     url: '/languages/{language}'
-  }
+  } */
 }));
 
 const corsOptions = {
