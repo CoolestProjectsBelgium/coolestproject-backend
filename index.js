@@ -1,5 +1,4 @@
 'use strict';
-
 const express = require('express');
 const app = express();
 
@@ -24,7 +23,7 @@ app.use(requestLanguage({
       sameSite: 'lax' 
     }
   }
-}));
+));
 
 const corsOptions = {
   origin: process.env.URL,
@@ -36,6 +35,10 @@ app.use(cors(corsOptions));
 
 // secure routes
 require('./security')(app);
+
+// website integration 
+//const websiteIntegration = require('./website');
+//app.use('/website', websiteIntegration);
 
 // enable admin UI
 const adminUI = require('./admin');

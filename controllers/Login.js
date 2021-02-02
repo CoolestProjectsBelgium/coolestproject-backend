@@ -23,6 +23,3 @@ module.exports.mailLoginPOST = function mailLoginPOST(req, res, next) {
       utils.writeJson(res, response);
     });
 };
-
-// TODO delete
-

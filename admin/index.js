@@ -189,7 +189,7 @@ const adminBroOptions = {
               }
               return {
                 record: data.record.toJSON(data.currentAdmin),
-                notice: {
+                notice: {/*  */
                   message: 'Re-registration mail sent',
                   type: 'success',
                 },

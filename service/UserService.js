@@ -13,12 +13,12 @@ async function getUserDetails(user) {
 
   for (const question of questions) {
     if (question.mandatory) {
-      mandatory_approvals.push(question.id)
+      mandatory_approvals.push(question.id);
     } else {
-      general_questions.push(question.id)
+      general_questions.push(question.id);
     }
   }
-  const birthDate = new Date(user.birthmonth)
+  const birthDate = new Date(user.birthmonth);
   return {
     language: user.language,
     year: birthDate.getFullYear(),
@@ -36,7 +36,7 @@ async function getUserDetails(user) {
     general_questions: general_questions,
     mandatory_approvals: mandatory_approvals,
     address: {
-      postalcode: user.postalcode + "",
+      postalcode: user.postalcode + '',
       street: user.street,
       house_number: user.house_number,
       bus_number: user.box_number,
@@ -61,8 +61,8 @@ exports.userinfoGET = function (user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
 /**
  * update the userinfo
@@ -80,8 +80,8 @@ exports.userinfoPATCH = function (changed_fields, user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
 /**
  * delete the userinfo
@@ -90,18 +90,17 @@ exports.userinfoPATCH = function (changed_fields, user) {
  **/
 exports.userinfoDELETE = function (logged_in_user) {
   return new Promise(async function (resolve, reject) {
-    console.log('delete user log:',logged_in_user)
+    console.log('delete user log:',logged_in_user);
     try {
       var u = await DBA.deleteUser(logged_in_user.id);
-
       resolve(u);
     } catch (ex) {
-      console.log('delete user log:',ex)
+      console.log('delete user log:',ex);
       reject(new respondWithCode(500, {
         code: 0,
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
