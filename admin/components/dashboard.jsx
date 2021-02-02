@@ -106,6 +106,7 @@ export const Dashboard = () => {
                             <H5>{data.pending_users} Registrations Pending</H5>
                             <H5>{data.overdue_registration} Overdue registrations</H5>
                             <H5>{data.waiting_list} On waiting list</H5>
+                            <H5>{data.total_unusedVouchers} unused vouchers</H5>
                         </Box>
                     </Card>
                 </Box>

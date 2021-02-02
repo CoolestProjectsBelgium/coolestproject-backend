@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     total_males: DataTypes.VIRTUAL,
     total_females: DataTypes.VIRTUAL,
     total_X: DataTypes.VIRTUAL,
+    total_unusedVouchers: DataTypes.VIRTUAL,
     current: DataTypes.BOOLEAN,
     startDate: DataTypes.DATE,
     event_title: DataTypes.STRING(25)

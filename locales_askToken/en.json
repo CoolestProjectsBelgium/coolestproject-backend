@@ -1,7 +1,0 @@
-{
-  "Hi {{hash.firstname}}": "Hi {{hash.firstname}}",
-  "<a href=\"{{hash.link}}\">Go2MyProject</a>": "<a href=\"{{hash.link}}\">Go2MyProject</a>",
-  "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.": "Please, use the following link to open your project in your browser {{{hash.link}}} to\n                open your project.",
-  "Coolest Project team": "Coolest Project team",
-  "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n": "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n"
-}

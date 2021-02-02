@@ -703,6 +703,7 @@ class DBA {
     return await Event.findOne({
       where: { current: true }, attributes: {
         include: [
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
           [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
           [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
           [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
