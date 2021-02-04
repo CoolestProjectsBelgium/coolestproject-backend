@@ -33,6 +33,7 @@ exports.registerPOST = function (registration_fields) {
           const token = await Token.generateRegistrationToken(registration.id);
           Mail.activationMail(registration, token, event);
         }
+      }else{ //send emailExistsMail
       }
       resolve();
 
