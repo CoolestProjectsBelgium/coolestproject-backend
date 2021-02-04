@@ -61,7 +61,7 @@
   "Click this {{{hash.link}}} to activate your project.": "LET OP:  Om jouw registratratie te bevestigen, dien je op de activatie link te klikken {{{hash.link}}}.",
   "Be sure to activate": "Zorg ervoor dat u binnen 2 dagen op deze activatielink klikt om zeker te zijn van uw deelname.",
   "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website.",
-  "Coolest Projects Team": "Coolest Projects Team Belgium",
+  "Coolest Projects Team": "Coolest Projects Team België",
   "{{ hash.title }} {{hash.year}}": "{{ hash.title }} {{hash.year}}",
   "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\nthat will be extra special !": "We zijn ontzettend blij dat je wil deelnemen aan Coolest Projects Belgium, een interactieve ONLINE editie!",
   "Be sure to click this activation link within 2 days to ensure your participation.\n\nYour registration will expire after 2 days and you will need to register again.\n\nYou should receive a second mail then, with some more information you need to get your project on rails.": "Zorg ervoor dat je je deze activatie binnen de 2 dagen doet, om je deelname te bevestigen.",
@@ -70,5 +70,7 @@
   "Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "Kopieer en plak deze link tussen \"...\"\n\n\"{{{hash.url}}}\"\n\n in de browser om uw project te activeren.",
   "You will find all the information on Coolest Projects {{hash.year}} on our website \"{{{hash.link}}}\"": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website.",
   "Good luck, {{hash.firstname}} we’re looking forward to your project development.": "",
-  "You will find all the information on Coolest Project on our website \"{{{hash.link}}}": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website."
+  "You will find all the information on Coolest Project on our website \"{{{hash.link}}}": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website.",
+  "Your parents will also receive this mail and they have to confirm your\n            participation.</p>": "Je ouders hebben deze email ook ontvangen en ze zullen je deelname moeten bevestigen.</p>",
+  "Your parents will also receive this mail and they have to confirm your participation.": "Je ouders hebben deze email ook ontvangen en ze zullen je deelname moeten bevestigen."
 }
