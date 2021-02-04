@@ -6,4 +6,3 @@ node_modules/
 .adminbro/
 .adminbro/.entry.js
 .adminbro/bundle.js
-.adminbro/bundle.js
