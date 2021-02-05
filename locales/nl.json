@@ -72,5 +72,9 @@
   "Good luck, {{hash.firstname}} we’re looking forward to your project development.": "",
   "You will find all the information on Coolest Project on our website \"{{{hash.link}}}": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ eens na op onze website.",
   "Your parents will also receive this mail and they have to confirm your\n            participation.</p>": "Je ouders hebben deze email ook ontvangen en ze zullen je deelname moeten bevestigen.</p>",
-  "Your parents will also receive this mail and they have to confirm your participation.": "Je ouders hebben deze email ook ontvangen en ze zullen je deelname moeten bevestigen."
+  "Your parents will also receive this mail and they have to confirm your participation.": "Je ouders hebben deze email ook ontvangen en ze zullen je deelname moeten bevestigen.",
+  "Attention please, there was an additonal registration with your email address.": "Let op, er was een aanvullende registratie met uw e-mailadres.",
+  "If you tried to register yourself, please note that you have already have a Coolest Project. Check your email folder to find the activation or the welcome email to access your project and user information.": "Als je jezelf probeert te registreren, houd er dan rekening mee dat je al een Coolest Project hebt. Controleer je e-mailmap om de activering te vinden of de welkomst-e-mail voor toegang tot je project en gebruikersinformatie.",
+  "If your link is not working anymore please use the Login button on the main page to ask a new Login token for your email address.": "Als uw link niet meer werkt, gebruik dan de Login-knop op de hoofdpagina om een nieuwe Login-token voor uw e-mailadres aan te vragen.",
+  "If your didn't make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.": "Als u zelf geen nieuw registratieverzoek heeft gedaan, kunt u deze e-mail gerust negeren. Er is geen risico dat uw inschrijving is overgenomen. Deel nooit links die u van ons heeft ontvangen met iemand anders."
 }

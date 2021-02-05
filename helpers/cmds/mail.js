@@ -96,4 +96,19 @@ exports.builder = (yargs) => {
       }
     }
   );
+    yargs.command('emailExistsMail <userid>', 'Send emal exists Mail',
+    () => { },
+    async (argv) => {
+     try {
+      const user = await DBA.getUser(argv.userid);
+      const mail = await Mailer.emailExistsMail(user.email, user.language);
+      console.log(`email extists was send to:`,user.email,'/',user.language);
+    } catch (error) {
+      console.log(error.message);
+      for (var err of error.errors || []) {
+        console.error(err.message);
+        }
+      }
+    }
+  );
 };

@@ -181,6 +181,27 @@ class Mailer {
     return result;
   }
 
+  static async emailExistsMail(emailIn,language) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'emailExistsMail'),
+      message: {
+        to: emailIn //user.email,
+        //cc: user.email_guardian
+      },
+      locals: {
+        locale: language //user.language,
+        //user: {
+        //  firstname: user.firstname,
+        //  email_guardian: user.email_guardian,
+        //  year: event.startDate.getFullYear()
+       // },
+        //url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
+       // website: websiteUrl
+      }
+    });
+    return result;
+  }
+
   static baseUrlWithLanguage(user) {
     return process.env.URL + ((user.language != 'nl') ? '/' + user.language : '');
   }
