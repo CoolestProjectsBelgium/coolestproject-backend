@@ -33,13 +33,14 @@ exports.registerPOST = function (registration_fields) {
           const token = await Token.generateRegistrationToken(registration.id);
           Mail.activationMail(registration, token, event);
         }
-      }else{ //send emailExistsMail
+      }
+      else { //send emailExistsMail
           const email = registration_fields.user.email;
-          var users = await DBA.getUsersViaMail(email, event);
-          for (const user of users){
+          var users = await DBA.getUsersViaMail(email, event); // The result is always a list or collection!
+          for (const user of users) {
             const lang = user.language;
-            console.log(`error:calling emailExistsMail=`,email,' language:',lang);
-            Mail.emailExistsMail(email,lang);
+            console.log(`UserError: Calling emailExistsMail=`, email, 'language:', lang);
+            Mail.emailExistsMail(email, lang);
           }
       }
       resolve();
