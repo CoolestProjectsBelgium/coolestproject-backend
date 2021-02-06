@@ -106,6 +106,7 @@ export const Dashboard = () => {
                             <H5>{data.pending_users} Registrations Pending</H5>
                             <H5>{data.overdue_registration} Overdue registrations</H5>
                             <H5>{data.waiting_list} On waiting list</H5>
+                            <H5>{data.total_unusedVouchers} unused vouchers</H5>
                         </Box>
                     </Card>
                 </Box>
@@ -113,7 +114,7 @@ export const Dashboard = () => {
                     <Card as="a" flex>
                         <Box ml="xl">
                             <H4>Statistics Users</H4>
-                            <H5>{data.total_users} Users</H5>
+                            <H5>{data.total_users} Users (nl:{data.tlang_nl} fr:{data.tlang_fr} en:{data.tlang_en}) </H5>
                             <H5>{data.total_males} Males</H5>
                             <H5>{data.total_females} Females</H5>
                             <H5>{data.total_X} X</H5>

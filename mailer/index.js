@@ -175,6 +175,19 @@ class Mailer {
     return result;
   }
 
+  static async emailExistsMail(emailIn, language) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'emailExistsMail'),
+      message: {
+        to: emailIn
+      },
+      locals: {
+        locale: language
+      }
+    });
+    return result;
+  }
+
   static baseUrlWithLanguage(user) {
     return process.env.URL + ((user.language != 'nl') ? '/' + user.language : '');
   }
