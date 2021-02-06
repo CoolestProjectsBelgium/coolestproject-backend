@@ -2,12 +2,6 @@
 
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
-
-
-
-//var i18n = helpers.i18n()
-
-const env = process.env.NODE_ENV || 'development';
 const path = require('path');
 
 const transport = nodemailer.createTransport({
@@ -186,4 +180,4 @@ class Mailer {
   }
 }
 
-module.exports = Mailer
+module.exports = Mailer;

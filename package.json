@@ -10,7 +10,9 @@
     "test": "mocha"
   },
   "nodemonConfig": {
-    "ignore": ["locales/*.json"]
+    "ignore": [
+      "locales/*.json"
+    ]
   },
   "keywords": [
     "swagger"
@@ -56,6 +58,8 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pino": "^6.11.0",
+    "pino-applicationinsights": "^2.1.0",
+    "pino-multi-stream": "^5.2.0",
     "pug": "^3.0.0",
     "randomstring": "^1.1.5",
     "sequelize": "^6.4.0",

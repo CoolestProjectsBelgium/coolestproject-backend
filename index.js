@@ -23,7 +23,7 @@ app.use(requestLanguage({
       sameSite: 'lax' 
     }
   }
-}));
+}));  
 
 const corsOptions = {
   origin: process.env.URL,

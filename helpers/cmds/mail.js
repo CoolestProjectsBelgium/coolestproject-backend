@@ -15,7 +15,7 @@ exports.builder = (yargs) => {
         const token = await Tokens.generateRegistrationToken(argv.registrationId);
         const mail = await Mailer.activationMail(registration, token, event);
         console.log(`Mail was send ${mail}`);
-
+        return;
       } catch (error) {
         console.log(error.message);
         for (var err of error.errors || []) {
@@ -32,6 +32,7 @@ exports.builder = (yargs) => {
         const event = await DBA.getEventActive();
         const token = await Tokens.generateLoginToken(argv.userid);
         await Mailer.ask4TokenMail(user, token, event);
+        return;
       } catch (error) {
         console.log('user:', argv.userid,error.message);
         for (var err of error.errors || []) {
@@ -48,7 +49,7 @@ exports.builder = (yargs) => {
         const project = await DBA.getProject(argv.userid);
         const mail = await Mailer.welcomeMailOwner(user, project, event);
         console.log(`Welcome mail owner was send ${mail}`);
-
+        return;
       } catch (error) {
         console.log(error.message);
         for (var err of error.errors || []) {
@@ -67,7 +68,7 @@ exports.builder = (yargs) => {
         const project = await DBA.getProject(argv.userid);
         const mail = await Mailer.welcomeMailCoWorker(user, project, event);
         console.log(`Welcome mail coworker was send ${mail}`);
-
+        return;
       } catch (error) {
         console.log(error.message);
         for (var err of error.errors || []) {
@@ -86,7 +87,7 @@ exports.builder = (yargs) => {
         const project = await DBA.getProject(argv.userid);
         const mail = await Mailer.deleteMail(user, project, event);
         console.log(`Delete mail coworker was send ${mail}`);
-
+        return;
       } catch (error) {
         //console.log('user:',argv.userid,error.message)
         console.log(error.message);
