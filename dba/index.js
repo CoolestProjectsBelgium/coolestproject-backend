@@ -651,6 +651,19 @@ class DBA {
       }
     });
   }
+    /**
+     * Get only user via email
+     * @param {String} email
+     * @returns {Promise<User>}
+     */
+    static async getOnlyUsersViaMail(email, event) {
+      return await User.findAll({
+        where: {
+          email: email,
+          eventId: event.id
+        }
+      });
+    }
 
   /**
      * Update token

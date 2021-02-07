@@ -36,7 +36,7 @@ exports.registerPOST = function (registration_fields) {
       }
       else { //send emailExistsMail
           const email = registration_fields.user.email;
-          var users = await DBA.getUsersViaMail(email, event); // The result is always a list or collection!
+          var users = await DBA.getOnlyUsersViaMail(email, event); // The result is always a list or collection!
           for (const user of users) {
             const lang = user.language;
             console.log(`UserError: Calling emailExistsMail=`, email, 'language:', lang);
