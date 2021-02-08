@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
     tlang_nl: DataTypes.VIRTUAL,
     tlang_fr: DataTypes.VIRTUAL,
     tlang_en: DataTypes.VIRTUAL,
+    tcontact: DataTypes.VIRTUAL,
+    tphoto: DataTypes.VIRTUAL,
+    tclini: DataTypes.VIRTUAL,
     total_unusedVouchers: DataTypes.VIRTUAL,
+    total_usedVouchers: DataTypes.VIRTUAL,
     current: DataTypes.BOOLEAN,
     startDate: DataTypes.DATE,
     event_title: DataTypes.STRING(25)
