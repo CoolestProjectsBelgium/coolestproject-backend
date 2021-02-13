@@ -117,7 +117,7 @@ export const Dashboard = () => {
                             <H5>  {data.total_users} Users:</H5> 
                             <H5>  = Language: (nl:{data.tlang_nl} fr:{data.tlang_fr} en:{data.tlang_en})</H5> 
                             <H5>  = Sex: (females:{data.total_females} males:{data.total_males} X:{data.total_X})</H5> 
-                            <H5>  = CliniMaker:{data.tclini}, Agree2Contact: {data.tcontact}, Agree2Photo:{data.tphoto}</H5> 
+                            <H5>  = +CliniMaker: {data.tclini}, +Contact: {data.tcontact}, +Photo: {data.tphoto}</H5> 
                         </Box>
                     </Card>
                 </Box>
