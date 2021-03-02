@@ -11,17 +11,24 @@
 
 const { BlobServiceClient, BlobSASPermissions } = require('@azure/storage-blob');
 const { v1: uuidv1 } = require('uuid');
-const axios = require('axios').default;
+const axios = require('axios');
 const fs = require('fs');
+const https = require('https');
 const { create } = require('xmlbuilder2');
 const crypto = require('crypto');
 const testFile = './testfile';
 const testResultFile = './resultfile';
-const AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=https://192.168.96.4:10000/devstoreaccount1;QueueEndpoint=https://192.168.96.4:10001/devstoreaccount1;';
 
-process.env['NODE_EXTRA_CA_CERTS'] = '/home/erik/coolestproject/configuration/certs/pki/ca.crt';
+const AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=account1.blob.coolestazure;AccountKey=key1;BlobEndpoint=https://account1.blob.coolestazure.localhost:10000;QueueEndpoint=https://account1.blob.coolestazure.localhost:10001;';
+
+// process.env['NODE_EXTRA_CA_CERTS'] = '/home/erik/coolestproject/configuration/certs/pki/ca.crt';
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
+const axiosInstance = axios.create({
+  httpsAgent: new https.Agent({  
+    rejectUnauthorized: false
+  })
+});
 
 class Block {
   constructor(id, start, end, buffer) {
@@ -45,7 +52,7 @@ async function main() {
 
   // backend
   const containerName = 'thumbnails';
-  const blobName = 'random';
+  const blobName = 'random123456';
   const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
   const containerClient = blobServiceClient.getContainerClient(containerName);
   containerClient.createIfNotExists();
@@ -53,9 +60,11 @@ async function main() {
 
   await containerBlobClient.upload('', 0);
   const base_url = await containerBlobClient.generateSasUrl({
-    permissions:  BlobSASPermissions.parse('w'),
-    expiresOn: new Date(Date.now() + 86400 * 1000),
+    permissions: BlobSASPermissions.parse('w'),
+    //expiresOn: new Date(Date.now() + 86400 * 1000)
+    expiresOn: '2021-02-22T21:04:35Z'
   });
+  console.log(base_url);
 
   //frontend
   const sendList = [];
@@ -73,7 +82,7 @@ async function main() {
   async function putBlock(b){
     let url = base_url + `&blockid=${b.id}&comp=block`;
     try {
-      const res = await axios.put(url, b.buffer, {
+      const res = await axiosInstance.put(url, b.buffer, {
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
         headers: {
@@ -114,6 +123,8 @@ async function main() {
       console.error(error);
     }
   }
+
+  console.log('start loading');
 
   // prepare slices
   for (let i = 0; i < block; i++) {
@@ -157,7 +168,7 @@ async function main() {
   });
   console.log(download_url);
 
-  const file = await axios.get(download_url, { responseType: 'stream' });
+  const file = await axiosInstance.get(download_url, { responseType: 'stream' });
   file.data.pipe(fs.createWriteStream(testResultFile));
 }
 main().then(() => console.log('Done')).catch((ex) => console.log(ex));

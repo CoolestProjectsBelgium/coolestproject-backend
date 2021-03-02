@@ -100,7 +100,7 @@ paths:
   /attachments:
     post:
       tags:
-        - "project"
+        - "attachment"
       summary: "Create new attachment"
       operationId: "attachmentPOST"
       parameters: []
@@ -116,16 +116,10 @@ paths:
       x-swagger-router-controller: "Attachment"
     delete:
       tags:
-        - "project"
+        - "attachment"
       summary: "delete attachment"
       operationId: "attachmentDELETE"
-      parameters:
-        - in: "body"
-          name: "attachment"
-          description: "Attachment info"
-          required: false
-          schema:
-            $ref: "#/definitions/Attachment"
+      parameters: []
       responses:
         200:
           description: "OK"

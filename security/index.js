@@ -78,6 +78,7 @@ module.exports = function (app) {
   app.use('/login', passport.authenticate('jwt'));
   app.use('/logout', passport.authenticate('jwt'));
   app.use('/userinfo', passport.authenticate('jwt'));
+  app.use('/attachments', passport.authenticate('jwt'));
 
   //optional
   app.use('/questions', passport.authenticate(['jwt', 'anonymous']));

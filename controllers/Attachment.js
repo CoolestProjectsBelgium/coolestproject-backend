@@ -4,7 +4,6 @@ var utils = require('../utils/writer.js');
 var Attachment = require('../service/AttachmentService');
 
 module.exports.attachmentPOST = function attachmentPOST(req, res, next) {
-  /* block on production
   const user = req.user;
   Attachment.attachmentPOST(user)
     .then(function (response) {
@@ -13,10 +12,9 @@ module.exports.attachmentPOST = function attachmentPOST(req, res, next) {
     .catch(function (response) {
       utils.writeJson(res, response);
     });
-    */
+
 };
 module.exports.attachmentDELETE = function attachmentDELETE(req, res, next) {
-  /* block on production
   const user = req.user;
   const attachment = req.swagger.params['attachment'].value;
   Attachment.attachmentDELETE(user, attachment)
@@ -26,5 +24,4 @@ module.exports.attachmentDELETE = function attachmentDELETE(req, res, next) {
     .catch(function (response) {
       utils.writeJson(res, response);
     });
-  */
 };
