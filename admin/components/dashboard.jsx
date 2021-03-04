@@ -126,6 +126,7 @@ export const Dashboard = () => {
                         <Box ml="xl">
                             <H4>Status Projects</H4>
                             <H5>{data.total_projects}/{data.maxRegistration} Projects Remaining  / with {data.total_usedVouchers} Co-Worker(s)</H5>
+                            <H5>{data.total_users-data.total_usedVouchers-data.total_projects} user(s) without Project</H5>
                         </Box>
                     </Card>
                 </Box>
