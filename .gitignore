@@ -6,3 +6,5 @@ node_modules/
 .adminbro/
 .adminbro/.entry.js
 .adminbro/bundle.js
+manual_test/testfile
+manual_test/resultfile

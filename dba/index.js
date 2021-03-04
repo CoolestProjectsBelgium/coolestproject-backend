@@ -2,9 +2,14 @@
 
 const cls = require('cls-hooked');
 const namespace = cls.createNamespace('coolestproject');
+const { BlobServiceClient, BlobSASPermissions } = require('@azure/storage-blob');
+
+const AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=account1.blob.coolestazure;AccountKey=key1;BlobEndpoint=https://account1.blob.coolestazure.localhost:1234;';
+
+//process.env['NODE_EXTRA_CA_CERTS'] = '/home/erik/coolestproject/configuration/certs/pki/ca.crt';
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 const addYears = require('date-fns/addYears');
-const parseISO = require('date-fns/parseISO');
 
 const models = require('../models');
 const crypto = require('crypto');
@@ -13,7 +18,6 @@ const Sequelize = require('sequelize');
 Sequelize.useCLS(namespace);
 
 const bcrypt = require('bcrypt');
-const { constants } = require('buffer');
 
 const Account = models.Account;
 const QuestionRegistration = models.QuestionRegistration;
@@ -31,9 +35,8 @@ const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
 const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
-const Attachment = models.Attachment;
+// const Attachment = models.Attachment;
 
-const MAX_VOUCHERS = process.env.MAX_VOUCHERS || 0;
 
 class DBA {
   /**
@@ -239,15 +242,6 @@ class DBA {
   }
 
   /**
-     * Get registration information
-     * @param {Number} registrationId
-     * @returns {Promise<Registration>} created registration
-     */
-  static async getRegistration(registrationId) {
-    return await Registration.findByPk(registrationId);
-  }
-
-  /**
      * Delete a user
      * @param {Number} userId
      * @returns {Promise<Boolean>} Delete ok ?
@@ -377,29 +371,44 @@ class DBA {
      */
   static async createAttachment(userId) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
 
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         if (project === null) {
           throw new Error('No project found');
         }
-        /*
-                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
-                if (totalVouchers >= project.max_tokens) {
-                    throw new Error('Max token reached');
-                }
 
-                var token = await new Promise(function (resolve, reject) {
-                    crypto.randomBytes(18, function (error, buffer) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(buffer.toString('hex'));
-                    });
-                });
-                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
-                */
-        return await Attachment.create({ projectId: project.id, name: 'Test attachement' });
+        // call azure & create BLOB in specific container, then generate the correct SAS url & pass this to the user
+        const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+        blobServiceClient.setProperties(
+          {cors: [{ allowedOrigins : '*', allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
+        
+        const containerName = 'movies';
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        containerClient.createIfNotExists();
+        
+        const blobName = `${ project.id }_movie`;
+        const containerBlobClient = containerClient.getBlockBlobClient(blobName);
+
+        const expiresOn = new Date(Date.now() + 86400 * 1000);
+        const startsOn = new Date(Date.now() - 1000);
+
+        //just create empty blob & generate write access url
+        // await containerBlobClient.upload('', 0);
+        const sasBaseUrl = await containerBlobClient.generateSasUrl({
+          permissions: BlobSASPermissions.parse('w'),
+          expiresOn: expiresOn,
+          startsOn: startsOn
+        });
+
+        // store everything in the Attachement DB on our side
+
+        return {
+          url: sasBaseUrl,
+          expiresOn,
+          startsOn
+        };
+
       }
     );
   }
@@ -410,12 +419,12 @@ class DBA {
   static async deleteAttachment(attachmentId) {
     return await sequelize.transaction(
       async (t) => {
-
+        /*
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         if (project === null) {
           throw new Error('No project found');
         }
-        /*
+       
                 var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
                 if (totalVouchers >= project.max_tokens) {
                     throw new Error('Max token reached');
@@ -430,8 +439,10 @@ class DBA {
                     });
                 });
                 return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
-                */
+                
         return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
+        */
+        return null;
       }
     );
   }
@@ -651,19 +662,19 @@ class DBA {
       }
     });
   }
-    /**
+  /**
      * Get only user via email
      * @param {String} email
      * @returns {Promise<User>}
      */
-    static async getOnlyUsersViaMail(email, event) {
-      return await User.findAll({
-        where: {
-          email: email,
-          eventId: event.id
-        }
-      });
-    }
+  static async getOnlyUsersViaMail(email, event) {
+    return await User.findAll({
+      where: {
+        email: email,
+        eventId: event.id
+      }
+    });
+  }
 
   /**
      * Update token
