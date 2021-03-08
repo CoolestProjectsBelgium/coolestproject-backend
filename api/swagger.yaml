@@ -103,7 +103,12 @@ paths:
         - "attachment"
       summary: "Create new attachment"
       operationId: "attachmentPOST"
-      parameters: []
+      parameters:
+        - in: "body"
+          name: "attachment"
+          description: "The attachment to create"
+          schema:
+            $ref: "#/definitions/Attachment"
       responses:
         200:
           description: "OK"
@@ -114,12 +119,40 @@ paths:
       security:
         - loginToken: []
       x-swagger-router-controller: "Attachment"
+  /attachments/{name}/sas:
+    post:
+      tags:
+        - "attachment"
+      summary: "Get new SAS token for attachment"
+      operationId: "attachmentPOSTSAS"
+      parameters: 
+        - in: "path"
+          name: "name"
+          description: "name of attachment"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+        - loginToken: []
+      x-swagger-router-controller: "Attachment"
+  /attachments/{name}:
     delete:
       tags:
         - "attachment"
-      summary: "delete attachment"
+      summary: "delete attachments"
       operationId: "attachmentDELETE"
-      parameters: []
+      parameters: 
+        - in: "path"
+          name: "name"
+          description: "name of attachment"
+          required: true
+          type: "string"
       responses:
         200:
           description: "OK"
@@ -129,7 +162,7 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - loginToken: []
-      x-swagger-router-controller: "Attachment"
+      x-swagger-router-controller: "Attachment"    
   /userinfo:
     get:
       tags:
@@ -460,6 +493,10 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Participant"
+      attachments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Attachment"    
       delete_possible:
         type: "boolean"
   Registration:
@@ -557,8 +594,12 @@ definitions:
   Attachment:
     type: "object"
     properties:
+      id:
+        type: "string"
       name:
         type: "string"
+      size:
+        type: "integer"
       confirmed:
         type: "boolean"
       type:

@@ -7,10 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   class Attachment extends Model {
 
     static associate(models) {
-      Attachment.belongsTo(models.Event, { as: 'event', optional: false });
       Attachment.belongsTo(models.Project, {});
+      Attachment.hasOne(models.AzureBlob, {});
     }
-  };
+  }
   Attachment.init({
     name: DataTypes.STRING(50),
     confirmed: DataTypes.BOOLEAN,

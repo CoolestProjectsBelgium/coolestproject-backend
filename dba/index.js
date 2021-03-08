@@ -2,12 +2,9 @@
 
 const cls = require('cls-hooked');
 const namespace = cls.createNamespace('coolestproject');
-const { BlobServiceClient, BlobSASPermissions } = require('@azure/storage-blob');
+const { v4: uuidv4 } = require('uuid');
 
-const AZURE_STORAGE_CONNECTION_STRING='DefaultEndpointsProtocol=https;AccountName=account1.blob.coolestazure;AccountKey=key1;BlobEndpoint=https://account1.blob.coolestazure.localhost:1234;';
-
-//process.env['NODE_EXTRA_CA_CERTS'] = '/home/erik/coolestproject/configuration/certs/pki/ca.crt';
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+const Azure = require('../azure');
 
 const addYears = require('date-fns/addYears');
 
@@ -35,6 +32,8 @@ const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
 const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
+const Attachment = models.Attachment;
+const AzureBlob = models.AzureBlob;
 // const Attachment = models.Attachment;
 
 
@@ -317,7 +316,7 @@ class DBA {
     // delete project or voucher
     // only possible when there are no used vouchers
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
         if (project !== null) {
           const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
@@ -341,7 +340,7 @@ class DBA {
      */
   static async createVoucher(userId) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id', 'eventId', 'max_tokens'], lock: true });
         if (project === null) {
           throw new Error('No project found');
@@ -369,46 +368,45 @@ class DBA {
      * Create a attachment for a project
      * @param {Number} userId 
      */
-  static async createAttachment(userId) {
+  static async getAttachmentSAS(name, userId) {
+    const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+    if (project === null) {
+      throw new Error('No project found');
+    }
+    return await Azure.generateSAS(name);
+  }
+
+  /**
+     * Create a attachment for a project
+     * @param {Number} userId 
+     */
+  static async createAttachment(attachment_fields, userId) {
     return await sequelize.transaction(
       async () => {
-
+        // check if we have a project owner
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         if (project === null) {
           throw new Error('No project found');
         }
 
-        // call azure & create BLOB in specific container, then generate the correct SAS url & pass this to the user
-        const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
-        blobServiceClient.setProperties(
-          {cors: [{ allowedOrigins : '*', allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
-        
-        const containerName = 'movies';
-        const containerClient = blobServiceClient.getContainerClient(containerName);
-        containerClient.createIfNotExists();
-        
-        const blobName = `${ project.id }_movie`;
-        const containerBlobClient = containerClient.getBlockBlobClient(blobName);
+        const blobName = uuidv4();
+        const containerName = process.env.AZURE_STORAGE_CONTAINER;
+        const sas = await Azure.generateSAS(blobName);
 
-        const expiresOn = new Date(Date.now() + 86400 * 1000);
-        const startsOn = new Date(Date.now() - 1000);
-
-        //just create empty blob & generate write access url
-        // await containerBlobClient.upload('', 0);
-        const sasBaseUrl = await containerBlobClient.generateSasUrl({
-          permissions: BlobSASPermissions.parse('w'),
-          expiresOn: expiresOn,
-          startsOn: startsOn
+        // create AzureBlob & create Attachment
+        await AzureBlob.create({
+          container_name: containerName,
+          blob_name: blobName,
+          size: attachment_fields.size,
+          Attachment: {
+            name: attachment_fields.name,
+            ProjectId: project.id
+          }
+        }, {
+          include: [{ association: 'Attachment' }] 
         });
 
-        // store everything in the Attachement DB on our side
-
-        return {
-          url: sasBaseUrl,
-          expiresOn,
-          startsOn
-        };
-
+        return sas;
       }
     );
   }
@@ -416,33 +414,26 @@ class DBA {
      * Create a attachment for a project
      * @param {Number} attachmentId 
      */
-  static async deleteAttachment(attachmentId) {
+  static async deleteAttachment(userId, name) {
     return await sequelize.transaction(
-      async (t) => {
-        /*
+      async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         if (project === null) {
           throw new Error('No project found');
         }
-       
-                var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
-                if (totalVouchers >= project.max_tokens) {
-                    throw new Error('Max token reached');
-                }
-
-                var token = await new Promise(function (resolve, reject) {
-                    crypto.randomBytes(18, function (error, buffer) {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(buffer.toString('hex'));
-                    });
-                });
-                return await Voucher.create({ projectId: project.id, id: token, eventId: project.eventId });
-                
-        return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
-        */
-        return null;
+        // get file linked to the project
+        const azureInfo = await AzureBlob.findOne({ 
+          where: {
+            '$Attachment.ProjectId$': project.id,
+            blob_name: name
+          },
+          include: [ 
+            {model: Attachment} 
+          ] 
+        });
+        console.log(azureInfo.Attachment.id);
+        await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
+        await Azure.deleteBlob(name);
       }
     );
   }
@@ -694,7 +685,7 @@ class DBA {
      */
   static async setEventActive(eventId) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         // cancel previous events
         await Event.update({ current: false }, { where: {} });
 

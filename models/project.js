@@ -20,13 +20,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'participantId',
         otherKey: 'projectId',
         constraints: false
-      })
-      Project.hasMany(models.Voucher, { foreignKey: 'projectId' })
+      });
+      Project.hasMany(models.Voucher, { foreignKey: 'projectId' });
       Project.belongsTo(models.Event, { as: 'event', optional: false });
       Project.belongsToMany(models.Table, { through: models.ProjectTable });
       Project.hasMany(models.Attachment, {});
     }
-  };
+  }
   Project.init({
     project_name: {
       type: DataTypes.STRING(100),

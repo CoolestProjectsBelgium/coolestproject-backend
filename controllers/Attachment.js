@@ -5,7 +5,20 @@ var Attachment = require('../service/AttachmentService');
 
 module.exports.attachmentPOST = function attachmentPOST(req, res, next) {
   const user = req.user;
-  Attachment.attachmentPOST(user)
+  const attachment = req.swagger.params['attachment'].value;
+  Attachment.attachmentPOST(attachment, user)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+
+};
+module.exports.attachmentPOSTSAS = function attachmentPOSTSAS(req, res, next) {
+  const user = req.user;
+  const name = req.swagger.params['name'].value;
+  Attachment.attachmentPOSTSAS(name, user)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -16,8 +29,8 @@ module.exports.attachmentPOST = function attachmentPOST(req, res, next) {
 };
 module.exports.attachmentDELETE = function attachmentDELETE(req, res, next) {
   const user = req.user;
-  const attachment = req.swagger.params['attachment'].value;
-  Attachment.attachmentDELETE(user, attachment)
+  const name = req.swagger.params['name'].value;
+  Attachment.attachmentDELETE(user, name)
     .then(function (response) {
       utils.writeJson(res, response);
     })

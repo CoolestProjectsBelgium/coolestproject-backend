@@ -7,9 +7,9 @@ var dba = require('../dba');
  * Create Attachment for attachment
  * returns Attachment
  **/
-exports.attachmentPOST = async function (user) {
+exports.attachmentPOST = async function (attachment_fields, user) {
   try {
-    return await dba.createAttachment(user.id);
+    return await dba.createAttachment(attachment_fields, user.id);
   } catch (ex) {
     console.error(ex);
     throw respondWithCode(500, {
@@ -23,9 +23,25 @@ exports.attachmentPOST = async function (user) {
  * Create Attachment for attachment
  * returns Attachment
  **/
-exports.attachmentDELETE = async function (user, attachment) {
+exports.attachmentPOSTSAS = async function (name, user) {
   try {
-    await dba.deleteAttachment(user.id, attachment);
+    return await dba.getAttachmentSAS(name, user.id);
+  } catch (ex) {
+    console.error(ex);
+    throw respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
+};
+
+/**
+ * Create Attachment for attachment
+ * returns Attachment
+ **/    
+exports.attachmentDELETE = async function (user, name) {
+  try {
+    await dba.deleteAttachment(user.id, name);
   } catch (ex) {
     throw respondWithCode(500, {
       code: 0,

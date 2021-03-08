@@ -1,10 +1,11 @@
 'use strict';
 
 const Token = require('../jwts');
-const respondWithCode = require('../utils/writer').respondWithCode
+const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 const Mailer = require('../mailer');
 const db = require('../models');
+const Azure = require('../azure');
 
 /**
  * Get project based on userId
@@ -27,7 +28,7 @@ async function getProjectDetails(userId) {
       delete_possible: false,
       own_project: (userId === project.ownerId)
     }
-  }
+  };
 
   const ownProject = projectResult.own_project.own_project;
   const maxTokens = project.max_tokens;
@@ -36,9 +37,9 @@ async function getProjectDetails(userId) {
   project.Vouchers.forEach((voucher) => {
     // only show participants to non owners
     if (!ownProject && voucher.participant === null) {
-      return
+      return;
     }
-    let line = {}
+    let line = {};
     if (voucher.participant) {
       line.name = voucher.participant.firstname + ' ' + voucher.participant.lastname;
       if (userId === voucher.participant.id) {
@@ -64,6 +65,20 @@ async function getProjectDetails(userId) {
   //delete is not possible when there are participants & it's your own project
   projectResult.own_project.delete_possible = (ownProject && (assignedTokens === 0)) || !ownProject;
 
+  //get attachments
+  const attachments = [];
+  for(const a of await project.getAttachments()){
+    const blob = await a.getAzureBlob();
+    const readSAS = await Azure.generateSAS(blob.blob_name, 'r');
+    attachments.push({
+      id: blob.blob_name,
+      name: a.name,
+      url: readSAS.url,
+      size: blob.size
+    });
+  }
+  projectResult.attachments = attachments;
+
   return projectResult;
 }
 
@@ -84,7 +99,7 @@ exports.projectinfoGET = function (user) {
       }));
     }
   });
-}
+};
 
 /**
  * update the projectinfo
@@ -95,13 +110,13 @@ exports.projectinfoPATCH = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
       // flatten the response
-      const ownProject = project_fields.own_project
+      const ownProject = project_fields.own_project;
       const project = {
         project_name: ownProject.project_name,
         project_descr: ownProject.project_descr,
         project_type: ownProject.project_type,
         project_lang: ownProject.project_lang,
-      }
+      };
       await DBA.updateProject(project, user.id);
       resolve(await getProjectDetails(user.id));
     } catch (ex) {
@@ -110,8 +125,8 @@ exports.projectinfoPATCH = function (project_fields, user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
 /**
  * create project for existing user or add user to project
@@ -121,9 +136,9 @@ exports.projectinfoPATCH = function (project_fields, user) {
 exports.projectinfoPOST = function (project_fields, user) {
   return new Promise(async function (resolve, reject) {
     try {
-      const project = {}
-      const ownProject = project_fields.own_project
-      const otherProject = project_fields.other_project
+      const project = {};
+      const ownProject = project_fields.own_project;
+      const otherProject = project_fields.other_project;
 
       if (ownProject) {
         // create new project for this user
@@ -143,8 +158,8 @@ exports.projectinfoPOST = function (project_fields, user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
 
 /**
  * delete the projectinfo
@@ -166,5 +181,5 @@ exports.projectinfoDELETE = function (user) {
         message: 'Backend error'
       }));
     }
-  })
-}
+  });
+};
