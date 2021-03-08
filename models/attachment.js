@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Attachment',
+    onDelete: 'CASCADE'
   });
   return Attachment;
 };
