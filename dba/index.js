@@ -373,6 +373,18 @@ class DBA {
     if (project === null) {
       throw new Error('No project found');
     }
+    const azureInfo = await AzureBlob.findOne({ 
+      where: {
+        '$Attachment.ProjectId$': project.id,
+        blob_name: name
+      },
+      include: [ 
+        {model: Attachment} 
+      ] 
+    });
+    if (azureInfo === null) {
+      throw new Error('No attachment found');
+    }
     return await Azure.generateSAS(name);
   }
 
@@ -431,7 +443,10 @@ class DBA {
             {model: Attachment} 
           ] 
         });
-        console.log(azureInfo.Attachment.id);
+        if (azureInfo === null) {
+          throw new Error('No attachment found');
+        }
+
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
         await Azure.deleteBlob(name);
       }
