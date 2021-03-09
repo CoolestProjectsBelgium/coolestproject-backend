@@ -44,7 +44,7 @@ class DBA {
      */
   static async createUserFromRegistration(registrationId) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         const registration = await this.getRegistration(registrationId);
         if (registration === null) {
           throw new Error(`No registration found for id ${registrationId}`);
@@ -323,7 +323,11 @@ class DBA {
           if (usedVoucher > 0) {
             throw new Error('Delete not possible tokens in use');
           }
-          // delete project
+          // delete files on azure
+          for(const a of await project.getAttachments()){
+            const blob = await a.getAzureBlob();
+            await Azure.deleteBlob(blob.blob_name);
+          }
           return await Project.destroy({ where: { ownerId: userId } });
         } else {
           // delete voucher
@@ -485,7 +489,7 @@ class DBA {
      */
   static async createRegistration(registrationValues) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         // set the current event
         const event = await Event.findOne({ where: { current: true } });
         if (event === null) {
