@@ -12,11 +12,11 @@ class Azure{
     await containerBlobClient.delete();
 
   }
-  static async generateSAS(blobName, type = 'w') {
+  static async generateSAS(blobName, type = 'w', filename=null) {
     
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
     blobServiceClient.setProperties(
-      {cors: [{ allowedOrigins : process.env.URL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
+      { cors: [{ allowedOrigins : process.env.URL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
 
     const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
     containerClient.createIfNotExists();
@@ -27,11 +27,16 @@ class Azure{
     const startsOn = new Date(Date.now() - 1000);
   
     //just create empty blob & generate write access url
-    const sasBaseUrl = await containerBlobClient.generateSasUrl({
+    let config = {
       permissions: BlobSASPermissions.parse(type),
       expiresOn: expiresOn,
-      startsOn: startsOn
-    });
+      startsOn: startsOn,
+    };
+    //add filename if available
+    if(filename){
+      config['contentDisposition'] = `attachment; filename="${ filename }"`;
+    }
+    const sasBaseUrl = await containerBlobClient.generateSasUrl(config);
     
     return {
       url: sasBaseUrl,

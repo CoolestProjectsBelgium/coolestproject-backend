@@ -69,7 +69,7 @@ async function getProjectDetails(userId) {
   const attachments = [];
   for(const a of await project.getAttachments()){
     const blob = await a.getAzureBlob();
-    const readSAS = await Azure.generateSAS(blob.blob_name, 'r');
+    const readSAS = await Azure.generateSAS(blob.blob_name, 'r', a.filename);
     attachments.push({
       id: blob.blob_name,
       name: a.name,

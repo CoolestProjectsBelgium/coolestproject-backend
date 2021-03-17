@@ -416,6 +416,7 @@ class DBA {
           size: attachment_fields.size,
           Attachment: {
             name: attachment_fields.name,
+            filename: attachment_fields.filename, 
             ProjectId: project.id
           }
         }, {
