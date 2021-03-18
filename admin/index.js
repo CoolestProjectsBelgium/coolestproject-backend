@@ -272,6 +272,68 @@ const adminBroOptions = {
         navigation: votingParent
       }
     },
+    { 
+      resource: db.useronly, 
+      options: {
+        name: "Users zonder project of medewerker)",
+        listProperties: ['id', 'firstname', 'lastname', 'email'],
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.tshirtsizes, 
+      options: {
+        name: "Aantal T-shirts per maat",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    { 
+      resource: db.videoloads,
+      options: {
+        name: "Alle geladen projecten",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
+    
     {
       resource: db.Table,
       options: {
