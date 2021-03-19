@@ -273,7 +273,7 @@ const adminBroOptions = {
       }
     },
     { 
-      resource: db.useronly, 
+      resource: db.ShowUserWithNoProject, 
       options: {
         name: "Users zonder project of medewerker)",
         listProperties: ['id', 'firstname', 'lastname', 'email'],
@@ -294,7 +294,7 @@ const adminBroOptions = {
       } 
     },
     { 
-      resource: db.tshirtsizes, 
+      resource: db.CountTshirtSizes, 
       options: {
         name: "Aantal T-shirts per maat",
         parent: reportParent,
@@ -314,7 +314,7 @@ const adminBroOptions = {
       } 
     },
     { 
-      resource: db.videoloads,
+      resource: db.ShowAttachmentLoaded,
       options: {
         name: "Alle geladen projecten",
         parent: reportParent,

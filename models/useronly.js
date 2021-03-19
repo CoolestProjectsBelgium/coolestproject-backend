@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const useronly = sequelize.define('useronly', {
+  const useronly = sequelize.define('ShowUserWithNoProject', {
     id: {
       type: DataTypes.STRING,
       primaryKey: true

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const UserProjectVideo = sequelize.define('videoloads', {
+  const UserProjectVideo = sequelize.define('ShowAttachmentLoaded', {
 
     ProjectId: {
       type: DataTypes.STRING,

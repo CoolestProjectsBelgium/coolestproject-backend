@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const t_shirt_sizes = sequelize.define('tshirtsizes', {
+  const t_shirt_sizes = sequelize.define('CountTshirtSizes', {
     id:{
       type: DataTypes.STRING},
     name: {
