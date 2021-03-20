@@ -74,7 +74,8 @@ async function getProjectDetails(userId) {
       id: blob.blob_name,
       name: a.name,
       url: readSAS.url,
-      size: blob.size
+      size: blob.size,
+      filename: a.filename,
     });
   }
   projectResult.attachments = attachments;
