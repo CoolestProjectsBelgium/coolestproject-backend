@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       primaryKey: true
-  },
+    },
     count: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING
     }
   }, {
     freezeTableName: true,

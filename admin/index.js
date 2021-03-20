@@ -64,6 +64,15 @@ const adminBroOptions = {
   branding: {
     companyName: 'Coolest Projects',
   },
+  locale: {
+    translations: {
+      labels: {
+        ShowUserWithNoProject: 'Show User(s) With No Project',
+        CountTshirtSizes: 'Count Tshirt Sizes',
+        ShowAttachmentLoaded: 'Show Attachment(s) Loaded' 
+      }
+    }
+  },
   resources: [
     {
       resource: db.Session,
