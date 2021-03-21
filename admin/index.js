@@ -226,7 +226,11 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext' }
+          internalinfo: { type: 'richtext' },
+            project_name: {
+              isTitle:true,
+              label: 'project' 
+            }
         }
       }
     },
