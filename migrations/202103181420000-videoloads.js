@@ -1,7 +1,7 @@
 'use strict';
 var back;
 const vname = 'ShowAttachmentLoaded';
-const query = 'SELECT `coolestproject`.`Projects`.`id` AS `ProjectId`,`coolestproject`.`Projects`.`project_name` AS `project_name`,`coolestproject`.`Users`.`firstname` AS `firstname`,`coolestproject`.`Users`.`lastname` AS `lastname`,`coolestproject`.`Attachments`.`name` AS `VideoName`,`coolestproject`.`Projects`.`ownerId` AS `ownerId`,`coolestproject`.`Attachments`.`filename` AS `FileName` from ((`coolestproject`.`Projects` join `coolestproject`.`Attachments`) join `coolestproject`.`Users`) where ((`coolestproject`.`Projects`.`id` = `coolestproject`.`Attachments`.`ProjectId`) and (`coolestproject`.`Users`.`id` = `coolestproject`.`Projects`.`ownerId`)) order by `coolestproject`.`Users`.`lastname`';
+const query = 'SELECT `Projects`.`id` AS `ProjectId`,`Projects`.`project_name` AS `project_name`,`Users`.`firstname` AS `firstname`,`Users`.`lastname` AS `lastname`,`Attachments`.`name` AS `VideoName`,`Projects`.`ownerId` AS `ownerId`,`Attachments`.`filename` AS `FileName` from ((`Projects` join `Attachments`) join `Users`) where ((`Projects`.`id` = `Attachments`.`ProjectId`) and (`Users`.`id` = `Projects`.`ownerId`)) order by `Users`.`lastname`';
 
 module.exports = {
   async up(queryInterface) {
