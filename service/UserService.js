@@ -51,17 +51,15 @@ async function getUserDetails(user) {
  *
  * returns User
  **/
-exports.userinfoGET = function (user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      resolve(await getUserDetails(user));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.userinfoGET = async function (user) {
+  try {
+    return await getUserDetails(user);
+  } catch (ex) {
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
@@ -69,18 +67,16 @@ exports.userinfoGET = function (user) {
  *
  * returns User
  **/
-exports.userinfoPATCH = function (changed_fields, user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      await DBA.updateUser(changed_fields, user.id);
-      resolve(await getUserDetails(await DBA.getUser(user.id)));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.userinfoPATCH = async function (changed_fields, user) {
+  try {
+    await DBA.updateUser(changed_fields, user.id);
+    return await getUserDetails(await DBA.getUser(user.id));
+  } catch (ex) {
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
@@ -88,19 +84,17 @@ exports.userinfoPATCH = function (changed_fields, user) {
  *
  * returns User
  **/
-exports.userinfoDELETE = function (logged_in_user) {
-  return new Promise(async function (resolve, reject) {
-    console.log('delete user log:',logged_in_user);
-    try {
-      var u = await DBA.deleteUser(logged_in_user.id);
-      resolve(u);
-    } catch (ex) {
-      console.log('delete user log:',ex);
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.userinfoDELETE = async function (logged_in_user) {
+  console.log('delete user log:',logged_in_user);
+  try {
+    var u = await DBA.deleteUser(logged_in_user.id);
+    return u;
+  } catch (ex) {
+    console.log('delete user log:',ex);
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 

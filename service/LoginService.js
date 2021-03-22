@@ -12,35 +12,33 @@ var Mail = require('../mailer');
  *
  * get user & send login token via mail
  **/
-exports.mailLoginPOST = function (login) {
-  return new Promise(async function (resolve, reject) {
-    logger.info('login requested for: ' + login.email);
-    const event = await DBA.getEventActive();
-    try {
-      console.log('Event:',event);
-      var users = await DBA.getUsersViaMail(login.email, event);
-      for (const user of users) {
-        logger.info('user found: ' + user.id);
-        // only one token every n seconds
-        var tokenTime = -1;
-        if (user.last_token !== null) {
-          tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0);
-        }
-        if (new Date() > tokenTime) {
-          // generate new token for user
-          await DBA.updateLastToken(user.id);
-          const token = await Token.generateLoginToken(user.id);
-          await Mail.ask4TokenMail(user, token, event);
-        } else {
-          logger.info('Token requested but time is not passed yet: ' + user.email);
-        }
+exports.mailLoginPOST = async function (login) {
+  logger.info('login requested for: ' + login.email);
+  const event = await DBA.getEventActive();
+  try {
+    console.log('Event:',event);
+    var users = await DBA.getUsersViaMail(login.email, event);
+    for (const user of users) {
+      logger.info('user found: ' + user.id);
+      // only one token every n seconds
+      var tokenTime = -1;
+      if (user.last_token !== null) {
+        tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0);
       }
-      resolve();
-    } catch (ex) {
-      logger.error(ex);
-      reject(new respondWithCode(500, { code: 0, message: 'Backend error' }));
+      if (new Date() > tokenTime) {
+        // generate new token for user
+        await DBA.updateLastToken(user.id);
+        const token = await Token.generateLoginToken(user.id);
+        await Mail.ask4TokenMail(user, token, event);
+      } else {
+        logger.info('Token requested but time is not passed yet: ' + user.email);
+      }
     }
-  });
+    return;
+  } catch (ex) {
+    logger.error(ex);
+    throw new respondWithCode(500, { code: 0, message: 'Backend error' });
+  }
 };
 /**
  * Login / Activate account
@@ -48,17 +46,15 @@ exports.mailLoginPOST = function (login) {
  * registration Registration The registration to create. (optional)
  * returns Login
  **/
-exports.loginPOST = function (user, response) {
-  return new Promise(async function (resolve, reject) {
-    const token = await Token.generateLoginToken(user.id);
-    const expires = addSeconds(Date.now(), 172800 || 0);
-    response.cookie('jwt', token, { 
-      maxAge: 172800 * 1000, 
-      httpOnly: true, 
-      sameSite: process.env.SAMESITE_COOKIE || 'None', 
-      secure: process.env.SECURE_COOKIE === 'true',
-      domain: process.env.DOMAIN_COOKIE  });
-    resolve({ expires, language: user.language });
-  });
+exports.loginPOST = async function (user, response) {
+  const token = await Token.generateLoginToken(user.id);
+  const expires = addSeconds(Date.now(), 172800 || 0);
+  response.cookie('jwt', token, { 
+    maxAge: 172800 * 1000, 
+    httpOnly: true, 
+    sameSite: process.env.SAMESITE_COOKIE || 'None', 
+    secure: process.env.SECURE_COOKIE === 'true',
+    domain: process.env.DOMAIN_COOKIE  });
+  return { expires, language: user.language };
 };
 
