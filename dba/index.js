@@ -523,8 +523,12 @@ class DBA {
 
         // map the questions to the correct table
         const answers = [];
-        answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
-        answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
+        if(user.general_questions){
+          answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
+        }
+        if(user.mandatory_approvals){
+          answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
+        }
         dbValues.questions = answers;
 
         //flatten address
