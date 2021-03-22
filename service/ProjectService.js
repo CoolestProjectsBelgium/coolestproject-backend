@@ -68,6 +68,9 @@ async function getProjectDetails(userId) {
   //get attachments
   const attachments = [];
   for(const a of await project.getAttachments()){
+    if(a.internal){
+      continue;
+    }
     const blob = await a.getAzureBlob();
     const readSAS = await Azure.generateSAS(blob.blob_name, 'r', a.filename);
     attachments.push({
@@ -76,6 +79,7 @@ async function getProjectDetails(userId) {
       url: readSAS.url,
       size: blob.size,
       filename: a.filename,
+      confirmed: a.confirmed || false
     });
   }
   projectResult.attachments = attachments;
@@ -89,17 +93,16 @@ async function getProjectDetails(userId) {
  * projectId Integer projectid.
  * returns Project
  **/
-exports.projectinfoGET = function (user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      resolve(await getProjectDetails(user.id));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.projectinfoGET = async function (user) {
+  try {
+    return await getProjectDetails(user.id);
+  } catch (ex) {
+    console.error(ex);
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
