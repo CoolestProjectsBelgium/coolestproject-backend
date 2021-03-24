@@ -4,7 +4,10 @@ const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
+const AzureBlob = db.AzureBlob;
+const Attachment = db.Attachment;
 var DBA = require('../dba');
+const Azure = require('../azure');
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
@@ -257,6 +260,49 @@ const adminBroOptions = {
         navigation: projectParent
       }
     },
+    {
+      resource: db.AzureBlob,
+      option: {
+        navigation: projectParent
+      },
+      actions: {
+        new: {
+          isVisible: false
+        },
+        viewAction: {
+          actionType: 'record',
+          label: 'View blob',
+          icon: 'fas fa-play32',
+          isVisible: true,
+          handler: async (request, response, data) => {
+            if (!request.params.recordId || !data.record) {
+              throw new NotFoundError([
+                'You have to pass "recordId" to View Action',
+              ].join('\n'), 'Action#handler');
+            }
+            try {
+              //get blob record
+              const blob = await AzureBlob.findByPK(request.params.recordId, { include : [ { model: Attachment } ] } );
+              const sas = Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+              console.log(`SAS token was generated ${sas}`);
+              //console.log(sas);
+              return {  
+                redirectUrl: sas 
+              };
+            } catch (error) {
+              return {
+                record: data.record.toJSON(data.currentAdmin),
+                notice: {
+                  message: error,
+                  type: 'error',
+                },
+              }
+            }
+          },
+          component: false,
+        }
+      }
+    }, 
     {
       resource: db.Vote,
       options: {
