@@ -170,7 +170,7 @@ const adminBroOptions = {
         navigation: projectParent,
         actions: {
           new: {
-            isVisible: false
+            isVisible: true
           },
           mailAction: {
             actionType: 'record',
@@ -266,11 +266,14 @@ const adminBroOptions = {
     },
     {
       resource: db.AzureBlob,
-      option: {
+      options: {
         navigation: projectParent
       },
       actions: {
         new: {
+          isVisible: false
+        },
+        edit: {
           isVisible: false
         },
         viewAction: {
