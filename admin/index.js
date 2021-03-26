@@ -16,12 +16,12 @@ const Token = require('../jwts');
 
 const projectParent = {
   name: 'Projects',
-  icon: 'Roadmap'
+  icon: 'Roadmap'  
 }
 
 const reportParent = {
   name: 'Reporting',
-  icon: 'fa fa-stream',
+  icon: 'fa fa-stream', 
 }
 
 const internalParent = {
@@ -48,7 +48,7 @@ const planningParent = {
   name: 'On-site Planning',
   icon: 'Location'
 }
-
+ 
 const adminParent = {
   name: 'Administration',
   icon: 'Identification'
@@ -272,7 +272,21 @@ const adminBroOptions = {
     {
       resource: db.AzureBlob,
       options: {
-        navigation: projectParent,
+        navigation: projectParent,  
+        properties: {      
+          downloadLink: {
+            isVisible: {
+              list: true,
+              edit: false,
+              new: false,
+              filter: false,
+            },
+            components: {
+              list: AdminBro.bundle('./components/file'),
+              show: AdminBro.bundle('./components/file'),  
+            },  
+          }
+        },
         actions: {
           new: {
           isVisible: false
@@ -280,44 +294,23 @@ const adminBroOptions = {
           edit: {
             isVisible: false
           },
-        viewAction: {
-          actionType: 'record',
-          label: 'View blob',
-          icon: 'fas fa-play32',
-          isVisible: true,
-          handler: async (request, response, data) => {
-            console.log("Request=",request.params.recordId,data.record);
-            if (!request.params.recordId || !data.record) {
-              throw new NotFoundError([
-                'You have to pass "recordId" to View Action',
-              ].join('\n'), 'Action#handler');
-            }
-            try {
-              //get blob record
-              const blob = await AzureBlob.findByPK(request.params.recordId, { include : [ { model: Attachment } ] } );
-              console.log("blob:",blob);
-              const sas = Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
-              console.log(`SAS token was generated ${sas}`);
-              //console.log(sas);
-              return {  
-                redirectUrl: sas 
-              };
-            } catch (error) {
-              console.log("Error at blob:");
-              return {
-
-                record: data.record.toJSON(data.currentAdmin),
-                notice: {
-                  message: error,
-                  type: 'error',
-                },
-              }
-            }
-          },
-          component: false,
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment}] });
+                  const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                  r.params['downloadLink'] = sas.url
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          }
         }
       }
-    }
     }, 
     {
       resource: db.Vote,
@@ -398,11 +391,11 @@ const adminBroOptions = {
           },
           delete: {
             isVisible: false
-          }
+          } 
         },
         properties: {
         }
-      } 
+      }  
     },
     
     {

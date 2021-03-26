@@ -25,8 +25,7 @@ class Azure{
   
     const expiresOn = new Date(Date.now() + 86400 * 1000);
     const startsOn = new Date(Date.now() - 1000);
-  
-    //just create empty blob & generate write access url
+
     let config = {
       permissions: BlobSASPermissions.parse(type),
       expiresOn: expiresOn,
