@@ -200,7 +200,7 @@ class DBA {
      * @returns {Promise<Boolean>} updated successfully
      */
   static async updateUser(changedFields, userId) {
-    return await sequelize.transaction(async (t) => {
+    return await sequelize.transaction(async () => {
       // remove fields that are not allowed to change (be paranoid)
       delete changedFields.email;
 
@@ -293,7 +293,7 @@ class DBA {
      */
   static async isUserDeletable(userId) {
     return await sequelize.transaction(
-      async (t) => {
+      async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
         if (!project) {
           return true;
@@ -438,10 +438,12 @@ class DBA {
         if (project === null) {
           throw new Error('No project found');
         }
-        // get file linked to the project
+        // get file linked to the project & not confirmed and not internal
         const azureInfo = await AzureBlob.findOne({ 
           where: {
             '$Attachment.ProjectId$': project.id,
+            '$Attachment.confirmed$': false,
+            '$Attachment.internal$': false,
             blob_name: name
           },
           include: [ 
@@ -521,8 +523,12 @@ class DBA {
 
         // map the questions to the correct table
         const answers = [];
-        answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
-        answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
+        if(user.general_questions){
+          answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
+        }
+        if(user.mandatory_approvals){
+          answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
+        }
         dbValues.questions = answers;
 
         //flatten address

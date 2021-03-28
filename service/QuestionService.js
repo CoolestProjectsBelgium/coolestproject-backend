@@ -1,26 +1,22 @@
 'use strict';
 
 const DBA = require('../dba');
-const respondWithCode = require('../utils/writer').respondWithCode
-const parser = require('accept-language-parser');
+const respondWithCode = require('../utils/writer').respondWithCode;
 
 /**
  * get settings for frontend
  *
  * returns Settings
  **/
-exports.questionGET = function (language, user) {
-    return new Promise(async function (resolve, reject) {
-        try {
-            const questions = await DBA.getQuestions(language.substring(0, 2));
-            resolve(questions);
-        } catch (error) {
-            console.log(error)
-            reject(new respondWithCode(500, {
-                code: 0,
-                message: 'Backend error'
-            }));
-        }
-
-    })
-}
+exports.questionGET = async function (language) {
+  try {
+    const questions = await DBA.getQuestions(language.substring(0, 2));
+    return questions;
+  } catch (error) {
+    console.log(error);
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
+};

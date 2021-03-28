@@ -12,11 +12,11 @@ class Azure{
     await containerBlobClient.delete();
 
   }
-  static async generateSAS(blobName, type = 'w', filename=null) {
+  static async generateSAS(blobName, type = 'w', filename=null, url=process.env.URL) {
     
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
     blobServiceClient.setProperties(
-      { cors: [{ allowedOrigins : process.env.URL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
+      { cors: [{ allowedOrigins : url, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
 
     const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
     containerClient.createIfNotExists();
@@ -25,8 +25,7 @@ class Azure{
   
     const expiresOn = new Date(Date.now() + 86400 * 1000);
     const startsOn = new Date(Date.now() - 1000);
-  
-    //just create empty blob & generate write access url
+
     let config = {
       permissions: BlobSASPermissions.parse(type),
       expiresOn: expiresOn,

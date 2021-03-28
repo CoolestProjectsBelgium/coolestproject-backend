@@ -1,7 +1,6 @@
 'use strict';
 
 const logger = require('pino')();
-const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode;
 var dba = require('../dba');
 
@@ -9,19 +8,17 @@ var dba = require('../dba');
  * Create Voucher for participant
  * returns Voucher
  **/
-exports.participantPOST = function (user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      await dba.createVoucher(user.id);
-      resolve(null);
-    } catch (ex) {
-      logger.error(ex);
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.participantPOST = async function (user) {
+  try {
+    await dba.createVoucher(user.id);
+    return null;
+  } catch (ex) {
+    logger.error(ex);
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 

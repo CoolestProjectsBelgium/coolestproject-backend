@@ -4,7 +4,10 @@ const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
+const AzureBlob = db.AzureBlob;
+const Attachment = db.Attachment;
 var DBA = require('../dba');
+const Azure = require('../azure');
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
@@ -13,12 +16,12 @@ const Token = require('../jwts');
 
 const projectParent = {
   name: 'Projects',
-  icon: 'Roadmap'
+  icon: 'Roadmap'  
 }
 
 const reportParent = {
   name: 'Reporting',
-  icon: 'fa fa-stream',
+  icon: 'fa fa-stream', 
 }
 
 const internalParent = {
@@ -45,7 +48,7 @@ const planningParent = {
   name: 'On-site Planning',
   icon: 'Location'
 }
-
+ 
 const adminParent = {
   name: 'Administration',
   icon: 'Identification'
@@ -167,7 +170,7 @@ const adminBroOptions = {
         navigation: projectParent,
         actions: {
           new: {
-            isVisible: false
+            isVisible: true
           },
           mailAction: {
             actionType: 'record',
@@ -258,9 +261,57 @@ const adminBroOptions = {
     {
       resource: db.Attachment,
       options: {
-        navigation: projectParent
+        navigation: projectParent,
+        actions: {
+          new: {
+          isVisible: false
+          }
+        }
       }
     },
+    {
+      resource: db.AzureBlob,
+      options: {
+        navigation: projectParent,  
+        properties: {      
+          downloadLink: {
+            isVisible: {
+              list: true,
+              edit: false,
+              new: false,
+              filter: false,
+            },
+            components: {
+              list: AdminBro.bundle('./components/file'),
+              show: AdminBro.bundle('./components/file'),  
+            },  
+          }
+        },
+        actions: {
+          new: {
+          isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment}] });
+                  const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                  r.params['downloadLink'] = sas.url
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          }
+        }
+      }
+    }, 
     {
       resource: db.Vote,
       options: {
@@ -340,11 +391,11 @@ const adminBroOptions = {
           },
           delete: {
             isVisible: false
-          }
+          } 
         },
         properties: {
         }
-      } 
+      }  
     },
     
     {

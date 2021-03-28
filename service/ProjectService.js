@@ -1,10 +1,8 @@
 'use strict';
 
-const Token = require('../jwts');
 const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 const Mailer = require('../mailer');
-const db = require('../models');
 const Azure = require('../azure');
 
 /**
@@ -68,6 +66,9 @@ async function getProjectDetails(userId) {
   //get attachments
   const attachments = [];
   for(const a of await project.getAttachments()){
+    if(a.internal){
+      continue;
+    }
     const blob = await a.getAzureBlob();
     const readSAS = await Azure.generateSAS(blob.blob_name, 'r', a.filename);
     attachments.push({
@@ -76,6 +77,7 @@ async function getProjectDetails(userId) {
       url: readSAS.url,
       size: blob.size,
       filename: a.filename,
+      confirmed: a.confirmed || false
     });
   }
   projectResult.attachments = attachments;
@@ -89,17 +91,16 @@ async function getProjectDetails(userId) {
  * projectId Integer projectid.
  * returns Project
  **/
-exports.projectinfoGET = function (user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      resolve(await getProjectDetails(user.id));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.projectinfoGET = async function (user) {
+  try {
+    return await getProjectDetails(user.id);
+  } catch (ex) {
+    console.error(ex);
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
@@ -107,26 +108,24 @@ exports.projectinfoGET = function (user) {
  *
  * returns Project
  **/
-exports.projectinfoPATCH = function (project_fields, user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      // flatten the response
-      const ownProject = project_fields.own_project;
-      const project = {
-        project_name: ownProject.project_name,
-        project_descr: ownProject.project_descr,
-        project_type: ownProject.project_type,
-        project_lang: ownProject.project_lang,
-      };
-      await DBA.updateProject(project, user.id);
-      resolve(await getProjectDetails(user.id));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+exports.projectinfoPATCH = async function (project_fields, user) {
+  try {
+    // flatten the response
+    const ownProject = project_fields.own_project;
+    const project = {
+      project_name: ownProject.project_name,
+      project_descr: ownProject.project_descr,
+      project_type: ownProject.project_type,
+      project_lang: ownProject.project_lang,
+    };
+    await DBA.updateProject(project, user.id);
+    return await getProjectDetails(user.id);
+  } catch (ex) {
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
@@ -134,32 +133,30 @@ exports.projectinfoPATCH = function (project_fields, user) {
  *
  * returns Project
  **/
-exports.projectinfoPOST = function (project_fields, user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      const project = {};
-      const ownProject = project_fields.own_project;
-      const otherProject = project_fields.other_project;
+exports.projectinfoPOST = async function (project_fields, user) {
+  try {
+    const project = {};
+    const ownProject = project_fields.own_project;
+    const otherProject = project_fields.other_project;
 
-      if (ownProject) {
-        // create new project for this user
-        project.project_name = ownProject.project_name;
-        project.project_descr = ownProject.project_descr;
-        project.project_type = ownProject.project_type;
-        project.project_lang = ownProject.project_lang;
-        await DBA.createProject(project, user.id);
-      } else if (otherProject) {
-        // add user to voucher
-        await DBA.addParticipantProject(user.id, otherProject.project_code);
-      }
-      resolve(await getProjectDetails(user.id));
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
+    if (ownProject) {
+      // create new project for this user
+      project.project_name = ownProject.project_name;
+      project.project_descr = ownProject.project_descr;
+      project.project_type = ownProject.project_type;
+      project.project_lang = ownProject.project_lang;
+      await DBA.createProject(project, user.id);
+    } else if (otherProject) {
+      // add user to voucher
+      await DBA.addParticipantProject(user.id, otherProject.project_code);
     }
-  });
+    return await getProjectDetails(user.id);
+  } catch (ex) {
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
 
 /**
@@ -167,20 +164,18 @@ exports.projectinfoPOST = function (project_fields, user) {
  *
  * returns User
  **/
-exports.projectinfoDELETE = function (user) {
-  return new Promise(async function (resolve, reject) {
-    try {
-      const project = await DBA.getProject(user.id);
-      const event = await user.getEvent();
-      const deleteSuccess = await DBA.deleteProject(user.id);
-      Mailer.deleteMail(user, project, event);
+exports.projectinfoDELETE = async function (user) {
+  try {
+    const project = await DBA.getProject(user.id);
+    const event = await user.getEvent();
+    const deleteSuccess = await DBA.deleteProject(user.id);
+    Mailer.deleteMail(user, project, event);
 
-      resolve(deleteSuccess);
-    } catch (ex) {
-      reject(new respondWithCode(500, {
-        code: 0,
-        message: 'Backend error'
-      }));
-    }
-  });
+    return deleteSuccess;
+  } catch (ex) {
+    throw new respondWithCode(500, {
+      code: 0,
+      message: 'Backend error'
+    });
+  }
 };
