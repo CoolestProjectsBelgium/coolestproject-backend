@@ -417,7 +417,9 @@ class DBA {
           Attachment: {
             name: attachment_fields.name,
             filename: attachment_fields.filename, 
-            ProjectId: project.id
+            ProjectId: project.id,
+            confirmed: false,
+            internal: false
           }
         }, {
           include: [{ association: 'Attachment' }] 

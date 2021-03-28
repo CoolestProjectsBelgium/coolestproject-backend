@@ -14,8 +14,14 @@ module.exports = (sequelize, DataTypes) => {
   Attachment.init({
     name: DataTypes.STRING(50),
     filename: DataTypes.STRING(255),
-    confirmed: DataTypes.BOOLEAN,
-    internal: DataTypes.BOOLEAN
+    confirmed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    internal: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     modelName: 'Attachment',
