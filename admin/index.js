@@ -93,15 +93,119 @@ const adminBroOptions = {
       resource: db.Event,
       options: {
         navigation: eventParent,
-        listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
-                        'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
+        //listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
+        //                'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
         properties:{
           event_title: {
             isTitle:true,
             label: 'event' 
+          },
+          overdue_registration:{
+            list: true,
+            edit: true
+          },
+          waiting_list:{
+            list: true,
+            edit: true
+          },
+          days_remaining:{
+            list: true,
+            edit: true
+          },
+          total_males:{
+            list: true,
+            edit: true
+          },
+          total_females:{
+            list: true,
+            edit: true
+          },
+          total_X:{
+            list: true,
+            edit: true
+          },
+          tlang_nl:{
+            list: true,
+            edit: true
+          },
+          tlang_fr:{
+            list: true,
+            edit: true
+          },
+          tlang_en:{
+            list: true,
+            edit: true
+          },
+          tcontact:{
+            list: true,
+            edit: true
+          },
+          tphoto:{
+            list: true,
+            edit: true
+          },
+          tclini:{
+            list: true,
+            edit: true
+          },
+          total_unusedVouchers:{
+            list: true,
+            edit: true
+          },
+          total_unusedVouchers:{
+            list: true,
+            edit: true
+          },
+          pending_users:{
+            list: true,
+            edit: true
+          },
+          total_users:{
+            list: true,
+            edit: true
+          },
+          total_videos:{
+            list: true,
+            edit: true
+          },
+          total_projects:{
+            list: true,
+            edit: true
           }
         },
         actions: {
+          list: {
+            after: async (response, request, context) => { 
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const evt = await DBA.getEventsDetail(r.params['id']);
+                  const properties = await evt.get({ plain: true });
+                  for(let p in properties){
+                    r.params[p] = properties[p];
+                  }
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                console.log(response.record.params.id)
+                const evt = await DBA.getEventsDetail(response.record.params.id);
+                const properties = await evt.get({ plain: true });                
+                for(let p in properties){
+                  response.record.params[p] = properties[p];
+                }
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          },
           setActive: {
             icon: 'View',
             actionType: 'record',
@@ -264,7 +368,7 @@ const adminBroOptions = {
         navigation: projectParent,
         actions: {
           new: {
-          isVisible: false
+            isVisible: false
           }
         }
       }
@@ -289,7 +393,7 @@ const adminBroOptions = {
         },
         actions: {
           new: {
-          isVisible: false
+            isVisible: false
           },
           edit: {
             isVisible: false
