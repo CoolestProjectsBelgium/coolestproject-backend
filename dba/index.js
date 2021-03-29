@@ -773,7 +773,7 @@ class DBA {
      * get active event
      * @returns {Promise<Event>}
      */
-  static async getEventsDetail(eventId) {
+  static async getEventDetail(eventId) {
     return await Event.findByPk(eventId, {
       attributes: {
         include: [

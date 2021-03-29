@@ -178,7 +178,7 @@ const adminBroOptions = {
             after: async (response, request, context) => { 
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
-                  const evt = await DBA.getEventsDetail(r.params['id']);
+                  const evt = await DBA.getEventDetail(r.params['id']);
                   const properties = await evt.get({ plain: true });
                   for(let p in properties){
                     r.params[p] = properties[p];
@@ -194,8 +194,7 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                console.log(response.record.params.id)
-                const evt = await DBA.getEventsDetail(response.record.params.id);
+                const evt = await DBA.getEventDetail(response.record.params.id);
                 const properties = await evt.get({ plain: true });                
                 for(let p in properties){
                   response.record.params[p] = properties[p];
