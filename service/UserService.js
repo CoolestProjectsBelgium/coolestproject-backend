@@ -3,6 +3,11 @@
 const respondWithCode = require('../utils/writer').respondWithCode;
 var DBA = require('../dba');
 
+const models = require('../models');
+const Registration = models.Registration;
+const Token = models.Token;
+const Mail = require('../mailer');
+
 /**
  * Transform internal format to external
  **/
@@ -87,8 +92,20 @@ exports.userinfoPATCH = async function (changed_fields, user) {
 exports.userinfoDELETE = async function (logged_in_user) {
   console.log('delete user log:',logged_in_user);
   try {
-    var u = await DBA.deleteUser(logged_in_user.id);
+    const u = await DBA.deleteUser(logged_in_user.id);
+
+    // unflag the first user in the waiting list & trigger activation mail
+    const otherRegistration = await Registration.findOne({ where: { waiting_list: true, order: [['createdAt', 'ASC']] } });
+    if (otherRegistration) {
+      otherRegistration.waiting_list = false;
+      await otherRegistration.save();    
+      const event = await DBA.getEventActive();
+      const token = await Token.generateRegistrationToken(otherRegistration.id);
+      await Mail.activationMail(otherRegistration, token, event);
+    }
+
     return u;
+
   } catch (ex) {
     console.log('delete user log:',ex);
     throw new respondWithCode(500, {

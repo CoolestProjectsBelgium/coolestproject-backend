@@ -9,8 +9,8 @@ class Azure{
 
     const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
     const containerBlobClient = containerClient.getBlockBlobClient(blobName);
-    await containerBlobClient.delete();
-
+    // we don't care if it exists could be a failed upload
+    await containerBlobClient.deleteIfExists();
   }
   static async generateSAS(blobName, type = 'w', filename=null, url=process.env.URL) {
     
@@ -19,7 +19,7 @@ class Azure{
       { cors: [{ allowedOrigins : url, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
 
     const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
-    containerClient.createIfNotExists();
+    await containerClient.createIfNotExists();
           
     const containerBlobClient = containerClient.getBlockBlobClient(blobName);
   

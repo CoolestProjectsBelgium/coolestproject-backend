@@ -34,6 +34,9 @@ const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
 const Attachment = models.Attachment;
 const AzureBlob = models.AzureBlob;
+const Token = models.Token;
+
+const Mail = require('../mailer');
 // const Attachment = models.Attachment;
 
 
@@ -250,7 +253,8 @@ class DBA {
     if (project) {
       throw new Error('Project found');
     }
-    return await User.destroy({ where: { id: userId } });
+    const result = await User.destroy({ where: { id: userId } });
+    return result; 
   }
 
   /**
@@ -407,10 +411,9 @@ class DBA {
 
         const blobName = uuidv4();
         const containerName = process.env.AZURE_STORAGE_CONTAINER;
-        const sas = await Azure.generateSAS(blobName);
-
+    
         // create AzureBlob & create Attachment
-        await AzureBlob.create({
+        const attachment = await AzureBlob.create({
           container_name: containerName,
           blob_name: blobName,
           size: attachment_fields.size,
@@ -424,6 +427,10 @@ class DBA {
         }, {
           include: [{ association: 'Attachment' }] 
         });
+        if (attachment === null) {
+          throw new Error('Attachment failed');
+        }
+        const sas = await Azure.generateSAS(blobName);
 
         return sas;
       }
@@ -455,8 +462,8 @@ class DBA {
         if (azureInfo === null) {
           throw new Error('No attachment found');
         }
-
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
+
         await Azure.deleteBlob(name);
       }
     );

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       Registration.belongsTo(models.Event, { as: 'event', optional: false });
       Registration.hasMany(models.QuestionRegistration, { as: 'questions' });
     }
-  };
+  }
   Registration.init({
     language: {
       type: DataTypes.ENUM('nl', 'fr', 'en'),

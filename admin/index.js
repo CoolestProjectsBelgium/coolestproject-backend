@@ -6,6 +6,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
+const ProjectTable = db.ProjectTable;
 var DBA = require('../dba');
 const Azure = require('../azure');
 const sequelize = db.sequelize;
@@ -102,75 +103,75 @@ const adminBroOptions = {
           },
           overdue_registration:{
             list: true,
-            edit: true
+            show: true
           },
           waiting_list:{
             list: true,
-            edit: true
+            show: true
           },
           days_remaining:{
             list: true,
-            edit: true
+            show: true
           },
           total_males:{
             list: true,
-            edit: true
+            show: true
           },
           total_females:{
             list: true,
-            edit: true
+            show: true
           },
           total_X:{
             list: true,
-            edit: true
+            show: true
           },
           tlang_nl:{
             list: true,
-            edit: true
+            show: true
           },
           tlang_fr:{
             list: true,
-            edit: true
+            show: true
           },
           tlang_en:{
             list: true,
-            edit: true
+            show: true
           },
           tcontact:{
             list: true,
-            edit: true
+            show: true
           },
           tphoto:{
             list: true,
-            edit: true
+            show: true
           },
           tclini:{
             list: true,
-            edit: true
+            show: true
           },
           total_unusedVouchers:{
             list: true,
-            edit: true
+            show: true
           },
           total_unusedVouchers:{
             list: true,
-            edit: true
+            show: true
           },
           pending_users:{
             list: true,
-            edit: true
+            show: true
           },
           total_users:{
             list: true,
-            edit: true
+            show: true
           },
           total_videos:{
             list: true,
-            edit: true
+            show: true
           },
           total_projects:{
             list: true,
-            edit: true
+            show: true
           }
         },
         actions: {
@@ -310,7 +311,7 @@ const adminBroOptions = {
                 },
               }
             },
-            component: false,
+              
           }
         },
         properties: {
@@ -380,7 +381,7 @@ const adminBroOptions = {
           downloadLink: {
             isVisible: {
               list: true,
-              edit: false,
+              show: true,
               new: false,
               filter: false,
             },
@@ -411,7 +412,19 @@ const adminBroOptions = {
               }));
               return response
             },
-          }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment}] });
+                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                response.record.params['downloadLink'] = sas.url
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          },
         }
       }
     }, 
@@ -504,14 +517,67 @@ const adminBroOptions = {
     {
       resource: db.Table,
       options: {
-        navigation: planningParent
-      }
+        navigation: planningParent,
+        properties:{
+          remainingPlaces: {
+            label: 'remaining places' 
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const remaining = await ProjectTable.sum('UsedPlaces', {
+                    where: {
+                      TableId: r.id
+                    }
+                  });
+                  r.params['remainingPlaces'] = r.params.maxPlaces - remaining 
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const remaining = await ProjectTable.sum('UsedPlaces', {
+                  where: {
+                    TableId: response.record.params.id,
+                    EventId: response.record.params.EventId
+                  }
+                });
+                response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining 
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
+        }
+      }  
     },
     {
       resource: db.ProjectTable,
       options: {
         navigation: planningParent,
         actions: {
+          switch: {
+            actionType: 'record',
+            icon: 'Switch',
+            isVisible: true,
+            handler: async () => {}
+          },
+          plan: {
+            actionType: 'resource',
+            icon: 'Plan',
+            isVisible: true,
+            handler: async () => {}
+          },
           new: {
             actionType: 'resource',
             handler: async (request, response, context) => {

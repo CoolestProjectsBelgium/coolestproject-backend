@@ -3,6 +3,10 @@
 const DBA = require('../dba');
 const respondWithCode = require('../utils/writer').respondWithCode;
 
+const models = require('../models');
+const User = models.User;
+const Registration = models.Registration;
+
 /**
  * get settings for frontend
  *
@@ -16,12 +20,16 @@ exports.settingsGET = async function () {
       message: 'No Active event found'
     });
   }
+  const registration_count = 
+    await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
+
   return {
     startDateEvent: event.startDate.toISOString().substring(0, 10),
     maxAge: event.maxAge,
     minAge: event.minAge,
     guardianAge: event.minGuardianAge,
     tshirtDate: event.startDate.toISOString().substring(0, 10),
-    enviroment: process.env.NODE_ENV
+    enviroment: process.env.NODE_ENV,
+    waitingListActive: (registration_count >= event.maxRegistration)
   };
 };

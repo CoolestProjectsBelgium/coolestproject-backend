@@ -133,6 +133,25 @@ class Mailer {
     });
     return result;
   }
+  static async waitingMail(registration, event) {
+    const result = await email.send({
+      template: path.join(__dirname, '..', 'emails', 'waitingMail'),
+      message: {
+        to: registration.email,
+        cc: registration.email_guardian
+      },
+      locals: {
+        locale: registration.language,
+        registration: {
+          firstname: registration.firstname,
+          email_guardian: registration.email_guardian,
+          year: event.startDate.getFullYear()
+        },
+        website: websiteUrl
+      }
+    });
+    return result;
+  }
   static async activationMail(registration, token, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'activationMail'),
