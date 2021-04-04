@@ -60,6 +60,7 @@ exports.userinfoGET = async function (user) {
   try {
     return await getUserDetails(user);
   } catch (ex) {
+    console.log(ex);
     throw new respondWithCode(500, {
       code: 0,
       message: 'Backend error'
@@ -77,6 +78,7 @@ exports.userinfoPATCH = async function (changed_fields, user) {
     await DBA.updateUser(changed_fields, user.id);
     return await getUserDetails(await DBA.getUser(user.id));
   } catch (ex) {
+    console.log(ex);
     throw new respondWithCode(500, {
       code: 0,
       message: 'Backend error'

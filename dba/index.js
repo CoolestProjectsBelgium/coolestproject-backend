@@ -299,11 +299,7 @@ class DBA {
     return await sequelize.transaction(
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-        if (project) {
-          return false;
-        }
-        const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
-        if (usedVoucher > 0) {
+        if (project !== null) {
           return false;
         }
         return true;
