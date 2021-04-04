@@ -5,7 +5,7 @@ var DBA = require('../dba');
 
 const models = require('../models');
 const Registration = models.Registration;
-const Token = models.Token;
+var Token = require('../jwts');
 const Mail = require('../mailer');
 
 /**
