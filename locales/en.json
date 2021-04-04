@@ -85,5 +85,9 @@
   "If you tried to register yourself, please note that you have already have a Coolest Project. Check your email folder to find the activation or the welcome email to access your project and user information.": "If you tried to register yourself, please note that you have already have a Coolest Project. Check your email folder to find the activation or the welcome email to access your project and user information.",
   "If your link is not working anymore please use the Login button on the main page to ask a new Login token for your email address.": "If your link is not working anymore please use the Login button on the main page to ask a new Login token for your email address.",
   "If your didn't make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.": "If your did not make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.",
-  "Hi": "Hi"
+  "Hi": "Hi",
+  "Welcome to the waiting list": "Welcome to the waiting list",
+  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available",
+  "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, <strong>{{hash.firstname}}</strong>",
+  "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}"
 }

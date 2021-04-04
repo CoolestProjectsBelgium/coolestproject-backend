@@ -95,7 +95,7 @@ exports.userinfoDELETE = async function (logged_in_user) {
     const u = await DBA.deleteUser(logged_in_user.id);
 
     // unflag the first user in the waiting list & trigger activation mail
-    const otherRegistration = await Registration.findOne({ where: { waiting_list: true, order: [['createdAt', 'ASC']] } });
+    const otherRegistration = await Registration.findOne({ where: { waiting_list: true }, order: [['createdAt', 'ASC']]  });
     if (otherRegistration) {
       otherRegistration.waiting_list = false;
       await otherRegistration.save();    

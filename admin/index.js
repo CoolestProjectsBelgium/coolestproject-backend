@@ -281,6 +281,7 @@ const adminBroOptions = {
             label: 'Resend confirmation mail',
             icon: 'fas fa-envelope',
             isVisible: true,
+            component: false,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
                 throw new NotFoundError([
