@@ -79,7 +79,7 @@
   "If your didn't make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.": "Als u zelf geen nieuw registratieverzoek heeft gedaan, kunt u deze e-mail gerust negeren. Er is geen risico dat uw inschrijving is overgenomen. Deel nooit links die u van ons heeft ontvangen met iemand anders.",
   "Hi": "Hi",
   "Welcome to the waiting list": "Welcome to the waiting list",
-  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available",
+  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "Je staat op een wachtlijst, dit betekent dat je een activatiemail krijgt als er een plek vrijkomt",
   "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, <strong>{{hash.firstname}}</strong>",
   "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}"
 }
