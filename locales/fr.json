@@ -92,7 +92,7 @@
   "If your didn't make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.": "Si vous n´avez pas fait de nouvelle demande d´inscription vous-même, vous pouvez ignorer ce courriel en toute sécurité. Il n´y a aucun risque  que votre enregistrement a été repris. Ne partagez jamais les liens que vous avez reçus de notre part avec quelqu´un d´autre.",
   "Hi": "Hi",
   "Welcome to the waiting list": "Welcome to the waiting list",
-  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available",
+  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "Vous êtes sur une liste d'attente, cela signifie que vous recevrez un mail d'activation lorsqu'une place sera disponible",
   "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, <strong>{{hash.firstname}}</strong>",
   "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}"
 }
