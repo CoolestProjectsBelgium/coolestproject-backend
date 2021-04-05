@@ -30,6 +30,7 @@ exports.settingsGET = async function () {
     guardianAge: event.minGuardianAge,
     tshirtDate: event.startDate.toISOString().substring(0, 10),
     enviroment: process.env.NODE_ENV,
-    waitingListActive: (registration_count >= event.maxRegistration)
+    waitingListActive: (registration_count >= event.maxRegistration),
+    maxUploadSize: event.maxFileSize  || 1024 * 1024 * 1024 * 5, // 5 gigs in bytes
   };
 };

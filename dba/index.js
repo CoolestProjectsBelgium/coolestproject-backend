@@ -34,11 +34,6 @@ const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
 const Attachment = models.Attachment;
 const AzureBlob = models.AzureBlob;
-const Token = models.Token;
-
-const Mail = require('../mailer');
-// const Attachment = models.Attachment;
-
 
 class DBA {
   /**
@@ -403,6 +398,14 @@ class DBA {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
         if (project === null) {
           throw new Error('No project found');
+        }
+
+        // do some simple "validations"
+        // this just checks if the provided files size is bigger than the allowed one 
+        // this is user input, you need to validate this later on (TODO look into azure blob hooks)
+        const event = await project.getEvent();
+        if(attachment_fields.size >  event.maxFileSize){
+          throw new Error('File validation failed');
         }
 
         const blobName = uuidv4();

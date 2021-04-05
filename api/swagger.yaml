@@ -545,6 +545,8 @@ definitions:
         type: "string"
       waitingListActive:
         type: "boolean"
+      maxUploadSize:
+        type: "integer"
   Tshirt:
     type: "array"
     items:

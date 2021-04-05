@@ -367,9 +367,50 @@ const adminBroOptions = {
       resource: db.Attachment,
       options: {
         navigation: projectParent,
+        properties: {      
+          downloadLink: {
+            isVisible: {
+              list: true,
+              show: true,
+              new: false,
+              filter: false,
+            },
+            components: {
+              list: AdminBro.bundle('./components/file'),
+              show: AdminBro.bundle('./components/file'),  
+            },  
+          }
+        },
         actions: {
           new: {
             isVisible: false
+          },
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob}] });
+                  const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                  r.params['downloadLink'] = sas.url
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob}] });
+                const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                response.record.params['downloadLink'] = sas.url
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
           }
         }
       }
