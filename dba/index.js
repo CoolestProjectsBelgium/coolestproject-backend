@@ -403,7 +403,7 @@ class DBA {
         // do some simple "validations"
         // this just checks if the provided files size is bigger than the allowed one 
         // this is user input, you need to validate this later on (TODO look into azure blob hooks)
-        const event = await project.getEvent();
+        const event = project.getEvent();
         if(attachment_fields.size >  event.maxFileSize){
           throw new Error('File validation failed');
         }

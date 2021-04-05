@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     current: DataTypes.BOOLEAN,
     startDate: DataTypes.DATE,
     event_title: DataTypes.STRING(25),
-    maxFileSize: DataTypes.INTEGER(12)
+    maxFileSize: DataTypes.BIGINT(20)
   }, {
     sequelize,
     modelName: 'Event',
