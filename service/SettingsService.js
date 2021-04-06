@@ -16,11 +16,11 @@ exports.settingsGET = async function (user) {
   
   let event = null;
   if(user){
-    event = user.getEvent();
+    event = await user.getEvent();
   } else {
     event = await DBA.getEventActive();
   }
-  
+
   if (!event) {
     throw new respondWithCode(404, {
       code: 0,

@@ -12,7 +12,7 @@ exports.tshirtGET = async function (language, user) {
   try {
     let event = null;
     if (user) {
-      event = user.getEvent();
+      event = await user.getEvent();
     } else {
       event = await DBA.getEventActive();
     }
