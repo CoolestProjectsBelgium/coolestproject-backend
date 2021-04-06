@@ -824,11 +824,7 @@ class DBA {
      * get active event
      * @returns {Promise<TShirt>}
      */
-  static async getTshirts(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getTshirts(language, event) {
     return await TShirt.findAll({
       attributes: ['id', 'name'],
       include: [
@@ -851,11 +847,7 @@ class DBA {
      * get questions
      * @returns {Promise<object>}
      */
-  static async getQuestions(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getQuestions(language, event) {
     const optionalQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: process.env.LANG }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]

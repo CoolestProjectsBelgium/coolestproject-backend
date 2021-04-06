@@ -4,7 +4,8 @@ var utils = require('../utils/writer.js');
 var Settings = require('../service/SettingsService');
 
 module.exports.settingsGET = function settingsGET (req, res, next) {
-  Settings.settingsGET()
+  const user = req.user;
+  Settings.settingsGET(user)
     .then(function (response) {
       utils.writeJson(res, response);
     })

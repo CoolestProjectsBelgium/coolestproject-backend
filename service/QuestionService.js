@@ -8,10 +8,15 @@ const respondWithCode = require('../utils/writer').respondWithCode;
  *
  * returns Settings
  **/
-exports.questionGET = async function (language) {
+exports.questionGET = async function (language, user) {
   try {
-    const questions = await DBA.getQuestions(language.substring(0, 2));
-    return questions;
+    let event = null;
+    if(user){
+      event = user.getEvent();
+    } else {
+      event = await DBA.getEventActive();
+    }
+    return await DBA.getQuestions(language.substring(0, 2), event);
   } catch (error) {
     console.log(error);
     throw new respondWithCode(500, {
