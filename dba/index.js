@@ -872,11 +872,7 @@ class DBA {
      * get approvals
      * @returns {Promise<object>}
      */
-  static async getApprovals(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getApprovals(language, event) {
     const mandatoryQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description'] }]

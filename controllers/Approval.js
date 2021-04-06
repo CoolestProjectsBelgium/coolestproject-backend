@@ -5,7 +5,8 @@ var Approvals = require('../service/ApprovalService');
 
 module.exports.approvalGET = function approvalGET(req, res, next) {
   const l = req.language;
-  Approvals.approvalGET(l)
+  const user = req.user;
+  Approvals.approvalGET(l, user)
     .then(function (response) {
       utils.writeJson(res, response);
     })

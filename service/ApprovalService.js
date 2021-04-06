@@ -8,9 +8,15 @@ const respondWithCode = require('../utils/writer').respondWithCode;
  *
  * returns Settings
  **/
-exports.approvalGET = async function (l) {
+exports.approvalGET = async function (l, user) {
   try {
-    return await DBA.getApprovals(l);
+    let event = null;
+    if(user){
+      event = await user.getEvent();
+    } else {
+      event = await DBA.getEventActive();
+    }
+    return await DBA.getApprovals(l, event);
   } catch (error) {
     throw new respondWithCode(500, {
       code: 0,

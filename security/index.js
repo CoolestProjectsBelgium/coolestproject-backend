@@ -84,6 +84,7 @@ module.exports = function (app) {
   app.use('/questions', passport.authenticate(['jwt', 'anonymous']));
   app.use('/tshirts', passport.authenticate(['jwt', 'anonymous']));
   app.use('/settings', passport.authenticate(['jwt', 'anonymous']));
+  app.use('/approvals', passport.authenticate(['jwt', 'anonymous']));
 };
 
 
