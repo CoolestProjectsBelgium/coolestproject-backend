@@ -547,6 +547,8 @@ definitions:
         type: "boolean"
       maxUploadSize:
         type: "integer"
+      isActive:
+        type: "boolean"
   Tshirt:
     type: "array"
     items:

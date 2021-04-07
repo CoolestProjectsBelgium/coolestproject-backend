@@ -39,5 +39,6 @@ exports.settingsGET = async function (user) {
     enviroment: process.env.NODE_ENV,
     waitingListActive: (registration_count >= event.maxRegistration),
     maxUploadSize: event.maxFileSize  || 1024 * 1024 * 1024 * 5, // 5 gigs in bytes
+    isActive: event.current
   };
 };
