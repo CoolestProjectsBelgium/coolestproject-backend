@@ -672,7 +672,7 @@ class DBA {
      * @param {String} email
      * @returns {Promise<User>}
      */
-  static async getUsersViaMail(email, event) {
+  static async getUsersViaMail(email) {
     return await User.findAll({
       where: {
         [Op.or]: [
@@ -682,8 +682,7 @@ class DBA {
           {
             email_guardian: email
           }
-        ],
-        eventId: event.id
+        ]
       }
     });
   }

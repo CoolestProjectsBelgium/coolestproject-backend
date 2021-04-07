@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: 'QuestionId'
       });
     }
-  };
+  }
   User.init({
     language: {
       type: DataTypes.ENUM('nl', 'fr', 'en'),

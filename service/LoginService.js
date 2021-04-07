@@ -13,11 +13,8 @@ var Mail = require('../mailer');
  * get user & send login token via mail
  **/
 exports.mailLoginPOST = async function (login) {
-  logger.info('login requested for: ' + login.email);
-  const event = await DBA.getEventActive();
   try {
-    console.log('Event:',event);
-    var users = await DBA.getUsersViaMail(login.email, event);
+    var users = await DBA.getUsersViaMail(login.email);
     for (const user of users) {
       logger.info('user found: ' + user.id);
       // only one token every n seconds
@@ -29,6 +26,7 @@ exports.mailLoginPOST = async function (login) {
         // generate new token for user
         await DBA.updateLastToken(user.id);
         const token = await Token.generateLoginToken(user.id);
+        const event = await user.getEvent();
         await Mail.ask4TokenMail(user, token, event);
       } else {
         logger.info('Token requested but time is not passed yet: ' + user.email);
