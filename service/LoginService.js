@@ -17,6 +17,10 @@ exports.mailLoginPOST = async function (login) {
     var users = await DBA.getUsersViaMail(login.email);
     for (const user of users) {
       logger.info('user found: ' + user.id);
+      const event = await user.getEvent();
+      if (event.closed) {
+        throw Error('event is closed');
+      }
       // only one token every n seconds
       var tokenTime = -1;
       if (user.last_token !== null) {
@@ -26,7 +30,6 @@ exports.mailLoginPOST = async function (login) {
         // generate new token for user
         await DBA.updateLastToken(user.id);
         const token = await Token.generateLoginToken(user.id);
-        const event = await user.getEvent();
         await Mail.ask4TokenMail(user, token, event);
       } else {
         logger.info('Token requested but time is not passed yet: ' + user.email);

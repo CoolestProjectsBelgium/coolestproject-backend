@@ -33,6 +33,10 @@ module.exports = function (app) {
         if (!user) {
           return done('User not found', false);
         }
+        const event = await user.getEvent();
+        if (event.closed) {
+          return done('Event is closed', false);
+        }
 
         // create user
       } else if (jwt_payload.registrationId !== undefined) {
@@ -41,6 +45,9 @@ module.exports = function (app) {
           return done('User not found', false);
         }
         const event = await user.getEvent();
+        if (event.closed) {
+          return done('Event is closed', false);
+        }
         const token = await Token.generateLoginToken(user.id);
         const project = await DBA.getProject(user.id);
 

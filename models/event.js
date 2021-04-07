@@ -39,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     total_unusedVouchers: DataTypes.VIRTUAL,
     total_usedVouchers: DataTypes.VIRTUAL,
     current: DataTypes.BOOLEAN,
+    closed: DataTypes.BOOLEAN,
     startDate: DataTypes.DATE,
     event_title: DataTypes.STRING(25),
     maxFileSize: DataTypes.BIGINT(20)
