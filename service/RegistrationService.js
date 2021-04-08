@@ -27,6 +27,8 @@ exports.registerPOST = async function (registration_fields) {
       if(!registration.waiting_list){
         const token = await Token.generateRegistrationToken(registration.id);
         Mail.activationMail(registration, token, event);
+      } else {
+        Mail.waitingMail(registration, event);
       }
     }
     else { //send emailExistsMail

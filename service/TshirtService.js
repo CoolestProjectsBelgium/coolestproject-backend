@@ -8,10 +8,24 @@ const respondWithCode = require('../utils/writer').respondWithCode;
  *
  * returns TShirts
  **/
-exports.tshirtGET = async function (language) {
+exports.tshirtGET = async function (language, user) {
   try {
-    const tshirts = await DBA.getTshirts(language);
+    let event = null;
+    if (user) {
+      event = await user.getEvent();
+    } else {
+      event = await DBA.getEventActive();
+    }
+
+    if (event === null) {
+      throw new Error('No event found');
+    }
+
+    const tshirts = await DBA.getTshirts(language, event);
     const groups = await DBA.getTshirtsGroups(language);
+    if (tshirts === null || groups === null) {
+      throw new Error('No Tshirts found');
+    }
 
     // loop over group
     const result = groups.map((group) => {
@@ -34,6 +48,7 @@ exports.tshirtGET = async function (language) {
       return { group: key, items: items };
     });
     return result;
+
   } catch (error) {
     console.log(error);
     throw new respondWithCode(500, {

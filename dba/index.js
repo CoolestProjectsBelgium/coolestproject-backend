@@ -34,8 +34,6 @@ const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
 const Attachment = models.Attachment;
 const AzureBlob = models.AzureBlob;
-// const Attachment = models.Attachment;
-
 
 class DBA {
   /**
@@ -250,7 +248,8 @@ class DBA {
     if (project) {
       throw new Error('Project found');
     }
-    return await User.destroy({ where: { id: userId } });
+    const result = await User.destroy({ where: { id: userId } });
+    return result; 
   }
 
   /**
@@ -295,11 +294,7 @@ class DBA {
     return await sequelize.transaction(
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
-        if (!project) {
-          return true;
-        }
-        const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
-        if (usedVoucher > 0) {
+        if (project !== null) {
           return false;
         }
         return true;
@@ -405,12 +400,19 @@ class DBA {
           throw new Error('No project found');
         }
 
+        // do some simple "validations"
+        // this just checks if the provided files size is bigger than the allowed one 
+        // this is user input, you need to validate this later on (TODO look into azure blob hooks)
+        const event = project.getEvent();
+        if(attachment_fields.size >  event.maxFileSize){
+          throw new Error('File validation failed');
+        }
+
         const blobName = uuidv4();
         const containerName = process.env.AZURE_STORAGE_CONTAINER;
-        const sas = await Azure.generateSAS(blobName);
-
+    
         // create AzureBlob & create Attachment
-        await AzureBlob.create({
+        const attachment = await AzureBlob.create({
           container_name: containerName,
           blob_name: blobName,
           size: attachment_fields.size,
@@ -424,6 +426,10 @@ class DBA {
         }, {
           include: [{ association: 'Attachment' }] 
         });
+        if (attachment === null) {
+          throw new Error('Attachment failed');
+        }
+        const sas = await Azure.generateSAS(blobName);
 
         return sas;
       }
@@ -455,8 +461,8 @@ class DBA {
         if (azureInfo === null) {
           throw new Error('No attachment found');
         }
-
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
+
         await Azure.deleteBlob(name);
       }
     );
@@ -666,7 +672,7 @@ class DBA {
      * @param {String} email
      * @returns {Promise<User>}
      */
-  static async getUsersViaMail(email, event) {
+  static async getUsersViaMail(email) {
     return await User.findAll({
       where: {
         [Op.or]: [
@@ -676,8 +682,7 @@ class DBA {
           {
             email_guardian: email
           }
-        ],
-        eventId: event.id
+        ]
       }
     });
   }
@@ -769,6 +774,37 @@ class DBA {
     });
   }
 
+  /**
+     * get active event
+     * @returns {Promise<Event>}
+     */
+  static async getEventDetail(eventId) {
+    return await Event.findByPk(eventId, {
+      attributes: {
+        include: [
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
+          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 1)'), 'tphoto'],
+          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 2)'), 'tcontact'],
+          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 4)'), 'tclini'],
+          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments)'), 'total_videos'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'f\')'), 'total_females'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'x\')'), 'total_X'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'nl\')'), 'tlang_nl'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'fr\')'), 'tlang_fr'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'en\')'), 'tlang_en'],
+          [sequelize.literal('DATEDIFF(startDate, CURDATE())'), 'days_remaining'],
+          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = eventId)'), 'total_projects'],
+          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = eventId and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
+        ]
+      }
+    });
+  }
+
   static async getTshirtsGroups(language) {
     return await TShirtGroup.findAll({
       attributes: ['id', 'name'],
@@ -787,11 +823,7 @@ class DBA {
      * get active event
      * @returns {Promise<TShirt>}
      */
-  static async getTshirts(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getTshirts(language, event) {
     return await TShirt.findAll({
       attributes: ['id', 'name'],
       include: [
@@ -814,11 +846,7 @@ class DBA {
      * get questions
      * @returns {Promise<object>}
      */
-  static async getQuestions(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getQuestions(language, event) {
     const optionalQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: process.env.LANG }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]
@@ -843,11 +871,7 @@ class DBA {
      * get approvals
      * @returns {Promise<object>}
      */
-  static async getApprovals(language) {
-    const event = await this.getEventActive();
-    if (event === null) {
-      throw new Error('No event found');
-    }
+  static async getApprovals(language, event) {
     const mandatoryQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description'] }]

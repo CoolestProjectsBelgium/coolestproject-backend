@@ -6,6 +6,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('../models');
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
+const ProjectTable = db.ProjectTable;
 var DBA = require('../dba');
 const Azure = require('../azure');
 const sequelize = db.sequelize;
@@ -93,15 +94,118 @@ const adminBroOptions = {
       resource: db.Event,
       options: {
         navigation: eventParent,
-        listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
-                        'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
+        //listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
+        //                'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
         properties:{
           event_title: {
             isTitle:true,
             label: 'event' 
+          },
+          overdue_registration:{
+            list: true,
+            show: true
+          },
+          waiting_list:{
+            list: true,
+            show: true
+          },
+          days_remaining:{
+            list: true,
+            show: true
+          },
+          total_males:{
+            list: true,
+            show: true
+          },
+          total_females:{
+            list: true,
+            show: true
+          },
+          total_X:{
+            list: true,
+            show: true
+          },
+          tlang_nl:{
+            list: true,
+            show: true
+          },
+          tlang_fr:{
+            list: true,
+            show: true
+          },
+          tlang_en:{
+            list: true,
+            show: true
+          },
+          tcontact:{
+            list: true,
+            show: true
+          },
+          tphoto:{
+            list: true,
+            show: true
+          },
+          tclini:{
+            list: true,
+            show: true
+          },
+          total_unusedVouchers:{
+            list: true,
+            show: true
+          },
+          total_unusedVouchers:{
+            list: true,
+            show: true
+          },
+          pending_users:{
+            list: true,
+            show: true
+          },
+          total_users:{
+            list: true,
+            show: true
+          },
+          total_videos:{
+            list: true,
+            show: true
+          },
+          total_projects:{
+            list: true,
+            show: true
           }
         },
         actions: {
+          list: {
+            after: async (response, request, context) => { 
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const evt = await DBA.getEventDetail(r.params['id']);
+                  const properties = await evt.get({ plain: true });
+                  for(let p in properties){
+                    r.params[p] = properties[p];
+                  }
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const evt = await DBA.getEventDetail(response.record.params.id);
+                const properties = await evt.get({ plain: true });                
+                for(let p in properties){
+                  response.record.params[p] = properties[p];
+                }
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          },
           setActive: {
             icon: 'View',
             actionType: 'record',
@@ -177,6 +281,7 @@ const adminBroOptions = {
             label: 'Resend confirmation mail',
             icon: 'fas fa-envelope',
             isVisible: true,
+            component: false,
             handler: async (request, response, data) => {
               if (!request.params.recordId || !data.record) {
                 throw new NotFoundError([
@@ -207,7 +312,7 @@ const adminBroOptions = {
                 },
               }
             },
-            component: false,
+              
           }
         },
         properties: {
@@ -262,9 +367,50 @@ const adminBroOptions = {
       resource: db.Attachment,
       options: {
         navigation: projectParent,
+        properties: {      
+          downloadLink: {
+            isVisible: {
+              list: true,
+              show: true,
+              new: false,
+              filter: false,
+            },
+            components: {
+              list: AdminBro.bundle('./components/file'),
+              show: AdminBro.bundle('./components/file'),  
+            },  
+          }
+        },
         actions: {
           new: {
-          isVisible: false
+            isVisible: false
+          },
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob}] });
+                  const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                  r.params['downloadLink'] = sas.url
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob}] });
+                const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                response.record.params['downloadLink'] = sas.url
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
           }
         }
       }
@@ -277,7 +423,7 @@ const adminBroOptions = {
           downloadLink: {
             isVisible: {
               list: true,
-              edit: false,
+              show: true,
               new: false,
               filter: false,
             },
@@ -289,7 +435,7 @@ const adminBroOptions = {
         },
         actions: {
           new: {
-          isVisible: false
+            isVisible: false
           },
           edit: {
             isVisible: false
@@ -308,7 +454,19 @@ const adminBroOptions = {
               }));
               return response
             },
-          }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment}] });
+                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                response.record.params['downloadLink'] = sas.url
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          },
         }
       }
     }, 
@@ -401,14 +559,67 @@ const adminBroOptions = {
     {
       resource: db.Table,
       options: {
-        navigation: planningParent
-      }
+        navigation: planningParent,
+        properties:{
+          remainingPlaces: {
+            label: 'remaining places' 
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const remaining = await ProjectTable.sum('UsedPlaces', {
+                    where: {
+                      TableId: r.id
+                    }
+                  });
+                  r.params['remainingPlaces'] = r.params.maxPlaces - remaining 
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const remaining = await ProjectTable.sum('UsedPlaces', {
+                  where: {
+                    TableId: response.record.params.id,
+                    EventId: response.record.params.EventId
+                  }
+                });
+                response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining 
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
+        }
+      }  
     },
     {
       resource: db.ProjectTable,
       options: {
         navigation: planningParent,
         actions: {
+          switch: {
+            actionType: 'record',
+            icon: 'Switch',
+            isVisible: true,
+            handler: async () => {}
+          },
+          plan: {
+            actionType: 'resource',
+            icon: 'Plan',
+            isVisible: true,
+            handler: async () => {}
+          },
           new: {
             actionType: 'resource',
             handler: async (request, response, context) => {

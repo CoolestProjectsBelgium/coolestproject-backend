@@ -543,6 +543,12 @@ definitions:
         format: "date"
       enviroment:
         type: "string"
+      waitingListActive:
+        type: "boolean"
+      maxUploadSize:
+        type: "integer"
+      isActive:
+        type: "boolean"
   Tshirt:
     type: "array"
     items:

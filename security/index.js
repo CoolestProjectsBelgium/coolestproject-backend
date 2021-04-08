@@ -33,6 +33,10 @@ module.exports = function (app) {
         if (!user) {
           return done('User not found', false);
         }
+        const event = await user.getEvent();
+        if (event.closed) {
+          return done(null, false,  { message: 'Event is closed no login possible' });
+        }
 
         // create user
       } else if (jwt_payload.registrationId !== undefined) {
@@ -41,6 +45,9 @@ module.exports = function (app) {
           return done('User not found', false);
         }
         const event = await user.getEvent();
+        if (event.closed) {
+          return done(null, false,  { message: 'Event is closed no login possible' });
+        }
         const token = await Token.generateLoginToken(user.id);
         const project = await DBA.getProject(user.id);
 
@@ -83,6 +90,8 @@ module.exports = function (app) {
   //optional
   app.use('/questions', passport.authenticate(['jwt', 'anonymous']));
   app.use('/tshirts', passport.authenticate(['jwt', 'anonymous']));
+  app.use('/settings', passport.authenticate(['jwt', 'anonymous']));
+  app.use('/approvals', passport.authenticate(['jwt', 'anonymous']));
 };
 
 

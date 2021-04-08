@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Event.hasMany(models.Question);
     }
-  };
+  }
   Event.init({
     azure_storage_container: DataTypes.STRING(20),
     minAge: DataTypes.INTEGER,
@@ -39,8 +39,10 @@ module.exports = (sequelize, DataTypes) => {
     total_unusedVouchers: DataTypes.VIRTUAL,
     total_usedVouchers: DataTypes.VIRTUAL,
     current: DataTypes.BOOLEAN,
+    closed: DataTypes.BOOLEAN,
     startDate: DataTypes.DATE,
-    event_title: DataTypes.STRING(25)
+    event_title: DataTypes.STRING(25),
+    maxFileSize: DataTypes.BIGINT(20)
   }, {
     sequelize,
     modelName: 'Event',
