@@ -35,7 +35,7 @@ module.exports = function (app) {
         }
         const event = await user.getEvent();
         if (event.closed) {
-          return done('Event is closed', false);
+          return done(null, false,  { message: 'Event is closed no login possible' });
         }
 
         // create user
@@ -46,7 +46,7 @@ module.exports = function (app) {
         }
         const event = await user.getEvent();
         if (event.closed) {
-          return done('Event is closed', false);
+          return done(null, false,  { message: 'Event is closed no login possible' });
         }
         const token = await Token.generateLoginToken(user.id);
         const project = await DBA.getProject(user.id);
