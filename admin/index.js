@@ -401,7 +401,11 @@ const adminBroOptions = {
       resource: db.Attachment,
       options: {
         navigation: projectParent,
-        properties: {      
+        properties: { 
+          id: {
+            isTitle:true,
+            label: 'id' 
+          },     
           downloadLink: {
             isVisible: {
               list: true,
