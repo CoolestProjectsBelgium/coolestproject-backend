@@ -206,6 +206,35 @@ const adminBroOptions = {
               return response;
             }
           },
+          syncAzureSettings: {
+            actionType: 'record',
+            label: 'Sync Azure',
+            icon: 'fas fa-envelope',
+            component: false,
+            handler: async (request, response, data) => {
+              const { record, resource, currentAdmin, h } = data
+              try {
+                const evt = await DBA.getEventDetail(request.params.recordId);
+                await Azure.syncSetting(evt);
+                return {
+                  record: record.toJSON(currentAdmin),
+                  redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
+                  notice: {
+                    message: `Sync Azure settings for ${evt.id}`,
+                    type: 'success',
+                  },
+                }
+              } catch (error) {
+                return {
+                  record: data.record.toJSON(data.currentAdmin),
+                  notice: {
+                    message: error,
+                    type: 'error',
+                  },
+                }
+              }
+            }
+          },
           setActive: {
             icon: 'View',
             actionType: 'record',
@@ -223,7 +252,13 @@ const adminBroOptions = {
                   },
                 }
               } catch (error) {
-                throw error
+                return {
+                  record: data.record.toJSON(data.currentAdmin),
+                  notice: {
+                    message: error,
+                    type: 'error',
+                  },
+                }
               }
             }
           }
@@ -312,7 +347,6 @@ const adminBroOptions = {
                 },
               }
             },
-              
           }
         },
         properties: {
