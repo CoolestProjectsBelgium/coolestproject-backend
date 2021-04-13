@@ -414,7 +414,13 @@ const adminBroOptions = {
           id: {
             isTitle:true,
             label: 'id' 
-          },     
+          },
+          azureExists: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          },   
           downloadLink: {
             isVisible: {
               list: true,
@@ -439,6 +445,7 @@ const adminBroOptions = {
                   const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob}] });
                   const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                   r.params['downloadLink'] = sas.url
+                  r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
                 } catch (error) {
                   //ignore
                 }
@@ -453,6 +460,7 @@ const adminBroOptions = {
                 const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob}] });
                 const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
+                r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
               } catch (error) {
                 console.log(error)
               }
