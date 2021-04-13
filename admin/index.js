@@ -369,10 +369,10 @@ const adminBroOptions = {
         navigation: projectParent,
         properties: {
           internalinfo: { type: 'richtext' },
-            project_name: {
-              isTitle:true,
-              label: 'project' 
-            }
+          project_name: {
+            isTitle:true,
+            label: 'project' 
+          }
         }
       }
     },

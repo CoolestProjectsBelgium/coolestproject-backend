@@ -4,38 +4,37 @@ const express = require('express');
 const models = require('../models');
 const Project = models.Project;
 
-var router = express.Router()
+var router = express.Router();
 
 router.get('/projects.xml', async function (req, res) {
-    res.set('Content-Type', 'text/xml');
+  res.set('Content-Type', 'text/xml');
 
-    const { create } = require('xmlbuilder');
-    var root = create('projects.xml');
+  const { create } = require('xmlbuilder');
+  var root = create('projects.xml');
 
-    var projects = await Project.findAll();
-    for(project of projects){
-        let link = null
-        const attach = await project.getAttachments();
-        for(a of attach){
-            const hyper = await a.getHyperlink();
-            if(hyper){
-                link =  hyper.get('href')
-            }
-        }
-        
-        root.root().ele('project',  {'ProjectName': project.get('project_name'),
-                                    'ProjectID': project.get('ProjectID'),
-                                    'participants': project.get('participants'),
-                                    'link': link,
-                                    'Description': project.get('project_descr')
-                                    }
-                                );
+  var projects = await Project.findAll();
+  for(let project of projects){
+    let link = null;
+    const attach = await project.getAttachments();
+    for(let a of attach){
+      const hyper = await a.getHyperlink();
+      if(hyper){
+        link =  hyper.get('href');
+      }
     }
-    const xml = root.end({ pretty: true});
-    res.send(xml)
-})
+        
+    root.root().ele('project',  {'ProjectName': project.get('project_name'),
+      'ProjectID': project.get('ProjectID'),
+      'participants': project.get('participants'),
+      'link': link,
+      'Description': project.get('project_descr')}
+    );
+  }
+  const xml = root.end({ pretty: true});
+  res.send(xml);
+});
 
-module.exports = router
+module.exports = router;
 /*
 router.get('/projectsNew.xml', async function (req, res) {
     res.set('Content-Type', 'text/xml');

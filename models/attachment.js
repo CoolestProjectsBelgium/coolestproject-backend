@@ -26,7 +26,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Attachment',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    indexes: [
+      {
+        unique: true,
+        fields: ['ProjectId', 'confirmed']
+      }
+    ]
   });
   return Attachment;
 };

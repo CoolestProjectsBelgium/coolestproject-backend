@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       VoteCategory.belongsTo(models.Event, { as: 'event', optional: false });
     }
-  };
+  }
   VoteCategory.init({
     name: { type: DataTypes.CHAR(15), unique: true },
     min: { type: DataTypes.INTEGER },
