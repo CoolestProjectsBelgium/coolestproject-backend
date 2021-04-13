@@ -522,7 +522,13 @@ const adminBroOptions = {
       options: {
         navigation: projectParent
     }
-  },
+    },
+    {
+      resource: db.Hyperxlink,
+      options: {
+        navigation: projectParent
+    }
+    },
     {
       resource: db.Vote,
       options: {
