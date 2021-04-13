@@ -3,7 +3,9 @@
 const express = require('express');
 const models = require('../models');
 const Project = models.Project;
-const Video = models.Videoload;
+const Attachment = models.Attachment;
+const Hyperlink = models.Hyperlink;
+const User = models.User;
 
 var router = express.Router();
 
@@ -12,53 +14,26 @@ router.get('/projects.xml', async function (req, res) {
 
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
-  //var video = await Video.getAll();
-  var projects = await Project.findAll();
+
+  var projects = await Project.findAll(
+    {include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+  
   for(let project of projects){
-    let link = null;
-    const attach = await project.getAttachments();
-    for(let a of attach){
-      const hyper = await a.getHyperlink();
-      if(hyper){
-        link =  hyper.get('href');
-      }
-    }
-        
-    root.root().ele('project',  {'ProjectName': project.get('project_name'),
+    let owner = await project.getOwner()
+    let participants = await project.getParticipant()
+    
+    root.root().ele('project',  {
+      'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
-      'participants': project.get('participants'),
-      'link': link,
+      'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(','),
+      'link': project.getAttachments()[0]?.getHyperlink()?.get('href'),
       'Description': project.get('project_descr')
     }
     );
   }
   const xml = root.end({ pretty: true});
   res.send(xml);
+  
 });
 
 module.exports = router;
-/*
-router.get('/projectsNew.xml', async function (req, res) {
-    res.set('Content-Type', 'text/xml');
-
-    const { create } = require('xmlbuilder');
-    var root = create('projectsNew.xml');
-
-    var projects = await dba.getProjects();
-    for(project of projects){
-        root.root().ele('project',  {'ProjectName': project.get('project_name'),
-                                    'ProjectID': project.get('ProjectID'),
-                                    'participants': project.get('participants'),
-                                    //'link': process.env.GOOGLE_LINK + '&t=' + project.get('OFFSET') + 's',
-                                    'Description': project.get('project_descr')
-                                    }
-                                );
-    }
-    const xml = root.end({ pretty: true});
-    res.send(xml)
-})
-
-module.exports = router
-
-*/
-
