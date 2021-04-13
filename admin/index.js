@@ -398,6 +398,15 @@ const adminBroOptions = {
       }
     },
     {
+      resource: db.Certificate,
+      options: {
+        navigation: projectParent,
+        properties: {
+          text: { type: 'richtext' }
+        }
+      }
+    },
+    {
       resource: db.Attachment,
       options: {
         navigation: projectParent,
