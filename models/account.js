@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
 
     verifyPassword(password) {
       return bcrypt.compareSync(password, this.password);
-    };
+    }
 
     static associate(models) {
       // define association here
     }
-  };
+  }
   Account.init({
     email: {
       type: DataTypes.STRING(100),

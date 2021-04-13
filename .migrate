@@ -1,0 +1,29 @@
+{
+  "lastRun": "20210317175943-upload.js",
+  "migrations": [
+    {
+      "title": "20210317175943-upload.js",
+      "timestamp": 1618299499323
+    },
+    {
+      "title": "202103181415000-tshirtSize.js",
+      "timestamp": null
+    },
+    {
+      "title": "202103181420000-videoloads.js",
+      "timestamp": null
+    },
+    {
+      "title": "202103181520000-useronly.js",
+      "timestamp": null
+    },
+    {
+      "title": "20210404092232-filesize.js",
+      "timestamp": null
+    },
+    {
+      "title": "20210413072214-certificate.js",
+      "timestamp": null
+    }
+  ]
+}
