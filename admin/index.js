@@ -599,6 +599,26 @@ const adminBroOptions = {
         }
       }  
     },
+    { 
+      resource: db.userprojectvideo, 
+      options: {
+        name: "Alle projecten met youtube link",
+        parent: reportParent,
+        actions: {
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      } 
+    },
     
     {
       resource: db.Table,

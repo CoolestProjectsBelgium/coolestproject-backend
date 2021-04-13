@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const UserProjectVideo = sequelize.define('ShowAttachmentLoaded', {
+  const AttachmentLoaded = sequelize.define('ShowAttachmentLoaded', {
 
     ProjectId: {
       type: DataTypes.STRING,
@@ -31,5 +31,5 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     timestamps: false
   });
-  return UserProjectVideo;
+  return AttachmentLoaded ;
 };
