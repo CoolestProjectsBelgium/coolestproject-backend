@@ -14,10 +14,10 @@ router.get('/projects.xml', async function (req, res) {
   var root = create('projects.xml');
   //var video = await Video.getAll();
   var projects = await Project.findAll();
-  for(project of projects){
+  for(let project of projects){
     let link = null;
     const attach = await project.getAttachments();
-    for(a of attach){
+    for(let a of attach){
       const hyper = await a.getHyperlink();
       if(hyper){
         link =  hyper.get('href');
