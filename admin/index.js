@@ -391,6 +391,16 @@ const adminBroOptions = {
             show: true,
             filter: false,
             type: 'boolean'
+          },
+          videoConfirmedId:{
+            list: true,
+            show: true,
+            filter: false
+          },
+          confirmedHref:{
+            list: true,
+            show: true,
+            filter: false
           }
         },
         actions: {
@@ -403,14 +413,19 @@ const adminBroOptions = {
 
                   let successCount = 0;
                   let confirmed = false;
+                  let confirmedId = -1;
+                  let confirmedHref = '';
                   for(let a of attachments.rows){
                     successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
                     if(a.get('confirmed')){
                       confirmed = true
+                      confirmedId = a.get('id')
+                      confirmedHref = await a.getHyperlink()?.get('href')
                     }
                   }
                   r.params.totalAzureBlobs = successCount
                   r.params.videoConfirmed = confirmed
+                  r.params.videoConfirmedId = confirmedId
                 } catch (error) { 
                   console.log(error)
                 }
@@ -427,14 +442,19 @@ const adminBroOptions = {
                 
                 let successCount = 0;
                 let confirmed = false;
+                let confirmedId = -1;
+                let confirmedHref = '';
                 for(let a of attachments.rows){           
                   successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
                   if(a.get('confirmed')){
                     confirmed = true
+                    confirmedId = a.get('id')
+                    confirmedHref = await a.getHyperlink()?.get('href')
                   }
                 }
                 response.record.params.totalAzureBlobs = successCount
-                response.record.params.videoConfirmed = confirmed           
+                response.record.params.videoConfirmed = confirmed
+                r.params.videoConfirmedId = confirmedId           
               } catch (error) {
                 console.log(error)
               }

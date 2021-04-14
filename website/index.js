@@ -22,14 +22,13 @@ router.get('/projects.xml', async function (req, res) {
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
     
-    root.root().ele('project',  {
+    root.root().ele('project', {
       'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(','),
       'link': project.getAttachments()[0]?.getHyperlink()?.get('href'),
       'Description': project.get('project_descr')
-    }
-    );
+    });
   }
   const xml = root.end({ pretty: true});
   res.send(xml);
