@@ -6,7 +6,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Hyperxlink extends Model {
     static associate(models) {
-      Hyperxlink.belongsTo(models.Project, {});
+    Hyperxlink.belongsTo(models.Project, {});
+    //Hyperxlink.hasOne(models.Project, {});
     }
   }
   Hyperxlink.init({

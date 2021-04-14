@@ -17,8 +17,10 @@ module.exports = (sequelize, DataTypes) => {
           model: models.Voucher,
           unique: false
         },
-        foreignKey: 'participantId',
-        otherKey: 'projectId',
+ //       foreignKey: 'participantId',
+ //       otherKey: 'projectId',
+        foreignKey: 'projectId',
+        otherKey: 'participantId',
         constraints: false
       });
       Project.hasMany(models.Voucher, { foreignKey: 'projectId' });
