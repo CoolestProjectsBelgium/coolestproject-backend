@@ -36,4 +36,25 @@ router.get('/projects.xml', async function (req, res) {
   
 });
 
+router.get('/projects.json', async function (req, res) {
+  var projects = await Project.findAll(
+    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+  
+  var response = []  
+  for(let project of projects){
+    let owner = await project.getOwner()
+    let participants = await project.getParticipant()
+    let attachments = await project.getAttachments()
+
+    response.push({
+      'ProjectName': project.get('project_name'),
+      'ProjectID': project.get('id'),
+      'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
+      'link': (await attachments[0]?.getHyperlink())?.get('href'),
+      'Description': project.get('project_descr')
+    })
+  }
+  res.json(response);
+});
+
 module.exports = router;
