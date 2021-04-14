@@ -10,6 +10,7 @@ const ProjectTable = db.ProjectTable;
 const Voucher = db.Voucher;
 const User = db.User
 const Project = db.Project
+const Hyperlink = db.Hyperlink
 var DBA = require('../dba');
 const Azure = require('../azure');
 const sequelize = db.sequelize;
@@ -395,7 +396,7 @@ const adminBroOptions = {
           videoConfirmedId:{
             list: true,
             show: true,
-            filter: false
+            filter: false,
           },
           confirmedHref:{
             list: true,
@@ -408,7 +409,7 @@ const adminBroOptions = {
             after: async (response, request, context) => {              
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
-                  const attachments = await Attachment.findAndCountAll({ includes: [AzureBlob], where: {'projectId': r.params['id'] }})
+                  const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': r.params['id'] }})
                   r.params.totalAttachments = attachments.count
 
                   let successCount = 0;
@@ -420,11 +421,12 @@ const adminBroOptions = {
                     if(a.get('confirmed')){
                       confirmed = true
                       confirmedId = a.get('id')
-                      confirmedHref = await a.getHyperlink()?.get('href')
+                      confirmedHref = (await a.getHyperlink())?.get('href')
                     }
                   }
                   r.params.totalAzureBlobs = successCount
                   r.params.videoConfirmed = confirmed
+                  r.params.confirmedHref = confirmedHref
                   r.params.videoConfirmedId = confirmedId
                 } catch (error) { 
                   console.log(error)
@@ -437,24 +439,25 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                const attachments = await Attachment.findAndCountAll({ includes: [AzureBlob], where: {'projectId': response.record.params.id }})  
+                const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': response.record.params.id }})  
                 response.record.params.totalAttachments = attachments.count
                 
                 let successCount = 0;
                 let confirmed = false;
                 let confirmedId = -1;
                 let confirmedHref = '';
-                for(let a of attachments.rows){           
+                for(let a of attachments.rows){         
                   successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
                   if(a.get('confirmed')){
                     confirmed = true
                     confirmedId = a.get('id')
-                    confirmedHref = await a.getHyperlink()?.get('href')
+                    confirmedHref = (await a.getHyperlink())?.get('href')
                   }
                 }
                 response.record.params.totalAzureBlobs = successCount
                 response.record.params.videoConfirmed = confirmed
-                r.params.videoConfirmedId = confirmedId           
+                response.record.params.videoConfirmedId = confirmedId
+                response.record.params.confirmedHref = confirmedHref         
               } catch (error) {
                 console.log(error)
               }
