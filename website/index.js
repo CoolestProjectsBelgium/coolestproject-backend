@@ -16,7 +16,7 @@ router.get('/projects.xml', async function (req, res) {
   var root = create('projects.xml');
 
   var projects = await Project.findAll(
-    {include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
   
   for(let project of projects){
     let owner = await project.getOwner()
