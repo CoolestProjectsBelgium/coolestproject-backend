@@ -372,6 +372,68 @@ const adminBroOptions = {
           project_name: {
             isTitle:true,
             label: 'project' 
+          },
+          totalAttachments:{
+            list: true,
+            show: true
+          },
+          totalAzureBlobs:{
+            list: true,
+            show: true
+          },
+          videoConfirmed:{
+            list: true,
+            show: true,
+            type: 'boolean'
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {              
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const attachments = await Attachment.findAndCountAll({ includes: [AzureBlob], where: {'projectId': r.params['id'] }})
+                  r.params.totalAttachments = attachments.count
+
+                  let successCount = 0;
+                  let confirmed = false;
+                  for(let a of attachments.rows){
+                    successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                    if(a.get('confirmed')){
+                      confirmed = true
+                    }
+                  }
+                  r.params.totalAzureBlobs = successCount
+                  r.params.videoConfirmed = confirmed
+                } catch (error) { 
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const attachments = await Attachment.findAndCountAll({ includes: [AzureBlob], where: {'projectId': response.record.params.id }})  
+                response.record.params.totalAttachments = attachments.count
+                
+                let successCount = 0;
+                let confirmed = false;
+                for(let a of attachments.rows){           
+                  successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                  if(a.get('confirmed')){
+                    confirmed = true
+                  }
+                }
+                response.record.params.totalAzureBlobs = successCount
+                response.record.params.videoConfirmed = confirmed           
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
           }
         }
       }
