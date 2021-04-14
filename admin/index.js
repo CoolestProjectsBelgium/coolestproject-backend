@@ -378,15 +378,18 @@ const adminBroOptions = {
           },
           totalAttachments:{
             list: true,
-            show: true
+            show: true,
+            filter: false
           },
           totalAzureBlobs:{
             list: true,
-            show: true
+            show: true,
+            filter: false
           },
           videoConfirmed:{
             list: true,
             show: true,
+            filter: false,
             type: 'boolean'
           }
         },
@@ -450,16 +453,19 @@ const adminBroOptions = {
           isOwner:{
             list: true,
             show: true,
+            filter: false,
             type: 'boolean'
           },
           isParticipant:{
             list: true,
             show: true,
+            filter: false,
             type: 'boolean'
           },
           hasProject:{
             list: true,
             show: true,
+            filter: false,
             type: 'boolean'
           }
         },
@@ -600,6 +606,13 @@ const adminBroOptions = {
               list: AdminBro.bundle('./components/file'),
               show: AdminBro.bundle('./components/file'),  
             },  
+          },
+          azureExists: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false,
+            type: 'boolean'
           }
         },
         actions: {
@@ -615,6 +628,7 @@ const adminBroOptions = {
                 try { 
                   const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment}] });
                   const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                  r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
                   r.params['downloadLink'] = sas.url
                 } catch (error) {
                   //ignore
@@ -630,6 +644,7 @@ const adminBroOptions = {
                 const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment}] });
                 const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
+                response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
               } catch (error) {
                 console.log(error)
               }
