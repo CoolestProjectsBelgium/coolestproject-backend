@@ -1,15 +1,16 @@
 
 
 const express = require('express');
+var cors = require('cors')
 const models = require('../models');
 const Project = models.Project;
 const Attachment = models.Attachment;
 const Hyperlink = models.Hyperlink;
 const User = models.User;
+ 
+var router = express.Router(); 
 
-var router = express.Router();
-
-router.get('/projects.xml', async function (req, res) {
+router.get('/projects.xml', cors(), async function (req, res) {
   res.set('Content-Type', 'text/xml');
 
   const { create } = require('xmlbuilder');
@@ -36,7 +37,7 @@ router.get('/projects.xml', async function (req, res) {
   
 });
 
-router.get('/projects.json', async function (req, res) {
+router.get('/projects.json', cors(), async function (req, res) {
   var projects = await Project.findAll(
     { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
   
