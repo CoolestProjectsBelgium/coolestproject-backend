@@ -37,8 +37,8 @@ app.use(cors(corsOptions));
 require('./security')(app);
 
 // website integration 
-//const websiteIntegration = require('./website');
-//app.use('/website', websiteIntegration);
+const websiteIntegration = require('./website');
+app.use('/website', websiteIntegration);
 
 // enable admin UI
 const adminUI = require('./admin');

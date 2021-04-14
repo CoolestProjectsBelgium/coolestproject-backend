@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Attachment.belongsTo(models.Project, {});
       Attachment.hasOne(models.AzureBlob, {});
+      Attachment.hasOne(models.Hyperlink, {});
     }
   }
   Attachment.init({

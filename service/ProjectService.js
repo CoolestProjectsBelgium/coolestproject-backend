@@ -70,14 +70,22 @@ async function getProjectDetails(userId) {
       continue;
     }
     const blob = await a.getAzureBlob();
+
+    //skip when the file is not found
+    const exists = Azure.checkBlobExists(blob.blob_name);
+    if(!exists){
+      console.error(`Blob not found ${ blob.blob_name }`);
+    }
+
     const readSAS = await Azure.generateSAS(blob.blob_name, 'r', a.filename);
     attachments.push({
       id: blob.blob_name,
       name: a.name,
-      url: readSAS.url,
+      url: (exists) ? readSAS.url: null,
       size: blob.size,
       filename: a.filename,
-      confirmed: a.confirmed || false
+      confirmed: a.confirmed || false,
+      exists: exists
     });
   }
   projectResult.attachments = attachments;

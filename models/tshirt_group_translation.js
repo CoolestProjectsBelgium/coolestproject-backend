@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) { }
-  };
+  }
   TShirtGroupTranslation.init({
     language: DataTypes.ENUM('nl', 'fr', 'en'),
     description: { type: DataTypes.CHAR(250) },
