@@ -7,6 +7,9 @@ const db = require('../models');
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
 const ProjectTable = db.ProjectTable;
+const Voucher = db.Voucher;
+const User = db.User
+const Project = db.Project
 var DBA = require('../dba');
 const Azure = require('../azure');
 const sequelize = db.sequelize;
@@ -443,7 +446,55 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext'}
+          internalinfo: { type: 'richtext'},
+          isOwner:{
+            list: true,
+            show: true,
+            type: 'boolean'
+          },
+          isParticipant:{
+            list: true,
+            show: true,
+            type: 'boolean'
+          },
+          hasProject:{
+            list: true,
+            show: true,
+            type: 'boolean'
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => { 
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const owner = await Project.count({ where: { ownerId: r.params['id'] } })
+                  const participant = await Voucher.count({ where: { participantId: r.params['id'] } })
+                  r.params.isOwner = (owner > 0) ? true : false
+                  r.params.isParticipant = (participant > 0)  ? true : false
+                  r.params.hasProject = (owner > 0 || participant > 0) ? true : false
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const owner = await Project.count({ where: { ownerId: response.record.params.id } })
+                const participant = await Voucher.count({ where: { participantId: response.record.params.id } })
+                response.record.params.isOwner = (owner > 0) ? true : false
+                response.record.params.isParticipant = (participant > 0)  ? true : false
+                response.record.params.hasProject = (owner > 0 || participant > 0) ? true : false
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
         }
       }
     },
