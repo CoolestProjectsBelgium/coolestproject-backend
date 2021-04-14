@@ -681,7 +681,44 @@ const adminBroOptions = {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent
-    }
+      },
+      actions: {
+        list: {
+          after: async (response, request, context) => {
+            response.records = await Promise.all(response.records.map(async (r) => {
+              try {
+                /*
+                const blob = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [{ model: Project }] }] });
+                
+                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
+                r.params['downloadLink'] = sas.url
+                */
+              } catch (error) {
+                //ignore
+              }
+              return r
+            }));
+            return response
+          }
+        },
+        show: {
+          after: async (response, request, context) => {
+            try {
+              /*
+              const blob = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [{ model: Project }] }] });
+              
+              const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+              response.record.params['downloadLink'] = sas.url
+              response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
+              */
+            } catch (error) {
+              console.log(error)
+            }
+            return response;
+          }
+        }
+      }
     },
     {
       resource: db.Hyperxlink,
