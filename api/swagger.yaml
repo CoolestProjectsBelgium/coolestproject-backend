@@ -610,6 +610,8 @@ definitions:
         type: "integer"
       confirmed:
         type: "boolean"
+      exists:
+        type: "boolean"
       type:
         type: "string"
         enum:

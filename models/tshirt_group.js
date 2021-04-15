@@ -11,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       TShirtGroup.belongsTo(models.Event, { as: 'event', optional: false });
-      TShirtGroup.hasMany(models.TShirtGroupTranslation)
-      TShirtGroup.hasOne(models.TShirt, { as: 'group' })
+      TShirtGroup.hasMany(models.TShirtGroupTranslation);
+      TShirtGroup.hasOne(models.TShirt, { as: 'group' });
     }
-  };
+  }
   TShirtGroup.init({
     name: { type: DataTypes.CHAR(15), unique: true }
   }, {

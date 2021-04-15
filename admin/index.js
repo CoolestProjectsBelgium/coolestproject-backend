@@ -7,6 +7,10 @@ const db = require('../models');
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
 const ProjectTable = db.ProjectTable;
+const Voucher = db.Voucher;
+const User = db.User
+const Project = db.Project
+const Hyperlink = db.Hyperlink
 var DBA = require('../dba');
 const Azure = require('../azure');
 const sequelize = db.sequelize;
@@ -369,10 +373,97 @@ const adminBroOptions = {
         navigation: projectParent,
         properties: {
           internalinfo: { type: 'richtext' },
-            project_name: {
-              isTitle:true,
-              label: 'project' 
+          project_name: {
+            isTitle:true,
+            label: 'project' 
+          },
+          totalAttachments:{
+            list: true,
+            show: true,
+            filter: false
+          },
+          totalAzureBlobs:{
+            list: true,
+            show: true,
+            filter: false
+          },
+          videoConfirmed:{
+            list: true,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },
+          videoConfirmedId:{
+            list: true,
+            show: true,
+            filter: false,
+          },
+          confirmedHref:{
+            list: true,
+            show: true,
+            filter: false
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {              
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': r.params['id'] }})
+                  r.params.totalAttachments = attachments.count
+
+                  let successCount = 0;
+                  let confirmed = false;
+                  let confirmedId = -1;
+                  let confirmedHref = '';
+                  for(let a of attachments.rows){
+                    successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                    if(a.get('confirmed')){
+                      confirmed = true
+                      confirmedId = a.get('id')
+                      confirmedHref = (await a.getHyperlink())?.get('href')
+                    }
+                  }
+                  r.params.totalAzureBlobs = successCount
+                  r.params.videoConfirmed = confirmed
+                  r.params.confirmedHref = confirmedHref
+                  r.params.videoConfirmedId = confirmedId
+                } catch (error) { 
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
             }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': response.record.params.id }})  
+                response.record.params.totalAttachments = attachments.count
+                
+                let successCount = 0;
+                let confirmed = false;
+                let confirmedId = -1;
+                let confirmedHref = '';
+                for(let a of attachments.rows){         
+                  successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                  if(a.get('confirmed')){
+                    confirmed = true
+                    confirmedId = a.get('id')
+                    confirmedHref = (await a.getHyperlink())?.get('href')
+                  }
+                }
+                response.record.params.totalAzureBlobs = successCount
+                response.record.params.videoConfirmed = confirmed
+                response.record.params.videoConfirmedId = confirmedId
+                response.record.params.confirmedHref = confirmedHref         
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
         }
       }
     },
@@ -381,7 +472,58 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext'}
+          internalinfo: { type: 'richtext'},
+          isOwner:{
+            list: true,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },
+          isParticipant:{
+            list: true,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },
+          hasProject:{
+            list: true,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => { 
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try {
+                  const owner = await Project.count({ where: { ownerId: r.params['id'] } })
+                  const participant = await Voucher.count({ where: { participantId: r.params['id'] } })
+                  r.params.isOwner = (owner > 0) ? true : false
+                  r.params.isParticipant = (participant > 0)  ? true : false
+                  r.params.hasProject = (owner > 0 || participant > 0) ? true : false
+                } catch (error) {
+                  console.log(error)
+                }
+                return r
+              }));
+              return response
+            }
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const owner = await Project.count({ where: { ownerId: response.record.params.id } })
+                const participant = await Voucher.count({ where: { participantId: response.record.params.id } })
+                response.record.params.isOwner = (owner > 0) ? true : false
+                response.record.params.isParticipant = (participant > 0)  ? true : false
+                response.record.params.hasProject = (owner > 0 || participant > 0) ? true : false
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
         }
       }
     },
@@ -412,9 +554,16 @@ const adminBroOptions = {
         navigation: projectParent,
         properties: { 
           id: {
-            isTitle:true,
+            isTitle: true,
             label: 'id' 
-          },     
+          },
+          azureExists: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false,
+            type: 'boolean'
+          },   
           downloadLink: {
             isVisible: {
               list: true,
@@ -439,6 +588,7 @@ const adminBroOptions = {
                   const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob}] });
                   const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                   r.params['downloadLink'] = sas.url
+                  r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
                 } catch (error) {
                   //ignore
                 }
@@ -453,6 +603,7 @@ const adminBroOptions = {
                 const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob}] });
                 const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
+                response.record.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
               } catch (error) {
                 console.log(error)
               }
@@ -478,6 +629,13 @@ const adminBroOptions = {
               list: AdminBro.bundle('./components/file'),
               show: AdminBro.bundle('./components/file'),  
             },  
+          },
+          azureExists: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false,
+            type: 'boolean'
           }
         },
         actions: {
@@ -493,6 +651,7 @@ const adminBroOptions = {
                 try { 
                   const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment}] });
                   const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                  r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
                   r.params['downloadLink'] = sas.url
                 } catch (error) {
                   //ignore
@@ -508,6 +667,7 @@ const adminBroOptions = {
                 const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment}] });
                 const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
+                response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
               } catch (error) {
                 console.log(error)
               }
@@ -520,8 +680,52 @@ const adminBroOptions = {
     {
       resource: db.Hyperlink,
       options: {
-        navigation: projectParent
-    }
+        navigation: projectParent,
+        properties:{
+          projectId: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          },
+          projectName: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const hyperlink = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [Project]}] });
+                  r.params.projectId = hyperlink.Attachment.ProjectId
+                  r.params.projectName = hyperlink.Attachment.Project.project_name
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const hyperlink = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [Project]}] });
+                response.record.params.projectId = hyperlink.Attachment.ProjectId
+                response.record.params.projectName = hyperlink.Attachment.Project.project_name
+
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
+        },
+      },
     },
     {
       resource: db.Hyperxlink,

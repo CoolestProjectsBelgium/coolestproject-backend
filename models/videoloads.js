@@ -8,15 +8,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     ownerId: {
       type: DataTypes.STRING
-  },
+    },
     FileName: {
       type: DataTypes.STRING
-  },
+    },
     firstname: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING
     },
     lastname: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING
     },
     VideoName: {
       type: DataTypes.STRING
@@ -24,9 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     project_name: {
       type: DataTypes.STRING,
     },
-
-
-
+    
   }, {
     freezeTableName: true,
     timestamps: false
