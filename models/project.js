@@ -17,11 +17,6 @@ module.exports = (sequelize, DataTypes) => {
           model: models.Voucher,
           unique: false
         },
-<<<<<<< HEAD
- //       foreignKey: 'participantId',
- //       otherKey: 'projectId',
-=======
->>>>>>> 298a34b7eecadc011551ff92890ef5e259ba7460
         foreignKey: 'projectId',
         otherKey: 'participantId',
         constraints: false
