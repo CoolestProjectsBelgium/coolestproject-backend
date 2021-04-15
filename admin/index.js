@@ -680,8 +680,52 @@ const adminBroOptions = {
     {
       resource: db.Hyperlink,
       options: {
-        navigation: projectParent
-    }
+        navigation: projectParent,
+        properties:{
+          projectId: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          },
+          projectName: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          }
+        },
+        actions: {
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const hyperlink = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [Project]}] });
+                  r.params.projectId = hyperlink.Attachment.ProjectId
+                  r.params.projectName = hyperlink.Attachment.Project.project_name
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const hyperlink = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [Project]}] });
+                response.record.params.projectId = hyperlink.Attachment.ProjectId
+                response.record.params.projectName = hyperlink.Attachment.Project.project_name
+
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
+            }
+          }
+        },
+      },
     },
     {
       resource: db.Hyperxlink,
