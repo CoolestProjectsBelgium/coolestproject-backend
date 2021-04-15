@@ -50,14 +50,14 @@ router.get('/projects.json', cors(), async function (req, res) {
     let table = await project.getTables()
 
     response.push({
-      'ProjectName': project.get('project_name'),
-      'ProjectID': project.get('id'),
+      'projectName': project.get('project_name'),
+      'projectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
       'location': table[0]?.location,
       'place': table[0]?.name,
       'usedPlaces': table[0]?.ProjectTable.get('usedPlaces'),
-      'Description': project.get('project_descr')
+      'description': project.get('project_descr')
     })
   }
   res.json(response);
