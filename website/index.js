@@ -7,6 +7,7 @@ const Project = models.Project;
 const Attachment = models.Attachment;
 const Hyperlink = models.Hyperlink;
 const User = models.User;
+const Table = models.Table;
  
 var router = express.Router(); 
 
@@ -39,19 +40,23 @@ router.get('/projects.xml', cors(), async function (req, res) {
 
 router.get('/projects.json', cors(), async function (req, res) {
   var projects = await Project.findAll(
-    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Table }, { model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
   
   var response = []  
   for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
     let attachments = await project.getAttachments()
+    let table = await project.getTables()
 
     response.push({
       'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
+      'location': table[0]?.location,
+      'place': table[0]?.name,
+      'usedPlaces': table[0]?.ProjectTable.get('usedPlaces'),
       'Description': project.get('project_descr')
     })
   }
