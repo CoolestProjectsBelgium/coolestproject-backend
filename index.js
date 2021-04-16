@@ -1,6 +1,7 @@
 'use strict';
 const express = require('express');
 const app = express();
+var exphbs  = require('express-handlebars');
 
 const cors = require('cors');
 const fs = require('fs');
@@ -25,6 +26,10 @@ app.use(requestLanguage({
   }
 }));  
 
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'website', 'views'));
+
 const corsOptions = {
   origin: process.env.URL,
   optionsSuccessStatus: 200,
@@ -35,6 +40,8 @@ app.use(cors(corsOptions));
 
 // secure routes
 require('./security')(app);
+
+
 
 // website integration 
 const websiteIntegration = require('./website');
