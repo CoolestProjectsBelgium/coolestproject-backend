@@ -15,7 +15,7 @@ module.exports = {
       EventId: {
         allowNull: false,
         type: Sequelize.INTEGER,
-        references: { model: 'Event', key: 'id' },
+        references: { model: 'Events', key: 'id' },
         unique: false
       },
       createdAt: {
