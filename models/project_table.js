@@ -14,11 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       ProjectTable.belongsTo(models.Project);
       ProjectTable.belongsTo(models.Table);
     }
-  };
+  }
   ProjectTable.init({
     usedPlaces: DataTypes.INTEGER,
     ProjectId: DataTypes.INTEGER,
-    TableId: DataTypes.INTEGER
+    TableId: DataTypes.INTEGER,
+    startTime: DataTypes.DATE,
+    endTime: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'ProjectTable',
