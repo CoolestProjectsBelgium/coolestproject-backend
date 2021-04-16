@@ -12,6 +12,9 @@
   "nodemonConfig": {
     "ignore": [
       "locales/*.json"
+    ],
+    "include": [
+      "**/*.handlebars"
     ]
   },
   "keywords": [

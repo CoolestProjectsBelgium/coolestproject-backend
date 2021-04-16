@@ -887,6 +887,18 @@ const adminBroOptions = {
       }  
     },
     {
+      resource: db.Location,
+      options: {
+        navigation: planningParent,
+        properties:{
+          text: {
+            isTitle: true,
+            label: 'text' 
+          }
+        }
+      }
+    },
+    {
       resource: db.ProjectTable,
       options: {
         navigation: planningParent,
