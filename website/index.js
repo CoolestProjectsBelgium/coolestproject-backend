@@ -108,12 +108,10 @@ router.get('/planning', cors(), async function (req, res) {
 
     let tables = await location.getTables()
     for (const [j, table] of tables.entries()) {
-
       let projectList = []
       let projects = await table.getProjects()
       for(let project of projects){
         let participantsList = []
-
         let owner = await project.getOwner()
         if(owner){
           participantsList.push(owner)
@@ -126,6 +124,8 @@ router.get('/planning', cors(), async function (req, res) {
         let attachments = await project.getAttachments()
     
         projectList.push({
+          'startTime': project.ProjectTable.get('startTime'),
+          'endTime': project.ProjectTable.get('endTime'),
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
           'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
