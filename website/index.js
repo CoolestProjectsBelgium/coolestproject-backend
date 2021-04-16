@@ -93,14 +93,23 @@ router.get('/planning', cors(), async function (req, res) {
       let projectList = []
       let projects = await table.getProjects()
       for(let project of projects){
+        let participantsList = []
+
         let owner = await project.getOwner()
+        if(owner){
+          participantsList.push(owner)
+        }
         let participants = await project.getParticipant()
+        if(participants){
+          participantsList.push(...participants)
+        } 
+
         let attachments = await project.getAttachments()
     
         projectList.push({
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
-          'participants': [owner].concat(participants).map((ele) => { return ele?.get('firstname') + ' ' + ele?.get('lastname') } ).join(', '),
+          'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
           'description': project.get('project_descr')
         })   

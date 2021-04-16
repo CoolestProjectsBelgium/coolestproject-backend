@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Table.belongsTo(models.Event);
       Table.belongsToMany(models.Project, { through: models.ProjectTable });
-    } 
+    }  
   }
   Table.init({
     name: { type: DataTypes.CHAR(15), unique: true },
