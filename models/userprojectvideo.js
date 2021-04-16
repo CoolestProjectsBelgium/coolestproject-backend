@@ -2,10 +2,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Videoload = sequelize.define('userprojectvideo', {
  
-    Description: {
+    project_descr: {
       type: DataTypes.STRING,
     },
-    link: {
+    Youtube: {
       type: DataTypes.STRING
     },
     ProjectID: {
@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     participants: {
         type: DataTypes.STRING
     },
+    Length: {
+      type: DataTypes.STRING
+  },
     Language: {
       type: DataTypes.STRING,
     },
