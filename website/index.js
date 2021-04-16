@@ -19,7 +19,16 @@ router.get('/projects.xml', cors(), async function (req, res) {
   var root = create('projects.xml');
 
   var projects = await Project.findAll(
-    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+    { where: {'$Attachments.confirmed$':true}, 
+    order: [['id', 'asc']], 
+    include:[
+      { model: Attachment, required: false,  
+          include: [ Hyperlink ] }, 
+      { model: User, as: 'participant' }, 
+      { model: User, as: 'owner' }
+      ]
+    }
+  );
   
   for(let project of projects){
     let owner = await project.getOwner()
@@ -41,7 +50,17 @@ router.get('/projects.xml', cors(), async function (req, res) {
 
 router.get('/projects.json', cors(), async function (req, res) {
   var projects = await Project.findAll(
-    { order: [[Attachment,'createdAt', 'desc']], include:[{ model: Table }, { model: Attachment, where: { confirmed: true }, required: false,  include: [ Hyperlink ] }, { model: User, as: 'participant' }, { model: User, as: 'owner' }]});
+    { where: {'$Attachments.confirmed$':true}, 
+    order: [[Attachment,'createdAt', 'desc']], 
+    include:[
+      { model: Table }, 
+      { model: Attachment, required: false,  
+        include: [ Hyperlink ] }, 
+      { model: User, as: 'participant' }, 
+      { model: User, as: 'owner' }
+      ]
+    }
+    );
   
   var response = []  
   for(let project of projects){
