@@ -872,8 +872,7 @@ const adminBroOptions = {
               try {
                 const remaining = await ProjectTable.sum('UsedPlaces', {
                   where: {
-                    TableId: response.record.params.id,
-                    EventId: response.record.params.EventId
+                    TableId: response.record.params.id
                   }
                 });
                 response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining 

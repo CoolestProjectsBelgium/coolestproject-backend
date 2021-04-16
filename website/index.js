@@ -29,7 +29,7 @@ router.get('/projects.xml', cors(), async function (req, res) {
     root.root().ele('project', {
       'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
-      'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(','),
+      'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
       'Description': project.get('project_descr')
     });
