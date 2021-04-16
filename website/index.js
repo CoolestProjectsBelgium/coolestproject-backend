@@ -33,7 +33,7 @@ router.get('/projects.xml', cors(), async function (req, res) {
   for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
-    let attachments = await project.getAttachments()
+    let attachments = await project.getAttachments({where:{confirmed:true}})
 
     root.root().ele('project', {
       'ProjectName': project.get('project_name'),
@@ -51,7 +51,7 @@ router.get('/projects.xml', cors(), async function (req, res) {
 router.get('/projects.json', cors(), async function (req, res) {
   var projects = await Project.findAll(
     { where: {'$Attachments.confirmed$':true}, 
-    order: [[Attachment,'createdAt', 'desc']], 
+    order: [[Attachment,'createdAt', 'asc']], 
     include:[
       { model: Table }, 
       { model: Attachment, required: false,  
@@ -66,7 +66,7 @@ router.get('/projects.json', cors(), async function (req, res) {
   for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
-    let attachments = await project.getAttachments()
+    let attachments = await project.getAttachments({where:{confirmed:true}})
     let table = await project.getTables()
 
     response.push({
