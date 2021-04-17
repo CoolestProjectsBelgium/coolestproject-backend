@@ -4,19 +4,19 @@ const {
 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Hyperxlink extends Model {
+  class Location extends Model {
     static associate(models) {
-    Hyperxlink.belongsTo(models.Project, {});
-    //Hyperxlink.hasOne(models.Project, {});
+      Location.belongsTo(models.Event, {});
+      Location.hasMany(models.Table);
     }
   }
-  Hyperxlink.init({
-    URL: {
+  Location.init({
+    text: {
       type: DataTypes.STRING,
     },
   }, {
     sequelize,
-    modelName: 'Hyperxlink',
+    modelName: 'Location',
   });
-  return Hyperxlink;
+  return Location;
 };

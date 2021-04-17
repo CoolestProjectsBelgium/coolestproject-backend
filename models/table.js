@@ -9,14 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
-     */
+     */  
     static associate(models) {
-      Table.belongsTo(models.Event, { as: 'event', optional: false });
-    }
+      Table.belongsTo(models.Event);
+      Table.belongsToMany(models.Project, { through: models.ProjectTable });
+    }  
   }
   Table.init({
     name: { type: DataTypes.CHAR(15), unique: true },
-    location: DataTypes.CHAR(20),
     maxPlaces: DataTypes.INTEGER,
     requirements: DataTypes.JSON,
   }, {

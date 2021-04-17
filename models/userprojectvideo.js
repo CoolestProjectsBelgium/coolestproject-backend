@@ -1,11 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Videoload = sequelize.define('userprojectvideo', {
-    project_name: {
-      type: DataTypes.STRING,
-    },
+ 
     project_descr: {
       type: DataTypes.STRING,
+    },
+    Youtube: {
+      type: DataTypes.STRING
     },
     ProjectID: {
       type: DataTypes.STRING,
@@ -14,12 +15,16 @@ module.exports = (sequelize, DataTypes) => {
     participants: {
         type: DataTypes.STRING
     },
-    youtube: {
-      type: DataTypes.VIRTUAL,
-      get(){
-       return process.env.GOOGLE_LINK + "&t=" + this.getDataValue('OFFSET');
-      }
+    Length: {
+      type: DataTypes.STRING
+  },
+    Language: {
+      type: DataTypes.STRING,
     },
+    Project_name: {
+      type: DataTypes.STRING,
+    },
+
   }, {
     freezeTableName: true,
     timestamps: false

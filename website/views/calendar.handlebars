@@ -1,0 +1,50 @@
+{{!< default}}
+
+<h1>Planning</h1>
+<table border="1">
+    {{#each grid}}
+        <tr>
+            {{#each this}}
+                {{#if this.header}}
+                    <th>
+                        <h2>{{this.name}}</h2>
+                    </th>
+                {{else}}
+                    <td>
+                        <h3>{{this.name}}</h3>
+                        {{#each this.projects}}
+                            <table border="1">
+                                <tr>
+                                    <th>Project Name</th>
+                                    <td>{{this.projectName}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Participants</th>
+                                    <td>{{this.participants}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Link</th>
+                                    <td><a href="{{this.link}}">{{this.link}}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <td>{{this.description}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Start Time</th>
+                                    <td>{{this.startTime}}</td>
+                                </tr>
+                                <tr>
+                                    <th>End Time</th>
+                                    <td>{{this.endTime}}</td>
+                                </tr>
+                            </table>
+                        {{/each}}
+                    </td>
+                {{/if}}
+            {{/each}}
+        </tr>
+    {{/each}}
+</table>
+
+    

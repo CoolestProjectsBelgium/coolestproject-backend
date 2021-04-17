@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
-     */
+     */    
     static associate(models) {
       Project.belongsTo(models.User, { as: 'owner' });
       Project.belongsToMany(models.User, {
@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
           model: models.Voucher,
           unique: false
         },
-        foreignKey: 'projectId', 
-        otherKey: 'participantId', 
+        foreignKey: 'projectId',
+        otherKey: 'participantId',
         constraints: false
       });
       Project.hasMany(models.Voucher, { foreignKey: 'projectId' });

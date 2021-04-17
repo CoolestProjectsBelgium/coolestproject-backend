@@ -680,45 +680,52 @@ const adminBroOptions = {
     {
       resource: db.Hyperlink,
       options: {
-        navigation: projectParent
-      },
-      actions: {
-        list: {
-          after: async (response, request, context) => {
-            response.records = await Promise.all(response.records.map(async (r) => {
-              try {
-                /*
-                const blob = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [{ model: Project }] }] });
-                
-                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
-                r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
-                r.params['downloadLink'] = sas.url
-                */
-              } catch (error) {
-                //ignore
-              }
-              return r
-            }));
-            return response
+        navigation: projectParent,
+        properties:{
+          projectId: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
+          },
+          projectName: {
+            list: true,
+            show: true,
+            new: false,
+            filter: false
           }
         },
-        show: {
-          after: async (response, request, context) => {
-            try {
-              /*
-              const blob = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [{ model: Project }] }] });
-              
-              const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
-              response.record.params['downloadLink'] = sas.url
-              response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
-              */
-            } catch (error) {
-              console.log(error)
+        actions: {
+          list: {
+            after: async (response, request, context) => {       
+              response.records = await Promise.all(response.records.map(async (r) => {
+                try { 
+                  const hyperlink = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [Project]}] });
+                  r.params.projectId = hyperlink.Attachment.ProjectId
+                  r.params.projectName = hyperlink.Attachment.Project.project_name
+                } catch (error) {
+                  //ignore
+                }
+                return r
+              }));
+              return response
+            },
+          },
+          show: {
+            after: async (response, request, context) => {
+              try {
+                const hyperlink = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [Project]}] });
+                response.record.params.projectId = hyperlink.Attachment.ProjectId
+                response.record.params.projectName = hyperlink.Attachment.Project.project_name
+
+              } catch (error) {
+                console.log(error)
+              }
+              return response;
             }
-            return response;
           }
-        }
-      }
+        },
+      },
     },
     {
       resource: db.Hyperxlink,
@@ -865,8 +872,7 @@ const adminBroOptions = {
               try {
                 const remaining = await ProjectTable.sum('UsedPlaces', {
                   where: {
-                    TableId: response.record.params.id,
-                    EventId: response.record.params.EventId
+                    TableId: response.record.params.id
                   }
                 });
                 response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining 
@@ -878,6 +884,18 @@ const adminBroOptions = {
           }
         }
       }  
+    },
+    {
+      resource: db.Location,
+      options: {
+        navigation: planningParent,
+        properties:{
+          text: {
+            isTitle: true,
+            label: 'text' 
+          }
+        }
+      }
     },
     {
       resource: db.ProjectTable,
