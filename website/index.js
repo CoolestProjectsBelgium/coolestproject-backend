@@ -18,17 +18,7 @@ router.get('/projects.xml', cors(), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
 
-  var projects = await Project.findAll(
-    { where: {'$Attachments.confirmed$':true}, 
-    order: [['id', 'asc']], 
-    include:[
-      { model: Attachment, required: false,  
-          include: [ Hyperlink ] }, 
-      { model: User, as: 'participant' }, 
-      { model: User, as: 'owner' }
-      ]
-    }
-  );
+  var projects = await Project.findAll();
   
   for(let project of projects){
     let owner = await project.getOwner()
@@ -49,18 +39,7 @@ router.get('/projects.xml', cors(), async function (req, res) {
 });
 
 router.get('/projects.json', cors(), async function (req, res) {
-  var projects = await Project.findAll(
-    { where: {'$Attachments.confirmed$':true}, 
-    order: [[Attachment,'createdAt', 'asc']], 
-    include:[
-      { model: Table }, 
-      { model: Attachment, required: false,  
-        include: [ Hyperlink ] }, 
-      { model: User, as: 'participant' }, 
-      { model: User, as: 'owner' }
-      ]
-    }
-    );
+  var projects = await Project.findAll();
   
   var response = []  
   for(let project of projects){
@@ -88,7 +67,7 @@ router.get('/planning', cors(), async function (req, res) {
   // x -> list of locations
   // y -> list of table
   // z -> list of projects
-  const locations = await Location.findAll({ include:[{ model: Table, include:[{ model: Project }] }] })
+  const locations = await Location.findAll()
   const locationsCount = await Location.count()
   const tablesGroupedCount = await Table.findAll(
     {
@@ -121,7 +100,7 @@ router.get('/planning', cors(), async function (req, res) {
           participantsList.push(...participants)
         } 
 
-        let attachments = await project.getAttachments()
+        let attachments = await project.getAttachments({ where: { confirmed: true } })
     
         projectList.push({
           'startTime': project.ProjectTable.get('startTime'),
