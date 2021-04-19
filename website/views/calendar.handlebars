@@ -1,61 +1,29 @@
 {{!< default}}
-
-<h1>Planning Coolest Projects 2021</h1>
-<table border="1">
-    
+<div class="container-fluid">
+    <h1 class="display-1"><i class="bi bi-calendar"></i> Planning</h1>
     {{#each grid}}
-        <tr>
+        <div class="row flex-row flex-nowrap g-2 mb-3">
             {{#each this}}
                 {{#if this.header}}
-                    <th>
-                        <h2>{{this.name}}</h2>
-                    </th>
-                {{else}}
-                    <td>
+                    <div class="col-sm">
                         <h3>{{this.name}}</h3>
+                    </div>
+                {{else}}
+                    <div class="col-sm">
+                        <h4>{{this.name}}</h4>
                         {{#each this.projects}}
-                            <table border="1">
-                                <tr>
-                                    <th>Project Name</th>
-                                    <td>{{this.projectName}}</td>
-                                </tr>
-                                <tr style="background-color:yellow;">
-                                    <th>Language</th>
-                                    <td>{{this.language}}</td>
-                                </tr>
-
-                                {{#if this.agreedToPhoto }}
-                                <tr style="background-color:rgb(94, 255, 0);">
-                                    <th>Photo Allowed</th>
-                                    <td>{{this.agreedToPhoto}}</td>
-                                </tr>
-                                {{else}}
-                                <tr style="background-color:rgb(255, 0, 21);">
-                                    <th>Photo Allowed</th>
-                                    <td>{{this.agreedToPhoto}}</td>
-                                </tr>
-                                {{/if}}
-                                <tr>
-                                    <th>Participants</th>
-                                    <td>{{this.participants}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Link</th>
-                                    <td><a href="{{this.link}}">{{this.link}}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>Start Time</th>
-                                    <td>{{this.startTime}}</td>
-                                </tr>
-                                <tr>
-                                    <th>End Time</th>
-                                    <td>{{this.endTime}}</td>
-                                </tr>
-                                <tr >
-                                    <th class="align-top">Description</th>
-                                    <td>{{this.description}}</td>
-                                </tr>
-                            </table>
+                            <div class="card {{ this.style }}" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{this.projectName}}</h5>
+                                    <h6 class="card-text"><small class="text-muted">{{this.participants}}</small></h6>
+                                    <h6 class="card-text">
+                                        <small class="text-muted"><i class="bi bi-globe"></i> {{this.language}}, 
+                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video"></i>{{else}}<i class="bi bi-camera-video-off"></i>{{/if}}</small></h6>
+                                    <a href="{{this.link}}" class="card-link">{{this.link}}</a>
+                                    <p class="card-text"><small class="text-muted"><i class="bi bi-calendar"></i> {{this.startTime}} - {{this.endTime}}</small></p>
+                                    <p class="card-text">{{this.description}}</p>
+                                </div>
+                            </div>
                         {{/each}}
                     </td>
                 {{/if}}
