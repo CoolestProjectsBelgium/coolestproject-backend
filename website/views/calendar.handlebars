@@ -2,6 +2,7 @@
 
 <h1>Planning Coolest Projects 2021</h1>
 <table border="1">
+    
     {{#each grid}}
         <tr>
             {{#each this}}
@@ -18,14 +19,22 @@
                                     <th>Project Name</th>
                                     <td>{{this.projectName}}</td>
                                 </tr>
-                                <tr>
+                                <tr style="background-color:yellow;">
                                     <th>Language</th>
                                     <td>{{this.language}}</td>
                                 </tr>
-                                <tr>
+
+                                {{#if this.agreedToPhoto }}
+                                <tr style="background-color:rgb(94, 255, 0);">
                                     <th>Photo Allowed</th>
                                     <td>{{this.agreedToPhoto}}</td>
                                 </tr>
+                                {{else}}
+                                <tr style="background-color:rgb(255, 0, 21);">
+                                    <th>Photo Allowed</th>
+                                    <td>{{this.agreedToPhoto}}</td>
+                                </tr>
+                                {{/if}}
                                 <tr>
                                     <th>Participants</th>
                                     <td>{{this.participants}}</td>
@@ -35,16 +44,16 @@
                                     <td><a href="{{this.link}}">{{this.link}}</a></td>
                                 </tr>
                                 <tr>
-                                    <th>Description</th>
-                                    <td>{{this.description}}</td>
-                                </tr>
-                                <tr>
                                     <th>Start Time</th>
                                     <td>{{this.startTime}}</td>
                                 </tr>
                                 <tr>
                                     <th>End Time</th>
                                     <td>{{this.endTime}}</td>
+                                </tr>
+                                <tr >
+                                    <th class="align-top">Description</th>
+                                    <td>{{this.description}}</td>
                                 </tr>
                             </table>
                         {{/each}}
@@ -53,6 +62,7 @@
             {{/each}}
         </tr>
     {{/each}}
+    </div>
 </table>
 
     
