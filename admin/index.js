@@ -186,7 +186,7 @@ const adminBroOptions = {
                   const evt = await DBA.getEventDetail(r.params['id']);
                   const properties = await evt.get({ plain: true });
                   for(let p in properties){
-                    r.params[p] = properties[p];
+                    r.params[p] = properties[p]; 
                   }
                 } catch (error) {
                   console.log(error)
