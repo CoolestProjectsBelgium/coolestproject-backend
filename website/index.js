@@ -26,14 +26,16 @@ router.get('/projects.xml', cors(), async function (req, res) {
     let attachments = await project.getAttachments({where:{confirmed:true}})
 
     root.root().ele('project', {
+      'Language': project.get('project_lang'),
       'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
-      'Description': project.get('project_descr')
+      'Description': project.get('project_descr') 
     });
   }
   const xml = root.end({ pretty: true});
+  res.set('Content-Type', 'text/xml');
   res.send(xml);
   
 });
@@ -50,6 +52,7 @@ router.get('/projects.json', cors(), async function (req, res) {
 
     response.push({
       'projectName': project.get('project_name'),
+      'Language': project.get('project_lang'),
       'projectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
@@ -92,24 +95,33 @@ router.get('/planning', cors(), async function (req, res) {
       for(let project of projects){
         let participantsList = []
         let owner = await project.getOwner()
+        let agreedToPhoto = true
         if(owner){
           participantsList.push(owner)
+          let questions = await owner.getQuestions()
+          agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
         }
         let participants = await project.getParticipant()
         if(participants){
+          for(let participant of participants){
+            let questions = await participant.getQuestions()
+            agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+          }
           participantsList.push(...participants)
         } 
 
         let attachments = await project.getAttachments({ where: { confirmed: true } })
     
         projectList.push({
-          'startTime': project.ProjectTable.get('startTime'),
-          'endTime': project.ProjectTable.get('endTime'),
+          'language': project.get('project_lang'),
+          'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
+          'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
           'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
-          'description': project.get('project_descr')
+          'description': project.get('project_descr'),
+          'agreedToPhoto': agreedToPhoto, 
         })   
       }
 

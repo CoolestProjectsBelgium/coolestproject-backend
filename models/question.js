@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       Question.belongsTo(models.Event);
       Question.belongsToMany(models.User, { through: models.QuestionUser, as: 'users' });
       Question.belongsToMany(models.Registration, { through: models.QuestionRegistration, as: 'registration' });
-      Question.hasMany(models.QuestionTranslation)
+      Question.hasMany(models.QuestionTranslation);
     }
-  };
+  }
   Question.init({
     name: { type: DataTypes.CHAR(30), unique: true },
     mandatory: DataTypes.BOOLEAN,
