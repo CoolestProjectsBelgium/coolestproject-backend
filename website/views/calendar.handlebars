@@ -1,16 +1,16 @@
 {{!< default}}
-<h1>Planning</h1>
 <div class="container-fluid">
+    <h1 class="display-1"><i class="bi bi-calendar"></i> Planning</h1>
     {{#each grid}}
         <div class="row flex-row flex-nowrap">
             {{#each this}}
                 {{#if this.header}}
                     <div class="col-sm">
-                        <h2>{{this.name}}</h2>
+                        <h3>{{this.name}}</h3>
                     </div>
                 {{else}}
                     <div class="col-sm">
-                        <h3>{{this.name}}</h3>
+                        <h4>{{this.name}}</h4>
                         {{#each this.projects}}
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
