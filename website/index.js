@@ -114,7 +114,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
 
         let attachments = await project.getAttachments({ where: { confirmed: true } })
         
-        let color = ''
+        let cardStyle = ''
         if(agreedToPhoto){
           color= 'border-danger'
         } else if(project.get('project_lang') == 'nl'){
@@ -124,7 +124,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         } 
 
         projectList.push({
-          'style': 'border-primary', 
+          'style': cardStyle, 
           'language': project.get('project_lang'),
           'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
           'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
