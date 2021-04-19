@@ -116,11 +116,11 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         
         let cardStyle = ''
         if(agreedToPhoto){
-          color= 'border-danger'
+          cardStyle = 'border-danger'
         } else if(project.get('project_lang') == 'nl'){
-          color= 'border-primary'
+          cardStyle = 'border-primary'
         } else if(project.get('project_lang') == 'fr'){
-          color= 'border-secondary'
+          cardStyle = 'border-secondary'
         } 
 
         projectList.push({
