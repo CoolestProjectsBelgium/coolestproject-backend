@@ -6,7 +6,7 @@
             {{#each this}}
                 {{#if this.header}}
                     <div class="col-sm">
-                        <h3>{{this.name}}</h3>
+                        <h4>{{this.name}}</h4>
                     </div>
                 {{else}}
                     <div class="col-sm">
@@ -18,19 +18,19 @@
                                     <h6 class="card-text"><small class="text-muted">{{this.participants}}</small></h6>
                                     <h6 class="card-text">
                                         <small class="text-muted"><i class="bi bi-globe"></i> {{this.language}}, 
-                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video text-success"></i>{{else}}<i class="bi bi-camera-video-off text-danger"></i>{{/if}}</small></h6>
+                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video-fill text-success"></i>{{else}}<i class="bi bi-camera-video-off-fill text-danger"></i>{{/if}}</small></h6>
                                     <a href="{{this.link}}" class="card-link">{{this.link}}</a>
                                     <p class="card-text"><small class="text-muted"><i class="bi bi-calendar"></i> {{this.startTime}} - {{this.endTime}}</small></p>
-                                    <p class="card-text">{{this.description}}</p>
+                                    <p style="max-height: 200px;" class= "card-text overflow-auto ">{{this.description}}</p>
                                 </div>
                             </div>
                         {{/each}}
-                    </td>
+                    </div>
                 {{/if}}
             {{/each}}
-        </tr>
+        </div>
     {{/each}}
     </div>
-</table>
+</div>
 
     

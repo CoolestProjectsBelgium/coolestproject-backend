@@ -127,7 +127,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
           'style': cardStyle,
           'language': project.get('project_lang'),
           'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
-          'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
+          'endTime': new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
           'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
