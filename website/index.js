@@ -115,7 +115,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         let attachments = await project.getAttachments({ where: { confirmed: true } })
         
         let cardStyle = ''
-        if(agreedToPhoto){
+        if(!agreedToPhoto){
           cardStyle = 'border-danger'
         } else if(project.get('project_lang') == 'nl'){
           cardStyle = 'border-primary'
