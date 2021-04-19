@@ -88,7 +88,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
     result[0][i] = {
       name: location.get('text'),
       header: true 
-    } 
+    }
 
     let tables = await location.getTables()
     for (const [j, table] of tables.entries()) {
