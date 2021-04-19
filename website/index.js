@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 var cors = require('cors')
 const models = require('../models');
@@ -10,25 +8,19 @@ const Hyperlink = models.Hyperlink;
 const User = models.User;
 const Table = models.Table;
 const Sequelize = require('sequelize')
- 
+
 var router = express.Router(); 
 
+var corsOptions = {
+  origin: process.env.WEBSITEURL,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
-router.get('/projects.xml', cors(), async function (req, res) {
+router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
 
-  var projects = await Project.findAll(
-    { where: {'$Attachments.confirmed$':true}, 
-    order: [['id', 'asc']], 
-    include:[
-      { model: Attachment, required: false,  
-          include: [ Hyperlink ] }, 
-      { model: User, as: 'participant' }, 
-      { model: User, as: 'owner' }
-      ]
-    }
-  );
+  var projects = await Project.findAll();
   
   for(let project of projects){
     let owner = await project.getOwner()
@@ -36,33 +28,24 @@ router.get('/projects.xml', cors(), async function (req, res) {
     let attachments = await project.getAttachments({where:{confirmed:true}})
 
     root.root().ele('project', {
+      'Language': project.get('project_lang'),
       'ProjectName': project.get('project_name'),
       'ProjectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
-      'Description': project.get('project_descr')
+      'Description': project.get('project_descr') 
     });
   }
   const xml = root.end({ pretty: true});
+  res.set('Content-Type', 'text/xml');
   res.send(xml);
   
 });
 
-router.get('/projects.json', cors(), async function (req, res) {
-  var projects = await Project.findAll(
-    { where: {'$Attachments.confirmed$':true}, 
-    order: [[Attachment,'createdAt', 'asc']], 
-    include:[
-      { model: Table }, 
-      { model: Attachment, required: false,  
-        include: [ Hyperlink ] }, 
-      { model: User, as: 'participant' }, 
-      { model: User, as: 'owner' }
-      ]
-    }
-    );
+router.get('/projects.json', cors(corsOptions), async function (req, res) {
+  var projects = await Project.findAll();
   
-  var response = []  
+  var response = []
   for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
@@ -71,6 +54,7 @@ router.get('/projects.json', cors(), async function (req, res) {
 
     response.push({
       'projectName': project.get('project_name'),
+      'Language': project.get('project_lang'),
       'projectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
@@ -83,12 +67,12 @@ router.get('/projects.json', cors(), async function (req, res) {
   res.json(response);
 });
 
-router.get('/planning', cors(), async function (req, res) {
+router.get('/planning', cors(corsOptions), async function (req, res) {
   // create a planning table structure 
   // x -> list of locations
   // y -> list of table
   // z -> list of projects
-  const locations = await Location.findAll({ include:[{ model: Table, include:[{ model: Project }] }] })
+  const locations = await Location.findAll()
   const locationsCount = await Location.count()
   const tablesGroupedCount = await Table.findAll(
     {
@@ -113,24 +97,33 @@ router.get('/planning', cors(), async function (req, res) {
       for(let project of projects){
         let participantsList = []
         let owner = await project.getOwner()
+        let agreedToPhoto = true
         if(owner){
           participantsList.push(owner)
+          let questions = await owner.getQuestions()
+          agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
         }
         let participants = await project.getParticipant()
         if(participants){
+          for(let participant of participants){
+            let questions = await participant.getQuestions()
+            agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+          }
           participantsList.push(...participants)
         } 
 
-        let attachments = await project.getAttachments()
+        let attachments = await project.getAttachments({ where: { confirmed: true } })
     
         projectList.push({
-          'startTime': project.ProjectTable.get('startTime'),
-          'endTime': project.ProjectTable.get('endTime'),
+          'language': project.get('project_lang'),
+          'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
+          'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
           'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
-          'description': project.get('project_descr')
+          'description': project.get('project_descr'),
+          'agreedToPhoto': agreedToPhoto, 
         })   
       }
 
@@ -138,7 +131,7 @@ router.get('/planning', cors(), async function (req, res) {
         name: table.get('name'),
         projects: projectList
       }
-    };
+    }
   }
   console.log(result)   
 
