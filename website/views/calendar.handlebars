@@ -18,7 +18,7 @@
                                     <h6 class="card-text"><small class="text-muted">{{this.participants}}</small></h6>
                                     <h6 class="card-text">
                                         <small class="text-muted"><i class="bi bi-globe"></i> {{this.language}}, 
-                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video"></i>{{else}}<i class="bi bi-camera-video-off"></i>{{/if}}</small></h6>
+                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video text-success"></i>{{else}}<i class="bi bi-camera-video-off text-danger"></i>{{/if}}</small></h6>
                                     <a href="{{this.link}}" class="card-link">{{this.link}}</a>
                                     <p class="card-text"><small class="text-muted"><i class="bi bi-calendar"></i> {{this.startTime}} - {{this.endTime}}</small></p>
                                     <p class="card-text">{{this.description}}</p>
