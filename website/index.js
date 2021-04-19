@@ -88,7 +88,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
     result[0][i] = {
       name: location.get('text'),
       header: true 
-    } 
+    }
 
     let tables = await location.getTables()
     for (const [j, table] of tables.entries()) {
@@ -124,7 +124,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         } 
 
         projectList.push({
-          'style': cardStyle, 
+          'style': cardStyle,
           'language': project.get('project_lang'),
           'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
           'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
