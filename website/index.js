@@ -113,8 +113,18 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         } 
 
         let attachments = await project.getAttachments({ where: { confirmed: true } })
-    
-        projectList.push({ 
+        
+        let color = ''
+        if(agreedToPhoto){
+          color= 'border-danger'
+        } else if(project.get('project_lang') == 'nl'){
+          color= 'border-primary'
+        } else if(project.get('project_lang') == 'fr'){
+          color= 'border-secondary'
+        } 
+
+        projectList.push({
+          'style': 'border-primary', 
           'language': project.get('project_lang'),
           'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
           'endTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
