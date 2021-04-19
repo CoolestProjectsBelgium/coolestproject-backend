@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 var cors = require('cors')
 const models = require('../models');
@@ -10,11 +8,15 @@ const Hyperlink = models.Hyperlink;
 const User = models.User;
 const Table = models.Table;
 const Sequelize = require('sequelize')
- 
+
 var router = express.Router(); 
 
+var corsOptions = {
+  origin: process.env.WEBSITEURL,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 
-router.get('/projects.xml', cors(), async function (req, res) {
+router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
 
@@ -38,10 +40,10 @@ router.get('/projects.xml', cors(), async function (req, res) {
   
 });
 
-router.get('/projects.json', cors(), async function (req, res) {
+router.get('/projects.json', cors(corsOptions), async function (req, res) {
   var projects = await Project.findAll();
   
-  var response = []  
+  var response = []
   for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
@@ -62,7 +64,7 @@ router.get('/projects.json', cors(), async function (req, res) {
   res.json(response);
 });
 
-router.get('/planning', cors(), async function (req, res) {
+router.get('/planning', cors(corsOptions), async function (req, res) {
   // create a planning table structure 
   // x -> list of locations
   // y -> list of table
@@ -117,7 +119,7 @@ router.get('/planning', cors(), async function (req, res) {
         name: table.get('name'),
         projects: projectList
       }
-    };
+    }
   }
   console.log(result)   
 
