@@ -7,7 +7,8 @@ const Attachment = models.Attachment;
 const Hyperlink = models.Hyperlink;
 const User = models.User;
 const Table = models.Table;
-const Sequelize = require('sequelize')
+const Event = models.Event;
+const Sequelize = require('sequelize');
 
 var router = express.Router(); 
 
@@ -70,23 +71,28 @@ router.get('/projects.json', cors(corsOptions), async function (req, res) {
   res.json(response);
 });
 
-router.get('/planning', cors(corsOptions), async function (req, res) {
+router.get('/planning/:eventId', cors(corsOptions), async function (req, res, next) {
   // create a planning table structure 
   // x -> list of locations
   // y -> list of table
   // z -> list of projects
-  const locations = await Location.findAll()
-  const locationsCount = await Location.count()
+  const event = await Event.findByPk(req.params.eventId)
+  if (event === null) {
+    return next(new Error('event not found'))
+  }
+
+  const locations = await event.getLocations() 
   const tablesGroupedCount = await Table.findAll(
     {
-      attributes: ['LocationId', [Sequelize.fn('count', Sequelize.col('LocationId')), 'count']],
-      group: ['LocationId']
+      attributes: ['LocationId','EventId', [Sequelize.fn('count', Sequelize.col('LocationId')), 'count']],
+      group: ['LocationId','EventId'],
+      having : { 'EventId': event.get('id') }
     }
   )
   // we need header values in the first row so + 1 for length
   const maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0) + 1;
 
-  const result = Array(maxTablesCount).fill().map(() => Array(locationsCount));
+  const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
   for (const [i, location] of locations.entries()) {
     result[0][i] = {
       name: location.get('text'),
@@ -103,16 +109,14 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
         let agreedToPhoto = true
         if(owner){
           participantsList.push(owner)
-          let questions = await owner.getQuestions()
-          agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+          agreedToPhoto = agreedToPhoto && (await owner.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
         }
         let participants = await project.getParticipant()
         if(participants){
           for(let participant of participants){
-            let questions = await participant.getQuestions()
-            agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+            agreedToPhoto = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
           }
-          participantsList.push(...participants)
+          participantsList.push(...participants) 
         } 
 
         let attachments = await project.getAttachments({ where: { confirmed: true } })
@@ -148,7 +152,7 @@ router.get('/planning', cors(corsOptions), async function (req, res) {
   }
   console.log(result)   
 
-  res.render('calendar.handlebars', { grid: result })
+  res.render('calendar.handlebars', { eventName: event.event_title, grid: result })
 }); 
 
 module.exports = router;  
