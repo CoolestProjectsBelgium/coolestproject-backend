@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Event.hasMany(models.Question);
+      Event.hasMany(models.Location);
     }
   }
   Event.init({
