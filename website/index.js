@@ -106,14 +106,12 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
         let agreedToPhoto = true
         if(owner){
           participantsList.push(owner)
-          let questions = await owner.getQuestions()
-          agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+          agreedToPhoto = agreedToPhoto && (await owner.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
         }
         let participants = await project.getParticipant()
         if(participants){
           for(let participant of participants){
-            let questions = await participant.getQuestions()
-            agreedToPhoto = agreedToPhoto && questions.some((ele) => { return ele.name == 'Agreed to Photo' })
+            agreedToPhoto = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
           }
           participantsList.push(...participants) 
         } 
