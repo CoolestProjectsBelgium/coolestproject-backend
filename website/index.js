@@ -41,7 +41,6 @@ router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   }
   const xml = root.end({ pretty: true});
   res.set('Content-Type', 'text/xml');
-  res.set('Access-Control-Allow-Origin', '*');
   res.send(xml);
   
 });
