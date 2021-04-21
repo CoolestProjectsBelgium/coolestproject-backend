@@ -1,17 +1,15 @@
 {{!< default}}
 <div class="container-fluid">
-    <h2 class="display-5"><i class="bi bi-calendar"></i> {{ eventName }}</h2>
+    <h2 class="display-6"><i class="bi bi-calendar"></i> {{ eventName }} Date: 25 april 2021</h2>
     {{#each grid}}
         <div class="row flex-row flex-nowrap g-2 mb-3">
             {{#each this}}
                 {{#if this.header}}
-                    <div class="col">
-                        <h5><i class="display-7 bi bi-clock-fill"> </i>{{this.name}}</h5>
-                    </div>
                 {{else}}
                     <div class="col">
                         <h5><i class="display-7 bi bi-house-fill"> </i>{{this.name}}</h5>
                         {{#each this.projects}}
+                         <h5><i class =" display-7 bi bi-clock-fill"></i> {{this.startTimeShort}} - {{this.endTime}}</h5>
                             <div class="card {{ this.style }}" style="width: 18rem;">
                                 <div class="card-header bg-info text-white">
                                     {{this.projectName}}
