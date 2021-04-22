@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     participants: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING
     },
     Length: {
       type: DataTypes.STRING
-  },
+    },
     Language: {
       type: DataTypes.STRING,
     },
@@ -29,5 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     timestamps: false
   });
+  // disable creation
+  Videoload.sync = () => {};
   return Videoload;
 };
