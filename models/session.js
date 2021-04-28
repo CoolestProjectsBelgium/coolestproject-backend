@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
     }
-  };
+  }
   Session.init({
     sid: {
       type: DataTypes.STRING,

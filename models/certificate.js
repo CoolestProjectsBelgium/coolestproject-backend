@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Certificate.init({
     text: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(4000),
     },
   }, {
     sequelize,
