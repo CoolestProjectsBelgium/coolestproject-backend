@@ -543,6 +543,7 @@ const adminBroOptions = {
       resource: db.Certificate,
       options: {
         navigation: projectParent,
+        listProperties: ['id', 'ProjectId','text'],
         properties: {
           text: { type: 'richtext' }
         }
