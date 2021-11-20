@@ -1,14 +1,11 @@
-FROM node:14
+FROM node:14-slim
 
 WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install . 
+VOLUME /usr/src/app/node_modules
 
 COPY . .
 
-RUN npm install -g .
+RUN npm i
 
 EXPOSE 8080
 CMD [ "npm", "run development" ]
