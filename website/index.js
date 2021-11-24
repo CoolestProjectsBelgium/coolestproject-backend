@@ -12,10 +12,13 @@ const Sequelize = require('sequelize');
 
 var router = express.Router(); 
 
-var corsOptions = {
-  origin: process.env.WEBSITEURL,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+const corsOptions = {
+  origin: '*',
+  methods: [],
+  allowedHeaders: [],
+  exposedHeaders: [],
+  credentials: true
+};
 
 router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
