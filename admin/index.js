@@ -728,12 +728,6 @@ const adminBroOptions = {
       },
     },
     {
-      resource: db.Hyperxlink,
-      options: {
-        navigation: projectParent
-    }
-    },
-    {
       resource: db.Vote,
       options: {
         navigation: votingParent
