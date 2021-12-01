@@ -19,6 +19,7 @@ var stream = require('stream');
 var Mail = require('../mailer');
 const Token = require('../jwts');
 
+
 const projectParent = {
   name: 'Projects',
   icon: 'Roadmap'  
@@ -83,7 +84,7 @@ const adminBroOptions = {
   },
   resources: [
     {
-      resource: db.Session,
+      resource: db.Sessions,
       options: {
         navigation: adminParent
       }
@@ -176,6 +177,14 @@ const adminBroOptions = {
           total_projects:{
             list: true,
             show: true
+          },
+          current: {
+            isDisabled: true,
+            type: "boolean"
+          },
+          closed: {
+            isDisabled: true,
+            type: "boolean"
           }
         },
         actions: {

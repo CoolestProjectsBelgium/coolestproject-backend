@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Award.belongsTo(models.Event, {});
       Award.belongsTo(models.Project, {});
     }
-  };
+  }
   Award.init({
     name: { type: DataTypes.STRING }
   }, {

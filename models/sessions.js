@@ -4,7 +4,7 @@ const {
 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Session extends Model {
+  class Sessions extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
     }
   }
-  Session.init({
+  Sessions.init({
     sid: {
       type: DataTypes.STRING,
       primaryKey: true
@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Session',
+    modelName: 'Sessions', // we need plural in this case (Sessions is handled by AdminBro)
     freezeTableName: true
   });
-  return Session;
+  return Sessions;
 };
