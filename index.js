@@ -1,16 +1,18 @@
 'use strict';
+const DBA = require('./dba');
+const models = require('./models');
 const express = require('express');
 const app = express();
 var exphbs  = require('express-handlebars');
-
-const cors = require('cors');
 const fs = require('fs');
+const cors = require('cors');
 const path = require('path');
-const http = require('http');
-const swaggerTools = require('swagger-tools');
-const jsyaml = require('js-yaml');
 const serverPort = process.env.PORT || 8080;
 const requestLanguage = require('express-request-language');
+
+const Token = require('./jwts');
+const Mailer = require('./mailer');
+const Azure = require('./azure');
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -41,8 +43,6 @@ app.use(cors(corsOptions));
 // secure routes
 require('./security')(app);
 
-
-
 // website integration 
 const websiteIntegration = require('./website');
 app.use('/website', websiteIntegration);
@@ -58,36 +58,63 @@ i18n.configure({
   directory: __dirname + '/locales'
 });
 
-// swaggerRouter configuration
-var options = {
-  swaggerUi: path.join(__dirname, '/swagger.json'),
-  controllers: path.join(__dirname, './controllers'),
-  useStubs: process.env.NODE_ENV === 'development' // Conditionally turn on stubs (mock mode)
-};
+const { initialize } = require('express-openapi');
+const yaml = require('js-yaml');
 
-// The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
-var spec = fs.readFileSync(path.join(__dirname, 'api/swagger.yaml'), 'utf8');
-var swaggerDoc = jsyaml.safeLoad(spec);
+function validateAllResponses(req, res, next) {
+  const strictValidation = req.apiDoc['x-express-openapi-validation-strict'] ? true : false;
+  if (typeof res.validateResponse === 'function') {
+      const send = res.send;
+      res.send = function expressOpenAPISend(...args) {
+        const onlyWarn = !strictValidation;
+        if (res.get('x-express-openapi-validation-error-for') !== undefined) {
+            return send.apply(res, args);
+        }
+        const body = JSON.parse(args[0]);
+        let validation = res.validateResponse(res.statusCode, body);
+        let validationMessage;
+        if (validation === undefined) {
+            validation = { message: undefined, errors: undefined };
+        }
+        if (validation.errors) {
+            const errorList = Array.from(validation.errors).map(_ => _.message).join(',');
+            validationMessage = `Invalid response for status code ${res.statusCode}: ${errorList}`;
+            console.warn(validationMessage);
+            // Set to avoid a loop, and to provide the original status code
+            res.set('x-express-openapi-validation-error-for', res.statusCode.toString());
+        }
+        if (onlyWarn || !validation.errors) {
+            return send.apply(res, args);
+        } else {
+            res.status(500);
+            return res.json({ error: validationMessage });
+        }
+    }
+  }
+  next();
+}
 
-// Initialize the Swagger middleware
-swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
-
-  // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
-  app.use(middleware.swaggerMetadata());
-
-  // Validate Swagger requests
-  app.use(middleware.swaggerValidator());
-
-  // Route validated requests to appropriate controller
-  app.use(middleware.swaggerRouter(options));
-
-  // Serve the Swagger documents and Swagger UI
-  app.use(middleware.swaggerUi());
-
-  // Start the server
-  http.createServer(app).listen(serverPort, function () {
-    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
-    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
-  });
-
+initialize({
+  app,
+  docsPath: '/docs',
+  dependencies: {
+    database: new DBA(models, Azure),
+    models: models,
+    mailer: Mailer,
+    jwt: Token,
+    azure: Azure
+  },
+  promiseMode: true,
+  paths: path.resolve(__dirname, 'paths'),
+  apiDoc: {
+    ...yaml.load(fs.readFileSync(path.resolve(__dirname, './api/swagger.yaml'), 'utf8')),
+    'x-express-openapi-additional-middleware': [validateAllResponses],
+    'x-express-openapi-validation-strict': true
+  },
+  errorMiddleware: function(err, req, res, next) {
+    res.status(500);
+    res.json({'code': '000', 'message': 'aaa'});
+  }
 });
+
+app.listen(serverPort);

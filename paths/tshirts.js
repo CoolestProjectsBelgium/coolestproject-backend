@@ -1,32 +1,29 @@
-'use strict';
+module.exports = function(database) {
+  const operations = {
+    GET
+  };
+  
+  async function GET(req, res) {
+    const user = req.user || null;
+    const language = req.language || null;
 
-const DBA = require('../dba');
-const respondWithCode = require('../utils/writer').respondWithCode;
-
-/**
- * get list of tshirts
- *
- * returns TShirts
- **/
-exports.tshirtGET = async function (language, user) {
-  try {
     let event = null;
     if (user) {
       event = await user.getEvent();
     } else {
-      event = await DBA.getEventActive();
+      event = await database.getEventActive();
     }
-
+        
     if (event === null) {
       throw new Error('No event found');
     }
-
-    const tshirts = await DBA.getTshirts(language, event);
-    const groups = await DBA.getTshirtsGroups(language);
+        
+    const tshirts = await database.getTshirts(language, event);
+    const groups = await database.getTshirtsGroups(language);
     if (tshirts === null || groups === null) {
       throw new Error('No Tshirts found');
     }
-
+        
     // loop over group
     const result = groups.map((group) => {
       const t = group.TShirtGroupTranslations;
@@ -47,13 +44,8 @@ exports.tshirtGET = async function (language, user) {
       });
       return { group: key, items: items };
     });
-    return result;
-
-  } catch (error) {
-    console.log(error);
-    throw new respondWithCode(500, {
-      code: 0,
-      message: 'Backend error'
-    });
+    res.status(200).json(result);
   }
+  
+  return operations;
 };

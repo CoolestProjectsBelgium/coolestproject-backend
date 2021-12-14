@@ -45,6 +45,7 @@
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-formidable": "^1.2.0",
+    "express-openapi": "^9.3.1",
     "express-request-language": "^1.1.15",
     "express-session": "^1.17.2",
     "handlebars": "^4.7.7",
@@ -71,13 +72,13 @@
     "randomstring": "^1.2.1",
     "sequelize": "^6.11.0",
     "swagger-tools": "^0.10.4",
+    "uuid": "^8.3.2",
     "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
     "ini": ">=2.0.0",
     "nodemon": "^2.0.15",
     "prompt-password": "^1.2.0",
-    "sequelize-auto-migrations": "^1.0.3",
     "sequelize-cli": "^6.3.0",
     "yargs": "^17.2.1"
   }
