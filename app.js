@@ -49,10 +49,8 @@ const websiteIntegration = require('./website');
 app.use('/website', websiteIntegration);
 
 // enable admin UI
-if (require.main === module) {
-  const adminUI = require('./admin');
-  app.use('/admin', adminUI);
-}
+const adminUI = require('./admin');
+app.use('/admin', adminUI);
 
 //enable i18n
 const i18n = require('i18n');
