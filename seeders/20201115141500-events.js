@@ -20,7 +20,7 @@ module.exports = {
         event_title: 'Coolest Projects 2021'
       },
       { 
-        eventBeginDate: new Date('2022-11-01'), 
+        eventBeginDate: new Date('2021-01-01'), 
         registrationOpenDate: new Date('2022-02-01'), 
         registrationClosedDate: new Date('2022-03-31'),
         projectClosedDate: new Date('2022-04-09'),

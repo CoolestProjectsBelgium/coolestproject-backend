@@ -7,20 +7,24 @@ module.exports = function(models, database) {
   };
 
   async function GET(req, res) {
+    
     const user = req.user || null;
 
-    let event = null;
+    var event = null;
     if(user){
       event = await user.getEvent();
     } else {
       event = await database.getEventActive();
     }
-      
+
+    console.log(event);
+
     if (!event) {
-      throw {
-        status: 404,
-        message: 'No Active event found',
-      };
+      res.status(404).json({
+        message: 'No active event',
+        code: '001'
+      });
+      return;
     }
     let registration_count = 
           await User.count({ where: { eventId: event.id }, lock: true }); 
@@ -28,14 +32,16 @@ module.exports = function(models, database) {
     registration_count += await Registration.count({ lock: true });
       
     res.status(200).json({
-      startDateEvent: event.startDate.toISOString().substring(0, 10),
       maxAge: event.maxAge,
       minAge: event.minAge,
       guardianAge: event.minGuardianAge,
-      tshirtDate: event.startDate.toISOString().substring(0, 10),
       enviroment: process.env.NODE_ENV,
       waitingListActive: (registration_count >= event.maxRegistration),
       maxUploadSize: event.maxFileSize  || 1024 * 1024 * 1024 * 5, // 5 gigs in bytes
+
+      startDateEvent: event.eventBeginDate.toISOString().substring(0, 10),
+      tshirtDate: event.eventBeginDate.toISOString().substring(0, 10),
+
       isActive: event.current,
       //maxParticipants: event.
       // max participant in group

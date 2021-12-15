@@ -77,6 +77,12 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/Settings'
+        404:
+          description: No active event
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'        
         500:
           description: Error
           content:

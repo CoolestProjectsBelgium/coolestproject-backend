@@ -7,6 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 const addYears = require('date-fns/addYears');
 
 const crypto = require('crypto');
+const { Op } = require("sequelize");
+
 
 const Sequelize = require('sequelize');
 Sequelize.useCLS(namespace);
@@ -124,7 +126,7 @@ class DBA {
      * @param {string} password - unencrypted password
      * @returns {string}
      */
-  generatePwd(password) {
+  static generatePwd(password) {
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(password, salt);
     return hash;
@@ -750,7 +752,14 @@ class DBA {
      */
   async getEventActive() {
     return await this.Event.findOne({
-      where: { current: true }, attributes: {
+      where: { 
+        eventBeginDate: { 
+          [this.Op.lt]: Sequelize.literal('CURDATE()'),
+        },
+        eventEndDate: { 
+          [this.Op.gt]: Sequelize.literal('CURDATE()'),
+        }
+       }, attributes: {
         include: [
           [this.sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
           [this.sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],

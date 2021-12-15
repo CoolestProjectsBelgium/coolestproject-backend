@@ -13,6 +13,7 @@ const Project = db.Project
 const Hyperlink = db.Hyperlink
 var DBA = require('../dba');
 const Azure = require('../azure');
+const database = new DBA(db, Azure);
 const sequelize = db.sequelize;
 const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
@@ -65,7 +66,7 @@ const adminBroOptions = {
   rootPath: '/admin',
   dashboard: {
     handler: async () => {
-      const evt = await DBA.getEventActive()
+      const evt = await database.getEventActive()
       return evt
     },
     component: AdminBro.bundle('./components/dashboard')
@@ -192,7 +193,7 @@ const adminBroOptions = {
             after: async (response, request, context) => { 
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
-                  const evt = await DBA.getEventDetail(r.params['id']);
+                  const evt = await database.getEventDetail(r.params['id']);
                   const properties = await evt.get({ plain: true });
                   for(let p in properties){
                     r.params[p] = properties[p]; 
@@ -208,7 +209,7 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                const evt = await DBA.getEventDetail(response.record.params.id);
+                const evt = await database.getEventDetail(response.record.params.id);
                 const properties = await evt.get({ plain: true });                
                 for(let p in properties){
                   response.record.params[p] = properties[p];
@@ -227,7 +228,7 @@ const adminBroOptions = {
             handler: async (request, response, data) => {
               const { record, resource, currentAdmin, h } = data
               try {
-                const evt = await DBA.getEventDetail(request.params.recordId);
+                const evt = await database.getEventDetail(request.params.recordId);
                 await Azure.syncSetting(evt);
                 return {
                   record: record.toJSON(currentAdmin),
@@ -255,7 +256,7 @@ const adminBroOptions = {
             handler: async (request, response, data) => {
               const { record, resource, currentAdmin, h } = data
               try {
-                const evt = await DBA.setEventActive(request.params.recordId)
+                const evt = await database.setEventActive(request.params.recordId)
                 return {
                   record: record.toJSON(currentAdmin),
                   redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
@@ -337,7 +338,7 @@ const adminBroOptions = {
                 ].join('\n'), 'Action#handler');
               }
               try {
-                const registration = await DBA.getRegistration(request.params.recordId);
+                const registration = await database.getRegistration(request.params.recordId);
                 const event = await registration.getEvent();
                 const token = await Token.generateRegistrationToken(registration.id);
                 const mail = await Mail.activationMail(registration, token, event);
