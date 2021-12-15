@@ -36,10 +36,42 @@ describe('Event', function() {
     //start server
     app = require('../app');              
   });
-  it('Get event setting', (done) => { 
+
+  it('Check for active event', (done) => { 
     chai.request(app).get('/settings').end(function(err, res) {
       expect(res).to.have.status(200);
       done();
     });
   });
+
+  it('Get T-shirts', (done) => { 
+    chai.request(app)
+      .get('/tshirts')
+      .set('Accept-Language', 'nl')
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        done();
+    });
+  });
+
+  it('Get Questions', (done) => { 
+    chai.request(app)
+      .get('/questions')
+      .set('Accept-Language', 'nl')      
+      .end(function(err, res) {
+        expect(res).to.have.status(200);
+        done();
+    });
+  });
+
+  it('Get Approvals', (done) => { 
+    chai.request(app)
+      .get('/approvals')
+      .set('Accept-Language', 'nl')
+      .end(function(err, res) {
+      expect(res).to.have.status(200);
+      done();
+    });
+  });
+
 });
