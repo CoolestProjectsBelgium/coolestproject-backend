@@ -750,7 +750,14 @@ class DBA {
      */
   async getEventActive() {
     return await this.Event.findOne({
-      where: { current: true }, attributes: {
+      where: {
+        eventBeginDate: { 
+          [this.Op.lt]: Sequelize.literal('CURDATE()'),
+        },
+        eventEndDate: { 
+          [this.Op.gt]: Sequelize.literal('CURDATE()'),
+        }
+      }, attributes: {
         include: [
           [this.sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
           [this.sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],

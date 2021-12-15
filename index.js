@@ -114,6 +114,7 @@ initialize({
   errorMiddleware: function(err, req, res, next) {
     res.status(500);
     res.json({'code': '000', 'message': 'aaa'});
+    console.log(err);
   }
 });
 

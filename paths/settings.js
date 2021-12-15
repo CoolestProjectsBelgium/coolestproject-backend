@@ -28,11 +28,11 @@ module.exports = function(models, database) {
     registration_count += await Registration.count({ lock: true });
       
     res.status(200).json({
-      startDateEvent: event.startDate.toISOString().substring(0, 10),
       maxAge: event.maxAge,
       minAge: event.minAge,
+      startDateEvent: event.eventBeginDate.toISOString().substring(0, 10),
       guardianAge: event.minGuardianAge,
-      tshirtDate: event.startDate.toISOString().substring(0, 10),
+      tshirtDate: event.eventBeginDate.toISOString().substring(0, 10),
       enviroment: process.env.NODE_ENV,
       waitingListActive: (registration_count >= event.maxRegistration),
       maxUploadSize: event.maxFileSize  || 1024 * 1024 * 1024 * 5, // 5 gigs in bytes
