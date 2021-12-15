@@ -16,6 +16,7 @@ module.exports = function(jwt) {
       sameSite: process.env.SAMESITE_COOKIE || 'None', 
       secure: process.env.SECURE_COOKIE === 'true',
       domain: process.env.DOMAIN_COOKIE  });
+      
     res.status(200).json({ expires, language: user.language });
   }
 
