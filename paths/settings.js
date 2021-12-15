@@ -34,6 +34,7 @@ module.exports = function(models, database) {
     res.status(200).json({
       maxAge: event.maxAge,
       minAge: event.minAge,
+      startDateEvent: event.eventBeginDate.toISOString().substring(0, 10),
       guardianAge: event.minGuardianAge,
       enviroment: process.env.NODE_ENV,
       waitingListActive: (registration_count >= event.maxRegistration),
