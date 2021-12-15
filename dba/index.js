@@ -124,7 +124,7 @@ class DBA {
      * @param {string} password - unencrypted password
      * @returns {string}
      */
-  generatePwd(password) {
+  static generatePwd(password) {
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(password, salt);
     return hash;
