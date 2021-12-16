@@ -4,8 +4,12 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const AnonymousStrategy = require('passport-anonymous').Strategy;
+const Azure = require('../azure');
 
 const DBA = require('../dba');
+
+const database = new DBA(Azure);
+
 const Token = require('../jwts');
 const Mail = require('../mailer');
 
@@ -29,7 +33,7 @@ module.exports = function (app) {
       // user login
       let user = null;
       if (jwt_payload.id !== undefined) {
-        user = await DBA.getUser(jwt_payload.id);
+        user = await database.getUser(jwt_payload.id);
         if (!user) {
           return done('User not found', false);
         }
@@ -40,7 +44,7 @@ module.exports = function (app) {
 
         // create user
       } else if (jwt_payload.registrationId !== undefined) {
-        user = await DBA.createUserFromRegistration(jwt_payload.registrationId);
+        user = await database.createUserFromRegistration(jwt_payload.registrationId);
         if (!user) {
           return done('User not found', false);
         }
@@ -49,7 +53,7 @@ module.exports = function (app) {
           return done(null, false,  { message: 'Event is closed no login possible' });
         }
         const token = await Token.generateLoginToken(user.id);
-        const project = await DBA.getProject(user.id);
+        const project = await database.getProject(user.id);
 
         // send welcome mails if user is new
         if (project.ownerId == user.id) {
@@ -72,7 +76,7 @@ module.exports = function (app) {
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const user = await DBA.getUser(user.id);
+      const user = await database.getUser(user.id);
       return done(null, user);
     } catch (err) {
       return done(err, false);

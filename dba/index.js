@@ -44,7 +44,7 @@ class DBA {
      * @returns {Promise<models.User>} created User
      */
   async createUserFromRegistration(registrationId) {
-    return await this.sequelize.transaction(
+    return await sequelize.transaction(
       async () => {
         const registration = await this.getRegistration(registrationId);
         if (registration === null) {

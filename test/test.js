@@ -3,6 +3,8 @@ const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
+const Token = require('../jwts');
+
 const models = require('../models');
 const sequelize = models.sequelize;
 
@@ -391,6 +393,69 @@ describe('Event', function() {
           done();
         });
     });
+
+    it('Registration with subsequent activation', async (done) => {
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'test@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
+
+      const result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      if(result.status != 200){
+        done('error');
+        return;
+      }
+
+      // just pick the last registration
+      const lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+
+      expect(lastRegistration[0].email, 'test@dummy.be')
+
+      const token = await Token.generateRegistrationToken(lastRegistration[0].id);
+      console.log(token);
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      const userinfo = await chai.request(app)
+        .get('/userinfo')
+        .set("Authorization", `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send();
+
+      // check if we have a corresponding user
+      const user = await models.Users.findOne({ where: { email: userinfo.email } });
+      if(user !== null){
+        done('user not found');
+        return;
+      }
+    });    
 
   });
 });
