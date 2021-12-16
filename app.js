@@ -8,6 +8,8 @@ var exphbs  = require('express-handlebars');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
+const bodyParser = require('body-parser');
+
 
 const requestLanguage = require('express-request-language');
 
@@ -71,7 +73,12 @@ function validateAllResponses(req, res, next) {
         if (res.get('x-express-openapi-validation-error-for') !== undefined) {
             return send.apply(res, args);
         }
-        const body = JSON.parse(args[0]);
+        // just ignore incorrect json
+        let body = args[0];
+        try {
+          body = JSON.parse(args[0]);
+        } catch (error) {}
+        
         let validation = res.validateResponse(res.statusCode, body);
         let validationMessage;
         if (validation === undefined) {
@@ -112,7 +119,12 @@ initialize({
     'x-express-openapi-additional-middleware': [validateAllResponses],
     'x-express-openapi-validation-strict': true
   },
+  consumesMiddleware: {
+    'application/json': bodyParser.json(),
+    'text/text': bodyParser.text()
+  },
   errorMiddleware: function(err, req, res, next) {
+    console.log(err);
     res.status(500);
     res.json({'code': '000', 'message': 'Internal Server error'});
   }

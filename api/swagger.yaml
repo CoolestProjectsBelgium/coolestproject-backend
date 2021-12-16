@@ -95,12 +95,12 @@ paths:
       - registration
       summary: Create new registration
       requestBody:
+        required: true
         description: The registration to create.
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/Registration'
-        required: false
       responses:
         200:
           description: OK
@@ -450,6 +450,7 @@ components:
       - month
       - sex
       - year
+      - email
       type: object
       properties:
         id:

@@ -505,7 +505,7 @@ class DBA {
     return await sequelize.transaction(
       async () => {
         // set the current event
-        const event = await Event.findOne({ where: { current: true } });
+        const event = await this.getEventActive();
         if (event === null) {
           throw new Error('No Active event found');
         }

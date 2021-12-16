@@ -74,4 +74,56 @@ describe('Event', function() {
     });
   });
 
+  describe('Registrations', function() {
+
+    const registration = {
+      user: {
+        firstname: 'test 123',
+        language: 'nl',
+        lastname: 'test 123',
+        mandatory_approvals: [3],
+        general_questions: [1,2],
+        month: 1,
+        sex: 'm',
+        year: 2020,
+        gsm: '+32460789101',      
+        t_size: 1,
+        email: 'dummy@dummy.be',
+        address: {
+          postalcode: "1000"
+        }
+      },
+      project: {
+        own_project: {
+          project_name: 'test',
+          project_descr: 'test',
+          project_type: 'test',
+          project_lang: 'nl'
+        }
+      }
+    }
+
+    it('Basic registration without guardian', (done) => {
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration)
+        .end(function(err, res) {
+          console.log(res);
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
+    /*
+    it('Basic registration with guardian', (done) => {
+      done('todo');
+    });
+
+    it('Failed registration incorrect input', (done) => {
+      done('todo');
+    });
+    */
+  });
+
 });

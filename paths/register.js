@@ -5,7 +5,7 @@ module.exports = function(models, database, mailer, jwt) {
   };
   
   async function POST(req, res) {
-    const registration_fields = req.params.registration;
+    const registration_fields = req.body;
 
     // Check if email exists if so ignore registration
     const event = await database.getEventActive();
@@ -26,7 +26,9 @@ module.exports = function(models, database, mailer, jwt) {
         console.log('UserError: Calling emailExistsMail=', email, 'language:', lang);
         mailer.emailExistsMail(email, lang);
       }
-    }
+    } 
+
+    res.status(200).send(null);
   }
     
   return operations;
