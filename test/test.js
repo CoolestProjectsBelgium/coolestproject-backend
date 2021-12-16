@@ -130,6 +130,34 @@ describe('Event', function() {
           done();
         });
     });
-  });
 
+    it('Basic registration without mandatory approval', (done) => {
+      let without_approval = registration;
+      without_approval.user.mandatory_approvals = [];
+
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(without_approval)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
+    it('Basic registration with incorrect question', (done) => {
+      let without_message = registration;
+      without_message.user.general_questions = [1];
+
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(without_message)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
+  });
 });
