@@ -99,7 +99,7 @@ initialize({
   app,
   docsPath: '/docs',
   dependencies: {
-    database: new DBA(models, Azure),
+    database: new DBA(Azure),
     models: models,
     mailer: Mailer,
     jwt: Token,

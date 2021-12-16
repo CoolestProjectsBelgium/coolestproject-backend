@@ -69,8 +69,8 @@ describe('Event', function() {
       .get('/approvals')
       .set('Accept-Language', 'nl')
       .end(function(err, res) {
-      expect(res).to.have.status(200);
-      done();
+        expect(res).to.have.status(200);
+        done();
     });
   });
 

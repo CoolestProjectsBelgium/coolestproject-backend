@@ -1,3 +1,9 @@
+const DBA = require('../dba'); 
+
+/**
+ * get event by id
+ * @param {DBA} database
+ */
 module.exports = function(models, database) {
   const User = models.User;
   const Registration = models.Registration;
