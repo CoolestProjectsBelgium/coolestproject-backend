@@ -173,7 +173,7 @@ class Mailer {
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
-          year: event.startDate.getFullYear()
+          year: event.eventBeginDate.getFullYear()
         },
         // Hier is er geen user, maar wel een registration, als het maar .language supporteerd
         url: Mailer.baseUrlWithLanguage(registration) + `/login?token=${token}`,

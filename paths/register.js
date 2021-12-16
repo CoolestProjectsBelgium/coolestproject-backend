@@ -24,7 +24,7 @@ module.exports = function(models, database, mailer, jwt) {
       const registration = await database.createRegistration(registration_fields);
       if(!registration.waiting_list){
         const token = await jwt.generateRegistrationToken(registration.id);
-        mailer.activationMail(registration, token, event);
+        await mailer.activationMail(registration, token, event);
       } else {
         mailer.waitingMail(registration, event);
       }
