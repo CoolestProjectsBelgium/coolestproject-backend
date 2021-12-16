@@ -77,7 +77,7 @@ describe('Event', function() {
   describe('Registrations', function() {
 
     it('Basic registration with guardian', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -86,7 +86,7 @@ describe('Event', function() {
           general_questions: [5, 6],
           month: 1,
           sex: 'm',
-          year: 2010,
+          year: 2009,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
           email_guardian: 'guardian@dummy.be',     
@@ -116,8 +116,48 @@ describe('Event', function() {
         });
     });
 
+    it('Basic registration with incorrect guardian info', (done) => {
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 12,
+          sex: 'm',
+          year: 2004,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
+      
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
     it('Basic registration with missing guardian information', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -155,7 +195,7 @@ describe('Event', function() {
     });
 
     it('Basic registration without mandatory approval', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -195,7 +235,7 @@ describe('Event', function() {
     });
 
     it('Basic registration with incorrect question', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -235,7 +275,7 @@ describe('Event', function() {
     });
 
     it('Basic registration with incorrect age (to young)', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -275,7 +315,7 @@ describe('Event', function() {
     });
 
     it('Basic registration with incorrect age (to old)', (done) => {
-      const registration = {
+      let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
@@ -284,7 +324,7 @@ describe('Event', function() {
           general_questions: [5, 6],
           month: 1,
           sex: 'm',
-          year: 1900,
+          year: 1901,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
           email_guardian: 'guardian@dummy.be',     

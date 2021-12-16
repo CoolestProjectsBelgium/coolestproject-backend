@@ -524,11 +524,8 @@ class DBA {
     const maxAgeDate = addYears(event.eventBeginDate, -1 * event.maxAge);
 
     // 2) check if birthdate is valid
-    if (dbValues.birthmonth > minAgeDate) {
-      throw new Error('to young');
-    }
-    if (dbValues.birthmonth < maxAgeDate) {
-      throw new Error('to old');
+    if (!(dbValues.birthmonth < minAgeDate && dbValues.birthmonth > maxAgeDate)) {
+      throw new Error('incorrect age');
     }
 
     // 3) check if guardian is required
@@ -538,8 +535,11 @@ class DBA {
         throw new Error('Guardian is required');
       }
     } else {
-      throw new Error('Guardian is filled in');
+      if (dbValues.gsm_guardian !== null && dbValues.email_guardian !== null) {
+        throw new Error('Guardian is filled in');
+      }
     }
+   
 
     // 4) check if own project or participant
     if (dbValues.project_code == null) {
@@ -579,7 +579,7 @@ class DBA {
         dbValues.firstname = user.firstname;
         dbValues.lastname = user.lastname;
         dbValues.sex = user.sex;
-        dbValues.birthmonth = user.birthmonth;
+        //dbValues.birthmonth = user.birthmonth;
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
