@@ -76,36 +76,36 @@ describe('Event', function() {
 
   describe('Registrations', function() {
 
-    const registration = {
-      user: {
-        firstname: 'test 123',
-        language: 'nl',
-        lastname: 'test 123',
-        mandatory_approvals: [7],
-        general_questions: [5, 6],
-        month: 1,
-        sex: 'm',
-        year: 2010,
-        gsm: '+32460789101',
-        gsm_guardian: '+32460789101',
-        email_guardian: 'guardian@dummy.be',     
-        t_size: 1,
-        email: 'user@dummy.be',
-        address: {
-          postalcode: "1000"
-        }
-      },
-      project: {
-        own_project: {
-          project_name: 'test',
-          project_descr: 'test',
-          project_type: 'test',
-          project_lang: 'nl'
+    it('Basic registration with guardian', (done) => {
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2010,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
         }
       }
-    }
-
-    it('Basic registration with guardian', (done) => {
+      
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
@@ -116,15 +116,38 @@ describe('Event', function() {
         });
     });
 
-    it('Basic registration without guardian failure case', (done) => {
-      let without_guardian = registration;
-      delete without_guardian.user.gsm_guardian;
-      delete without_guardian.user.email_guardian;
+    it('Basic registration with missing guardian information', (done) => {
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2010,
+          gsm: '+32460789101', 
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
 
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(without_guardian)
+        .send(registration)
         .end(function(err, res) {
           expect(res).to.have.status(500);
           done();
@@ -132,13 +155,39 @@ describe('Event', function() {
     });
 
     it('Basic registration without mandatory approval', (done) => {
-      let without_approval = registration;
-      without_approval.user.mandatory_approvals = [];
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2010,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
 
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(without_approval)
+        .send(registration)
         .end(function(err, res) {
           expect(res).to.have.status(500);
           done();
@@ -146,13 +195,119 @@ describe('Event', function() {
     });
 
     it('Basic registration with incorrect question', (done) => {
-      let without_message = registration;
-      without_message.user.general_questions = [1];
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [1],
+          month: 1,
+          sex: 'm',
+          year: 2010,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
 
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(without_message)
+        .send(registration)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
+    it('Basic registration with incorrect age (to young)', (done) => {
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2020,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
+
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
+    it('Basic registration with incorrect age (to old)', (done) => {
+      const registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 1900,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
+
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration)
         .end(function(err, res) {
           expect(res).to.have.status(500);
           done();
