@@ -5,7 +5,7 @@ module.exports = function(database) {
     
   async function POST(req, res) {
     const user = req.user;
-    const attachment = req.params.attachment;
+    const attachment = req.body.attachment;
 
     res.status(200).json(await database.createAttachment(attachment, user.id));
   }

@@ -4,6 +4,8 @@ const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 const path = require('path');
 
+const models = require('../models');
+
 const transport = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
@@ -152,6 +154,13 @@ class Mailer {
     });
     return result;
   }
+  /**
+   * 
+   * @param {models.Registration} registration 
+   * @param {String} token 
+   * @param {models.Event} event 
+   * @returns 
+   */
   static async activationMail(registration, token, event) {
     const result = await email.send({
       template: path.join(__dirname, '..', 'emails', 'activationMail'),

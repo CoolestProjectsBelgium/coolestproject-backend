@@ -24,8 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         isEmail: true
       },
-      defaultValue: null,
-      unique: true
+      defaultValue: null
     },
     firstname: {
       type: DataTypes.STRING,
@@ -120,6 +119,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Registration',
+    indexes: [{ unique: true, fields: ['email', 'eventId'] }]
   });
   return Registration;
 };

@@ -81,14 +81,16 @@ describe('Event', function() {
         firstname: 'test 123',
         language: 'nl',
         lastname: 'test 123',
-        mandatory_approvals: [3],
-        general_questions: [1,2],
+        mandatory_approvals: [7],
+        general_questions: [5, 6],
         month: 1,
         sex: 'm',
-        year: 2020,
-        gsm: '+32460789101',      
+        year: 2010,
+        gsm: '+32460789101',
+        gsm_guardian: '+32460789101',
+        email_guardian: 'guardian@dummy.be',     
         t_size: 1,
-        email: 'dummy@dummy.be',
+        email: 'user@dummy.be',
         address: {
           postalcode: "1000"
         }
@@ -103,27 +105,31 @@ describe('Event', function() {
       }
     }
 
-    it('Basic registration without guardian', (done) => {
+    it('Basic registration with guardian', (done) => {
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
         .end(function(err, res) {
-          console.log(res);
           expect(res).to.have.status(200);
           done();
         });
     });
 
-    /*
-    it('Basic registration with guardian', (done) => {
-      done('todo');
-    });
+    it('Basic registration without guardian failure case', (done) => {
+      let without_guardian = registration;
+      delete without_guardian.user.gsm_guardian;
+      delete without_guardian.user.email_guardian;
 
-    it('Failed registration incorrect input', (done) => {
-      done('todo');
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(without_guardian)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
     });
-    */
   });
 
 });

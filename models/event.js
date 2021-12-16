@@ -22,8 +22,6 @@ module.exports = (sequelize, DataTypes) => {
     minGuardianAge: DataTypes.INTEGER,
     maxRegistration: DataTypes.INTEGER,
     maxVoucher: DataTypes.INTEGER,
-    //current: DataTypes.BOOLEAN,
-    //closed: DataTypes.BOOLEAN,
 
     //timestamps for all the dates in the evt
     eventBeginDate: DataTypes.DATE,

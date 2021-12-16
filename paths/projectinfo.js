@@ -102,7 +102,7 @@ module.exports = function(models, database, azure, mailer) {
 
   async function PATCH(req, res) {
     const user = req.user || null;
-    const project_fields = req.params.project;
+    const project_fields = req.body.project;
 
     // flatten the response
     const ownProject = project_fields.own_project;

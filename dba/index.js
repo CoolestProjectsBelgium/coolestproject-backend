@@ -35,7 +35,7 @@ const Attachment = models.Attachment;
 const AzureBlob = models.AzureBlob;
 
 class DBA {
-  constructor(azure){
+  constructor(azure) {
     this.azure = azure;
   }
 
@@ -252,7 +252,7 @@ class DBA {
       throw new Error('Project found');
     }
     const result = await User.destroy({ where: { id: userId } });
-    return result; 
+    return result;
   }
 
   /**
@@ -322,7 +322,7 @@ class DBA {
             throw new Error('Delete not possible tokens in use');
           }
           // delete files on azure
-          for(const a of await project.getAttachments()){
+          for (const a of await project.getAttachments()) {
             const blob = await a.getAzureBlob();
             await this.azure.deleteBlob(blob.blob_name);
           }
@@ -375,14 +375,14 @@ class DBA {
     if (project === null) {
       throw new Error('No project found');
     }
-    const azureInfo = await AzureBlob.findOne({ 
+    const azureInfo = await AzureBlob.findOne({
       where: {
         '$Attachment.ProjectId$': project.id,
         blob_name: name
       },
-      include: [ 
-        {model: Attachment} 
-      ] 
+      include: [
+        { model: Attachment }
+      ]
     });
     if (azureInfo === null) {
       throw new Error('No attachment found');
@@ -407,13 +407,13 @@ class DBA {
         // this just checks if the provided files size is bigger than the allowed one 
         // this is user input, you need to validate this later on (TODO look into azure blob hooks)
         const event = project.getEvent();
-        if(attachment_fields.size >  event.maxFileSize){
+        if (attachment_fields.size > event.maxFileSize) {
           throw new Error('File validation failed');
         }
 
         const blobName = uuidv4();
         const containerName = process.env.AZURE_STORAGE_CONTAINER;
-    
+
         // create AzureBlob & create Attachment
         const attachment = await AzureBlob.create({
           container_name: containerName,
@@ -421,13 +421,13 @@ class DBA {
           size: attachment_fields.size,
           Attachment: {
             name: attachment_fields.name,
-            filename: attachment_fields.filename, 
+            filename: attachment_fields.filename,
             ProjectId: project.id,
             confirmed: false,
             internal: false
           }
         }, {
-          include: [{ association: 'Attachment' }] 
+          include: [{ association: 'Attachment' }]
         });
         if (attachment === null) {
           throw new Error('Attachment failed');
@@ -450,16 +450,16 @@ class DBA {
           throw new Error('No project found');
         }
         // get file linked to the project & not confirmed and not internal
-        const azureInfo = await AzureBlob.findOne({ 
+        const azureInfo = await AzureBlob.findOne({
           where: {
             '$Attachment.ProjectId$': project.id,
             '$Attachment.confirmed$': false,
             '$Attachment.internal$': false,
             blob_name: name
           },
-          include: [ 
-            {model: Attachment} 
-          ] 
+          include: [
+            { model: Attachment }
+          ]
         });
         if (azureInfo === null) {
           throw new Error('No attachment found');
@@ -496,9 +496,68 @@ class DBA {
     return await voucher.getParticipant();
   }
 
+  /** 
+   * Validate & remove fields that are not needed
+   * @param {Object} dbValues
+   * @param {models.Event} event
+  */
+  async validateRegistration(dbValues, event) {
+    // 1) check if the questions are valid
+    const possibleQuestions = await event.getQuestions();
+
+    // 1a) are all questions mapped to this event
+    for (const q of dbValues.questions) {
+      if (!possibleQuestions.some((value) => value.id === q.QuestionId)) {
+        throw new Error('questions are not from the correct event');
+      }
+    }
+
+    // 1b) are the mandatory approvals filled in
+    for (const q of possibleQuestions.filter((value) => value.mandatory === true)) {
+      if (!dbValues.questions.some((value) => value.QuestionId === q.id)) {
+        throw new Error('mandatory questions not filled in');
+      }
+    }
+
+    // validate data based on event settings
+    const minAgeDate = addYears(event.eventBeginDate, -1 * event.minAge);
+    const maxAgeDate = addYears(event.eventBeginDate, -1 * event.maxAge);
+
+    // 2) check if birthdate is valid
+    if (dbValues.birthmonth > minAgeDate) {
+      throw new Error('to young');
+    }
+    if (dbValues.birthmonth < maxAgeDate) {
+      throw new Error('to old');
+    }
+
+    // 3) check if guardian is required
+    const minGuardian = addYears(event.eventBeginDate, -1 * event.minGuardianAge);
+    if (minGuardian < dbValues.birthmonth) {
+      if (dbValues.gsm_guardian === null || dbValues.email_guardian == null) {
+        throw new Error('Guardian is required');
+      }
+    } else {
+      throw new Error('Guardian is filled in');
+    }
+
+    // 4) check if own project or participant
+    if (dbValues.project_code == null) {
+      if (dbValues.project_name == null || dbValues.project_descr == null || dbValues.project_type == null || dbValues.project_lang == null) {
+        throw new Error('Project not filled in');
+      }
+    } else {
+      if (dbValues.project_name != null && dbValues.project_descr != null && dbValues.project_type != null && dbValues.project_lang != null) {
+        throw new Error('Project filled in');
+      }
+    }
+ 
+    return dbValues;
+  }
+
   /**
      * Add registration
-     * @param {Registration} registration
+     * @param {Object} registrationValues
      * @returns {Promise<models.Registration>} created registration
      */
   async createRegistration(registrationValues) {
@@ -529,15 +588,14 @@ class DBA {
         dbValues.sizeId = user.t_size;
 
         // to month (set hour to 12)
-        dbValues.birthmonth
-                    = new Date(user.year, user.month, 12);
+        dbValues.birthmonth = new Date(user.year, user.month, 12);
 
         // map the questions to the correct table
         const answers = [];
-        if(user.general_questions){
+        if (user.general_questions) {
           answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
         }
-        if(user.mandatory_approvals){
+        if (user.mandatory_approvals) {
           answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
         }
         dbValues.questions = answers;
@@ -565,10 +623,7 @@ class DBA {
           dbValues.project_code = otherProject.project_code;
         }
 
-        // validate mandatory fields for registration 
-        // TODO check if question are for the event & mandatory is filled in
-        const possibleQuestions = await event.getQuestions();
-        console.log(possibleQuestions);
+        await this.validateRegistration(dbValues, event);
 
         // check for waiting list
         const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
@@ -589,7 +644,7 @@ class DBA {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
-        { model: Event, as: 'event' }]
+      { model: Event, as: 'event' }]
     });
   }
 
@@ -663,7 +718,8 @@ class DBA {
 
   /**
      * Check if email address exists in User records table
-     * @param {String} email
+     * @param {String} emailAddress
+     * @param {models.Event} event
      * @returns {Promise<Boolean>} 
      */
   async doesEmailExists(emailAddress, event) {
@@ -751,14 +807,14 @@ class DBA {
      */
   async getEventActive() {
     return await Event.findOne({
-      where: { 
-        eventBeginDate: { 
+      where: {
+        eventBeginDate: {
           [Op.lt]: Sequelize.literal('CURDATE()'),
         },
-        eventEndDate: { 
+        eventEndDate: {
           [Op.gt]: Sequelize.literal('CURDATE()'),
         }
-       }, attributes: {
+      }, attributes: {
         include: [
           [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
           [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
