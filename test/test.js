@@ -156,6 +156,44 @@ describe('Event', function() {
         });
     });
 
+    it('Basic registration without guardian info', (done) => {
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 12,
+          sex: 'm',
+          year: 2004,
+          gsm: '+32460789101',     
+          t_size: 1,
+          email: 'user@dummy.be',
+          address: {
+            postalcode: "1000"
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      }
+      
+      chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration)
+        .end(function(err, res) {
+          expect(res).to.have.status(500);
+          done();
+        });
+    });
+
     it('Basic registration with missing guardian information', (done) => {
       let registration = {
         user: {
