@@ -127,7 +127,7 @@ module.exports = function(models, database, azure, mailer) {
 
   async function POST(req, res) {
     const user = req.user || null;
-    const project_fields = req.params.project;
+    const project_fields = req.body.project;
 
     const project = {};
     const ownProject = project_fields.own_project;
