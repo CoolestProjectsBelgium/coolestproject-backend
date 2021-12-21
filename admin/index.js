@@ -250,6 +250,21 @@ const adminBroOptions = {
               }
             }
           },
+          showDashboard: {
+            actionType: 'record',
+            label: 'Dashboard',
+            icon: 'fas fa-gauge',
+            component: true,
+            handler: async (request, response, data) => {
+              const { record, resource, currentAdmin, h } = data
+              const evt = await database.getEventDetail(request.params.recordId)
+              console.log(record.toJSON(evt))
+              return {
+                record: record.toJSON(evt),
+              }
+            },
+            component: AdminBro.bundle('./components/eventDashboard')
+          },
           setActive: {
             icon: 'View',
             actionType: 'record',
