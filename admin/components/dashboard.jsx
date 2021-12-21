@@ -52,7 +52,7 @@ export const DashboardHeader = () => {
                 px={['default', 'lg', pageHeaderPaddingX]}
             >
                 <Text textAlign="center" color="white">
-                    <h2>{data.event_title} starting on: {data.eventBeginDate !== undefined ? new Intl.DateTimeFormat('en-BE', options).format(new Date(data.eventBeginDate)) : 'No event'}</h2>
+                    <h2>{data.event_title} starting on {data.eventBeginDate !== undefined ? new Intl.DateTimeFormat('en-BE', options).format(new Date(data.eventBeginDate)) : 'No event'}</h2>
                     <Text>{data.days_remaining} days remaining</Text>
                 </Text>
             </Box>
