@@ -20,7 +20,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Tshirt'
         500:
@@ -38,7 +38,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Question'
         500:
@@ -56,7 +56,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Approval'
         500:
@@ -74,7 +74,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Settings'
         404:
@@ -209,7 +209,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/User'
         500:
@@ -271,7 +271,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
         500:
@@ -289,7 +289,7 @@ paths:
       requestBody:
         description: Project info
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/Project'
         required: false
@@ -297,7 +297,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
         500:
@@ -331,7 +331,7 @@ paths:
       requestBody:
         description: Project info
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/Project'
         required: false
@@ -339,7 +339,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Project'
         500:
@@ -358,7 +358,7 @@ paths:
       requestBody:
         description: Login information
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/LoginActivate'
         required: false
@@ -366,7 +366,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Login'
         500:
@@ -398,7 +398,7 @@ paths:
       requestBody:
         description: email address
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/LoginMail'
         required: true

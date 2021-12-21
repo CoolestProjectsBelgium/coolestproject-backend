@@ -6,6 +6,7 @@ chai.use(chaiHttp);
 const Token = require('../jwts');
 
 const models = require('../models');
+const projectinfo = require('../paths/projectinfo');
 const sequelize = models.sequelize;
 
 var app = null;
@@ -472,6 +473,27 @@ describe('Event', function() {
       .send(userinfo);
 
       expect(userinfo.firstname, 'Username update failed').to.eq(userinfo_updated.body.firstname);
+
+      // get project
+      let projectinfo = (await chai.request(app)
+        .get('/projectinfo')
+        .set('Cookie', `jwt=${ login_token }`)
+        .set('Content-Type', 'application/json')
+        .send()).body;
+
+      expect(projectinfo).to.not.null; 
+      
+      projectinfo.own_project.project_name = "change me"
+
+      // update project
+      let projectinfo_updated = await chai.request(app)
+      .patch('/projectinfo')
+      .set('Content-Type', 'application/json')
+      .set('Cookie', `jwt=${ login_token }`)
+      .send(projectinfo);
+
+      expect(projectinfo.own_project.project_name, 'Project update failed').to.eq(projectinfo_updated.body.own_project.project_name);
+
     });    
 
   });
