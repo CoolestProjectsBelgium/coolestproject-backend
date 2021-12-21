@@ -243,7 +243,7 @@ paths:
       requestBody:
         description: User info
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/User'
         required: false
@@ -251,7 +251,7 @@ paths:
         200:
           description: OK
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/User'
         500:

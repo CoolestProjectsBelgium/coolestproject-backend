@@ -454,14 +454,13 @@ describe('Event', function() {
 
       // check if we have a corresponding user
       const user = await models.User.findOne({ where: { email: userinfo.email } });
-      console.log("aaa")
       expect(user).to.not.null;
 
       // check if the registration is gone
       const reg = await models.Registration.findByPk(lastRegistration[0].id);
       expect(reg).to.null;
 
-      console.log('xsz')
+      const login_token = await Token.generateLoginToken(user.id); 
 
       userinfo.firstname = "change me";
 
@@ -469,12 +468,10 @@ describe('Event', function() {
       let userinfo_updated = await chai.request(app)
       .patch('/userinfo')
       .set('Content-Type', 'application/json')
-      .set('Cookie', 'cookieName=cookieValue;otherName=otherValue')
+      .set('Cookie', `jwt=${ login_token }`)
       .send(userinfo);
 
-      expect(userinfo).to.eq(userinfo_updated);
-
-      console.log('end')
+      expect(userinfo.firstname).to.eq(userinfo_updated.body.firstname);
     });    
 
   });
