@@ -7,7 +7,8 @@
     "prestart": "sh ./start.sh",
     "start": "node index.js",
     "development": "nodemon index.js",
-    "dev:clean": "./helpers/index.js init_db && npx sequelize db:seed:all",
+    "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
+    "dev:clean": "./helpers/index.js init_db && npx sequelize db:seed:all && nodemon index.js",
     "test": "mocha"
   },
   "nodemonConfig": {

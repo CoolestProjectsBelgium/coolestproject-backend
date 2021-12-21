@@ -53,7 +53,7 @@ describe('Event', function() {
       .end(function(err, res) {
         expect(res).to.have.status(200);
         done();
-    });
+      });
   });
 
   it('Get Questions', (done) => { 
@@ -63,7 +63,7 @@ describe('Event', function() {
       .end(function(err, res) {
         expect(res).to.have.status(200);
         done();
-    });
+      });
   });
 
   it('Get Approvals', (done) => { 
@@ -73,7 +73,7 @@ describe('Event', function() {
       .end(function(err, res) {
         expect(res).to.have.status(200);
         done();
-    });
+      });
   });
 
   describe('Registrations', function() {
@@ -95,7 +95,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -106,7 +106,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
       
       chai.request(app)
         .post('/register')
@@ -135,7 +135,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -146,7 +146,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
       
       chai.request(app)
         .post('/register')
@@ -173,7 +173,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -184,7 +184,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
       
       chai.request(app)
         .post('/register')
@@ -211,7 +211,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -222,7 +222,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       chai.request(app)
         .post('/register')
@@ -251,7 +251,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -262,7 +262,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       chai.request(app)
         .post('/register')
@@ -291,7 +291,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -302,7 +302,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       chai.request(app)
         .post('/register')
@@ -331,7 +331,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -342,7 +342,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       chai.request(app)
         .post('/register')
@@ -371,7 +371,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'user@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -382,7 +382,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       chai.request(app)
         .post('/register')
@@ -411,7 +411,7 @@ describe('Event', function() {
           t_size: 1,
           email: 'test@dummy.be',
           address: {
-            postalcode: "1000"
+            postalcode: '1000'
           }
         },
         project: {
@@ -422,7 +422,7 @@ describe('Event', function() {
             project_lang: 'nl'
           }
         }
-      }
+      };
 
       const result = await chai.request(app)
         .post('/register')
@@ -441,7 +441,7 @@ describe('Event', function() {
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo = (await chai.request(app)
         .get('/userinfo')
-        .set("Authorization", `Bearer ${token}`)
+        .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .send());
 
