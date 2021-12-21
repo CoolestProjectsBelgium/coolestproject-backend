@@ -10,7 +10,7 @@ import {
     Text,
     Illustration,
     IllustrationProps,
-    Icon, 
+    Icon,
     IconProps,
     Button,
     Table,
@@ -25,10 +25,11 @@ const pageHeaderHeight = 284
 const pageHeaderPaddingY = 74
 const pageHeaderPaddingX = 250
 const api = new ApiClient()
-const options =  {
+const options = {
     year: 'numeric',
     month: '2-digit',
-    day: '2-digit'}
+    day: '2-digit'
+}
 
 export const DashboardHeader = () => {
     const [data, setData] = useState({})
@@ -50,7 +51,7 @@ export const DashboardHeader = () => {
                 px={['default', 'lg', pageHeaderPaddingX]}
             >
                 <Text textAlign="center" color="white">
-                    <h2>Current event starting on: {data.startDate !== undefined ? new Intl.DateTimeFormat('en-BE',options).format(new Date(data.startDate)) : 'No event'}</h2>
+                    <h2>Current event starting on: {data.startDate !== undefined ? new Intl.DateTimeFormat('en-BE', options).format(new Date(data.startDate)) : 'No event'}</h2>
                     <Text>{data.days_remaining} days remaining</Text>
                 </Text>
             </Box>
@@ -104,38 +105,31 @@ export const Dashboard = () => {
                     <Card as="a" flex>
                         <Box ml="xl">
                             <H4>Status Registrations</H4>
-                            <H5>{data.pending_users} Registrations Pending</H5>
-                            <H5>{data.overdue_registration} Overdue registrations</H5>
-                            <H5>{data.waiting_list} On waiting list</H5>
-                            <H5>{data.total_unusedVouchers} unused vouchers</H5>
+                            <ul>
+                                <li>{data.pending_users} Registrations Pending</li>
+                                <li>{data.overdue_registration} Overdue registrations</li>
+                                <li>{data.waiting_list} On waiting list</li>
+                                <li>{data.total_unusedVouchers} unused vouchers</li>
+                            </ul>
                         </Box>
                     </Card>
                 </Box>
                 <Box width={[1, 1, 1 / 2]} p="lg">
                     <Card as="a" flex>
                         <Box ml="xl">
-                            <H4>Statistics Users</H4>
-                            <H5>  {data.total_users} Users:</H5> 
-                            <H5>  = Language: (nl:{data.tlang_nl} fr:{data.tlang_fr} en:{data.tlang_en})</H5> 
-                            <H5>  = Sex: (females:{data.total_females} males:{data.total_males} X:{data.total_X})</H5>
-                            <H5>Answers</H5>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>total</TableCell><TableCell>id</TableCell><TableCell>short</TableCell><TableCell>description</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {data.questions && data.questions.map((question) =>
-                                    <TableRow>
-                                        <TableCell>{question.total}</TableCell>
-                                        <TableCell>{question.id}</TableCell>
-                                        <TableCell>{question.short}</TableCell>
-                                        <TableCell>{question.description}</TableCell>
-                                    </TableRow>
-                                )} 
-                                </TableBody>
-                            </Table>
+                            <H4>Statistics Users ({data.total_users})</H4>
+                            <H5>Languages</H5>
+                            <ul>
+                                <li>{data.tlang_nl || 0} nl</li>
+                                <li>{data.tlang_fr || 0} fr</li>
+                                <li>{data.tlang_en || 0} en</li>
+                            </ul>
+                            <H5>Sex</H5>
+                            <ul>
+                                <li>{data.total_females || 0} females</li>
+                                <li>{data.total_males || 0} males</li>
+                                <li>{data.total_X || 0} X</li>
+                            </ul>
                         </Box>
                     </Card>
                 </Box>
@@ -143,9 +137,34 @@ export const Dashboard = () => {
                     <Card as="a" flex>
                         <Box ml="xl">
                             <H4>Status Projects</H4>
-                            <H5>{data.total_projects}/{data.maxRegistration} Projects Remaining  / with {data.total_usedVouchers} Co-Worker(s)</H5>
-                            <H5>{data.total_users-data.total_usedVouchers-data.total_projects} user(s) without Project</H5>
-                            <H5>{data.total_videos} Project(s) with videos loaded</H5>
+                            <ul>
+                                <li>{data.total_projects}/{data.maxRegistration} Projects Remaining  / with {data.total_usedVouchers} Co-Worker(s)</li>
+                                <li>{data.total_users - data.total_usedVouchers - data.total_projects} user(s) without Project</li>
+                                <li>{data.total_videos} Project(s) with videos loaded</li>
+                            </ul>
+                        </Box>
+                    </Card>
+                </Box>
+                <Box width={[1, 1, 1]} p="lg">
+                    <Card as="a" flex>
+                        <Box ml="xl">
+                            <H5>Answers</H5>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>total</TableCell><TableCell>short</TableCell><TableCell>description</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {data.questions && data.questions.map((question) =>
+                                        <TableRow key={question.id}>
+                                            <TableCell>{question.total}</TableCell>
+                                            <TableCell>{question.short}</TableCell>
+                                            <TableCell>{question.description}</TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
                         </Box>
                     </Card>
                 </Box>
