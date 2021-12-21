@@ -429,32 +429,52 @@ describe('Event', function() {
         .set('Content-Type', 'application/json')
         .send(registration);
 
-      if(result.status != 200){
-        done('error');
-        return;
-      }
+      expect(result.status).eq(200);
 
       // just pick the last registration
       const lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
 
-      expect(lastRegistration[0].email, 'test@dummy.be')
+      expect(lastRegistration[0].email).to.be.eq('test@dummy.be');
 
-      const token = await Token.generateRegistrationToken(lastRegistration[0].id);
-      console.log(token);
+      const token = await Token.generateRegistrationToken(lastRegistration[0].id); 
 
       // userinfo automatically creates a user if the bearer token is a registration token
-      const userinfo = await chai.request(app)
+      let userinfo = (await chai.request(app)
         .get('/userinfo')
         .set("Authorization", `Bearer ${token}`)
         .set('Content-Type', 'application/json')
-        .send();
+        .send());
+
+      console.log(userinfo.headers)  
+      userinfo = userinfo.body;
+        
+      expect(userinfo).to.not.null;
+
+      console.log(userinfo.email)
 
       // check if we have a corresponding user
-      const user = await models.Users.findOne({ where: { email: userinfo.email } });
-      if(user !== null){
-        done('user not found');
-        return;
-      }
+      const user = await models.User.findOne({ where: { email: userinfo.email } });
+      console.log("aaa")
+      expect(user).to.not.null;
+
+      // check if the registration is gone
+      const reg = await models.Registration.findByPk(lastRegistration[0].id);
+      expect(reg).to.null;
+
+      console.log('xsz')
+
+      userinfo.firstname = "change me";
+
+      // update the user with new name (pick cookie)
+      let userinfo_updated = await chai.request(app)
+      .patch('/userinfo')
+      .set('Content-Type', 'application/json')
+      .set('Cookie', 'cookieName=cookieValue;otherName=otherValue')
+      .send(userinfo);
+
+      expect(userinfo).to.eq(userinfo_updated);
+
+      console.log('end')
     });    
 
   });

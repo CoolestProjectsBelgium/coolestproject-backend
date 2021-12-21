@@ -24,9 +24,9 @@ module.exports = function(models, database, mailer, jwt) {
       const registration = await database.createRegistration(registration_fields);
       if(!registration.waiting_list){
         const token = await jwt.generateRegistrationToken(registration.id);
-        mailer.activationMail(registration, token, event);
+        await mailer.activationMail(registration, token, event);
       } else {
-        mailer.waitingMail(registration, event);
+        await  mailer.waitingMail(registration, event);
       }
     }
     else { //send emailExistsMail
@@ -35,7 +35,7 @@ module.exports = function(models, database, mailer, jwt) {
       for (const user of users) {
         const lang = user.language;
         console.log('UserError: Calling emailExistsMail=', email, 'language:', lang);
-        mailer.emailExistsMail(email, lang);
+        await mailer.emailExistsMail(email, lang);
       }
     } 
 

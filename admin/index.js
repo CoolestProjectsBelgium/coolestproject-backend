@@ -67,6 +67,7 @@ const adminBroOptions = {
   dashboard: {
     handler: async () => {
       const evt = await database.getEventActive()
+      console.log(evt);
       return evt
     },
     component: AdminBro.bundle('./components/dashboard')

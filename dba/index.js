@@ -539,7 +539,7 @@ class DBA {
         throw new Error('Guardian is filled in');
       }
     }
-   
+
 
     // 4) check if own project or participant
     if (dbValues.project_code == null) {
@@ -551,7 +551,7 @@ class DBA {
         throw new Error('Project filled in');
       }
     }
- 
+
     return dbValues;
   }
 
@@ -806,7 +806,7 @@ class DBA {
      * @returns {Promise<models.Event>}
      */
   async getEventActive() {
-    return await Event.findOne({
+    const activeEventId = await Event.findOne({
       where: {
         eventBeginDate: {
           [Op.lt]: Sequelize.literal('CURDATE()'),
@@ -814,60 +814,65 @@ class DBA {
         eventEndDate: {
           [Op.gt]: Sequelize.literal('CURDATE()'),
         }
-      }, attributes: {
-        include: [
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 1)'), 'tphoto'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 2)'), 'tcontact'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 4)'), 'tclini'],
-          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments)'), 'total_videos'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'f\')'), 'total_females'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'x\')'), 'total_X'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'nl\')'), 'tlang_nl'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'fr\')'), 'tlang_fr'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'en\')'), 'tlang_en'],
-          [sequelize.literal('DATEDIFF(eventBeginDate, CURDATE())'), 'days_remaining'],
-          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = eventId)'), 'total_projects'],
-          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = eventId and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
-        ]
-      }
+      },
+      attributes: ['id']
     });
+
+    if (activeEventId === null) {
+      throw new Error("No Event Active");
+    }
+
+    return await this.getEventDetail(activeEventId.id);
   }
 
   /**
      * get active event
      * @returns {Promise<Event>}
      */
-  async getEventDetail(eventId) {
-    return await Event.findByPk(eventId, {
+  async getEventDetail(eventId, language = 'en') {
+    const event = await Event.findByPk(eventId, {
       attributes: {
         include: [
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 1)'), 'tphoto'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 2)'), 'tcontact'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 4)'), 'tclini'],
-          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments)'), 'total_videos'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'f\')'), 'total_females'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'x\')'), 'total_X'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'nl\')'), 'tlang_nl'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'fr\')'), 'tlang_fr'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'en\')'), 'tlang_en'],
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = Event.id and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = Event.id and Vouchers.participantId > 0)'), 'total_usedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = Event.id)'), 'pending_users'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = Event.id and waiting_list = 1)'), 'waiting_list'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id)'), 'total_users'],
+          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments INNER JOIN Projects ON Projects.id = Attachments.ProjectId WHERE Projects.eventId = Event.id )'), 'total_videos'],
           [sequelize.literal('DATEDIFF(eventBeginDate, CURDATE())'), 'days_remaining'],
-          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = eventId)'), 'total_projects'],
-          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = eventId and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
+          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = Event.id)'), 'total_projects'],
+          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = Event.id and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
         ]
       }
     });
+    // count the questions grouped by event & type
+    event.questions = [];
+    const questions = await QuestionUser.findAll({
+      raw: true,
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('UserId')), 'total'],
+        [sequelize.col('QuestionUser.QuestionId'), 'id'],
+        [sequelize.col('Question.name'), 'short'],
+        [sequelize.col('Question.QuestionTranslations.description'), 'description'],
+      ],
+      group: 'QuestionUser.QuestionId',
+      include: [
+        { model: User, attributes: [], where: { 'EventId': eventId }, required: true },
+        {
+          model: Question, attributes: [], required: true,
+          include: [
+            {
+              model: QuestionTranslation, attributes: [], where: { 'language': language }
+            }]
+        }
+      ]
+    });
+
+    if(questions !== null){
+      event.questions = questions;
+    }
+    
+    return event;
   }
 
   async getTshirtsGroups(language) {

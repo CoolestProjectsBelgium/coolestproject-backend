@@ -39,7 +39,7 @@ module.exports = function (app) {
         }
         const event = await user.getEvent();
         if (event.closed) {
-          return done(null, false,  { message: 'Event is closed no login possible' });
+          return done(null, false, { message: 'Event is closed no login possible' });
         }
 
         // create user

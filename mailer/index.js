@@ -46,7 +46,7 @@ class Mailer {
       },
       locals: {
         locale: user.language,
-        year: event.startDate.getFullYear(),
+        year: event.eventBeginDate.getFullYear(),
         user: {
           firstname: user.firstname
         },
@@ -69,7 +69,7 @@ class Mailer {
       },
       locals: {
         locale: user.language,
-        year: event.startDate.getFullYear(),
+        year: event.eventBeginDate.getFullYear(),
         user: {
           firstname: user.firstname
         },
@@ -92,7 +92,7 @@ class Mailer {
       },
       locals: {
         locale: user.language,
-        year: event.startDate.getFullYear(),
+        year: event.eventBeginDate.getFullYear(),
         user: {
           firstname: user.firstname
         },
@@ -147,7 +147,7 @@ class Mailer {
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
-          year: event.startDate.getFullYear()
+          year: event.eventBeginDate.getFullYear()
         },
         website: websiteUrl
       }
@@ -173,7 +173,7 @@ class Mailer {
         registration: {
           firstname: registration.firstname,
           email_guardian: registration.email_guardian,
-          year: event.startDate.getFullYear()
+          year: event.eventBeginDate.getFullYear()
         },
         // Hier is er geen user, maar wel een registration, als het maar .language supporteerd
         url: Mailer.baseUrlWithLanguage(registration) + `/login?token=${token}`,
@@ -194,7 +194,7 @@ class Mailer {
         user: {
           firstname: user.firstname,
           email_guardian: user.email_guardian,
-          year: event.startDate.getFullYear()
+          year: event.eventBeginDate.getFullYear()
         },
         url: Mailer.baseUrlWithLanguage(user) + `/login?token=${token}`,
         website: websiteUrl

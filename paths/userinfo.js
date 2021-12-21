@@ -54,7 +54,6 @@ module.exports = function(database, models, jwt, mailer) {
   async function GET(req, res) {
     const user = req.user || null;
     const details = await getUserDetails(user);
-    console.log(details)
     res.status(200).json(details);
   }
 
