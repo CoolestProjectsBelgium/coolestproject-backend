@@ -16,10 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TShirtGroup.init({
-    name: { type: DataTypes.CHAR(15), unique: true }
+    name: { type: DataTypes.CHAR(15) }
   }, {
     sequelize,
     modelName: 'TShirtGroup',
+    indexes: [{ unique: true, fields: ['name', 'eventId'] }]
   });
   return TShirtGroup;
 };
