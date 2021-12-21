@@ -394,7 +394,7 @@ describe('Event', function() {
         });
     });
 
-    it('Registration with subsequent activation', async (done) => {
+    it('Registration with subsequent activation', async () => {
       let registration = {
         user: {
           firstname: 'test 123',
@@ -471,7 +471,7 @@ describe('Event', function() {
       .set('Cookie', `jwt=${ login_token }`)
       .send(userinfo);
 
-      expect(userinfo.firstname).to.eq(userinfo_updated.body.firstname);
+      expect(userinfo.firstname, 'Username update failed').to.eq(userinfo_updated.body.firstname);
     });    
 
   });
