@@ -177,6 +177,29 @@ export const Dashboard = () => {
                         </Box>
                     </Card>
                 </Box>
+                <Box width={[1, 1, 1]} p="lg">
+                    <Card as="a" flex>
+                        <Box ml="xl">
+                            <H5>T-Shirts</H5>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>total</TableCell><TableCell>short</TableCell><TableCell>description</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {data.tshirts && data.tshirts.map((tshirt) =>
+                                        <TableRow key={tshirt.id}>
+                                            <TableCell>{tshirt.total}</TableCell>
+                                            <TableCell>{tshirt.short}</TableCell>
+                                            <TableCell>{tshirt.description}</TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </Box>
+                    </Card>
+                </Box>
             </Box>
         </Box>
     )

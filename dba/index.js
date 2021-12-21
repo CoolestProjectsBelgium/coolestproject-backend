@@ -875,10 +875,37 @@ class DBA {
       ]
     });
 
-    if(questions !== null){
+    if (questions !== null) {
       event.questions = questions;
     }
-    
+
+    // count the t-shirts grouped by event & type
+    event.tshirts = [];
+    const tshirts = await User.findAll({
+      raw: true,
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('User.id')), 'total'],
+        [sequelize.col('User.SizeId'), 'id'],
+        [sequelize.col('size.name'), 'short'],
+        [sequelize.col('size.TShirtTranslations.description'), 'description'],
+      ],
+      group: 'User.SizeId',
+      where: { 'EventId': eventId },
+      include: [
+        {
+          model: TShirt, attributes: [], required: true, as: 'size', 
+          include: [
+            {
+              model: TShirtTranslation, attributes: [], where: { 'language': language }
+            }]
+        }
+      ]
+    });
+
+    if (tshirts !== null) {
+      event.tshirts = tshirts;
+    }
+
     return event;
   }
 
