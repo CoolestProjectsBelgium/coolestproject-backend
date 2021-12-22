@@ -5,7 +5,10 @@ module.exports = {
     await queryInterface.bulkInsert('TShirtGroupTranslations', [
       { description: 'woman', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 1 },
       { description: 'child', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 2 },
-      { description: 'men', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 3 }
+      { description: 'men', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 3 },
+      { description: 'woman', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 4 },
+      { description: 'child', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 5 },
+      { description: 'men', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtGroupId: 6 }
     ], {});
     await queryInterface.bulkInsert('TShirtTranslations', [
       { description: 'kid_3/4', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 1 },
@@ -33,7 +36,10 @@ module.exports = {
     await queryInterface.bulkInsert('TShirtGroupTranslations', [
       { description: 'dames', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 1 },
       { description: 'kind', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 2 },
-      { description: 'mannen', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 3 }
+      { description: 'mannen', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 3 },
+      { description: 'dames', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 4 },
+      { description: 'kind', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 5 },
+      { description: 'mannen', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtGroupId: 6 }
     ], {});
 
     await queryInterface.bulkInsert('TShirtTranslations', [
@@ -62,7 +68,10 @@ module.exports = {
     await queryInterface.bulkInsert('TShirtGroupTranslations', [
       { description: 'femmes', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 1 },
       { description: 'enfant', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 2 },
-      { description: 'hommes', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 3 }
+      { description: 'hommes', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 3 },
+      { description: 'femmes', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 4 },
+      { description: 'enfant', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 5 },
+      { description: 'hommes', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtGroupId: 6 }
     ], {});
 
     await queryInterface.bulkInsert('TShirtTranslations', [
