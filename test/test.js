@@ -2,6 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+const { Op } = require("sequelize");
 
 const Token = require('../jwts');
 
@@ -495,13 +496,23 @@ describe('Event', function() {
       expect(projectinfo.own_project.project_name, 'Project update failed').to.eq(projectinfo_updated.body.own_project.project_name);
 
       // create token for participant
-      let token_success = await chai.request(app)
-      .post('/participants')
-      .set('Content-Type', 'application/json')
-      .set('Cookie', `jwt=${ login_token }`)
-      .send();
+      for (let step = 0; step < 3; step++) {
+        let token_success = await chai.request(app)
+        .post('/participants')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `jwt=${ login_token }`)
+        .send();
+  
+        expect(token_success.status).eq(200);
+      }
+      //test the invalid flow (max tokens reached)
+      token_success = await chai.request(app)
+        .post('/participants')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `jwt=${ login_token }`)
+        .send();
 
-      expect(token_success.status).eq(200);
+        expect(token_success.status).eq(500);
 
       const voucher = await models.User.findByPk(user.id, {
         include: [ { model: models.Project, attributes: ['id'], as: 'project', include: [ { model: models.Voucher, attributes: ['id'] } ] } ]
@@ -556,7 +567,7 @@ describe('Event', function() {
 
       expect(userinfo_participant).to.not.null;
 
-      const participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' } });
+      let participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' } });
       expect(participant_user).to.not.null;
 
       //delete the shared project
@@ -568,7 +579,7 @@ describe('Event', function() {
         .send()
 
       //create new project
-      const participant_project = {
+      let participant_project = {
         own_project:  {
           project_name: 'participant',
           project_descr: 'participant',
@@ -585,6 +596,69 @@ describe('Event', function() {
 
       expect(participant_project_result).to.not.null;
       expect(participant_project_result.status).eq(200);
+
+      participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' }, include: [ { model: models.Project, as: 'project' } ] });
+      expect(participant_user.project.project_name).to.eq('participant');
+
+      //delete my own project again & relink to the existing one
+      participant_project_result = (await chai.request(app)
+        .delete('/projectinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      expect(participant_project_result.status).eq(200);
+
+      // just pick next token
+      token_code = voucher.project.Vouchers[1].id;
+
+      participant_project = {
+        other_project: {
+          project_code: token_code
+        }
+      }
+
+      // link user again to project
+      participant_project_result = (await chai.request(app)
+        .post('/projectinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send(participant_project));
+
+      expect(participant_project_result.status).eq(200);
+
+      // try to delete user
+      let participant_user_result = (await chai.request(app)
+        .delete('/userinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      expect(participant_user_result.status).eq(500);
+
+      // delete participation again
+      participant_project_result = (await chai.request(app)
+        .delete('/projectinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      expect(participant_project_result.status).eq(200);
+
+      // delete the user for real
+      participant_user_result = (await chai.request(app)
+        .delete('/userinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+      
+      expect(participant_user_result.status).eq(200);
+
+      // check if the tokens are gone
+      let voucher_exists = await models.Voucher.findOne({ 
+        where: { [Op.or]: [ { id: voucher.project.Vouchers[1].id }, { id: voucher.project.Vouchers[0].id } ]  } });
+
+      expect(voucher_exists).is.null;
 
     });    
 

@@ -251,6 +251,13 @@ class DBA {
     if (project) {
       throw new Error('Project found');
     }
+
+    // check if we have a participation
+    const project_voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['id'] });
+    if (project_voucher) {
+      throw new Error('Project participation found');
+    }
+
     const result = await User.destroy({ where: { id: userId } });
     return result;
   }
@@ -317,7 +324,7 @@ class DBA {
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
         if (project !== null) {
-          const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [this.Op.ne]: null } }, lock: true });
+          const usedVoucher = await Voucher.count({ where: { projectId: project.id, participantId: { [Op.ne]: null } }, lock: true });
           if (usedVoucher > 0) {
             throw new Error('Delete not possible tokens in use');
           }
