@@ -538,11 +538,11 @@ class DBA {
     // 3) check if guardian is required
     const minGuardian = addYears(event.eventBeginDate, -1 * event.minGuardianAge);
     if (minGuardian < dbValues.birthmonth) {
-      if (dbValues.gsm_guardian === null || dbValues.email_guardian == null) {
+      if (dbValues.gsm_guardian === '' || dbValues.email_guardian == '') {
         throw new Error('Guardian is required');
       }
     } else {
-      if (dbValues.gsm_guardian !== null && dbValues.email_guardian !== null) {
+      if (dbValues.gsm_guardian !== '' && dbValues.email_guardian !== '') {
         throw new Error('Guardian is filled in');
       }
     }
@@ -590,8 +590,8 @@ class DBA {
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
-        dbValues.gsm_guardian = user.gsm_guardian;
-        dbValues.email_guardian = user.email_guardian;
+        dbValues.gsm_guardian = user.gsm_guardian || '';
+        dbValues.email_guardian = user.email_guardian || '';
         dbValues.sizeId = user.t_size;
 
         // to month (set hour to 12)
