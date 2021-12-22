@@ -425,7 +425,7 @@ describe('Event', function() {
         }
       };
 
-      const result = await chai.request(app)
+      let result = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration);
@@ -433,11 +433,11 @@ describe('Event', function() {
       expect(result.status).eq(200);
 
       // just pick the last registration
-      const lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+      let lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
 
       expect(lastRegistration[0].email).to.be.eq('test@dummy.be');
 
-      const token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+      let token = await Token.generateRegistrationToken(lastRegistration[0].id); 
 
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo = (await chai.request(app)
@@ -493,6 +493,68 @@ describe('Event', function() {
       .send(projectinfo);
 
       expect(projectinfo.own_project.project_name, 'Project update failed').to.eq(projectinfo_updated.body.own_project.project_name);
+
+      // create token for participant
+      let token_success = await chai.request(app)
+      .post('/participants')
+      .set('Content-Type', 'application/json')
+      .set('Cookie', `jwt=${ login_token }`)
+      .send();
+
+      expect(token_success.status).eq(200);
+
+      const voucher = await models.User.findByPk(user.id, {
+        include: [ { model: models.Project, attributes: ['id'], as: 'project', include: [ { model: models.Voucher, attributes: ['id'] } ] } ]
+      });
+
+      expect(voucher).to.not.null; 
+
+      let token_code = voucher.project.Vouchers[0].id;
+
+      // register a participant
+      let participant = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'participant@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          other_project: {
+            project_code: token_code
+          }
+        }
+      };
+
+      result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(participant);
+      
+      lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+
+      token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo_participant = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());  
+
+      expect(userinfo_participant).to.not.null;
 
     });    
 
