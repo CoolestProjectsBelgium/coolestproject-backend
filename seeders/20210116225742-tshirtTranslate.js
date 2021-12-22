@@ -30,7 +30,27 @@ module.exports = {
       { description: 'male_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 17 },
       { description: 'male_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 18 },
       { description: 'male_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 19 },
-      { description: 'male_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 20 }
+      { description: 'male_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 20 },
+      { description: 'kid_3/4', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 21 },
+      { description: 'kid_5/6', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 22 },
+      { description: 'kid_7/8', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 23 },
+      { description: 'kid_9/11', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 24 },
+      { description: 'kid_12/14', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 25 },
+      { description: 'female_medium', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 26 },
+      { description: 'female_xs', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 27 },
+      { description: 'female_large', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 28 },
+      { description: 'female_xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 29 },
+      { description: 'female_2xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 30 },
+      { description: 'female_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 31 },
+      { description: 'male_xsmall', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 32 },
+      { description: 'male_small', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 33 },
+      { description: 'male_medium', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 34 },
+      { description: 'male_large', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 35 },
+      { description: 'male_xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 36 },
+      { description: 'male_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 37 },
+      { description: 'male_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 38 },
+      { description: 'male_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 39 },
+      { description: 'male_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'en', tShirtId: 40 }
     ], {});
 
     await queryInterface.bulkInsert('TShirtGroupTranslations', [
