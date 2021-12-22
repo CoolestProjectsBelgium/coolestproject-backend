@@ -29,6 +29,8 @@ module.exports = function(models, database, mailer, jwt) {
         logger.info('Token requested but time is not passed yet: ' + user.email);
       }
     }
+
+    res.status(200).send(null);
   }
       
   return operations;

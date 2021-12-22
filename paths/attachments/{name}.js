@@ -5,7 +5,7 @@ module.exports = function(database) {
         
   async function DELETE(req, res) {
     const user = req.user;
-    const name = req.body.name;
+    const name = req.params.name;
     
     res.status(200).json(await database.deleteAttachment(user.id, name));
   }

@@ -10,6 +10,8 @@ const models = require('../models');
 const projectinfo = require('../paths/projectinfo');
 const sequelize = models.sequelize;
 
+const Azure = require('../azure');
+
 var app = null;
 describe('Event', function() {
   this.timeout(0);
@@ -17,6 +19,9 @@ describe('Event', function() {
   before(async () => {      
     process.env.DB = 'sqlite::memory:';
     process.env.NODE_ENV = 'test';
+
+    //init azure
+    await Azure.syncSetting();
 
     //init DB
     await sequelize.sync({ force: true });
@@ -744,9 +749,21 @@ describe('Event', function() {
         .set('Content-Type', 'application/json')
         .send());
 
-        sas_url = sas_url_response.body.url;
-        expect(sas_url).include(attachment.blob_name);
-        expect(sas_url).include(attachment.container_name);
+      sas_url = sas_url_response.body.url;
+      expect(sas_url).include(attachment.blob_name);
+      expect(sas_url).include(attachment.container_name);
+
+      // upload a dummy file to the azure container
+      
+
+      // delete the attachment
+      attachments = await chai.request(app)
+        .delete(`/attachments/${ attachment.blob_name }`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send();
+      
+      expect(attachments.status).eq(200);
     });
   });
 });
