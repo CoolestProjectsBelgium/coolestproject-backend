@@ -66,7 +66,7 @@ module.exports = function(database, models, jwt, mailer) {
   
   async function DELETE(req, res) {
     const user = req.user || null;
-    const u = await database.deleteUser(user.id);
+    await database.deleteUser(user.id);
     
     // unflag the first user in the waiting list & trigger activation mail
     const otherRegistration = await Registration.findOne({ where: { waiting_list: true }, order: [['createdAt', 'DESC']]  });
@@ -78,7 +78,7 @@ module.exports = function(database, models, jwt, mailer) {
       await mailer.activationMail(otherRegistration, token, event);
     }
     
-    res.status(200).json(u);
+    res.status(200).send(null);
   }
     
   return operations;

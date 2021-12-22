@@ -556,6 +556,36 @@ describe('Event', function() {
 
       expect(userinfo_participant).to.not.null;
 
+      const participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' } });
+      expect(participant_user).to.not.null;
+
+      //delete the shared project
+      let participant_login_token = await Token.generateLoginToken(participant_user.id);
+      await chai.request(app)
+        .delete('/projectinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send()
+
+      //create new project
+      const participant_project = {
+        own_project:  {
+          project_name: 'participant',
+          project_descr: 'participant',
+          project_type: 'participant',
+          project_lang: 'fr'
+        }
+      }
+
+      let participant_project_result = (await chai.request(app)
+        .post('/projectinfo')
+        .set('Authorization', `Bearer ${participant_login_token}`)
+        .set('Content-Type', 'application/json')
+        .send(participant_project));
+
+      expect(participant_project_result).to.not.null;
+      expect(participant_project_result.status).eq(200);
+
     });    
 
   });

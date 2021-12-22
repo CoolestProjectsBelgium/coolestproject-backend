@@ -124,12 +124,14 @@ module.exports = function(models, database, azure, mailer) {
     const project = await database.getProject(user.id);
     const event = await user.getEvent();
     await database.deleteProject(user.id);
-    mailer.deleteMail(user, project, event);
+    await mailer.deleteMail(user, project, event);
+
+    res.status(200).send(null);
   }
 
   async function POST(req, res) {
     const user = req.user || null;
-    const project_fields = req.body.project;
+    const project_fields = req.body;
 
     const project = {};
     const ownProject = project_fields.own_project;
