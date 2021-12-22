@@ -660,7 +660,93 @@ describe('Event', function() {
 
       expect(voucher_exists).is.null;
 
-    });    
+    });
+    
+    it('Add and remove attachments', async () => {
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',     
+          t_size: 1,
+          email: 'test1@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
 
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      // just pick the last registration
+      let lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+
+      expect(lastRegistration[0].email).to.be.eq('test1@dummy.be');
+
+      let token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      expect(userinfo).to.not.null;
+
+      const user = await models.User.findOne({ where: { email: 'test1@dummy.be' } });
+      expect(user).to.not.null;
+
+      token = await Token.generateLoginToken(user.id);
+
+      // add attachments
+      let attachments = (await chai.request(app)
+        .post('/attachments')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send({ name: 'test', size: 100, filename: 'test' }));
+
+      expect(attachments.status).eq(200);
+
+      // get the azure info
+      const attachment = await ( await ( await user.getProject() ).getAttachments() )[0].getAzureBlob();
+
+      // check if the SAS url has all the correct information
+      let sas_url = attachments.body.url;
+      expect(sas_url).include(attachment.blob_name);
+      expect(sas_url).include(attachment.container_name);
+
+      // refresh sas token
+      let sas_url_response = (await chai.request(app)
+        .post(`/attachments/${ attachment.blob_name }/sas`)
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+        sas_url = sas_url_response.body.url;
+        expect(sas_url).include(attachment.blob_name);
+        expect(sas_url).include(attachment.container_name);
+    });
   });
 });

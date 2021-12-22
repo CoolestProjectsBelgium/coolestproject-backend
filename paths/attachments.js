@@ -4,10 +4,11 @@ module.exports = function(database) {
   };
     
   async function POST(req, res) {
-    const user = req.user;
-    const attachment = req.body.attachment;
+    const user = req.user || null;
+    const attachment = req.body;
 
-    res.status(200).json(await database.createAttachment(attachment, user.id));
+    const sas = await database.createAttachment(attachment, user.id);
+    res.status(200).json(sas);
   }
     
   return operations;

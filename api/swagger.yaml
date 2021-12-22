@@ -136,14 +136,17 @@ paths:
       requestBody:
         description: The attachment to create
         content:
-          '*/*':
+          application/json:
             schema:
               $ref: '#/components/schemas/Attachment'
         required: false
       responses:
         200:
           description: OK
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SASToken'
         500:
           description: Error
           content:
@@ -167,7 +170,10 @@ paths:
       responses:
         200:
           description: OK
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SASToken'
         500:
           description: Error
           content:
@@ -660,6 +666,18 @@ components:
             type: string
           description:
             type: string
+    SASToken:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresOn:
+          type: string
+          format: date-time
+        startsOn:
+          type: string
+          format: date-time
     Attachment:
       type: object
       properties:
