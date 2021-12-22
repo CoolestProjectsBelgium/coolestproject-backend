@@ -7,7 +7,7 @@ module.exports = function(models, database, mailer, jwt) {
   };
       
   async function POST(req, res) {
-    const login = req.login;
+    const login = req.body;
     var users = await database.getUsersViaMail(login.email);
     for (const user of users) {
       logger.info('user found: ' + user.id);
