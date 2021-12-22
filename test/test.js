@@ -754,7 +754,7 @@ describe('Event', function() {
       expect(sas_url).include(attachment.container_name);
 
       // upload a dummy file to the azure container
-      
+      //TODO
 
       // delete the attachment
       attachments = await chai.request(app)

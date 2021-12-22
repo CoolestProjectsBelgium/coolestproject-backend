@@ -903,7 +903,7 @@ class DBA {
           model: TShirt, attributes: [], required: true, as: 'size', 
           include: [
             {
-              model: TShirtTranslation, attributes: [], where: { 'language': language }
+              model: TShirtTranslation, required: false,  attributes: [], where: { 'language': language }
             }]
         }
       ]
