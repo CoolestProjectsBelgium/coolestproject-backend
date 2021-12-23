@@ -50,6 +50,14 @@ module.exports = function(models, database) {
       tshirtDate: event.eventBeginDate.toISOString().substring(0, 10),
 
       isActive: event.current,
+
+      eventBeginDate: event.eventBeginDate,
+      registrationOpenDate: event.registrationOpenDate,
+      registrationClosedDate: event.registrationClosedDate,
+      projectClosedDate: event.projectClosedDate,
+      officialStartDate: event.officialStartDate,
+      eventEndDate: event.eventEndDate,
+
       //maxParticipants: event.
       // max participant in group
       // closing date registration

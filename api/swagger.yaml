@@ -615,6 +615,24 @@ components:
           type: integer
         isActive:
           type: boolean
+        eventBeginDate:
+          type: string
+          format: date
+        registrationOpenDate:
+          type: string
+          format: date
+        registrationClosedDate:
+          type: string
+          format: date
+        projectClosedDate:
+          type: string
+          format: date
+        officialStartDate:
+          type: string
+          format: date
+        eventEndDate:
+          type: string
+          format: date
     Tshirt:
       type: array
       items:
