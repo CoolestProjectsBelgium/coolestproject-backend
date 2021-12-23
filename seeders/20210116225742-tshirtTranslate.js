@@ -82,7 +82,27 @@ module.exports = {
       { description: 'hommes_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 17 },
       { description: 'hommes_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 18 },
       { description: 'hommes_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 19 },
-      { description: 'hommes_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 20 }
+      { description: 'hommes_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 20 },
+      { description: 'enfant_3/4', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 21 },
+      { description: 'enfant_5/6', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 22 },
+      { description: 'enfant_7/8', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 23 },
+      { description: 'enfant_9/11', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 24 },
+      { description: 'enfant_12/14', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 25 },
+      { description: 'femmes_medium', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 26 },
+      { description: 'femmes_xs', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 27 },
+      { description: 'femmes_large', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 28 },
+      { description: 'femmes_xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 29 },
+      { description: 'femmes_2xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 30 },
+      { description: 'femmes_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 31 },
+      { description: 'hommes_xsmall', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 32 },
+      { description: 'hommes_small', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 33 },
+      { description: 'hommes_medium', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 34 },
+      { description: 'hommes_large', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 35 },
+      { description: 'hommes_xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 36 },
+      { description: 'hommes_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 37 },
+      { description: 'hommes_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 38 },
+      { description: 'hommes_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 39 },
+      { description: 'hommes_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'fr', tShirtId: 40 }
     ], {});
 
     await queryInterface.bulkInsert('TShirtGroupTranslations', [
@@ -114,7 +134,27 @@ module.exports = {
       { description: 'mannen_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 17 },
       { description: 'mannen_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 18 },
       { description: 'mannen_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 19 },
-      { description: 'mannen_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 20 }
+      { description: 'mannen_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 20 },
+      { description: 'kind_3/4', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 21 },
+      { description: 'kind_5/6', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 22 },
+      { description: 'kind_7/8', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 23 },
+      { description: 'kind_9/11', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 24 },
+      { description: 'kind_12/14', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 25 },
+      { description: 'dames_medium', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 26 },
+      { description: 'dames_xs',  createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 27 },
+      { description: 'dames_large',  createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 28 },
+      { description: 'dames_xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 29 },
+      { description: 'dames_2xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 30 },
+      { description: 'dames_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 31 },
+      { description: 'mannen_xsmall', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 32 },
+      { description: 'mannen_small', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 33 },
+      { description: 'mannen_medium', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 34 },
+      { description: 'mannen_large', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 35 },
+      { description: 'mannen_xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 36 },
+      { description: 'mannen_xxl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 37 },
+      { description: 'mannen_3xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 38 },
+      { description: 'mannen_4xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 39 },
+      { description: 'mannen_5xl', createdAt: new Date(), updatedAt: new Date(), language: 'nl', tShirtId: 40 }
     ], {});
   },
 
