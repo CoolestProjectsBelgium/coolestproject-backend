@@ -8,20 +8,20 @@ const models = require('../models');
 
 //TODO make this cleaner
 var transport = null;
-if(process.env.NODE_ENV === 'production'){
-  transport = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS
-    },
-    language: 'nl'
-  });
-} else {
-  const nodemailerMock = require('nodemailer-mock');
-  transport = nodemailerMock.createTransport({});
-}
+//if(process.env.NODE_ENV === 'production'){
+transport = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  },
+  language: 'nl'
+});
+//} else {
+//  const nodemailerMock = require('nodemailer-mock');
+//  transport = nodemailerMock.createTransport({});
+//}
 
 const email = new Email({
   message: {

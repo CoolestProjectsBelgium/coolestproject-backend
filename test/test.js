@@ -14,11 +14,15 @@ const Azure = require('../azure');
 
 const { BlockBlobClient } = require('@azure/storage-blob');
 
+const mockery = require('mockery');
+const nodemailerMock = require('nodemailer-mock');
+const cookieParser = require('cookie-parser');
+
 var app = null;
-describe('Event', function() {
+describe('Event', function () {
   this.timeout(0);
 
-  before(async () => {      
+  before(async () => {
     process.env.DB = 'sqlite::memory:';
     process.env.NODE_ENV = 'test';
 
@@ -44,48 +48,56 @@ describe('Event', function() {
     });
     await umzug.up();
 
+    mockery.enable({ warnOnUnregistered: false });
+    mockery.registerMock('nodemailer', nodemailerMock)
+
     //start server
-    app = require('../app');              
+    app = require('../app');
   });
 
-  it('Check for active event', (done) => { 
-    chai.request(app).get('/settings').end(function(err, res) {
+  afterEach(async () => {
+    // Reset the mock back to the defaults after each test
+    nodemailerMock.mock.reset();
+  });
+
+  it('Check for active event', (done) => {
+    chai.request(app).get('/settings').end(function (err, res) {
       expect(res).to.have.status(200);
       done();
     });
   });
 
-  it('Get T-shirts', (done) => { 
+  it('Get T-shirts', (done) => {
     chai.request(app)
       .get('/tshirts')
       .set('Accept-Language', 'nl')
-      .end(function(err, res) {
+      .end(function (err, res) {
         expect(res).to.have.status(200);
         done();
       });
   });
 
-  it('Get Questions', (done) => { 
+  it('Get Questions', (done) => {
     chai.request(app)
       .get('/questions')
-      .set('Accept-Language', 'nl')      
-      .end(function(err, res) {
+      .set('Accept-Language', 'nl')
+      .end(function (err, res) {
         expect(res).to.have.status(200);
         done();
       });
   });
 
-  it('Get Approvals', (done) => { 
+  it('Get Approvals', (done) => {
     chai.request(app)
       .get('/approvals')
       .set('Accept-Language', 'nl')
-      .end(function(err, res) {
+      .end(function (err, res) {
         expect(res).to.have.status(200);
         done();
       });
   });
 
-  describe('Registrations', function() {
+  describe('Registrations', function () {
 
     it('Basic registration with guardian', (done) => {
       let registration = {
@@ -100,7 +112,7 @@ describe('Event', function() {
           year: 2009,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -116,12 +128,12 @@ describe('Event', function() {
           }
         }
       };
-      
+
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(200);
           done();
         });
@@ -140,7 +152,7 @@ describe('Event', function() {
           year: 2004,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -156,12 +168,12 @@ describe('Event', function() {
           }
         }
       };
-      
+
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -178,7 +190,7 @@ describe('Event', function() {
           month: 12,
           sex: 'm',
           year: 2004,
-          gsm: '+32460789101',     
+          gsm: '+32460789101',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -194,12 +206,12 @@ describe('Event', function() {
           }
         }
       };
-      
+
       chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -216,7 +228,7 @@ describe('Event', function() {
           month: 1,
           sex: 'm',
           year: 2010,
-          gsm: '+32460789101', 
+          gsm: '+32460789101',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -237,7 +249,7 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -256,7 +268,7 @@ describe('Event', function() {
           year: 2010,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -277,7 +289,7 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -296,7 +308,7 @@ describe('Event', function() {
           year: 2010,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -317,7 +329,7 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -336,7 +348,7 @@ describe('Event', function() {
           year: 2020,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -357,7 +369,7 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -376,7 +388,7 @@ describe('Event', function() {
           year: 1901,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'user@dummy.be',
           address: {
@@ -397,7 +409,7 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration)
-        .end(function(err, res) {
+        .end(function (err, res) {
           expect(res).to.have.status(500);
           done();
         });
@@ -416,7 +428,7 @@ describe('Event', function() {
           year: 2009,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'test@dummy.be',
           address: {
@@ -441,11 +453,11 @@ describe('Event', function() {
       expect(result.status).eq(200);
 
       // just pick the last registration
-      let lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+      let lastRegistration = await models.Registration.findAll({ limit: 1, order: [['id', 'DESC']] });
 
       expect(lastRegistration[0].email).to.be.eq('test@dummy.be');
 
-      let token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+      let token = await Token.generateRegistrationToken(lastRegistration[0].id);
 
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo = (await chai.request(app)
@@ -454,9 +466,9 @@ describe('Event', function() {
         .set('Content-Type', 'application/json')
         .send());
 
-      console.log(userinfo.headers)  
+      console.log(userinfo.headers)
       userinfo = userinfo.body;
-        
+
       expect(userinfo).to.not.null;
 
       console.log(userinfo.email)
@@ -469,63 +481,63 @@ describe('Event', function() {
       const reg = await models.Registration.findByPk(lastRegistration[0].id);
       expect(reg).to.null;
 
-      const login_token = await Token.generateLoginToken(user.id); 
+      const login_token = await Token.generateLoginToken(user.id);
 
       userinfo.firstname = "change me";
 
       // update the user with new name (pick cookie)
       let userinfo_updated = await chai.request(app)
-      .patch('/userinfo')
-      .set('Content-Type', 'application/json')
-      .set('Cookie', `jwt=${ login_token }`)
-      .send(userinfo);
+        .patch('/userinfo')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `jwt=${login_token}`)
+        .send(userinfo);
 
       expect(userinfo.firstname, 'Username update failed').to.eq(userinfo_updated.body.firstname);
 
       // get project
       let projectinfo = (await chai.request(app)
         .get('/projectinfo')
-        .set('Cookie', `jwt=${ login_token }`)
+        .set('Cookie', `jwt=${login_token}`)
         .set('Content-Type', 'application/json')
         .send()).body;
 
-      expect(projectinfo).to.not.null; 
-      
+      expect(projectinfo).to.not.null;
+
       projectinfo.own_project.project_name = "change me"
 
       // update project
       let projectinfo_updated = await chai.request(app)
-      .patch('/projectinfo')
-      .set('Content-Type', 'application/json')
-      .set('Cookie', `jwt=${ login_token }`)
-      .send(projectinfo);
+        .patch('/projectinfo')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `jwt=${login_token}`)
+        .send(projectinfo);
 
       expect(projectinfo.own_project.project_name, 'Project update failed').to.eq(projectinfo_updated.body.own_project.project_name);
 
       // create token for participant
       for (let step = 0; step < 3; step++) {
         let token_success = await chai.request(app)
-        .post('/participants')
-        .set('Content-Type', 'application/json')
-        .set('Cookie', `jwt=${ login_token }`)
-        .send();
-  
+          .post('/participants')
+          .set('Content-Type', 'application/json')
+          .set('Cookie', `jwt=${login_token}`)
+          .send();
+
         expect(token_success.status).eq(200);
       }
       //test the invalid flow (max tokens reached)
       token_success = await chai.request(app)
         .post('/participants')
         .set('Content-Type', 'application/json')
-        .set('Cookie', `jwt=${ login_token }`)
+        .set('Cookie', `jwt=${login_token}`)
         .send();
 
-        expect(token_success.status).eq(500);
+      expect(token_success.status).eq(500);
 
       const voucher = await models.User.findByPk(user.id, {
-        include: [ { model: models.Project, attributes: ['id'], as: 'project', include: [ { model: models.Voucher, attributes: ['id'] } ] } ]
+        include: [{ model: models.Project, attributes: ['id'], as: 'project', include: [{ model: models.Voucher, attributes: ['id'] }] }]
       });
 
-      expect(voucher).to.not.null; 
+      expect(voucher).to.not.null;
 
       let token_code = voucher.project.Vouchers[0].id;
 
@@ -542,7 +554,7 @@ describe('Event', function() {
           year: 2009,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'participant@dummy.be',
           address: {
@@ -560,17 +572,17 @@ describe('Event', function() {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(participant);
-      
-      lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
 
-      token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+      lastRegistration = await models.Registration.findAll({ limit: 1, order: [['id', 'DESC']] });
+
+      token = await Token.generateRegistrationToken(lastRegistration[0].id);
 
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo_participant = (await chai.request(app)
         .get('/userinfo')
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
-        .send());  
+        .send());
 
       expect(userinfo_participant).to.not.null;
 
@@ -587,7 +599,7 @@ describe('Event', function() {
 
       //create new project
       let participant_project = {
-        own_project:  {
+        own_project: {
           project_name: 'participant',
           project_descr: 'participant',
           project_type: 'participant',
@@ -604,7 +616,7 @@ describe('Event', function() {
       expect(participant_project_result).to.not.null;
       expect(participant_project_result.status).eq(200);
 
-      participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' }, include: [ { model: models.Project, as: 'project' } ] });
+      participant_user = await models.User.findOne({ where: { email: 'participant@dummy.be' }, include: [{ model: models.Project, as: 'project' }] });
       expect(participant_user.project.project_name).to.eq('participant');
 
       //delete my own project again & relink to the existing one
@@ -658,17 +670,18 @@ describe('Event', function() {
         .set('Authorization', `Bearer ${participant_login_token}`)
         .set('Content-Type', 'application/json')
         .send());
-      
+
       expect(participant_user_result.status).eq(200);
 
       // check if the tokens are gone
-      let voucher_exists = await models.Voucher.findOne({ 
-        where: { [Op.or]: [ { id: voucher.project.Vouchers[1].id }, { id: voucher.project.Vouchers[0].id } ]  } });
+      let voucher_exists = await models.Voucher.findOne({
+        where: { [Op.or]: [{ id: voucher.project.Vouchers[1].id }, { id: voucher.project.Vouchers[0].id }] }
+      });
 
       expect(voucher_exists).is.null;
 
     });
-    
+
     it('Add and remove attachments', async () => {
       let registration = {
         user: {
@@ -682,7 +695,7 @@ describe('Event', function() {
           year: 2009,
           gsm: '+32460789101',
           gsm_guardian: '+32460789101',
-          email_guardian: 'guardian@dummy.be',     
+          email_guardian: 'guardian@dummy.be',
           t_size: 1,
           email: 'test1@dummy.be',
           address: {
@@ -707,11 +720,11 @@ describe('Event', function() {
       expect(result.status).eq(200);
 
       // just pick the last registration
-      let lastRegistration = await models.Registration.findAll({limit: 1, order: [ [ 'id', 'DESC' ]]});
+      let lastRegistration = await models.Registration.findAll({ limit: 1, order: [['id', 'DESC']] });
 
       expect(lastRegistration[0].email).to.be.eq('test1@dummy.be');
 
-      let token = await Token.generateRegistrationToken(lastRegistration[0].id); 
+      let token = await Token.generateRegistrationToken(lastRegistration[0].id);
 
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo = (await chai.request(app)
@@ -737,7 +750,7 @@ describe('Event', function() {
       expect(attachments.status).eq(200);
 
       // get the azure info
-      const attachment = await ( await ( await user.getProject() ).getAttachments() )[0].getAzureBlob();
+      const attachment = await (await (await user.getProject()).getAttachments())[0].getAzureBlob();
 
       // check if the SAS url has all the correct information
       let sas_url = attachments.body.url;
@@ -746,7 +759,7 @@ describe('Event', function() {
 
       // refresh sas token
       let sas_url_response = (await chai.request(app)
-        .post(`/attachments/${ attachment.blob_name }/sas`)
+        .post(`/attachments/${attachment.blob_name}/sas`)
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .send());
@@ -771,8 +784,8 @@ describe('Event', function() {
         .set('Content-Type', 'application/json')
         .send()).body;
 
-      expect(projectinfo).not.null;  
-      
+      expect(projectinfo).not.null;
+
       const project_attachment = projectinfo.attachments[0];
 
       expect(project_attachment.exists).to.be.true;
@@ -782,12 +795,106 @@ describe('Event', function() {
 
       // delete the attachment
       attachments = await chai.request(app)
-        .delete(`/attachments/${ attachment.blob_name }`)
+        .delete(`/attachments/${attachment.blob_name}`)
         .set('Authorization', `Bearer ${token}`)
-        .set('Content-Type', 'application/json')  
+        .set('Content-Type', 'application/json')
         .send();
-      
+
       expect(attachments.status).eq(200);
     });
+
+    it('Login logout', async () => {
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',
+          t_size: 1,
+          email: 'test2@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      // just pick the last registration
+      let lastRegistration = await models.Registration.findAll({ limit: 1, order: [['id', 'DESC']] });
+
+      expect(lastRegistration[0].email).to.be.eq('test2@dummy.be');
+
+      let token = await Token.generateRegistrationToken(lastRegistration[0].id);
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      expect(userinfo.status).eq(200);
+
+      let user = await models.User.findOne({ where: { email: 'test2@dummy.be' }, attributes: ['id'] });
+      expect(user).to.not.null;
+
+      let mail_token_response = (await chai.request(app)
+        .post('/mailToken')
+        .set('Content-Type', 'application/json')
+        .send({email: 'test2@dummy.be' }));
+
+      expect(mail_token_response.status).eq(200);
+
+      // quick way to get the token out of the text part of the second mail (ask4Token mail)
+      const sentMail = nodemailerMock.mock.getSentMail();
+
+      let link = sentMail[1].text.split(/\r?\n/)[7];
+      link = link.substring(1, link.length -1);
+
+      let token_mail = link.split("?token=")[1];
+
+      // trigger the login via the backend post (standard flow reads out the query string in the frontend & post to /login)
+      let login_response = (await chai.request(app)
+      .post('/login')
+      .set('Authorization', `Bearer ${token_mail}`)
+      .set('Content-Type', 'application/json')
+      .send());
+
+      expect(login_response.status).eq(200);
+
+      expect(login_response).to.have.cookie('jwt'); 
+
+      // test the logout functionality
+      // /login sets a cookie so no bearer header needed
+      let logout_response = (await chai.request(app)
+      .post('/logout')
+      .set('Content-Type', 'application/json')
+      .send());
+
+      expect(logout_response).to.not.have.cookie('jwt'); 
+
+    });
+
   });
 });
