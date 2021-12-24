@@ -74,7 +74,7 @@ module.exports = function(models, database, azure, mailer) {
       const blob = await a.getAzureBlob();
   
       //skip when the file is not found
-      const exists = azure.checkBlobExists(blob.blob_name);
+      const exists = await azure.checkBlobExists(blob.blob_name);
       if(!exists){
         console.error(`Blob not found ${ blob.blob_name }`);
       }
@@ -91,7 +91,8 @@ module.exports = function(models, database, azure, mailer) {
       });
     }
     projectResult.attachments = attachments;
-  
+   
+    console.log(projectResult)
     return projectResult;
   }
   

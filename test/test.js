@@ -12,6 +12,8 @@ const sequelize = models.sequelize;
 
 const Azure = require('../azure');
 
+const { BlockBlobClient } = require('@azure/storage-blob');
+
 var app = null;
 describe('Event', function() {
   this.timeout(0);
@@ -753,14 +755,35 @@ describe('Event', function() {
       expect(sas_url).include(attachment.blob_name);
       expect(sas_url).include(attachment.container_name);
 
-      // upload a dummy file to the azure container
-      //TODO
+      console.log(attachment)
+
+      // fake the azure upload logic
+      const data = 'Hello, World!';
+      const blockBlobClient = new BlockBlobClient(
+        sas_url
+      )
+      await blockBlobClient.upload(data, data.length);
+
+      //get the download url
+      let projectinfo = (await chai.request(app)
+        .get('/projectinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send()).body;
+
+      expect(projectinfo).not.null;  
+      
+      const project_attachment = projectinfo.attachments[0];
+
+      expect(project_attachment.exists).to.be.true;
+
+      console.log(await chai.request(project_attachment.url).get(''))
 
       // delete the attachment
       attachments = await chai.request(app)
         .delete(`/attachments/${ attachment.blob_name }`)
         .set('Authorization', `Bearer ${token}`)
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json')  
         .send();
       
       expect(attachments.status).eq(200);
