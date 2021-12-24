@@ -777,7 +777,8 @@ describe('Event', function() {
 
       expect(project_attachment.exists).to.be.true;
 
-      console.log(await chai.request(project_attachment.url).get(''))
+      const sas_response = await chai.request(project_attachment.url).get('');
+      expect(sas_response.status).eq(200);
 
       // delete the attachment
       attachments = await chai.request(app)
