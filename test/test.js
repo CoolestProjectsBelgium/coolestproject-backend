@@ -786,7 +786,7 @@ describe('Event', function () {
 
       expect(projectinfo).not.null;
 
-      const project_attachment = projectinfo.attachments[0];
+      let project_attachment = projectinfo.attachments[0];
 
       expect(project_attachment.exists).to.be.true;
 
@@ -801,6 +801,18 @@ describe('Event', function () {
         .send();
 
       expect(attachments.status).eq(200);
+
+      // check if the attachment is gone
+      projectinfo = (await chai.request(app)
+        .get('/projectinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send()).body;
+
+      project_attachment = projectinfo.attachments[0];
+
+      expect(project_attachment).to.be.undefined;
+
     });
 
     it('Login logout', async () => {
