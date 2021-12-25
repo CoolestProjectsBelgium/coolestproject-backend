@@ -18,6 +18,9 @@ const mockery = require('mockery');
 const nodemailerMock = require('nodemailer-mock');
 const cookieParser = require('cookie-parser');
 
+const Database = require('../dba');
+const database = new Database();
+
 var app = null;
 describe('Event', function () {
   this.timeout(0);
@@ -905,6 +908,125 @@ describe('Event', function () {
       .send());
 
       expect(logout_response).to.not.have.cookie('jwt'); 
+
+    });
+
+    it('Waiting mail list', async () => { 
+      // change the event to trigger the waiting list logic
+      const event = await database.getEventActive();
+      const maxReg = event.maxRegistration;
+      event.maxRegistration = 0;
+      await event.save();
+
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',
+          t_size: 1,
+          email: 'test3@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      const sentMail = nodemailerMock.mock.getSentMail();
+      
+      expect(sentMail[0].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
+
+      //reset event again TODO find better way
+      event.maxRegistration = maxReg;
+      await event.save();
+    });
+
+    it('Try to register with existing user', async () => { 
+
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',
+          t_size: 1,
+          email: 'test4@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      // just pick the last registration
+      let lastRegistration = await models.Registration.findOne({ email: 'test4@dummy.be' });
+
+      expect(lastRegistration.email).to.be.eq('test4@dummy.be');
+
+      let token = await Token.generateRegistrationToken(lastRegistration.id);
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+        
+      expect(userinfo.status).eq(200);
+
+      result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      const sentMail = nodemailerMock.mock.getSentMail();
+      
+      expect(sentMail[2].subject).eq('Coolest Projects : Let op, er was een aanvullende registratie met uw e-mailadres.');
 
     });
 

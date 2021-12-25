@@ -94,5 +94,6 @@
   "Welcome to the waiting list": "Welcome to the waiting list",
   "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "Vous êtes sur une liste d'attente, cela signifie que vous recevrez un mail d'activation lorsqu'une place sera disponible",
   "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, <strong>{{hash.firstname}}</strong>",
-  "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}"
+  "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}",
+  "Your parents will also receive this mail.": "Your parents will also receive this mail."
 }
