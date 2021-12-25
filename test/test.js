@@ -1002,7 +1002,7 @@ describe('Event', function () {
       expect(result.status).eq(200);
 
       // just pick the last registration
-      let lastRegistration = await models.Registration.findOne({ email: 'test4@dummy.be' });
+      let lastRegistration = await models.Registration.findOne({ where: { email: 'test4@dummy.be' } });
 
       expect(lastRegistration.email).to.be.eq('test4@dummy.be');
 
