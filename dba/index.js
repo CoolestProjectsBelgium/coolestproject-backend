@@ -635,7 +635,7 @@ class DBA {
         await this.validateRegistration(dbValues, event);
 
         // check for waiting list
-        const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
+        const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
         if (registration_count >= event.maxRegistration) {
           dbValues.waiting_list = true;
         }

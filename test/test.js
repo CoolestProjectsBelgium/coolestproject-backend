@@ -1035,7 +1035,9 @@ describe('Event', function () {
       // change the event to trigger the waiting list logic
       const event = await database.getEventActive();
       const maxReg = event.maxRegistration;
-      event.maxRegistration = 1;
+
+      const registration_count = await models.User.count({ where: { eventId: event.id } }) + await models.Registration.count({ where: { eventId: event.id } });
+      event.maxRegistration = registration_count + 1;
       await event.save();
 
       let registration = {
