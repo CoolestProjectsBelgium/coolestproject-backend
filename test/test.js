@@ -1151,12 +1151,16 @@ describe('Event', function () {
         .set('Content-Type', 'application/json')
         .send());
 
-        sentMail = nodemailerMock.mock.getSentMail();
+      sentMail = nodemailerMock.mock.getSentMail();
 
-        expect(sentMail).is.length(5);
+      expect(sentMail).is.length(5);
 
-        expect(sentMail[3].subject).eq('Coolest Projects 2021: Bevestiging verwijderen van jouw project');
-        expect(sentMail[4].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
+      expect(sentMail[3].subject).eq('Coolest Projects 2021: Bevestiging verwijderen van jouw project');
+      expect(sentMail[4].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
+
+      //reset event again TODO find better way
+      event.maxRegistration = maxReg;
+      await event.save();
 
     });
 
