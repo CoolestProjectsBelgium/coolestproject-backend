@@ -633,6 +633,16 @@ components:
         eventEndDate:
           type: string
           format: date
+        eventTitle:
+          type: string
+        isRegistrationClosed:
+          type: boolean
+        isProjectClosed:
+          type: boolean
+        maxRegistration:
+          type: integer
+        maxParticipants:
+          type: integer
     Tshirt:
       type: array
       items:

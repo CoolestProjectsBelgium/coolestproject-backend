@@ -51,12 +51,19 @@ module.exports = function(models, database) {
 
       isActive: event.current,
 
-      eventBeginDate: event.eventBeginDate,
-      registrationOpenDate: event.registrationOpenDate,
-      registrationClosedDate: event.registrationClosedDate,
-      projectClosedDate: event.projectClosedDate,
-      officialStartDate: event.officialStartDate,
-      eventEndDate: event.eventEndDate,
+      eventBeginDate: event.eventBeginDate.toISOString().substring(0, 10),
+      registrationOpenDate: event.registrationOpenDate.toISOString().substring(0, 10),
+      registrationClosedDate: event.registrationClosedDate.toISOString().substring(0, 10),
+      projectClosedDate: event.projectClosedDate.toISOString().substring(0, 10),
+      officialStartDate: event.officialStartDate.toISOString().substring(0, 10),
+      eventEndDate: event.eventEndDate.toISOString().substring(0, 10),
+      eventTitle: event.event_title,
+
+      isRegistrationClosed: event.registrationClosed,
+      isProjectClosed: event.projectClosed,
+
+      maxRegistration: event.maxRegistration,
+      maxParticipants: event.maxVoucher
 
       //maxParticipants: event.
       // max participant in group
