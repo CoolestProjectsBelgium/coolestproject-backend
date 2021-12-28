@@ -1030,5 +1030,9 @@ describe('Event', function () {
 
     });
 
+    it('Release user from waiting list', async () => { 
+      
+    });  
+
   });
 });

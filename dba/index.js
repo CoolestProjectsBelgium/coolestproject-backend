@@ -474,6 +474,8 @@ class DBA {
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
 
         await this.azure.deleteBlob(name);
+
+        return null;
       }
     );
   }

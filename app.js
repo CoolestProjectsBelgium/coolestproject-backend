@@ -102,6 +102,33 @@ function validateAllResponses(req, res, next) {
   next();
 }
 
+function cleanResponse(req, res, next) {
+  const send = res.send;
+
+  /* remove null values for api calls */
+  function cleanup(obj) {
+    for (var propName in obj) { 
+      if (obj[propName] === null || obj[propName] === undefined) {
+        delete obj[propName];
+      } else if (typeof obj[propName] === "object") {
+        cleanup(obj[propName])
+      }
+    }
+    return obj;
+  }
+
+  res.send = function(...args){
+    const arg_changed = args;
+    console.log(arg_changed[0])
+    const content = JSON.parse(arg_changed[0]);
+
+    arg_changed[0] = JSON.stringify(cleanup(content));
+
+    return send.apply(res, arg_changed);
+  }
+  next();
+}
+
 initialize({
   app,
   docsPath: '/docs',
@@ -116,7 +143,7 @@ initialize({
   paths: path.resolve(__dirname, 'paths'),
   apiDoc: {
     ...yaml.load(fs.readFileSync(path.resolve(__dirname, './api/swagger.yaml'), 'utf8')),
-    'x-express-openapi-additional-middleware': [validateAllResponses],
+    'x-express-openapi-additional-middleware': [validateAllResponses, cleanResponse],
     'x-express-openapi-validation-strict': true
   },
   consumesMiddleware: {

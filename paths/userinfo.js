@@ -33,19 +33,19 @@ module.exports = function(database, models, jwt, mailer) {
       lastname: user.lastname,
       sex: user.sex,
       gsm: user.gsm,
-      via: user.via || '',
-      medical: user.medical || '',
+      via: user.via,
+      medical: user.medical,
       email_guardian: user.email_guardian,
       gsm_guardian: user.gsm_guardian,
       t_size: user.sizeId,
       general_questions: general_questions,
       mandatory_approvals: mandatory_approvals,
       address: {
-        postalcode: user.postalcode + '' || '',
-        street: user.street || '',
-        house_number: user.house_number || '',
-        bus_number: user.box_number || '',
-        municipality_name: user.municipality_name || ''
+        postalcode: user.postalcode + '' ,
+        street: user.street,
+        house_number: user.house_number,
+        bus_number: user.box_number,
+        municipality_name: user.municipality_name
       },
       delete_possible: await database.isUserDeletable(user.id)
     };
