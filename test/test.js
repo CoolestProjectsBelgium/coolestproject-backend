@@ -877,7 +877,7 @@ describe('Event', function () {
       let mail_token_response = (await chai.request(app)
         .post('/mailToken')
         .set('Content-Type', 'application/json')
-        .send({email: 'test2@dummy.be' }));
+        .send({ email: 'test2@dummy.be' }));
 
       expect(mail_token_response.status).eq(200);
 
@@ -885,33 +885,33 @@ describe('Event', function () {
       const sentMail = nodemailerMock.mock.getSentMail();
 
       let link = sentMail[1].text.split(/\r?\n/)[7];
-      link = link.substring(1, link.length -1);
+      link = link.substring(1, link.length - 1);
 
       let token_mail = link.split("?token=")[1];
 
       // trigger the login via the backend post (standard flow reads out the query string in the frontend & post to /login)
       let login_response = (await chai.request(app)
-      .post('/login')
-      .set('Authorization', `Bearer ${token_mail}`)
-      .set('Content-Type', 'application/json')
-      .send());
+        .post('/login')
+        .set('Authorization', `Bearer ${token_mail}`)
+        .set('Content-Type', 'application/json')
+        .send());
 
       expect(login_response.status).eq(200);
 
-      expect(login_response).to.have.cookie('jwt'); 
+      expect(login_response).to.have.cookie('jwt');
 
       // test the logout functionality
       // /login sets a cookie so no bearer header needed
       let logout_response = (await chai.request(app)
-      .post('/logout')
-      .set('Content-Type', 'application/json')
-      .send());
+        .post('/logout')
+        .set('Content-Type', 'application/json')
+        .send());
 
-      expect(logout_response).to.not.have.cookie('jwt'); 
+      expect(logout_response).to.not.have.cookie('jwt');
 
     });
 
-    it('Waiting mail list', async () => { 
+    it('Waiting mail list', async () => {
       // change the event to trigger the waiting list logic
       const event = await database.getEventActive();
       const maxReg = event.maxRegistration;
@@ -955,7 +955,7 @@ describe('Event', function () {
       expect(result.status).eq(200);
 
       const sentMail = nodemailerMock.mock.getSentMail();
-      
+
       expect(sentMail[0].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
 
       //reset event again TODO find better way
@@ -963,7 +963,7 @@ describe('Event', function () {
       await event.save();
     });
 
-    it('Try to register with existing user', async () => { 
+    it('Try to register with existing user', async () => {
 
       let registration = {
         user: {
@@ -1014,7 +1014,7 @@ describe('Event', function () {
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'application/json')
         .send());
-        
+
       expect(userinfo.status).eq(200);
 
       result = await chai.request(app)
@@ -1025,14 +1025,140 @@ describe('Event', function () {
       expect(result.status).eq(200);
 
       const sentMail = nodemailerMock.mock.getSentMail();
-      
+
       expect(sentMail[2].subject).eq('Coolest Projects : Let op, er was een aanvullende registratie met uw e-mailadres.');
 
     });
 
-    it('Release user from waiting list', async () => { 
-      
-    });  
+    it('Release user from waiting list', async () => {
+
+      // change the event to trigger the waiting list logic
+      const event = await database.getEventActive();
+      const maxReg = event.maxRegistration;
+      event.maxRegistration = 1;
+      await event.save();
+
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',
+          t_size: 1,
+          email: 'test5@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+
+      let lastRegistration = await models.Registration.findOne({ where: { email: 'test5@dummy.be' } });
+
+      expect(lastRegistration.email).to.be.eq('test5@dummy.be');
+
+      let token = await Token.generateRegistrationToken(lastRegistration.id);
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      const user = await models.User.findOne({ where: { email: 'test5@dummy.be' } });
+      expect(user).to.not.null;
+
+      let user_token = await Token.generateLoginToken(user.id);
+
+
+      let registration_wait = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'guardian@dummy.be',
+          t_size: 1,
+          email: 'test6@dummy.be',
+          address: {
+            postalcode: '1000'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+
+
+      let result_wait = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration_wait);
+
+      expect(result_wait.status).eq(200);
+
+      let sentMail = nodemailerMock.mock.getSentMail();
+
+      expect(sentMail).is.length(3)
+      expect(sentMail[0].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
+      expect(sentMail[1].subject).eq('Coolest Projects 2021: Welkom!');
+      expect(sentMail[2].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
+
+      // delete project & user
+      let projectinfo = (await chai.request(app)
+        .delete('/projectinfo')
+        .set('Authorization', `Bearer ${user_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      userinfo = (await chai.request(app)
+        .delete('/userinfo')
+        .set('Authorization', `Bearer ${user_token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+        sentMail = nodemailerMock.mock.getSentMail();
+
+        expect(sentMail).is.length(5);
+
+        expect(sentMail[3].subject).eq('Coolest Projects 2021: Bevestiging verwijderen van jouw project');
+        expect(sentMail[4].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
+
+    });
 
   });
 });
