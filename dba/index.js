@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const addYears = require('date-fns/addYears');
 
 const crypto = require('crypto');
-const { Op } = require("sequelize");
+const { Op } = require('sequelize');
 
 const models = require('../models');
 
@@ -544,10 +544,10 @@ class DBA {
         throw new Error('Guardian is required');
       }
     } else {
-        // console.log(typeof dbValues.gsm_guardian);
-        if (typeof dbValues.gsm_guardian !== 'undefined' || typeof dbValues.email_guardian !== 'undefined') {
-          throw new Error('Guardian is filled in');
-        }
+      // console.log(typeof dbValues.gsm_guardian);
+      if (typeof dbValues.gsm_guardian !== 'undefined' || typeof dbValues.email_guardian !== 'undefined') {
+        throw new Error('Guardian is filled in');
+      }
     }
 
     // 4) check if own project or participant
@@ -653,7 +653,7 @@ class DBA {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
-      { model: Event, as: 'event' }]
+        { model: Event, as: 'event' }]
     });
   }
 
@@ -828,7 +828,7 @@ class DBA {
     });
 
     if (activeEventId === null) {
-      throw new Error("No Event Active");
+      throw new Error('No Event Active');
     }
 
     return await this.getEventDetail(activeEventId.id);
