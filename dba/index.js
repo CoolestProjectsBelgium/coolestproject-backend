@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const addYears = require('date-fns/addYears');
 
 const crypto = require('crypto');
-const { Op } = require("sequelize");
+const { Op } = require('sequelize');
 
 const models = require('../models');
 
@@ -540,15 +540,15 @@ class DBA {
     // 3) check if guardian is required
     const minGuardian = addYears(event.eventBeginDate, -1 * event.minGuardianAge);
     if (minGuardian < dbValues.birthmonth) {
-      if (dbValues.gsm_guardian === '' || dbValues.email_guardian == '') {
+      if (typeof dbValues.gsm_guardian === 'undefined' || typeof dbValues.email_guardian === 'undefined') {
         throw new Error('Guardian is required');
       }
     } else {
-      if (dbValues.gsm_guardian !== '' && dbValues.email_guardian !== '') {
+      // console.log(typeof dbValues.gsm_guardian);
+      if (typeof dbValues.gsm_guardian !== 'undefined' || typeof dbValues.email_guardian !== 'undefined') {
         throw new Error('Guardian is filled in');
       }
     }
-
 
     // 4) check if own project or participant
     if (dbValues.project_code == null) {
@@ -592,8 +592,8 @@ class DBA {
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
-        dbValues.gsm_guardian = user.gsm_guardian || '';
-        dbValues.email_guardian = user.email_guardian || '';
+        dbValues.gsm_guardian = user.gsm_guardian;
+        dbValues.email_guardian = user.email_guardian;
         dbValues.sizeId = user.t_size;
 
         // to month (set hour to 12)
@@ -653,7 +653,7 @@ class DBA {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
-      { model: Event, as: 'event' }]
+        { model: Event, as: 'event' }]
     });
   }
 
@@ -828,7 +828,7 @@ class DBA {
     });
 
     if (activeEventId === null) {
-      throw new Error("No Event Active");
+      throw new Error('No Event Active');
     }
 
     return await this.getEventDetail(activeEventId.id);
