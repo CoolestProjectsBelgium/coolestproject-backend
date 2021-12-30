@@ -23,12 +23,12 @@ const Token = require('../jwts');
 
 const projectParent = {
   name: 'Projects',
-  icon: 'Roadmap'  
+  icon: 'Roadmap'
 }
 
 const reportParent = {
   name: 'Reporting',
-  icon: 'fa fa-stream', 
+  icon: 'fa fa-stream',
 }
 
 const internalParent = {
@@ -55,10 +55,17 @@ const planningParent = {
   name: 'On-site Planning',
   icon: 'Location'
 }
- 
+
 const adminParent = {
   name: 'Administration',
   icon: 'Identification'
+}
+
+function superAdminAllowed({ currentAdmin }){
+  let result = false
+  if(currentAdmin.account_type === 'super_admin'){
+    result = true;
+  }
 }
 
 const adminBroOptions = {
@@ -67,7 +74,7 @@ const adminBroOptions = {
   dashboard: {
     handler: async () => {
       const evt = await database.getEventActive()
-      return {...evt.dataValues, questions: evt.questions, tshirts: evt.tshirts};
+      return { ...evt.dataValues, questions: evt.questions, tshirts: evt.tshirts };
     },
     component: AdminBro.bundle('./components/dashboard')
   },
@@ -79,7 +86,7 @@ const adminBroOptions = {
       labels: {
         ShowUserWithNoProject: 'Show User(s) With No Project',
         CountTshirtSizes: 'Count Tshirt Sizes',
-        ShowAttachmentLoaded: 'Show Attachment(s) Loaded' 
+        ShowAttachmentLoaded: 'Show Attachment(s) Loaded'
       }
     }
   },
@@ -87,95 +94,127 @@ const adminBroOptions = {
     {
       resource: db.Sessions,
       options: {
-        navigation: adminParent
-      }
+        navigation: adminParent,
+        actions: {
+          new: {
+            isAccessible: superAdminAllowed
+          },
+          edit: {
+            isAccessible: superAdminAllowed
+          },
+          delete: {
+            isAccessible: superAdminAllowed
+          },
+          show: {
+            isAccessible: superAdminAllowed
+          },
+          list: {
+            isAccessible: superAdminAllowed
+          }
+        }
+      },
     },
     {
       resource: db.Account,
       options: {
-        navigation: adminParent
-      }
+        navigation: adminParent,
+        actions: {
+          new: {
+            isAccessible: superAdminAllowed
+          },
+          edit: {
+            isAccessible: superAdminAllowed
+          },
+          delete: {
+            isAccessible: superAdminAllowed
+          },
+          show: {
+            isAccessible: superAdminAllowed
+          },
+          list: {
+            isAccessible: superAdminAllowed
+          }
+        }
+      },
     },
     {
       resource: db.Event,
       options: {
         navigation: eventParent,
-        //listProperties: ['id', 'event_title','current', 'startDate','maxVoucher','t_proj','maxRegistration','minAge',
-        //                'maxAge','minGuardianAge','days_remaining','overdue_registration','t_users','pending_user','waiting_list'],
-        properties:{
+        properties: {
           event_title: {
-            isTitle:true,
-            label: 'event' 
+            isTitle: true,
+            label: 'event'
           },
-          overdue_registration:{
+          overdue_registration: {
             list: true,
             show: true
           },
-          waiting_list:{
+          waiting_list: {
             list: true,
             show: true
           },
-          days_remaining:{
+          days_remaining: {
             list: true,
             show: true
           },
-          total_males:{
+          total_males: {
             list: true,
             show: true
           },
-          total_females:{
+          total_females: {
             list: true,
             show: true
           },
-          total_X:{
+          total_X: {
             list: true,
             show: true
           },
-          tlang_nl:{
+          tlang_nl: {
             list: true,
             show: true
           },
-          tlang_fr:{
+          tlang_fr: {
             list: true,
             show: true
           },
-          tlang_en:{
+          tlang_en: {
             list: true,
             show: true
           },
-          tcontact:{
+          tcontact: {
             list: true,
             show: true
           },
-          tphoto:{
+          tphoto: {
             list: true,
             show: true
           },
-          tclini:{
+          tclini: {
             list: true,
             show: true
           },
-          total_unusedVouchers:{
+          total_unusedVouchers: {
             list: true,
             show: true
           },
-          total_unusedVouchers:{
+          total_unusedVouchers: {
             list: true,
             show: true
           },
-          pending_users:{
+          pending_users: {
             list: true,
             show: true
           },
-          total_users:{
+          total_users: {
             list: true,
             show: true
           },
-          total_videos:{
+          total_videos: {
             list: true,
             show: true
           },
-          total_projects:{
+          total_projects: {
             list: true,
             show: true
           },
@@ -190,13 +229,13 @@ const adminBroOptions = {
         },
         actions: {
           list: {
-            after: async (response, request, context) => { 
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
                   const evt = await database.getEventDetail(r.params['id']);
                   const properties = await evt.get({ plain: true });
-                  for(let p in properties){
-                    r.params[p] = properties[p]; 
+                  for (let p in properties) {
+                    r.params[p] = properties[p];
                   }
                 } catch (error) {
                   console.log(error)
@@ -204,14 +243,24 @@ const adminBroOptions = {
                 return r
               }));
               return response
+            },
+            before: async (request, { currentAdmin }) => {
+              if(currentAdmin.account_type === 'super_admin'){
+                return request;
+              }
+             
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.id': event.id }
+              console.log(request)
+              return request
             }
           },
-          show: {
+          show: {            
             after: async (response, request, context) => {
               try {
                 const evt = await database.getEventDetail(response.record.params.id);
-                const properties = await evt.get({ plain: true });                
-                for(let p in properties){
+                const properties = await evt.get({ plain: true });
+                for (let p in properties) {
                   response.record.params[p] = properties[p];
                 }
               } catch (error) {
@@ -220,7 +269,17 @@ const adminBroOptions = {
               return response;
             }
           },
+          new: {
+            isAccessible: superAdminAllowed
+          },
+          edit: {
+            isAccessible: superAdminAllowed
+          },
+          delete: {
+            isAccessible: superAdminAllowed
+          },
           syncAzureSettings: {
+            isAccessible: superAdminAllowed,
             actionType: 'record',
             label: 'Sync Azure',
             icon: 'fas fa-envelope',
@@ -265,6 +324,7 @@ const adminBroOptions = {
             component: AdminBro.bundle('./components/eventDashboard')
           },
           setActive: {
+            isAccessible: superAdminAllowed,
             icon: 'View',
             actionType: 'record',
             component: false,
@@ -297,38 +357,97 @@ const adminBroOptions = {
     {
       resource: db.Question,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
-      
     },
     {
       resource: db.QuestionTranslation,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
     },
     {
       resource: db.TShirtGroup,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
     },
     {
       resource: db.TShirtGroupTranslation,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
     },
     {
       resource: db.TShirt,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
     },
     {
       resource: db.TShirtTranslation,
       options: {
-        navigation: registerParent
+        navigation: registerParent,
+        actions: {
+          before: async (request, { currentAdmin }) => {
+            const event = await database.getEventActive();
+            request.payload = {
+              ...request.payload,
+              eventId: event.id,
+            }
+            return request
+          }
+        }
       }
     },
 
@@ -376,6 +495,16 @@ const adminBroOptions = {
                 },
               }
             },
+          },
+          actions: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            }
           }
         },
         properties: {
@@ -390,6 +519,16 @@ const adminBroOptions = {
       resource: db.QuestionRegistration,
       options: {
         navigation: projectParent
+      },
+      actions: {
+        before: async (request, { currentAdmin }) => {
+          const event = await database.getEventActive();
+          request.payload = {
+            ...request.payload,
+            eventId: event.id,
+          }
+          return request
+        }
       }
     },
     {
@@ -399,31 +538,31 @@ const adminBroOptions = {
         properties: {
           internalinfo: { type: 'richtext' },
           project_name: {
-            isTitle:true,
-            label: 'project' 
+            isTitle: true,
+            label: 'project'
           },
-          totalAttachments:{
+          totalAttachments: {
             list: true,
             show: true,
             filter: false
           },
-          totalAzureBlobs:{
+          totalAzureBlobs: {
             list: true,
             show: true,
             filter: false
           },
-          videoConfirmed:{
+          videoConfirmed: {
             list: true,
             show: true,
             filter: false,
             type: 'boolean'
           },
-          videoConfirmedId:{
+          videoConfirmedId: {
             list: true,
             show: true,
             filter: false,
           },
-          confirmedHref:{
+          confirmedHref: {
             list: true,
             show: true,
             filter: false
@@ -431,19 +570,27 @@ const adminBroOptions = {
         },
         actions: {
           list: {
-            after: async (response, request, context) => {              
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
-                  const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': r.params['id'] }})
+                  const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes: [Hyperlink] }], where: { 'projectId': r.params['id'] } })
                   r.params.totalAttachments = attachments.count
 
                   let successCount = 0;
                   let confirmed = false;
                   let confirmedId = -1;
                   let confirmedHref = '';
-                  for(let a of attachments.rows){
+                  for (let a of attachments.rows) {
                     successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
-                    if(a.get('confirmed')){
+                    if (a.get('confirmed')) {
                       confirmed = true
                       confirmedId = a.get('id')
                       confirmedHref = (await a.getHyperlink())?.get('href')
@@ -453,7 +600,7 @@ const adminBroOptions = {
                   r.params.videoConfirmed = confirmed
                   r.params.confirmedHref = confirmedHref
                   r.params.videoConfirmedId = confirmedId
-                } catch (error) { 
+                } catch (error) {
                   console.log(error)
                 }
                 return r
@@ -462,18 +609,26 @@ const adminBroOptions = {
             }
           },
           show: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
             after: async (response, request, context) => {
               try {
-                const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes:[Hyperlink] }], where: {'projectId': response.record.params.id }})  
+                const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes: [Hyperlink] }], where: { 'projectId': response.record.params.id } })
                 response.record.params.totalAttachments = attachments.count
-                
+
                 let successCount = 0;
                 let confirmed = false;
                 let confirmedId = -1;
                 let confirmedHref = '';
-                for(let a of attachments.rows){         
+                for (let a of attachments.rows) {
                   successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
-                  if(a.get('confirmed')){
+                  if (a.get('confirmed')) {
                     confirmed = true
                     confirmedId = a.get('id')
                     confirmedHref = (await a.getHyperlink())?.get('href')
@@ -482,7 +637,7 @@ const adminBroOptions = {
                 response.record.params.totalAzureBlobs = successCount
                 response.record.params.videoConfirmed = confirmed
                 response.record.params.videoConfirmedId = confirmedId
-                response.record.params.confirmedHref = confirmedHref         
+                response.record.params.confirmedHref = confirmedHref
               } catch (error) {
                 console.log(error)
               }
@@ -497,20 +652,20 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext'},
-          isOwner:{
+          internalinfo: { type: 'richtext' },
+          isOwner: {
             list: true,
             show: true,
             filter: false,
             type: 'boolean'
           },
-          isParticipant:{
+          isParticipant: {
             list: true,
             show: true,
             filter: false,
             type: 'boolean'
           },
-          hasProject:{
+          hasProject: {
             list: true,
             show: true,
             filter: false,
@@ -519,13 +674,21 @@ const adminBroOptions = {
         },
         actions: {
           list: {
-            after: async (response, request, context) => { 
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
                   const owner = await Project.count({ where: { ownerId: r.params['id'] } })
                   const participant = await Voucher.count({ where: { participantId: r.params['id'] } })
                   r.params.isOwner = (owner > 0) ? true : false
-                  r.params.isParticipant = (participant > 0)  ? true : false
+                  r.params.isParticipant = (participant > 0) ? true : false
                   r.params.hasProject = (owner > 0 || participant > 0) ? true : false
                 } catch (error) {
                   console.log(error)
@@ -536,12 +699,20 @@ const adminBroOptions = {
             }
           },
           show: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
             after: async (response, request, context) => {
               try {
                 const owner = await Project.count({ where: { ownerId: response.record.params.id } })
                 const participant = await Voucher.count({ where: { participantId: response.record.params.id } })
                 response.record.params.isOwner = (owner > 0) ? true : false
-                response.record.params.isParticipant = (participant > 0)  ? true : false
+                response.record.params.isParticipant = (participant > 0) ? true : false
                 response.record.params.hasProject = (owner > 0 || participant > 0) ? true : false
               } catch (error) {
                 console.log(error)
@@ -556,7 +727,7 @@ const adminBroOptions = {
       resource: db.QuestionUser,
       options: {
         navigation: projectParent
-    }
+      }
     },
     {
       resource: db.Voucher,
@@ -577,10 +748,10 @@ const adminBroOptions = {
       resource: db.Attachment,
       options: {
         navigation: projectParent,
-        properties: { 
+        properties: {
           id: {
             isTitle: true,
-            label: 'id' 
+            label: 'id'
           },
           azureExists: {
             list: true,
@@ -588,7 +759,7 @@ const adminBroOptions = {
             new: false,
             filter: false,
             type: 'boolean'
-          },   
+          },
           downloadLink: {
             isVisible: {
               list: true,
@@ -598,8 +769,8 @@ const adminBroOptions = {
             },
             components: {
               list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),  
-            },  
+              show: AdminBro.bundle('./components/file'),
+            },
           }
         },
         actions: {
@@ -607,10 +778,10 @@ const adminBroOptions = {
             isVisible: false
           },
           list: {
-            after: async (response, request, context) => {       
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
-                try { 
-                  const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob}] });
+                try {
+                  const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob }] });
                   const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                   r.params['downloadLink'] = sas.url
                   r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
@@ -625,7 +796,7 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob}] });
+                const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob }] });
                 const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
                 response.record.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
@@ -641,8 +812,8 @@ const adminBroOptions = {
     {
       resource: db.AzureBlob,
       options: {
-        navigation: projectParent,  
-        properties: {      
+        navigation: projectParent,
+        properties: {
           downloadLink: {
             isVisible: {
               list: true,
@@ -652,8 +823,8 @@ const adminBroOptions = {
             },
             components: {
               list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),  
-            },  
+              show: AdminBro.bundle('./components/file'),
+            },
           },
           azureExists: {
             list: true,
@@ -671,10 +842,10 @@ const adminBroOptions = {
             isVisible: false
           },
           list: {
-            after: async (response, request, context) => {       
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
-                try { 
-                  const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment}] });
+                try {
+                  const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment }] });
                   const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
                   r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
                   r.params['downloadLink'] = sas.url
@@ -689,7 +860,7 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment}] });
+                const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment }] });
                 const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
                 response.record.params['downloadLink'] = sas.url
                 response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
@@ -701,12 +872,12 @@ const adminBroOptions = {
           },
         }
       }
-    }, 
+    },
     {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent,
-        properties:{
+        properties: {
           projectId: {
             list: true,
             show: true,
@@ -722,10 +893,10 @@ const adminBroOptions = {
         },
         actions: {
           list: {
-            after: async (response, request, context) => {       
+            after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
-                try { 
-                  const hyperlink = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [Project]}] });
+                try {
+                  const hyperlink = await Hyperlink.findByPk(r.id, { include: [{ model: Attachment, include: [Project] }] });
                   r.params.projectId = hyperlink.Attachment.ProjectId
                   r.params.projectName = hyperlink.Attachment.Project.project_name
                 } catch (error) {
@@ -739,7 +910,7 @@ const adminBroOptions = {
           show: {
             after: async (response, request, context) => {
               try {
-                const hyperlink = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [Project]}] });
+                const hyperlink = await Hyperlink.findByPk(response.record.params.id, { include: [{ model: Attachment, include: [Project] }] });
                 response.record.params.projectId = hyperlink.Attachment.ProjectId
                 response.record.params.projectName = hyperlink.Attachment.Project.project_name
 
@@ -776,8 +947,8 @@ const adminBroOptions = {
         navigation: votingParent
       }
     },
-    { 
-      resource: db.ShowUserWithNoProject, 
+    {
+      resource: db.ShowUserWithNoProject,
       options: {
         name: "Users zonder project of medewerker)",
         listProperties: ['id', 'firstname', 'lastname', 'email'],
@@ -795,10 +966,10 @@ const adminBroOptions = {
         },
         properties: {
         }
-      } 
+      }
     },
-    { 
-      resource: db.CountTshirtSizes, 
+    {
+      resource: db.CountTshirtSizes,
       options: {
         name: "Aantal T-shirts per maat",
         parent: reportParent,
@@ -815,9 +986,9 @@ const adminBroOptions = {
         },
         properties: {
         }
-      } 
+      }
     },
-    { 
+    {
       resource: db.ShowAttachmentLoaded,
       options: {
         name: "Alle geladen projecten",
@@ -831,14 +1002,14 @@ const adminBroOptions = {
           },
           delete: {
             isVisible: false
-          } 
+          }
         },
         properties: {
         }
-      }  
+      }
     },
-    { 
-      resource: db.userprojectvideo, 
+    {
+      resource: db.userprojectvideo,
       options: {
         name: "Alle projecten met youtube link",
         parent: reportParent,
@@ -855,29 +1026,29 @@ const adminBroOptions = {
         },
         properties: {
         }
-      } 
+      }
     },
-    
+
     {
       resource: db.Table,
       options: {
         navigation: planningParent,
-        properties:{
+        properties: {
           remainingPlaces: {
-            label: 'remaining places' 
+            label: 'remaining places'
           }
         },
         actions: {
           list: {
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
-                try { 
+                try {
                   const remaining = await ProjectTable.sum('UsedPlaces', {
                     where: {
                       TableId: r.id
                     }
                   });
-                  r.params['remainingPlaces'] = r.params.maxPlaces - remaining 
+                  r.params['remainingPlaces'] = r.params.maxPlaces - remaining
                 } catch (error) {
                   console.log(error)
                 }
@@ -894,7 +1065,7 @@ const adminBroOptions = {
                     TableId: response.record.params.id
                   }
                 });
-                response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining 
+                response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining
               } catch (error) {
                 console.log(error)
               }
@@ -902,16 +1073,16 @@ const adminBroOptions = {
             }
           }
         }
-      }  
+      }
     },
     {
       resource: db.Location,
       options: {
         navigation: planningParent,
-        properties:{
+        properties: {
           text: {
             isTitle: true,
-            label: 'text' 
+            label: 'text'
           }
         }
       }
@@ -925,13 +1096,13 @@ const adminBroOptions = {
             actionType: 'record',
             icon: 'Switch',
             isVisible: true,
-            handler: async () => {}
+            handler: async () => { }
           },
           plan: {
             actionType: 'resource',
             icon: 'Plan',
             isVisible: true,
-            handler: async () => {}
+            handler: async () => { }
           },
           new: {
             actionType: 'resource',
@@ -975,10 +1146,11 @@ AdminBro.registerAdapter(AdminBroSequelize)
 const adminBro = new AdminBro(adminBroOptions);
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
   async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email } });
+    const user = await db.Account.findOne({ where: { email: email }});
+    console.log(user);
     if (!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
-    return { 'email': user.email };
+    return { 'email': user.email, 'account_type': user.account_type };
   },
   cookieName: 'adminbro',
   cookiePassword: process.env.SECRET_KEY
