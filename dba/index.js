@@ -5,6 +5,8 @@ const namespace = cls.createNamespace('coolestproject');
 const { v4: uuidv4 } = require('uuid');
 
 const addYears = require('date-fns/addYears');
+const endOfMonth = require('date-fns/endOfMonth');
+const startOfMonth = require('date-fns/startOfMonth');
 
 const crypto = require('crypto');
 const { Op } = require('sequelize');
@@ -529,16 +531,22 @@ class DBA {
     }
 
     // validate data based on event settings
-    const minAgeDate = addYears(event.eventBeginDate, -1 * event.minAge);
-    const maxAgeDate = addYears(event.eventBeginDate, -1 * event.maxAge);
 
+    const minAgeDate = addYears(endOfMonth(event.officialStartDate), -1 * event.minAge);
+    const maxAgeDate = addYears(startOfMonth(event.officialStartDate), -1 * event.maxAge);
+    console.log('ages:');
+    console.log(event.officialStartDate);
+    console.log(minAgeDate);
+    console.log(maxAgeDate);
     // 2) check if birthdate is valid
+    console.log(dbValues.birthmonth);
     if (!(dbValues.birthmonth < minAgeDate && dbValues.birthmonth > maxAgeDate)) {
       throw new Error('incorrect age');
     }
 
     // 3) check if guardian is required
-    const minGuardian = addYears(event.eventBeginDate, -1 * event.minGuardianAge);
+    const minGuardian = addYears(startOfMonth(event.officialStartDate), -1 * event.minGuardianAge);
+    console.log(minGuardian);
     if (minGuardian < dbValues.birthmonth) {
       if (typeof dbValues.gsm_guardian === 'undefined' || typeof dbValues.email_guardian === 'undefined') {
         throw new Error('Guardian is required');
