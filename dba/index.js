@@ -534,12 +534,12 @@ class DBA {
    */
   async validateProject(dbValues, event) {
     // 4) check if own project or participant
-    if (dbValues.project_code == null) {
-      if (dbValues.project_name == null || dbValues.project_descr == null || dbValues.project_type == null || dbValues.project_lang == null) {
+    if (!dbValues.project_code) {
+      if (!dbValues.project_name || !dbValues.project_descr || !dbValues.project_lang) {
         throw new Error('Project not filled in');
       }
     } else {
-      if (dbValues.project_name != null && dbValues.project_descr != null && dbValues.project_type != null && dbValues.project_lang != null) {
+      if (dbValues.project_name || dbValues.project_descr || dbValues.project_lang || dbValues.project_type) {
         throw new Error('Project filled in');
       }
     }
