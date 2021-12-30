@@ -239,6 +239,8 @@ class DBA {
       }
       changedFields.sizeId = changedFields.t_size;
 
+      this.validateUser(changedFields, event);
+
       return await user.update(changedFields);
     });
   }
@@ -275,6 +277,8 @@ class DBA {
     project.ownerId = userId;
     project.max_tokens = event.maxVoucher;
 
+    this.validateProject(project, event);
+
     return await Project.create(project);
   }
 
@@ -295,6 +299,12 @@ class DBA {
      */
   async updateProject(changedFields, userId) {
     const project = await Project.findOne({ where: { ownerId: userId } });
+
+    const user = await User.findByPk(userId);
+    const event = await user.getEvent();
+
+    this.validateProject(changedFields, event)
+
     return project.update(changedFields);
   }
 
@@ -513,6 +523,34 @@ class DBA {
    * @param {models.Event} event
   */
   async validateRegistration(dbValues, event) {
+    await this.validateUser(dbValues, event);
+    await this.validateProject(dbValues, event);
+  }
+
+  /**
+   * Validate project fields
+   * @param {*} dbValues 
+   * @param {*} event 
+   */
+  async validateProject(dbValues, event) {
+    // 4) check if own project or participant
+    if (dbValues.project_code == null) {
+      if (dbValues.project_name == null || dbValues.project_descr == null || dbValues.project_type == null || dbValues.project_lang == null) {
+        throw new Error('Project not filled in');
+      }
+    } else {
+      if (dbValues.project_name != null && dbValues.project_descr != null && dbValues.project_type != null && dbValues.project_lang != null) {
+        throw new Error('Project filled in');
+      }
+    }
+  }
+
+  /**
+   * Validate the user fields
+   * @param {Object} dbValues
+   * @param {models.Event} event
+   */
+  async validateUser(dbValues, event) {
     // 1) check if the questions are valid
     const possibleQuestions = await event.getQuestions();
 
@@ -531,7 +569,6 @@ class DBA {
     }
 
     // validate data based on event settings
-
     const minAgeDate = addYears(endOfMonth(event.officialStartDate), -1 * event.minAge);
     const maxAgeDate = addYears(startOfMonth(event.officialStartDate), -1 * event.maxAge);
     console.log('ages:');
@@ -557,19 +594,6 @@ class DBA {
         throw new Error('Guardian is filled in');
       }
     }
-
-    // 4) check if own project or participant
-    if (dbValues.project_code == null) {
-      if (dbValues.project_name == null || dbValues.project_descr == null || dbValues.project_type == null || dbValues.project_lang == null) {
-        throw new Error('Project not filled in');
-      }
-    } else {
-      if (dbValues.project_name != null && dbValues.project_descr != null && dbValues.project_type != null && dbValues.project_lang != null) {
-        throw new Error('Project filled in');
-      }
-    }
-
-    return dbValues;
   }
 
   /**
@@ -661,7 +685,7 @@ class DBA {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
-        { model: Event, as: 'event' }]
+      { model: Event, as: 'event' }]
     });
   }
 
@@ -910,10 +934,10 @@ class DBA {
       where: { 'EventId': eventId },
       include: [
         {
-          model: TShirt, attributes: [], required: true, as: 'size', 
+          model: TShirt, attributes: [], required: true, as: 'size',
           include: [
             {
-              model: TShirtTranslation, required: false,  attributes: [], where: { 'language': language }
+              model: TShirtTranslation, required: false, attributes: [], where: { 'language': language }
             }]
         }
       ]
