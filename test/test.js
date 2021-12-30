@@ -1166,5 +1166,69 @@ describe('Event', function () {
 
     });
 
+    it('Check copy of guardian fields', async () => {
+
+      let registration = {
+        user: {
+          firstname: 'test 123',
+          language: 'nl',
+          lastname: 'test 123',
+          mandatory_approvals: [7],
+          general_questions: [5, 6],
+          month: 1,
+          sex: 'm',
+          year: 2009,
+          gsm: '+32460789101',
+          gsm_guardian: '+32460789101',
+          email_guardian: 'test7_guardian@dummy.be',
+          t_size: 1,
+          email: 'test7@dummy.be',
+          address: {
+            postalcode: '1000',
+            box_number: 'aaa'
+          }
+        },
+        project: {
+          own_project: {
+            project_name: 'test',
+            project_descr: 'test',
+            project_type: 'test',
+            project_lang: 'nl'
+          }
+        }
+      };
+
+      let result = await chai.request(app)
+        .post('/register')
+        .set('Content-Type', 'application/json')
+        .send(registration);
+
+      expect(result.status).eq(200);
+      
+      let lastRegistration = await models.Registration.findOne({ where: { email: 'test7@dummy.be' } });
+
+      expect(lastRegistration.email).to.be.eq('test7@dummy.be');
+      expect(lastRegistration.box_number).to.be.eq('aaa');
+      expect(lastRegistration.email_guardian).to.be.eq('test7_guardian@dummy.be');
+
+      let token = await Token.generateRegistrationToken(lastRegistration.id);
+
+      // userinfo automatically creates a user if the bearer token is a registration token
+      let userinfo = (await chai.request(app)
+        .get('/userinfo')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'application/json')
+        .send());
+
+      // check the copy of the user data
+      let lastUser = await models.User.findOne({ where: { email: 'test7@dummy.be' } });
+      expect(lastUser).not.null;
+
+      expect(lastUser.email).to.be.eq('test7@dummy.be');
+      expect(lastUser.box_number).to.be.eq('aaa');
+      expect(lastUser.email_guardian).to.be.eq('test7_guardian@dummy.be');
+
+    });  
+
   });
 });
