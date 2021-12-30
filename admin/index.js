@@ -62,10 +62,7 @@ const adminParent = {
 }
 
 function superAdminAllowed({ currentAdmin }){
-  let result = false
-  if(currentAdmin.account_type === 'super_admin'){
-    result = true;
-  }
+  return currentAdmin.account_type === 'super_admin'
 }
 
 const adminBroOptions = {
