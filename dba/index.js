@@ -820,14 +820,19 @@ class DBA {
     return await sequelize.transaction(
       async () => {
         // cancel previous events
-        await Event.update({ current: false }, { where: {} });
+        await Event.update({ eventEndDate: new Date() }, { where: { id: { [Op.ne]: eventId } } });
 
         //activate current
         const event = await Event.findByPk(eventId);
         if (event === null) {
           throw new Error('No event found');
         }
-        event.current = true;
+        event.eventStartDate = new Date();
+
+        if(event.eventEndDate <= new Date()){
+          event.eventEndDate = addYears(new Date(), 1);
+        }
+
         return await event.save();
       }
     );
