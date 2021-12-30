@@ -540,12 +540,12 @@ class DBA {
     // 3) check if guardian is required
     const minGuardian = addYears(event.eventBeginDate, -1 * event.minGuardianAge);
     if (minGuardian < dbValues.birthmonth) {
-      if (typeof dbValues.gsm_guardian === 'undefined' || typeof dbValues.email_guardian === 'undefined') {
+      if (!dbValues.gsm_guardian || !dbValues.email_guardian) {
         throw new Error('Guardian is required');
       }
     } else {
       // console.log(typeof dbValues.gsm_guardian);
-      if (typeof dbValues.gsm_guardian !== 'undefined' || typeof dbValues.email_guardian !== 'undefined') {
+      if (dbValues.gsm_guardian || dbValues.email_guardian) {
         throw new Error('Guardian is filled in');
       }
     }
