@@ -210,7 +210,7 @@ class DBA {
       changedFields.postalcode = address.postalcode;
       changedFields.street = address.street;
       changedFields.house_number = address.house_number;
-      changedFields.bus_number = address.bus_number;
+      changedFields.box_number = address.box_number;
       changedFields.municipality_name = address.municipality_name;
       delete changedFields.address;
 
@@ -614,7 +614,7 @@ class DBA {
         dbValues.postalcode = address.postalcode;
         dbValues.street = address.street;
         dbValues.house_number = address.house_number;
-        dbValues.bus_number = address.bus_number;
+        dbValues.box_number = address.box_number;
         dbValues.municipality_name = address.municipality_name;
 
         //flatten own project

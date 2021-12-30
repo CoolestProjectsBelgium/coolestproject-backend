@@ -44,7 +44,7 @@ module.exports = function(database, models, jwt, mailer) {
         postalcode: user.postalcode + '' ,
         street: user.street,
         house_number: user.house_number,
-        bus_number: user.box_number,
+        box_number: user.box_number,
         municipality_name: user.municipality_name
       },
       delete_possible: await database.isUserDeletable(user.id)
