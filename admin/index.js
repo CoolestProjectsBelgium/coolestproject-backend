@@ -65,6 +65,10 @@ function superAdminAllowed({ currentAdmin }){
   return currentAdmin.account_type === 'super_admin'
 }
 
+function adminAllowed({ currentAdmin }){
+  return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
+}
+
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
@@ -242,13 +246,12 @@ const adminBroOptions = {
               return response
             },
             before: async (request, { currentAdmin }) => {
-              if(currentAdmin.account_type === 'super_admin'){
+              if(superAdminAllowed({ currentAdmin })){
                 return request;
               }
              
               const event = await database.getEventActive();
               request.query = { ...request.query, 'filters.id': event.id }
-              console.log(request)
               return request
             }
           },
@@ -356,13 +359,15 @@ const adminBroOptions = {
       options: {
         navigation: registerParent,
         actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
             }
-            return request
           }
         }
       }
@@ -371,80 +376,35 @@ const adminBroOptions = {
       resource: db.QuestionTranslation,
       options: {
         navigation: registerParent,
-        actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
-            }
-            return request
-          }
-        }
+        actions: {}
       }
     },
     {
       resource: db.TShirtGroup,
       options: {
         navigation: registerParent,
-        actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
-            }
-            return request
-          }
-        }
+        actions: {}
       }
     },
     {
       resource: db.TShirtGroupTranslation,
       options: {
         navigation: registerParent,
-        actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
-            }
-            return request
-          }
-        }
+        actions: {}
       }
     },
     {
       resource: db.TShirt,
       options: {
         navigation: registerParent,
-        actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
-            }
-            return request
-          }
-        }
+        actions: {}
       }
     },
     {
       resource: db.TShirtTranslation,
       options: {
         navigation: registerParent,
-        actions: {
-          before: async (request, { currentAdmin }) => {
-            const event = await database.getEventActive();
-            request.payload = {
-              ...request.payload,
-              eventId: event.id,
-            }
-            return request
-          }
-        }
+        actions: {}
       }
     },
 
@@ -493,16 +453,7 @@ const adminBroOptions = {
               }
             },
           },
-          actions: {
-            before: async (request, { currentAdmin }) => {
-              const event = await database.getEventActive();
-              request.payload = {
-                ...request.payload,
-                eventId: event.id,
-              }
-              return request
-            }
-          }
+          actions: {}
         },
         properties: {
           internalinfo: { type: 'richtext' }
@@ -517,16 +468,7 @@ const adminBroOptions = {
       options: {
         navigation: projectParent
       },
-      actions: {
-        before: async (request, { currentAdmin }) => {
-          const event = await database.getEventActive();
-          request.payload = {
-            ...request.payload,
-            eventId: event.id,
-          }
-          return request
-        }
-      }
+      actions: {}
     },
     {
       resource: db.Project,
@@ -568,11 +510,11 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              const event = await database.getEventActive();
-              request.payload = {
-                ...request.payload,
-                eventId: event.id,
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
               }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
               return request
             },
             after: async (response, request, context) => {
@@ -606,14 +548,6 @@ const adminBroOptions = {
             }
           },
           show: {
-            before: async (request, { currentAdmin }) => {
-              const event = await database.getEventActive();
-              request.payload = {
-                ...request.payload,
-                eventId: event.id,
-              }
-              return request
-            },
             after: async (response, request, context) => {
               try {
                 const attachments = await Attachment.findAndCountAll({ includes: [{ model: AzureBlob, includes: [Hyperlink] }], where: { 'projectId': response.record.params.id } })
@@ -640,6 +574,16 @@ const adminBroOptions = {
               }
               return response;
             }
+          },
+          new: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
           }
         }
       }
