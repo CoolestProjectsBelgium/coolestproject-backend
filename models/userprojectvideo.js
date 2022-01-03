@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) => {
     Youtube: {
       type: DataTypes.STRING
     },
+    EventID: {
+      type: DataTypes.STRING,
+    },
     ProjectID: {
       type: DataTypes.STRING,
       primaryKey: true
@@ -24,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     Project_name: {
       type: DataTypes.STRING,
     },
+
 
   }, {
     freezeTableName: true,
