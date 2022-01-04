@@ -978,6 +978,16 @@ const adminBroOptions = {
         name: "Alle projecten met youtube link",
         parent: reportParent,
         actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventID': event.id }
+              return request
+            },
+          },
           new: {
             isVisible: false
           },
