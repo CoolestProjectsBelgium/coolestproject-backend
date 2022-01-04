@@ -616,11 +616,11 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              const event = await database.getEventActive();
-              request.payload = {
-                ...request.payload,
-                eventId: event.id,
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
               }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
               return request
             },
             after: async (response, request, context) => {
@@ -673,8 +673,21 @@ const adminBroOptions = {
     {
       resource: db.Voucher,
       options: {
-        navigation: projectParent
+        navigation: projectParent,
+      
+      actions: {
+       list: {
+          before: async (request, { currentAdmin }) => {
+            if(superAdminAllowed({ currentAdmin })){
+              return request;
+            }
+            const event = await database.getEventActive();
+            request.query = { ...request.query, 'filters.eventId': event.id }
+            return request
+          }
+        }
       }
+    }
     },
     {
       resource: db.Certificate,
@@ -935,6 +948,16 @@ const adminBroOptions = {
         name: "Alle geladen projecten",
         parent: reportParent,
         actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            },
+          },
           new: {
             isVisible: false
           },
