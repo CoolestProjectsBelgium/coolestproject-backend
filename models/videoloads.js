@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     VideoName: {
       type: DataTypes.STRING
     },
+    EventId: {
+      type: DataTypes.STRING
+    },
     project_name: {
       type: DataTypes.STRING,
     },

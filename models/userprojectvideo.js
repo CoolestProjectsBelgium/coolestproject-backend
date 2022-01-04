@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     EventID: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING
     },
     ProjectID: {
       type: DataTypes.STRING,
