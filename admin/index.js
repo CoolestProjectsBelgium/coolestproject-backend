@@ -667,14 +667,26 @@ const adminBroOptions = {
     {
       resource: db.QuestionUser,
       options: {
-        navigation: projectParent
+        navigation: projectParent,
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+               return request
+             }
+           }
+         }
       }
     },
     {
       resource: db.Voucher,
       options: {
         navigation: projectParent,
-      
       actions: {
        list: {
           before: async (request, { currentAdmin }) => {
@@ -693,6 +705,19 @@ const adminBroOptions = {
       resource: db.Certificate,
       options: {
         navigation: projectParent,
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+               return request
+             }
+           }
+         },
         properties: {
           text: { type: 'richtext' }
         }
@@ -732,6 +757,15 @@ const adminBroOptions = {
             isVisible: false
           },
           list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              return request
+            },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
@@ -796,6 +830,15 @@ const adminBroOptions = {
             isVisible: false
           },
           list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              return request
+            },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
@@ -847,6 +890,15 @@ const adminBroOptions = {
         },
         actions: {
           list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              return request
+            },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
