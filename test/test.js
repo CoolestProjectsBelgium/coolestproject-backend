@@ -6,6 +6,9 @@ const { Op } = require("sequelize");
 
 const Token = require('../jwts');
 
+process.env.NODE_ENV = 'test';
+process.env.DEV_DB = 'mysql://coolestproject_test:9b6xgLku9vCP8wy2@db_test:3306/coolestproject_test';
+
 const models = require('../models');
 const projectinfo = require('../paths/projectinfo');
 const sequelize = models.sequelize;
@@ -26,8 +29,6 @@ describe('Event', function () {
   this.timeout(0);
 
   before(async () => {
-    process.env.DB = 'sqlite::memory:';
-    process.env.NODE_ENV = 'test';
 
     //init azure
     await Azure.syncSetting();
