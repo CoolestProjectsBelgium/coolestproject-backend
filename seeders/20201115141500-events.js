@@ -24,7 +24,7 @@ module.exports = {
         registrationOpenDate: new Date('2022-02-01'), 
         registrationClosedDate: new Date('2022-03-31'),
         projectClosedDate: new Date('2022-04-09'),
-        officialStartDate: new Date('2022-04-25'),
+        officialStartDate: new Date('2022-04-24'),
         eventEndDate: new Date('2022-08-25'),
         createdAt: new Date(), 
         updatedAt: new Date(), 
