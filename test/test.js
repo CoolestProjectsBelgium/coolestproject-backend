@@ -2,7 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
-const { Op } = require("sequelize");
+const { Op } = require('sequelize');
 
 const Token = require('../jwts');
 
@@ -53,7 +53,7 @@ describe('Event', function () {
     await umzug.up();
 
     mockery.enable({ warnOnUnregistered: false });
-    mockery.registerMock('nodemailer', nodemailerMock)
+    mockery.registerMock('nodemailer', nodemailerMock);
 
     //start server
     app = require('../app');
@@ -470,12 +470,12 @@ describe('Event', function () {
         .set('Content-Type', 'application/json')
         .send());
 
-      console.log(userinfo.headers)
+      console.log(userinfo.headers);
       userinfo = userinfo.body;
 
       expect(userinfo).to.not.null;
 
-      console.log(userinfo.email)
+      console.log(userinfo.email);
 
       // check if we have a corresponding user
       const user = await models.User.findOne({ where: { email: userinfo.email } });
@@ -487,7 +487,7 @@ describe('Event', function () {
 
       const login_token = await Token.generateLoginToken(user.id);
 
-      userinfo.firstname = "change me";
+      userinfo.firstname = 'change me';
 
       // update the user with new name (pick cookie)
       let userinfo_updated = await chai.request(app)
@@ -507,7 +507,7 @@ describe('Event', function () {
 
       expect(projectinfo).to.not.null;
 
-      projectinfo.own_project.project_name = "change me"
+      projectinfo.own_project.project_name = 'change me';
 
       // update project
       let projectinfo_updated = await chai.request(app)
@@ -599,7 +599,7 @@ describe('Event', function () {
         .delete('/projectinfo')
         .set('Authorization', `Bearer ${participant_login_token}`)
         .set('Content-Type', 'application/json')
-        .send()
+        .send();
 
       //create new project
       let participant_project = {
@@ -609,7 +609,7 @@ describe('Event', function () {
           project_type: 'participant',
           project_lang: 'fr'
         }
-      }
+      };
 
       let participant_project_result = (await chai.request(app)
         .post('/projectinfo')
@@ -639,7 +639,7 @@ describe('Event', function () {
         other_project: {
           project_code: token_code
         }
-      }
+      };
 
       // link user again to project
       participant_project_result = (await chai.request(app)
@@ -772,13 +772,13 @@ describe('Event', function () {
       expect(sas_url).include(attachment.blob_name);
       expect(sas_url).include(attachment.container_name);
 
-      console.log(attachment)
+      console.log(attachment);
 
       // fake the azure upload logic
       const data = 'Hello, World!';
       const blockBlobClient = new BlockBlobClient(
         sas_url
-      )
+      );
       await blockBlobClient.upload(data, data.length);
 
       //get the download url
@@ -888,7 +888,7 @@ describe('Event', function () {
       let link = sentMail[1].text.split(/\r?\n/)[7];
       link = link.substring(1, link.length - 1);
 
-      let token_mail = link.split("?token=")[1];
+      let token_mail = link.split('?token=')[1];
 
       // trigger the login via the backend post (standard flow reads out the query string in the frontend & post to /login)
       let login_response = (await chai.request(app)
@@ -1136,7 +1136,7 @@ describe('Event', function () {
 
       let sentMail = nodemailerMock.mock.getSentMail();
 
-      expect(sentMail).is.length(3)
+      expect(sentMail).is.length(3);
       expect(sentMail[0].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
       expect(sentMail[1].subject).eq('Coolest Projects 2021: Welkom!');
       expect(sentMail[2].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
