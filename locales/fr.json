@@ -1,8 +1,8 @@
 {
   "//Title//activationMail": "//Activation Mail",
-  "Welcome to confirm your participation": "Veuillez confirmer ton inscription",
+  "Welcome to confirm your participation": "Veuillez confirmer ta inscription",
   "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\n that will be extra special !": "Nous sommes très heureux de te voir participer à la prochaine édition de Coolest Projects Belgium 2022!",
-  "Click this {{{hash.link}}} to activate your project.": "ATTENTION: Pour valider ton inscription, clique sur le lien d'activation {{{hash.link}}}.",
+  "Click this {{{hash.link}}} to activate your project.": "ATTENTION: Pour valider ta inscription, clique sur le lien d'activation {{{hash.link}}}.",
   "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!</p>\n <p><strong>Coolest Project team</strong>": "Si tu as d'autres questions, tu peux consulter la section FAQ https://coolestprojects.be/fr/faq-fr/ sur notre site web.",
   "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\nthat will be extra special !": "Nous sommes très heureux de te voir participer à la prochaine édition de Coolest Projects Belgium 2022!!",
   "Good luck, {{hash.firstname}}, we’re looking forward to your project activation!": "Si tu as d'autres questions, tu peux consulter la section FAQ https://coolestprojects.be/fr/faq-fr/ sur notre site web.",
