@@ -1,6 +1,8 @@
-const DBA = require('../../dba');
+const Database = require('../../dba');
 const Mailer = require('../../mailer');
 const Tokens = require('../../jwts');
+
+const DBA = new Database();
 
 exports.command = 'mail';
 exports.desc = 'Mail related scripts';

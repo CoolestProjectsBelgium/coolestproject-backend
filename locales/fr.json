@@ -28,7 +28,7 @@
   "Please, Cat & paste the link between \"...\" into your browser to open your project\n\n\"{{{hash.url}}}\"\n\n": "copiez et collez ce lien entre \"...\"\n\n\"{{{hash.url}}}\"\n\ndans votre navigateur.",
   "//Title//deleteMail": "//deleteMail",
   "You deleted your project participation": "Confirmation de la suppression de ton projet",
-  "you have successfully <strong>DELETED</strong> your participation in the project with\n the title '{{hash.ptitle}}' and project ID: #'{{{hash.cpid}}}'.": "Vous avez supprimé avec succès le projet avec le titre '{{hash.ptitle}}'.",
+  "you have successfully <strong>DELETED</strong> your participation in the project with\n the title '{{hash.ptitle}}' and project ID: #'{{{hash.cpid}}}'.": "Tu as supprimé le projet portant le titre '{{hash.ptitle}}' avec succès.",
   "If you have any further question please contact our team via\n an email to <b>mailto:info@coolestproject.be</b>.": "Si vous avez d'autres questions, veuillez consulter la section FAQ https://coolestprojects.be/fr/faq-fr/ sur notre site web",
   "Coolest Project team": "Team Coolest Projects Belgique",
   "you have successfully DELETED your co-worker participation in the project with\nthe title '{{hash.ptitle}}' and project ID: #'{{{hash.cpid}}}'.": "Tu as supprimé le projet portant le titre '{{hash.ptitle}}' avec succès.",
