@@ -8,6 +8,16 @@ exports.command = 'mail';
 exports.desc = 'Mail related scripts';
 
 exports.builder = (yargs) => {
+  yargs.command('waitingMail <registrationId>', 'Send waiting mail',
+    () => { },
+    async (argv) => {
+      const registration = await DBA.getRegistration(argv.registrationId);
+      const event = await DBA.getEventActive();
+      const mail = await Mailer.waitingMail(registration, event);
+      console.log(`Mail was send ${mail}`);
+      return;
+    }
+  ),
   yargs.command('activationMail <registrationId>', 'Send activation mail',
     () => { },
     async (argv) => {
