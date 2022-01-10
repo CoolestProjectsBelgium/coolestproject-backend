@@ -19,7 +19,7 @@ module.exports = function(database) {
     }
         
     const tshirts = await database.getTshirts(language, event);
-    const groups = await database.getTshirtsGroups(language);
+    const groups = await database.getTshirtsGroups(language, event);
     if (tshirts === null || groups === null) {
       throw new Error('No Tshirts found');
     }
