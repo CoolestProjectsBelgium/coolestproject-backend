@@ -183,14 +183,16 @@ class DBA {
         }
      */
   async createUserWithVoucher(user_data, voucherId, registrationId) {
-    const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
-    if (voucher === null) {
-      throw new Error(`Token ${voucherId} not found`);
-    }
     const user = await User.create(user_data, {
       include: [{ model: QuestionUser, as: 'questions_user' }]
     });
-    await voucher.setParticipant(user);
+
+    // ignore when not found
+    const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
+    if (voucher !== null) {
+      await voucher.setParticipant(user);
+    }
+
     await Registration.destroy({ where: { id: registrationId } });
 
     return user;
@@ -955,9 +957,10 @@ class DBA {
     return event;
   }
 
-  async getTshirtsGroups(language) {
+  async getTshirtsGroups(language, event) {
     return await TShirtGroup.findAll({
       attributes: ['id', 'name'],
+      where: { 'EventId': event.id },
       include: [
         {
           model: TShirtGroupTranslation,
