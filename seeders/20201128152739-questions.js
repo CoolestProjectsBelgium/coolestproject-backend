@@ -1,5 +1,11 @@
 'use strict';
 
+/* TODO
+ * We should be using an association between the QuestionTranslations and the Questions
+ * so that the foreign keys are always right, no matter what Id they get. Example:
+ * https://stackoverflow.com/questions/48732223/sequelize-seed-with-associations 
+ */
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert('Questions', [
@@ -32,7 +38,7 @@ module.exports = {
       { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Can Coderdojo contact you in the future?', positive: 'Yes to contact', negative: 'No to contact', questionId: 6 },
       { language: 'en', createdAt: new Date(), updatedAt: new Date(), description: 'Be sure to read our rules. Do you agree?', positive: 'Yes', negative: 'No', questionId: 7 },
       { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: 'Coderdojo peut-il prendre des photos / vidéos pendant l\'événement?', positive: 'Oui à la photo', negative: 'Non à la photo', questionId: 5 },
-      { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: 'Coderdojo peut-il vous contacter à l\'avenir?', positive: 'C\'est permis', negative: 'Plutôt pas', questionId: 6 },
+      { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: 'Coderdojo peut-il vous contacter à l\'avenir?', positive: 'Oui, je veux bien', negative: 'Non, je ne préfére pas', questionId: 6 },
       { language: 'fr', createdAt: new Date(), updatedAt: new Date(), description: 'Assurez-vous de lire nos règles. Êtes-vous d\'accord?', positive: 'Oui', negative: 'Non', questionId: 7 },
       { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Mag coderdojo foto\'s/video\'s nemen tijdens het evenement?', positive: 'Ja, dat mag', negative: 'Neen, liever niet', questionId: 5 },
       { language: 'nl', createdAt: new Date(), updatedAt: new Date(), description: 'Mag Coderdojo je contacteren in de toekomst?', positive: 'Ja, dat mag', negative: 'Neen, liever niet', questionId: 6 },
