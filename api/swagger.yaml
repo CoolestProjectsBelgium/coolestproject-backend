@@ -22,7 +22,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Tshirt'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TshirtGroup'
         500:
           description: Error
           content:
@@ -40,7 +42,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Question'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
         500:
           description: Error
           content:
@@ -58,7 +62,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Approval'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Approval'
         500:
           description: Error
           content:
@@ -645,15 +651,24 @@ components:
           type: integer
         maxParticipants:
           type: integer
-    Tshirt:
-      type: array
-      items:
+    TshirtGroup:
         type: object
+        required: ['group']
         properties:
-          id:
+          group:
             type: string
-          name:
-            type: string
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/Tshirt'
+    Tshirt:
+      type: object
+      required: ['id','name']
+      properties:
+        id:
+          type: string
+        name:
+          type: string
     Address:
       required:
       - postalcode
@@ -671,31 +686,29 @@ components:
           maxLength: 4
           type: string
     Question:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: number
-          name:
-            type: string
-          description:
-            type: string
-          positive:
-            type: string
-          negative:
-            type: string
+      type: object
+      required: ['id']
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        positive:
+          type: string
+        negative:
+          type: string
     Approval:
-      type: array
-      items:
-        type: object
-        properties:
-          id:
-            type: number
-          name:
-            type: string
-          description:
-            type: string
+      type: object
+      required: ['id']
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
     SASToken:
       type: object
       properties:
