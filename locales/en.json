@@ -87,8 +87,8 @@
   "If your didn't make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.": "If your did not make a new registration request yourself, you can safely ignore this mail. There is no risk that your registration has been taken over. Never share links that you received from us with anyone else.",
   "Hi": "Hi",
   "Welcome to the waiting list": "Welcome to the waiting list",
-  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available",
-  "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, <strong>{{hash.firstname}}</strong>",
+  "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "You are on a waiting list, this means that you will receive an activation mail as soon as a spot becomes available.",
+  "Good luck, <strong>{{hash.firstname}}</strong>": "Good luck, {{hash.firstname}}.",
   "Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}",
   "Your parents will also receive this mail.": "Your parents will also receive this mail."
 }
