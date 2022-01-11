@@ -376,35 +376,92 @@ const adminBroOptions = {
       resource: db.QuestionTranslation,
       options: {
         navigation: registerParent,
-        actions: {}
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+               return request
+             }
+           }
+         }
+      
       }
     },
     {
       resource: db.TShirtGroup,
       options: {
         navigation: registerParent,
-        actions: {}
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.eventId': event.id }
+               return request
+             }
+           }
+         }
       }
     },
     {
       resource: db.TShirtGroupTranslation,
       options: {
         navigation: registerParent,
-        actions: {}
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+               return request
+             }
+           }
+         }
       }
     },
     {
       resource: db.TShirt,
       options: {
         navigation: registerParent,
-        actions: {}
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
       resource: db.TShirtTranslation,
       options: {
         navigation: registerParent,
-        actions: {}
+        actions: {          list: {
+          before: async (request, { currentAdmin }) => {
+            if(superAdminAllowed({ currentAdmin })){
+              return request;
+            }
+            const event = await database.getEventActive();
+            request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+            request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+            return request
+          }
+        }}
       }
     },
 
