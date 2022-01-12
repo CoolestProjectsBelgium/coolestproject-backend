@@ -7,6 +7,7 @@ const vname9 = 'ShowAttachmentLoaded';
 const query9 = 'select `Projects`.`id` AS `ProjectId`,`Projects`.`eventId` AS `EventId`,`Projects`.`project_name` AS `project_name`,`Users`.`firstname` AS `firstname`,`Users`.`lastname` AS `lastname`,`Attachments`.`name` AS `VideoName`,`Projects`.`ownerId` AS `ownerId`,`Attachments`.`filename` AS `FileName` from ((`Projects` join `Attachments`) join `Users`) where ((`Projects`.`id` = `Attachments`.`ProjectId`) and (`Users`.`id` = `Projects`.`ownerId`)) order by `Users`.`lastname`';
 module.exports = {
   async up(queryInterface, Sequelize) {
+    await queryInterface.sequelize.query( `DROP TABLE IF EXISTS ${vname9};`,back);
     await queryInterface.sequelize.query( `CREATE OR REPLACE VIEW ${vname9} AS ${query9}`,back);
   },
   

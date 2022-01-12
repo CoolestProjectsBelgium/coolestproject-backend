@@ -1116,13 +1116,16 @@ const adminBroOptions = {
       resource: db.Table,
       options: {
         navigation: planningParent,
-        properties: {
-          remainingPlaces: {
-            label: 'remaining places'
-          }
-        },
         actions: {
           list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
@@ -1154,7 +1157,12 @@ const adminBroOptions = {
               }
               return response;
             }
-          }
+          },
+          properties: {
+            remainingPlaces: {
+              label: 'remaining places'
+            }
+          },
         }
       }
     },
@@ -1162,6 +1170,18 @@ const adminBroOptions = {
       resource: db.Location,
       options: {
         navigation: planningParent,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          }
+          },  
         properties: {
           text: {
             isTitle: true,
@@ -1175,6 +1195,17 @@ const adminBroOptions = {
       options: {
         navigation: planningParent,
         actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              return request
+            }
+          },
           switch: {
             actionType: 'record',
             icon: 'Switch',
