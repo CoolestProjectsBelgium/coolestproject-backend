@@ -1,4 +1,7 @@
 'use strict';
+var back;
+const vname1 = 'TShirtGroups';
+const vname2 = 'TShirts';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -26,7 +29,9 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // await queryInterface.bulkDelete('TShirts', null, {});
-    // await queryInterface.bulkDelete('TShirtGroups', null, {});
+    await queryInterface.sequelize.query( `DELETE FROM ${vname1} WHERE EventId = 2;`,back);
+    await queryInterface.sequelize.query( `ALTER TABLE ${vname1} AUTO_INCREMENT = 4`,back);
+    await queryInterface.sequelize.query( `DELETE FROM ${vname2} WHERE EventId = 2;`,back);
+    await queryInterface.sequelize.query( `ALTER TABLE ${vname2} AUTO_INCREMENT = 21;`,back);
   }
 };
