@@ -64,8 +64,6 @@ i18n.configure({
   directory: __dirname + '/locales'
 });
 
-app.use(i18n.init);
-
 const { initialize } = require('express-openapi');
 const yaml = require('js-yaml');
 
