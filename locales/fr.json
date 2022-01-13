@@ -95,5 +95,7 @@
   "You are on a waiting list, this means that you will recieve an activation mail when a place becomes available": "Tu es sur une liste d’attente, cela signifie que tu recevras un mail d'activation lorsqu'une place sera disponible.",
   "Good luck, <strong>{{hash.firstname}}</strong>": "Bonne chance, {{hash.firstname}}.",
   "Good luck, {{hash.firstname}}": "Bonne chance, {{hash.firstname}}",
-  "Your parents will also receive this mail.": "Vos parents recevront également ce courrier."
+  "Your parents will also receive this mail.": "Vos parents recevront également ce courrier.",
+  "VOUCHER_NOT_FOUND": "Voucher not found",
+  "INTERNAL_SERVER_ERROR": "Internal Server error"
 }

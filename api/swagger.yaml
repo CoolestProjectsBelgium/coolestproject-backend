@@ -280,6 +280,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+        404:
+          description: No project found
         500:
           description: Error
           content:
