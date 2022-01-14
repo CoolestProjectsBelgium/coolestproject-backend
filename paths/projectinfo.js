@@ -92,20 +92,25 @@ module.exports = function(models, database, azure, mailer) {
     }
     projectResult.attachments = attachments;
    
-    console.log(projectResult)
+    console.log(projectResult);
     return projectResult;
   }
   
   async function GET(req, res) {
     const user = req.user || null;
-    res.status(200).json(await getProjectDetails(user.id));
+    const project = await getProjectDetails(user.id);
+    let response_code = 404;
+    if(project)
+      response_code =200;
+
+    res.status(response_code).json(project);
   }
 
   async function PATCH(req, res) {
     const user = req.user || null;
     const project_fields = req.body;
 
-    console.log(project_fields)
+    console.log(project_fields);
 
     // flatten the response
     const ownProject = project_fields.own_project;

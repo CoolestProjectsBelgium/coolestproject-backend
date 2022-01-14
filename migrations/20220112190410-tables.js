@@ -1,4 +1,6 @@
 'use strict';
+var back;
+const vname1 = 'Tables';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -17,6 +19,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // await queryInterface.bulkDelete('Tables', null, {});
+    await queryInterface.sequelize.query( `DELETE FROM ${vname1} WHERE EventId = 2;`,back);
+    await queryInterface.sequelize.query( `ALTER TABLE ${vname1} AUTO_INCREMENT = 77;`,back);
   }
 };

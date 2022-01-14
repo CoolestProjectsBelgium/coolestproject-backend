@@ -42,7 +42,7 @@ const eventParent = {
 }
 
 const registerParent = {
-  name: 'Website Registrations',
+  name: 'Configuration Tables',
   icon: 'Flow'
 }
 

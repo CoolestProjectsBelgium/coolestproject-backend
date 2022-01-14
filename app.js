@@ -10,8 +10,11 @@ const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
 
+const FunctionalError = require('./utils/FunctionalError');
 
 const requestLanguage = require('express-request-language');
+
+
 
 const Token = require('./jwts');
 const Mailer = require('./mailer');
@@ -120,11 +123,11 @@ function cleanResponse(req, res, next) {
 
   res.send = function(...args){
     const arg_changed = args;
-    console.log(arg_changed[0])
-    const content = JSON.parse(arg_changed[0]);
-
-    arg_changed[0] = JSON.stringify(cleanup(content));
-
+    if(arg_changed[0]){
+      console.log(arg_changed[0])
+      const content = JSON.parse(arg_changed[0]);
+      arg_changed[0] = JSON.stringify(cleanup(content));
+    }
     return send.apply(res, arg_changed);
   }
   next();
@@ -153,8 +156,19 @@ initialize({
   },
   errorMiddleware: function(err, req, res, next) {
     console.log(err);
+
+    const language = req.language || 'en';
+    i18n.setLocale(language);
+
+    let message = 'INTERNAL_SERVER_ERROR';
+    let no = '000';
+    if(err instanceof FunctionalError){
+        no = '001';
+        message = err.message;
+    }
+
     res.status(500);
-    res.json({'code': '000', 'message': 'Internal Server error'});
+    res.json({'code': no, 'message':  i18n.__(message)});
   }
 });
 

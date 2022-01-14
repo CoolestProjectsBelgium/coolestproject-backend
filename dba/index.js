@@ -8,6 +8,8 @@ const addYears = require('date-fns/addYears');
 const endOfMonth = require('date-fns/endOfMonth');
 const startOfMonth = require('date-fns/startOfMonth');
 
+const FunctionalError = require('../utils/FunctionalError');
+
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 
@@ -305,7 +307,7 @@ class DBA {
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
 
-    this.validateProject(changedFields, event)
+    this.validateProject(changedFields, event);
 
     return project.update(changedFields);
   }
@@ -513,7 +515,7 @@ class DBA {
   async addParticipantProject(userId, voucherId) {
     const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
     if (voucher === null) {
-      throw new Error('Voucher not found');
+      throw new FunctionalError('VOUCHER_NOT_FOUND');
     }
     await voucher.setParticipant(userId);
     return await voucher.getParticipant();
@@ -687,7 +689,7 @@ class DBA {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
-      { model: Event, as: 'event' }]
+        { model: Event, as: 'event' }]
     });
   }
 
