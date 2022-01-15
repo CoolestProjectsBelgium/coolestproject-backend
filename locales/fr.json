@@ -96,6 +96,6 @@
   "Good luck, <strong>{{hash.firstname}}</strong>": "Bonne chance, {{hash.firstname}}.",
   "Good luck, {{hash.firstname}}": "Bonne chance, {{hash.firstname}}",
   "Your parents will also receive this mail.": "Vos parents recevront également ce courrier.",
-  "VOUCHER_NOT_FOUND": "Voucher not found",
-  "INTERNAL_SERVER_ERROR": "Internal Server error"
+  "VOUCHER_NOT_FOUND": "Jeton non donné",
+  "INTERNAL_SERVER_ERROR": "Erreur interne du serveur"
 }
