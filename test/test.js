@@ -5,35 +5,68 @@ chai.use(chaiHttp);
 const { Op } = require('sequelize');
 
 const Token = require('../jwts');
-
-process.env.NODE_ENV = 'test';
-process.env.DEV_DB = 'mysql://coolestproject_test:9b6xgLku9vCP8wy2@db_test:3306/coolestproject_test';
-
-const models = require('../models');
-const projectinfo = require('../paths/projectinfo');
-const sequelize = models.sequelize;
-
 const Azure = require('../azure');
-
 const { BlockBlobClient } = require('@azure/storage-blob');
 
 const mockery = require('mockery');
 const nodemailerMock = require('nodemailer-mock');
-const cookieParser = require('cookie-parser');
 
-const Database = require('../dba');
-const database = new Database();
-
-var app = null;
+// responses are a bit slower than the standard setting
 describe('Event', function () {
   this.timeout(0);
 
-  before(async () => {
+  var app = null;
+  var models = null;
+  var database = null;
 
+  before(async () => {
     //init azure
     await Azure.syncSetting();
 
+    // setup mocking
+    mockery.enable({ warnOnUnregistered: false });
+    mockery.registerMock('nodemailer', nodemailerMock);
+
     //init DB
+    class TestDB {
+      constructor() {
+        const fs = require('fs');
+        const path = require('path');
+        const Sequelize = require('sequelize');
+        const models_dir = path.join(__dirname, '../models');
+        const basename = path.basename(models_dir);
+
+        let sequelize = new Sequelize('mysql://coolestproject_test:9b6xgLku9vCP8wy2@db_test:3306/coolestproject_test', {});
+
+        fs
+          .readdirSync(models_dir)
+          .filter(file => {
+            return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js') && file.slice(-8) !== 'index.js';
+          })
+          .forEach(file => {
+            const model = require(path.join(models_dir, file))(sequelize, Sequelize.DataTypes);
+            this[model.name] = model;
+          });
+
+        Object.keys(this).forEach(modelName => {
+          if (this[modelName].associate) {
+            this[modelName].associate(this);
+          }
+        });
+
+        this.sequelize = sequelize;
+        this.Sequelize = Sequelize;
+      }
+    }
+
+    const testDB = new TestDB();
+    mockery.registerMock('../models', testDB);
+    mockery.registerMock('./models', testDB);
+    
+    models = require('../models');
+
+    const sequelize = models.sequelize;
+
     await sequelize.sync({ force: true });
     console.log('All models were synchronized successfully.');
 
@@ -52,10 +85,8 @@ describe('Event', function () {
     });
     await umzug.up();
 
-    mockery.enable({ warnOnUnregistered: false });
-    mockery.registerMock('nodemailer', nodemailerMock);
-
-    mockery.registerMock()
+    const Database = require('../dba');
+    database = new Database();
 
     //start server
     app = require('../app');
@@ -117,8 +148,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -161,8 +192,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 12,
           sex: 'm',
           year: 2004,
@@ -205,8 +236,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 12,
           sex: 'm',
           year: 2004,
@@ -231,7 +262,7 @@ describe('Event', function () {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration);
-      
+
       expect(res).to.have.status(200);
     });
 
@@ -247,8 +278,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2010,
@@ -274,7 +305,7 @@ describe('Event', function () {
         .set('Content-Type', 'application/json')
         .send(registration);
 
-       expect(res).to.have.status(500);
+      expect(res).to.have.status(500);
     });
 
     it('Basic registration without mandatory approval', async () => {
@@ -287,7 +318,7 @@ describe('Event', function () {
           language: 'nl',
           lastname: 'test 123',
           mandatory_approvals: [],
-          general_questions: questions.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2010,
@@ -327,7 +358,7 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
           general_questions: [100],
           month: 1,
           sex: 'm',
@@ -371,8 +402,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2020,
@@ -415,8 +446,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 1901,
@@ -443,8 +474,8 @@ describe('Event', function () {
         .post('/register')
         .set('Content-Type', 'application/json')
         .send(registration);
-      
-      expect(res).to.have.status(500); 
+
+      expect(res).to.have.status(500);
     });
 
     it('Registration with subsequent activation', async () => {
@@ -459,8 +490,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -488,7 +519,7 @@ describe('Event', function () {
         .set('Content-Type', 'application/json')
         .send(registration);
 
-      expect(result).to.have.status(200); 
+      expect(result).to.have.status(200);
 
       let lastRegistration = await models.Registration.findOne({ where: { email: 'test@dummy.be' } });
 
@@ -584,8 +615,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -731,8 +762,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -870,8 +901,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -975,8 +1006,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1027,8 +1058,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1107,8 +1138,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1156,14 +1187,13 @@ describe('Event', function () {
 
       let user_token = await Token.generateLoginToken(user.id);
 
-
       let registration_wait = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1186,8 +1216,6 @@ describe('Event', function () {
         }
       };
 
-
-
       let result_wait = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
@@ -1202,18 +1230,25 @@ describe('Event', function () {
       expect('Coolest Projects 2022: Welkom!').eq(sentMail[1].subject);
       expect('Coolest Projects 2022: Welcome to the waiting list').eq(sentMail[2].subject);
 
+      let waitingListUser = await models.Registration.findOne({ where: { waiting_list: true } });
+      expect(waitingListUser).to.not.null;
+
       // delete project & user
-      let projectinfo = (await chai.request(app)
+      let projectinfo = await chai.request(app)
         .delete('/projectinfo')
         .set('Authorization', `Bearer ${user_token}`)
         .set('Content-Type', 'application/json')
-        .send());
+        .send();
 
-      userinfo = (await chai.request(app)
+      userinfo = await chai.request(app)
         .delete('/userinfo')
         .set('Authorization', `Bearer ${user_token}`)
         .set('Content-Type', 'application/json')
-        .send());
+        .send();
+
+      //delete of user info triggers the new user creation
+      waitingListUser = await models.Registration.findOne({ where: { waiting_list: true } });
+      expect(waitingListUser).to.be.null;
 
       sentMail = nodemailerMock.mock.getSentMail();
 
@@ -1240,8 +1275,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: approvals.body.map((row) => row.id ),
-          general_questions: questions.body.map((row) => row.id ),
+          mandatory_approvals: approvals.body.map((row) => row.id),
+          general_questions: questions.body.map((row) => row.id),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1271,7 +1306,7 @@ describe('Event', function () {
         .send(registration);
 
       expect(result.status).eq(200);
-      
+
       let lastRegistration = await models.Registration.findOne({ where: { email: 'test7@dummy.be' } });
 
       expect(lastRegistration.email).to.be.eq('test7@dummy.be');
@@ -1295,7 +1330,6 @@ describe('Event', function () {
       expect(lastUser.box_number).to.be.eq('aaa');
       expect(lastUser.email_guardian).to.be.eq('test7_guardian@dummy.be');
 
-    });  
-
+    });
   });
 });

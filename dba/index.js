@@ -631,6 +631,7 @@ class DBA {
         dbValues.gsm_guardian = user.gsm_guardian;
         dbValues.email_guardian = user.email_guardian;
         dbValues.sizeId = user.t_size;
+        dbValues.waiting_list = false;
 
         // to month (set hour to 12)
         dbValues.birthmonth = new Date(user.year, user.month, 12);
@@ -674,6 +675,7 @@ class DBA {
         const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
         if (registration_count >= event.maxRegistration) {
           dbValues.waiting_list = true;
+          console.log('add to waiting list');
         }
         return await Registration.create(dbValues, { include: [{ model: QuestionRegistration, as: 'questions' }] });
       }

@@ -1,5 +1,6 @@
 module.exports = function(database, models, jwt, mailer) {  
   const Registration = models.Registration;
+  const Event = models.Event;
 
   const operations = {
     GET,
@@ -67,14 +68,14 @@ module.exports = function(database, models, jwt, mailer) {
   async function DELETE(req, res) {
     const user = req.user || null;
     await database.deleteUser(user.id);
-    
-    // unflag the first user in the waiting list & trigger activation mail
-    const otherRegistration = await Registration.findOne({ where: { waiting_list: true }, order: [['createdAt', 'DESC']]  });
+
+    // unflag the first user in the waiting list for specific event & trigger activation mail
+    const otherRegistration = await Registration.findOne({ where: { waiting_list: true, eventId : user.eventId }, order: [['createdAt', 'DESC']]  });
     if (otherRegistration) {
       otherRegistration.waiting_list = false;
       await otherRegistration.save();    
-      const event = await database.getEventActive();
       const token = await jwt.generateRegistrationToken(otherRegistration.id);
+      const event = await Event.findByPk(otherRegistration.eventId);
       await mailer.activationMail(otherRegistration, token, event);
     }
     
