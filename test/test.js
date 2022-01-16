@@ -1247,7 +1247,7 @@ describe('Event', function () {
         .send();
 
       //delete of user info triggers the new user creation
-      waitingListUser = await models.Registration.findOne({ where: { waiting_list: true } });
+      waitingListUser = await models.Registration.findOne({ where: { waiting_list: true, email: 'test6@dummy.be' } });
       expect(waitingListUser).to.be.null;
 
       sentMail = nodemailerMock.mock.getSentMail();
