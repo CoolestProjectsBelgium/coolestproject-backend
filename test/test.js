@@ -42,7 +42,7 @@ describe('Event', function () {
 
     const umzug = new Umzug({
       migrations: {
-        path: './seeders',
+        path: './test/seeders',
         params: [
           sequelize.getQueryInterface()
         ]
@@ -54,6 +54,8 @@ describe('Event', function () {
 
     mockery.enable({ warnOnUnregistered: false });
     mockery.registerMock('nodemailer', nodemailerMock);
+
+    mockery.registerMock()
 
     //start server
     app = require('../app');
@@ -103,14 +105,20 @@ describe('Event', function () {
 
   describe('Registrations', function () {
 
-    it('Basic registration with guardian', (done) => {
+    it('Basic registration with guardian', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -118,7 +126,7 @@ describe('Event', function () {
           gsm_guardian: '+32460789101',
           email_guardian: 'guardian@dummy.be',
           t_size: 1,
-          email: 'user@dummy.be',
+          email: 'user_g@dummy.be',
           address: {
             postalcode: '1000'
           }
@@ -133,24 +141,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(200);
-          done();
-        });
+        .send(registration);
+
+      expect(res).to.have.status(200);
     });
 
-    it('Basic registration with incorrect guardian info', (done) => {
+    it('Basic registration with incorrect guardian info', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 12,
           sex: 'm',
           year: 2004,
@@ -173,24 +185,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+
+      expect(res).to.have.status(500);
     });
 
-    it('Basic registration without guardian info', (done) => {
+    it('Basic registration without guardian info', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 12,
           sex: 'm',
           year: 2004,
@@ -211,24 +227,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+      
+      expect(res).to.have.status(200);
     });
 
-    it('Basic registration with missing guardian information', (done) => {
+    it('Basic registration with missing guardian information', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2010,
@@ -249,24 +269,25 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+
+       expect(res).to.have.status(500);
     });
 
-    it('Basic registration without mandatory approval', (done) => {
+    it('Basic registration without mandatory approval', async () => {
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
           mandatory_approvals: [],
-          general_questions: [5, 6],
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2010,
@@ -289,24 +310,25 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+
+      expect(res).to.have.status(500);
     });
 
-    it('Basic registration with incorrect question', (done) => {
+    it('Basic registration with incorrect question', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [1],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: [100],
           month: 1,
           sex: 'm',
           year: 2010,
@@ -329,24 +351,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+
+      expect(res).to.have.status(500);
     });
 
-    it('Basic registration with incorrect age (to young)', (done) => {
+    it('Basic registration with incorrect age (to young)', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2020,
@@ -369,24 +395,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+
+      expect(res).to.have.status(500);
     });
 
-    it('Basic registration with incorrect age (to old)', (done) => {
+    it('Basic registration with incorrect age (to old)', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 1901,
@@ -409,24 +439,28 @@ describe('Event', function () {
         }
       };
 
-      chai.request(app)
+      const res = await chai.request(app)
         .post('/register')
         .set('Content-Type', 'application/json')
-        .send(registration)
-        .end(function (err, res) {
-          expect(res).to.have.status(500);
-          done();
-        });
+        .send(registration);
+      
+      expect(res).to.have.status(500); 
     });
 
     it('Registration with subsequent activation', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -454,14 +488,13 @@ describe('Event', function () {
         .set('Content-Type', 'application/json')
         .send(registration);
 
-      expect(result.status).eq(200);
+      expect(result).to.have.status(200); 
 
-      // just pick the last registration
-      let lastRegistration = await models.Registration.findAll({ limit: 1, order: [['id', 'DESC']] });
+      let lastRegistration = await models.Registration.findOne({ where: { email: 'test@dummy.be' } });
 
-      expect(lastRegistration[0].email).to.be.eq('test@dummy.be');
+      expect(lastRegistration.email).to.be.eq('test@dummy.be');
 
-      let token = await Token.generateRegistrationToken(lastRegistration[0].id);
+      let token = await Token.generateRegistrationToken(lastRegistration.id);
 
       // userinfo automatically creates a user if the bearer token is a registration token
       let userinfo = (await chai.request(app)
@@ -482,7 +515,7 @@ describe('Event', function () {
       expect(user).to.not.null;
 
       // check if the registration is gone
-      const reg = await models.Registration.findByPk(lastRegistration[0].id);
+      const reg = await models.Registration.findByPk(lastRegistration.id);
       expect(reg).to.null;
 
       const login_token = await Token.generateLoginToken(user.id);
@@ -551,8 +584,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -687,13 +720,19 @@ describe('Event', function () {
     });
 
     it('Add and remove attachments', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -820,13 +859,19 @@ describe('Event', function () {
     });
 
     it('Login logout', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -913,6 +958,12 @@ describe('Event', function () {
     });
 
     it('Waiting mail list', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
+
       // change the event to trigger the waiting list logic
       const event = await database.getEventActive();
       const maxReg = event.maxRegistration;
@@ -924,8 +975,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -957,7 +1008,7 @@ describe('Event', function () {
 
       const sentMail = nodemailerMock.mock.getSentMail();
 
-      expect(sentMail[0].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
+      expect('Coolest Projects 2022: Welcome to the waiting list').eq(sentMail[0].subject);
 
       //reset event again TODO find better way
       event.maxRegistration = maxReg;
@@ -965,14 +1016,19 @@ describe('Event', function () {
     });
 
     it('Try to register with existing user', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
 
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1027,11 +1083,16 @@ describe('Event', function () {
 
       const sentMail = nodemailerMock.mock.getSentMail();
 
-      expect(sentMail[2].subject).eq('Coolest Projects : Let op, er was een aanvullende registratie met uw e-mailadres.');
+      expect('Coolest Projects : Let op, er was een aanvullende registratie met jouw e-mailadres.').eq(sentMail[2].subject);
 
     });
 
     it('Release user from waiting list', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
 
       // change the event to trigger the waiting list logic
       const event = await database.getEventActive();
@@ -1046,8 +1107,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1101,8 +1162,8 @@ describe('Event', function () {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,
@@ -1137,9 +1198,9 @@ describe('Event', function () {
       let sentMail = nodemailerMock.mock.getSentMail();
 
       expect(sentMail).is.length(3);
-      expect(sentMail[0].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
-      expect(sentMail[1].subject).eq('Coolest Projects 2021: Welkom!');
-      expect(sentMail[2].subject).eq('Coolest Projects 2021: Welcome to the waiting list');
+      expect('Coolest Projects 2022: Bevestig jouw registratie aub').eq(sentMail[0].subject);
+      expect('Coolest Projects 2022: Welkom!').eq(sentMail[1].subject);
+      expect('Coolest Projects 2022: Welcome to the waiting list').eq(sentMail[2].subject);
 
       // delete project & user
       let projectinfo = (await chai.request(app)
@@ -1158,8 +1219,8 @@ describe('Event', function () {
 
       expect(sentMail).is.length(5);
 
-      expect(sentMail[3].subject).eq('Coolest Projects 2021: Bevestiging verwijderen van jouw project');
-      expect(sentMail[4].subject).eq('Coolest Projects 2021: Bevestig jouw registratie aub');
+      expect('Coolest Projects 2022: Bevestiging verwijderen van jouw project').eq(sentMail[3].subject);
+      expect('Coolest Projects 2022: Bevestig jouw registratie aub').eq(sentMail[4].subject);
 
       //reset event again TODO find better way
       event.maxRegistration = maxReg;
@@ -1168,14 +1229,19 @@ describe('Event', function () {
     });
 
     it('Check copy of guardian fields', async () => {
+      const approvals = await chai.request(app).get('/approvals');
+      expect(approvals).to.have.status(200);
+
+      const questions = await chai.request(app).get('/questions');
+      expect(questions).to.have.status(200);
 
       let registration = {
         user: {
           firstname: 'test 123',
           language: 'nl',
           lastname: 'test 123',
-          mandatory_approvals: [7],
-          general_questions: [5, 6],
+          mandatory_approvals: approvals.body.map((row) => row.id ),
+          general_questions: questions.body.map((row) => row.id ),
           month: 1,
           sex: 'm',
           year: 2009,

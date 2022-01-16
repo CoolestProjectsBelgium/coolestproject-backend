@@ -42,7 +42,7 @@ const corsOptions = {
   origin: process.env.URL  + ', voting.coolestprojects.localhost',
   optionsSuccessStatus: 200,
   credentials: true,
-  Vary: Origin
+  Vary: 'Origin'
 };
 
 app.use(cors(corsOptions));
