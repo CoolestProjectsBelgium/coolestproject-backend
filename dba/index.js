@@ -870,7 +870,7 @@ class DBA {
       attributes: ['id']
     });
 
-    if (activeEventId === null) {
+    if (!activeEventId) {
       throw new Error('No Event Active');
     }
 

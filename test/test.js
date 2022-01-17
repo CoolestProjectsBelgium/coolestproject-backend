@@ -11,8 +11,8 @@ const { BlockBlobClient } = require('@azure/storage-blob');
 const mockery = require('mockery');
 const nodemailerMock = require('nodemailer-mock');
 
-// responses are a bit slower than the standard setting
 describe('Event', function () {
+  // responses are a bit slower than the standard setting
   this.timeout(0);
 
   var app = null;
