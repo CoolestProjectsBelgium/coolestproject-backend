@@ -83,6 +83,6 @@
   "Good luck, <strong>{{hash.firstname}}</strong>": "Veel succes, {{hash.firstname}}.",
   "Good luck, {{hash.firstname}}": "Veel succes, {{hash.firstname}}",
   "Your parents will also receive this mail.": "Your parents will also receive this mail.",
-  "VOUCHER_NOT_FOUND": "Token niet gevonden",
-  "INTERNAL_SERVER_ERROR": "Interne Server Fout"
+  "VOUCHER_NOT_FOUND": "Token is niet gevonden",
+  "INTERNAL_SERVER_ERROR": "Interne serverfout"
 }
