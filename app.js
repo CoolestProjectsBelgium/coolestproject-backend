@@ -39,9 +39,10 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
 const corsOptions = {
-  origin: process.env.URL,
+  origin: process.env.URL  + ', voting.coolestprojects.localhost',
   optionsSuccessStatus: 200,
-  credentials: true
+  credentials: true,
+  Vary: 'Origin'
 };
 
 app.use(cors(corsOptions));

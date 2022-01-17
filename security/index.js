@@ -96,6 +96,12 @@ module.exports = function (app) {
   app.use('/tshirts', passport.authenticate(['jwt', 'anonymous']));
   app.use('/settings', passport.authenticate(['jwt', 'anonymous']));
   app.use('/approvals', passport.authenticate(['jwt', 'anonymous']));
+
+  //voting
+  app.use('/api/auth/login', passport.authenticate(['anonymous']));
+  app.use('/api/auth/logout', passport.authenticate(['anonymous']));
+  app.use('/api/auth/user', passport.authenticate(['anonymous']));
+
 };
 
 
