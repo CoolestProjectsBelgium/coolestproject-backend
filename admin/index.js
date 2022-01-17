@@ -86,7 +86,6 @@ const adminBroOptions = {
     translations: {
       labels: {
         ShowUserWithNoProject: 'Show User(s) With No Project',
-        CountTshirtSizes: 'Count Tshirt Sizes',
         ShowAttachmentLoaded: 'Show Attachment(s) Loaded'
       }
     }
@@ -1015,26 +1014,6 @@ const adminBroOptions = {
       options: {
         name: "Users zonder project of medewerker)",
         listProperties: ['id', 'firstname', 'lastname', 'email'],
-        parent: reportParent,
-        actions: {
-          new: {
-            isVisible: false
-          },
-          edit: {
-            isVisible: false
-          },
-          delete: {
-            isVisible: false
-          }
-        },
-        properties: {
-        }
-      }
-    },
-    {
-      resource: db.CountTshirtSizes,
-      options: {
-        name: "Aantal T-shirts per maat",
         parent: reportParent,
         actions: {
           new: {
