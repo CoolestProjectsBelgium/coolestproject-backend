@@ -13,8 +13,9 @@ tags:
 paths:
   /tshirts:
     get:
+      operationId: fetchTshirts
       tags:
-      - valuehelps
+      - values
       summary: Get TShirts
       responses:
         200:
@@ -33,8 +34,9 @@ paths:
                 $ref: '#/components/schemas/Error'
   /questions:
     get:
+      operationId: fetchQuestions
       tags:
-      - valuehelps
+      - values
       summary: Get Questions
       responses:
         200:
@@ -53,8 +55,9 @@ paths:
                 $ref: '#/components/schemas/Error'
   /approvals:
     get:
+      operationId: fetchApprovals
       tags:
-      - valuehelps
+      - values
       summary: Get Approvals
       responses:
         200:
@@ -73,6 +76,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   /settings:
     get:
+      operationId: fetch
       tags:
       - settings
       summary: Get settings
