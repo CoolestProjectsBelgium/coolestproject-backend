@@ -23,7 +23,7 @@
     "swagger"
   ],
   "bin": {
-    "cli": "./helpers/index.js"
+    "helper": "./helpers/index.js"
   },
   "license": "MIT License",
   "private": true,
