@@ -9,7 +9,7 @@
     "development": "nodemon index.js",
     "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
     "dev:clean": "./helpers/index.js init_db && npx sequelize db:seed:all && nodemon index.js",
-    "test": "nyc mocha"
+    "test_local": "nyc mocha"
   },
   "nodemonConfig": {
     "ignore": [
