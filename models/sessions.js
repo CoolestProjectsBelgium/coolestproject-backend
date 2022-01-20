@@ -27,7 +27,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Sessions', // we need plural in this case (Sessions is handled by AdminBro)
-    freezeTableName: true
+    freezeTableName: true,
+    timestamps: false // https://sequelize.org/master/manual/model-basics.html#timestamps 
   });
   return Sessions;
 };
