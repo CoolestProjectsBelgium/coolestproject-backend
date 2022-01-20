@@ -71,6 +71,7 @@
     "sequelize": "^6.11.0",
     "swagger-tools": "^0.10.4",
     "uuid": "^8.3.2",
+    "yargs": "^17.2.1",
     "xmlbuilder2": "^3.0.2"
   },
   "devDependencies": {
@@ -87,7 +88,7 @@
     "prompt-password": "^1.2.0",
     "sequelize-cli": "^6.3.0",
     "sqlite3": "^5.0.2",
-    "ts-node": "^10.4.0",
-    "yargs": "^17.2.1"
+    "ts-node": "^10.4.0"
+
   }
 }
