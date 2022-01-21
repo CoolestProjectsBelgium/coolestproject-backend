@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/site/wwwroot
-npm ci -g .
+npm install sequelize-cli
 #npx sequelize db:create
 #npx sequelize db:migrate
 #npx sequelize db:seed:all --url 

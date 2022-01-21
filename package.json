@@ -4,7 +4,6 @@
   "description": "Coolest project services",
   "main": "index.js",
   "scripts": {
-    "prestart": "sh ./start.sh",
     "start": "node index.js",
     "development": "nodemon index.js",
     "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
@@ -71,8 +70,8 @@
     "sequelize": "^6.11.0",
     "swagger-tools": "^0.10.4",
     "uuid": "^8.3.2",
-    "yargs": "^17.2.1",
-    "xmlbuilder2": "^3.0.2"
+    "xmlbuilder2": "^3.0.2",
+    "yargs": "^17.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
@@ -86,9 +85,8 @@
     "nodemon": "^2.0.15",
     "nyc": "^15.1.0",
     "prompt-password": "^1.2.0",
-    "sequelize-cli": "^6.3.0",
+    "sequelize-cli": "^6.4.1",
     "sqlite3": "^5.0.2",
     "ts-node": "^10.4.0"
-
   }
 }
