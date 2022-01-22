@@ -8,3 +8,5 @@ node_modules/
 .adminbro/bundle.js
 manual_test/testfile
 manual_test/resultfile
+
+.nyc_output/**
