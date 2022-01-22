@@ -29,10 +29,12 @@ module.exports = {
       await queryInterface.removeConstraint('TShirts', 'name');
 
       await queryInterface.addConstraint('Users', { 
-        fields: ['name', 'eventId'],
+        fields: ['email', 'eventId'],
         type: 'UNIQUE'
       });
-      await queryInterface.removeConstraint('Users', 'name');
+      await queryInterface.removeConstraint('Users', 'email');
+
+      await transaction.commit();
 
     } catch (err) {
       await transaction.rollback();
@@ -41,6 +43,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction();
     try {
       await queryInterface.addConstraint('Questions', { 
         fields: ['name'],
@@ -48,11 +51,11 @@ module.exports = {
       });
       await queryInterface.removeConstraint('Questions', 'questions_event_id_name');
 
-      await queryInterface.addConstraint('Registration', { 
+      await queryInterface.addConstraint('Registrations', { 
         fields: ['email'],
         type: 'UNIQUE'
       });
-      await queryInterface.removeConstraint('Registration', 'registrations_event_id_email');
+      await queryInterface.removeConstraint('Registrations', 'registrations_event_id_email');
 
       await queryInterface.addConstraint('TShirtGroups', { 
         fields: ['name'],
@@ -67,10 +70,12 @@ module.exports = {
       await queryInterface.removeConstraint('TShirts', 'tshirts_event_id_name');
 
       await queryInterface.addConstraint('Users', { 
-        fields: ['name'],
+        fields: ['email'],
         type: 'UNIQUE'
       });
-      await queryInterface.removeConstraint('Users', 'users_event_id_name');
+      await queryInterface.removeConstraint('Users', 'users_event_id_email');
+
+      await transaction.commit();
 
     } catch (err) {
       await transaction.rollback();
