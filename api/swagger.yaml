@@ -1,619 +1,735 @@
----
-swagger: "2.0"
+openapi: 3.0.1
 info:
-  description:
-    "This api exposes the api's for the Coolestproject registration website,\
-    \ voting system, event setup."
-  version: "0.0.4"
-  title: "Coolestprojects registration"
+  title: Coolestprojects registration
+  description: This api exposes the api's for the Coolestproject registration website,
+    voting system, event setup.
+  version: 0.0.4
+servers:
+- url: /
 tags:
-  - name: "registration"
-  - name: "login"
-  - name: "user"
+- name: registration
+- name: login
+- name: user
 paths:
   /tshirts:
     get:
       tags:
-        - "valuehelps"
-      summary: "Get TShirts"
-      operationId: "tshirtGET"
+      - valuehelps
+      summary: Get TShirts
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Tshirt"
-      x-swagger-router-controller: "Tshirts"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tshirt'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /questions:
     get:
       tags:
-        - "valuehelps"
-      summary: "Get Questions"
-      operationId: "questionGET"
+      - valuehelps
+      summary: Get Questions
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Question"
-      x-swagger-router-controller: "Question"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /approvals:
     get:
       tags:
-        - "valuehelps"
-      summary: "Get Approvals"
-      operationId: "approvalGET"
+      - valuehelps
+      summary: Get Approvals
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Approval"
-      x-swagger-router-controller: "Approval"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Approval'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /settings:
     get:
       tags:
-        - "settings"
-      summary: "Get settings"
-      operationId: "settingsGET"
+      - settings
+      summary: Get settings
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Settings"
-      x-swagger-router-controller: "Settings"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        404:
+          description: No active event
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'        
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /register:
     post:
       tags:
-        - "registration"
-      summary: "Create new registration"
-      operationId: "registerPOST"
-      parameters:
-        - in: "body"
-          name: "registration"
-          description: "The registration to create."
-          required: false
-          schema:
-            $ref: "#/definitions/Registration"
+      - registration
+      summary: Create new registration
+      requestBody:
+        required: true
+        description: The registration to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Registration'
       responses:
         200:
-          description: "OK"
+          description: OK
+          content: {}
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "Registration"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /participants:
     post:
       tags:
-        - "project"
-      summary: "Create new participant"
-      operationId: "participantPOST"
-      parameters: []
+      - project
+      summary: Create new participant
       responses:
         200:
-          description: "OK"
+          description: OK
+          content: {}
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Participant"
+      - loginToken: []
   /attachments:
     post:
       tags:
-        - "attachment"
-      summary: "Create new attachment"
-      operationId: "attachmentPOST"
-      parameters:
-        - in: "body"
-          name: "attachment"
-          description: "The attachment to create"
-          schema:
-            $ref: "#/definitions/Attachment"
+      - attachment
+      summary: Create new attachment
+      requestBody:
+        description: The attachment to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+        required: false
       responses:
         200:
-          description: "OK"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SASToken'
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Attachment"
+      - loginToken: []
   /attachments/{name}/sas:
     post:
       tags:
-        - "attachment"
-      summary: "Get new SAS token for attachment"
-      operationId: "attachmentPOSTSAS"
-      parameters: 
-        - in: "path"
-          name: "name"
-          description: "name of attachment"
-          required: true
-          type: "string"
+      - attachment
+      summary: Get new SAS token for attachment
+      parameters:
+      - name: name
+        in: path
+        description: name of attachment
+        required: true
+        schema:
+          type: string
       responses:
         200:
-          description: "OK"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SASToken'
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Attachment"
+      - loginToken: []
   /attachments/{name}:
     delete:
       tags:
-        - "attachment"
-      summary: "delete attachments"
-      operationId: "attachmentDELETE"
-      parameters: 
-        - in: "path"
-          name: "name"
-          description: "name of attachment"
-          required: true
-          type: "string"
+      - attachment
+      summary: delete attachments
+      parameters:
+      - name: name
+        in: path
+        description: name of attachment
+        required: true
+        schema:
+          type: string
       responses:
         200:
-          description: "OK"
+          description: OK
+          content: {}
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Attachment"    
+      - loginToken: []
   /userinfo:
     get:
       tags:
-        - "user"
-      summary: "get userinfo for the logged in user"
-      operationId: "userinfoGET"
-      parameters: []
+      - user
+      summary: get userinfo for the logged in user
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/User"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "User"
-    patch:
-      tags:
-        - "user"
-      summary: "update user"
-      operationId: "userinfoPATCH"
-      parameters:
-        - in: "body"
-          name: "user"
-          description: "User info"
-          required: false
-          schema:
-            $ref: "#/definitions/User"
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/User"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-        - loginToken: []
-      x-swagger-router-controller: "User"
+      - loginToken: []
     delete:
       tags:
-        - "user"
-      summary: "delete user"
-      operationId: "userinfoDELETE"
+      - user
+      summary: delete user
       responses:
         200:
-          description: "OK"
+          description: OK
+          content: {}
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "User"
+      - loginToken: []
+    patch:
+      tags:
+      - user
+      summary: update user
+      requestBody:
+        description: User info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - loginToken: []
   /projectinfo:
     get:
       tags:
-        - "project"
-      summary: "get projectinfo for the logged in user"
-      operationId: "projectinfoGET"
-      parameters: []
+      - project
+      summary: get projectinfo for the logged in user
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Project"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        404:
+          description: No project found
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Project"
-    patch:
-      tags:
-        - "project"
-      summary: "update project"
-      operationId: "projectinfoPATCH"
-      parameters:
-        - in: "body"
-          name: "project"
-          description: "Project info"
-          required: false
-          schema:
-            $ref: "#/definitions/Project"
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Project"
-        500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
-      security:
-        - loginToken: []
-      x-swagger-router-controller: "Project"
+      - loginToken: []
     post:
       tags:
-        - "project"
-      summary: "create project"
-      operationId: "projectinfoPOST"
-      parameters:
-        - in: "body"
-          name: "project"
-          description: "Project info"
-          required: false
-          schema:
-            $ref: "#/definitions/Project"
+      - project
+      summary: create project
+      requestBody:
+        description: Project info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: false
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Project"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Project"
+      - loginToken: []
     delete:
       tags:
-        - "project"
-      summary: "delete project"
-      operationId: "projectinfoDELETE"
+      - project
+      summary: delete project
       responses:
         200:
-          description: "OK"
+          description: OK
+          content: {}
         500:
-          description: "Error"
-          schema:
-            $ref: "#/definitions/Error"
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
       security:
-        - loginToken: []
-      x-swagger-router-controller: "Project"
+      - loginToken: []
+    patch:
+      tags:
+      - project
+      summary: update project
+      requestBody:
+        description: Project info
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - loginToken: []
   /login:
     post:
       tags:
-        - "login"
-      summary: "Login / Activate account"
-      operationId: "loginPOST"
-      parameters:
-        - in: "body"
-          name: "login"
-          description: "Login information"
-          required: false
-          schema:
-            $ref: "#/definitions/LoginActivate"
+      - login
+      summary: Login / Activate account
+      requestBody:
+        description: Login information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginActivate'
+        required: false
       responses:
         200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Login"
-      x-swagger-router-controller: "Login"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /logout:
     post:
       tags:
-        - "login"
-      summary: "delete Login"
-      operationId: "logoutPOST"
+      - login
+      summary: delete Login
       responses:
         200:
-          description: "OK"
-      x-swagger-router-controller: "Logout"
+          description: OK
+          content: {}
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
   /mailToken:
     post:
       tags:
-        - "login"
-      summary: "Get new token to login"
-      operationId: "mailLoginPOST"
-      parameters:
-        - in: "body"
-          name: "login"
-          description: "email address"
-          required: true
-          schema:
-            $ref: "#/definitions/LoginMail"
+      - login
+      summary: Get new token to login
+      requestBody:
+        description: email address
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginMail'
+        required: true
       responses:
         200:
-          description: "OK"
-      x-swagger-router-controller: "Login"
-securityDefinitions:
-  loginToken:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-definitions:
-  Login:
-    type: "object"
-    properties:
-      api_key:
-        type: "string"
-      expires:
-        type: "string"
-        format: "date-time"
-      language:
-        type: "string"
-        enum:
-          - "nl"
-          - "fr"
-          - "en"
-    example:
-      expires: "2000-01-23T04:56:07.000+00:00"
-      api_key: "api_key"
-  Error:
-    type: "object"
-    required:
-      - "code"
-      - "message"
-    properties:
-      code:
-        type: "string"
-      message:
-        type: "string"
-  User:
-    type: "object"
-    required:
-      - "year"
-      - "month"
-      - "firstname"
-      - "lastname"
-      - "mandatory_approvals"
-      - "sex"
-      - "language"
-    properties:
-      id:
-        type: "integer"
-      language:
-        type: "string"
-        enum:
-          - "nl"
-          - "fr"
-          - "en"
-      email:
-        type: "string"
-        format: "email"
-      firstname:
-        type: "string"
-        example: "Jane"
-      lastname:
-        type: "string"
-        example: "Doe"
-      sex:
-        type: "string"
-        enum:
-          - "m"
-          - "f"
-          - "x"
-      gsm:
-        type: "string"
-        example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
-      general_questions:
-        type: "array"
-        items:
-          type: "integer"
-      mandatory_approvals:
-        type: "array"
-        items:
-          type: "integer"
-      year:
-        type: "integer"
-      month:
-        type: "integer"
-      t_size:
-        type: "integer"
-      gsm_guardian:
-        type: "string"
-        example: "+32460789101"
-        pattern: "^((\\+|00)32\\s?|0)([1-9][0-9]\\d{6})\\d?$"
-      email_guardian:
-        type: "string"
-        format: "email"
-      via:
-        type: "string"
-        maxLength: 200
-      medical:
-        type: "string"
-        maxLength: 255
-      delete_possible:
-        type: "boolean"
-      address:
-        $ref: "#/definitions/Address"
-  OtherProject:
-    type: "object"
-    properties:
-      project_code:
-        type: "string"
-        maxLength: 36
-        minLength: 36
-  Project:
-    type: "object"
-    properties:
-      own_project:
-        $ref: "#/definitions/OwnProject"
-      other_project:
-        $ref: "#/definitions/OtherProject"
-      attachments:
-        type: "array"
-        items:
-          $ref: "#/definitions/Attachment"
-  OwnProject:
-    type: "object"
-    properties:
-      project_id:
-        type: "integer"
-      project_name:
-        type: "string"
-        maxLength: 100
-      project_descr:
-        type: "string"
-        maxLength: 4000
-      project_type:
-        type: "string"
-        maxLength: 100
-      project_lang:
-        type: "string"
-        enum:
-          - "nl"
-          - "fr"
-          - "en"
-      participants:
-        type: "array"
-        items:
-          $ref: "#/definitions/Participant"
-      attachments:
-        type: "array"
-        items:
-          $ref: "#/definitions/Attachment"    
-      delete_possible:
-        type: "boolean"
-  Registration:
-    type: "object"
-    properties:
-      user:
-        $ref: "#/definitions/User"
-      project:
-        $ref: "#/definitions/Project"
-  LoginActivate:
-    type: "object"
-    properties:
-      jwt:
-        type: "string"
-  LoginMail:
-    type: "object"
-    properties:
-      email:
-        type: "string"
-        format: "email"
-  Participant:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      name:
-        type: "string"
-      self:
-        type: "boolean"
-  Settings:
-    type: "object"
-    properties:
-      startDateEvent:
-        type: "string"
-        format: "date"
-      maxAge:
-        type: "number"
-      minAge:
-        type: "number"
-      guardianAge:
-        type: "number"
-      tshirtDate:
-        type: "string"
-        format: "date"
-      enviroment:
-        type: "string"
-      waitingListActive:
-        type: "boolean"
-      maxUploadSize:
-        type: "integer"
-      isActive:
-        type: "boolean"
-  Tshirt:
-    type: "array"
-    items:
+          description: OK
+          content: {}
+        500:
+          description: Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        api_key:
+          type: string
+        expires:
+          type: string
+          format: date-time
+        language:
+          type: string
+          enum:
+          - nl
+          - fr
+          - en
+      example:
+        expires: 2000-01-23T04:56:07.000+00:00
+        api_key: api_key
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    User:
+      required:
+      - firstname
+      - language
+      - lastname
+      - mandatory_approvals
+      - month
+      - sex
+      - year
+      - email
+      type: object
       properties:
         id:
-          type: "string"
-        name:
-          type: "string"
-  Address:
-    type: "object"
-    required:
-      - "postalcode"
-    properties:
-      street:
-        type: "string"
-      house_number:
-        type: "string"
-      municipality_name:
-        type: "string"
-      box_number:
-        type: "string"
-      postalcode:
-        type: "string"
-        maxLength: 4
-  Question:
-    type: "array"
-    items:
+          type: integer
+        language:
+          type: string
+          enum:
+          - nl
+          - fr
+          - en
+        email:
+          type: string
+          format: email
+        firstname:
+          type: string
+          example: Jane
+        lastname:
+          type: string
+          example: Doe
+        sex:
+          type: string
+          enum:
+          - m
+          - f
+          - x
+        gsm:
+          pattern: ^((\+|00)32\s?|0)([1-9][0-9]\d{6})\d?$
+          type: string
+          example: +32460789101
+        general_questions:
+          type: array
+          items:
+            type: integer
+        mandatory_approvals:
+          type: array
+          items:
+            type: integer
+        year:
+          type: integer
+        month:
+          type: integer
+        t_size:
+          type: integer
+        gsm_guardian:
+          pattern: ^((\+|00)32\s?|0)([1-9][0-9]\d{6})\d?$
+          type: string
+          example: +32460789101
+        email_guardian:
+          type: string
+          format: email
+        via:
+          maxLength: 200
+          type: string
+        medical:
+          maxLength: 255
+          type: string
+        delete_possible:
+          type: boolean
+        address:
+          $ref: '#/components/schemas/Address'
+    OtherProject:
+      type: object
+      properties:
+        project_code:
+          maxLength: 36
+          minLength: 36
+          type: string
+    Project:
+      type: object
+      properties:
+        own_project:
+          $ref: '#/components/schemas/OwnProject'
+        other_project:
+          $ref: '#/components/schemas/OtherProject'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+    OwnProject:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        project_name:
+          maxLength: 100
+          type: string
+        project_descr:
+          maxLength: 4000
+          type: string
+        project_type:
+          maxLength: 100
+          type: string
+        project_lang:
+          type: string
+          enum:
+          - nl
+          - fr
+          - en
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        delete_possible:
+          type: boolean
+    Registration:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+    LoginActivate:
+      type: object
+      properties:
+        jwt:
+          type: string
+    LoginMail:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+    Participant:
+      type: object
       properties:
         id:
-          type: "number"
+          type: string
         name:
-          type: "string"
-        description:
-          type: "string"
-        positive:
-          type: "string"
-        negative:
-          type: "string"
-  Approval:
-    type: "array"
-    items:
+          type: string
+        self:
+          type: boolean
+    Settings:
+      type: object
+      properties:
+        startDateEvent:
+          type: string
+          format: date
+        maxAge:
+          type: number
+        minAge:
+          type: number
+        guardianAge:
+          type: number
+        tshirtDate:
+          type: string
+          format: date
+        enviroment:
+          type: string
+        waitingListActive:
+          type: boolean
+        maxUploadSize:
+          type: integer
+        isActive:
+          type: boolean
+        eventBeginDate:
+          type: string
+          format: date
+        registrationOpenDate:
+          type: string
+          format: date
+        registrationClosedDate:
+          type: string
+          format: date
+        projectClosedDate:
+          type: string
+          format: date
+        officialStartDate:
+          type: string
+          format: date
+        eventEndDate:
+          type: string
+          format: date
+        eventTitle:
+          type: string
+        isRegistrationClosed:
+          type: boolean
+        isProjectClosed:
+          type: boolean
+        maxRegistration:
+          type: integer
+        maxParticipants:
+          type: integer
+    Tshirt:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+    Address:
+      required:
+      - postalcode
+      type: object
+      properties:
+        street:
+          type: string
+        house_number:
+          type: string
+        municipality_name:
+          type: string
+        box_number:
+          type: string
+        postalcode:
+          maxLength: 4
+          type: string
+    Question:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          description:
+            type: string
+          positive:
+            type: string
+          negative:
+            type: string
+    Approval:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          description:
+            type: string
+    SASToken:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresOn:
+          type: string
+          format: date-time
+        startsOn:
+          type: string
+          format: date-time
+    Attachment:
+      type: object
       properties:
         id:
-          type: "number"
+          type: string
         name:
-          type: "string"
-        description:
-          type: "string"
-  Attachment:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      name:
-        type: "string"
-      filename:
-        type: "string"
-      size:
-        type: "integer"
-      confirmed:
-        type: "boolean"
-      exists:
-        type: "boolean"
-      type:
-        type: "string"
-        enum:
-          - "link"
-          - "movie"
+          type: string
+        filename:
+          type: string
+        size:
+          type: integer
+        confirmed:
+          type: boolean
+        exists:
+          type: boolean
+        type:
+          type: string
+          enum:
+          - link
+          - movie
+  securitySchemes:
+    loginToken:
+      type: apiKey
+      name: api_key
+      in: header

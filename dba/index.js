@@ -4,12 +4,16 @@ const cls = require('cls-hooked');
 const namespace = cls.createNamespace('coolestproject');
 const { v4: uuidv4 } = require('uuid');
 
-const Azure = require('../azure');
-
 const addYears = require('date-fns/addYears');
+const endOfMonth = require('date-fns/endOfMonth');
+const startOfMonth = require('date-fns/startOfMonth');
+
+const FunctionalError = require('../utils/FunctionalError');
+
+const crypto = require('crypto');
+const { Op } = require('sequelize');
 
 const models = require('../models');
-const crypto = require('crypto');
 
 const Sequelize = require('sequelize');
 Sequelize.useCLS(namespace);
@@ -28,7 +32,6 @@ const TShirt = models.TShirt;
 const TShirtGroup = models.TShirtGroup;
 const Registration = models.Registration;
 const sequelize = models.sequelize;
-const Op = Sequelize.Op;
 const QuestionTranslation = models.QuestionTranslation;
 const TShirtTranslation = models.TShirtTranslation;
 const TShirtGroupTranslation = models.TShirtGroupTranslation;
@@ -36,11 +39,15 @@ const Attachment = models.Attachment;
 const AzureBlob = models.AzureBlob;
 
 class DBA {
+  constructor(azure) {
+    this.azure = azure;
+  }
+
   /**
      * @param {Integer} registrationId 
-     * @returns {Promise<User>} created User
+     * @returns {Promise<models.User>} created User
      */
-  static async createUserFromRegistration(registrationId) {
+  async createUserFromRegistration(registrationId) {
     return await sequelize.transaction(
       async () => {
         const registration = await this.getRegistration(registrationId);
@@ -132,7 +139,7 @@ class DBA {
   /**
     * Create a new user with a project
     * @param {Object} userProject - UserProject object
-    * @returns {Promise<User>}
+    * @returns {Promise<models.User>}
     * @example     
         {
             postalcode: 1000,
@@ -151,7 +158,7 @@ class DBA {
             }
         }
     */
-  static async createUserWithProject(userProject, registrationId) {
+  async createUserWithProject(userProject, registrationId) {
     const user = await User.create(userProject, {
       include: ['project', { model: QuestionUser, as: 'questions_user' }]
     });
@@ -163,7 +170,7 @@ class DBA {
      * Create a new user with a token
      * @param {Object} user - User object 
      * @param {Number} voucherId - voucher id
-     * @returns {Promise<User>}
+     * @returns {Promise<models.User>}
      * @example
         {
             postalcode: 1000,
@@ -177,15 +184,17 @@ class DBA {
             t_size: 'female_large'
         }
      */
-  static async createUserWithVoucher(user_data, voucherId, registrationId) {
-    const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
-    if (voucher === null) {
-      throw new Error(`Token ${voucherId} not found`);
-    }
+  async createUserWithVoucher(user_data, voucherId, registrationId) {
     const user = await User.create(user_data, {
       include: [{ model: QuestionUser, as: 'questions_user' }]
     });
-    await voucher.setParticipant(user);
+
+    // ignore when not found
+    const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
+    if (voucher !== null) {
+      await voucher.setParticipant(user);
+    }
+
     await Registration.destroy({ where: { id: registrationId } });
 
     return user;
@@ -197,7 +206,7 @@ class DBA {
      * @param {Number} userId
      * @returns {Promise<Boolean>} updated successfully
      */
-  static async updateUser(changedFields, userId) {
+  async updateUser(changedFields, userId) {
     return await sequelize.transaction(async () => {
       // remove fields that are not allowed to change (be paranoid)
       delete changedFields.email;
@@ -207,7 +216,7 @@ class DBA {
       changedFields.postalcode = address.postalcode;
       changedFields.street = address.street;
       changedFields.house_number = address.house_number;
-      changedFields.bus_number = address.bus_number;
+      changedFields.box_number = address.box_number;
       changedFields.municipality_name = address.municipality_name;
       delete changedFields.address;
 
@@ -234,6 +243,8 @@ class DBA {
       }
       changedFields.sizeId = changedFields.t_size;
 
+      this.validateUser(changedFields, event);
+
       return await user.update(changedFields);
     });
   }
@@ -243,25 +254,34 @@ class DBA {
      * @param {Number} userId
      * @returns {Promise<Boolean>} Delete ok ?
      */
-  static async deleteUser(userId) {
+  async deleteUser(userId) {
     const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
     if (project) {
       throw new Error('Project found');
     }
+
+    // check if we have a participation
+    const project_voucher = await Voucher.findOne({ where: { participantId: userId }, attributes: ['id'] });
+    if (project_voucher) {
+      throw new Error('Project participation found');
+    }
+
     const result = await User.destroy({ where: { id: userId } });
-    return result; 
+    return result;
   }
 
   /**
      * create a project and assign to existing user
      * @param {Object} project
-     * @returns {Promise<Project>} created account
+     * @returns {Promise<models.Project>} created account
      */
-  static async createProject(project, userId) {
+  async createProject(project, userId) {
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
     project.ownerId = userId;
     project.max_tokens = event.maxVoucher;
+
+    this.validateProject(project, event);
 
     return await Project.create(project);
   }
@@ -271,7 +291,7 @@ class DBA {
      * @param {Object} account
      * @returns {Promise<Account>} account
      */
-  static async createAccount(account) {
+  async createAccount(account) {
     return await Account.create(account);
   }
 
@@ -281,8 +301,14 @@ class DBA {
      * @param {Number} userId
      * @returns {Promise<Boolean>} Delete ok ?
      */
-  static async updateProject(changedFields, userId) {
+  async updateProject(changedFields, userId) {
     const project = await Project.findOne({ where: { ownerId: userId } });
+
+    const user = await User.findByPk(userId);
+    const event = await user.getEvent();
+
+    this.validateProject(changedFields, event);
+
     return project.update(changedFields);
   }
 
@@ -290,7 +316,7 @@ class DBA {
      * @param {Number} userId
      * @returns {Promise<Boolean>} Is user allowed to be deleted ?
      */
-  static async isUserDeletable(userId) {
+  async isUserDeletable(userId) {
     return await sequelize.transaction(
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'], lock: true });
@@ -307,7 +333,7 @@ class DBA {
      * @param {Number} userId 
      * @returns {Promise<Boolean>} delete ok 
      */
-  static async deleteProject(userId) {
+  async deleteProject(userId) {
     // delete project or voucher
     // only possible when there are no used vouchers
     return await sequelize.transaction(
@@ -319,9 +345,9 @@ class DBA {
             throw new Error('Delete not possible tokens in use');
           }
           // delete files on azure
-          for(const a of await project.getAttachments()){
+          for (const a of await project.getAttachments()) {
             const blob = await a.getAzureBlob();
-            await Azure.deleteBlob(blob.blob_name);
+            await this.azure.deleteBlob(blob.blob_name);
           }
           return await Project.destroy({ where: { ownerId: userId } });
         } else {
@@ -335,9 +361,9 @@ class DBA {
   /**
      * Create a voucher for a project
      * @param {Number} projectId 
-     * @returns {Promise<Voucher>} created voucher
+     * @returns {Promise<models.Voucher>} created voucher
      */
-  static async createVoucher(userId) {
+  async createVoucher(userId) {
     return await sequelize.transaction(
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id', 'eventId', 'max_tokens'], lock: true });
@@ -367,31 +393,31 @@ class DBA {
      * Create a attachment for a project
      * @param {Number} userId 
      */
-  static async getAttachmentSAS(name, userId) {
+  async getAttachmentSAS(name, userId) {
     const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
     if (project === null) {
       throw new Error('No project found');
     }
-    const azureInfo = await AzureBlob.findOne({ 
+    const azureInfo = await AzureBlob.findOne({
       where: {
         '$Attachment.ProjectId$': project.id,
         blob_name: name
       },
-      include: [ 
-        {model: Attachment} 
-      ] 
+      include: [
+        { model: Attachment }
+      ]
     });
     if (azureInfo === null) {
       throw new Error('No attachment found');
     }
-    return await Azure.generateSAS(name);
+    return await this.azure.generateSAS(name);
   }
 
   /**
      * Create a attachment for a project
      * @param {Number} userId 
      */
-  static async createAttachment(attachment_fields, userId) {
+  async createAttachment(attachment_fields, userId) {
     return await sequelize.transaction(
       async () => {
         // check if we have a project owner
@@ -404,13 +430,13 @@ class DBA {
         // this just checks if the provided files size is bigger than the allowed one 
         // this is user input, you need to validate this later on (TODO look into azure blob hooks)
         const event = project.getEvent();
-        if(attachment_fields.size >  event.maxFileSize){
+        if (attachment_fields.size > event.maxFileSize) {
           throw new Error('File validation failed');
         }
 
         const blobName = uuidv4();
         const containerName = process.env.AZURE_STORAGE_CONTAINER;
-    
+
         // create AzureBlob & create Attachment
         const attachment = await AzureBlob.create({
           container_name: containerName,
@@ -418,18 +444,18 @@ class DBA {
           size: attachment_fields.size,
           Attachment: {
             name: attachment_fields.name,
-            filename: attachment_fields.filename, 
+            filename: attachment_fields.filename,
             ProjectId: project.id,
             confirmed: false,
             internal: false
           }
         }, {
-          include: [{ association: 'Attachment' }] 
+          include: [{ association: 'Attachment' }]
         });
         if (attachment === null) {
           throw new Error('Attachment failed');
         }
-        const sas = await Azure.generateSAS(blobName);
+        const sas = await this.azure.generateSAS(blobName);
 
         return sas;
       }
@@ -439,7 +465,7 @@ class DBA {
      * Create a attachment for a project
      * @param {Number} attachmentId 
      */
-  static async deleteAttachment(userId, name) {
+  async deleteAttachment(userId, name) {
     return await sequelize.transaction(
       async () => {
         const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
@@ -447,23 +473,25 @@ class DBA {
           throw new Error('No project found');
         }
         // get file linked to the project & not confirmed and not internal
-        const azureInfo = await AzureBlob.findOne({ 
+        const azureInfo = await AzureBlob.findOne({
           where: {
             '$Attachment.ProjectId$': project.id,
             '$Attachment.confirmed$': false,
             '$Attachment.internal$': false,
             blob_name: name
           },
-          include: [ 
-            {model: Attachment} 
-          ] 
+          include: [
+            { model: Attachment }
+          ]
         });
         if (azureInfo === null) {
           throw new Error('No attachment found');
         }
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
 
-        await Azure.deleteBlob(name);
+        await this.azure.deleteBlob(name);
+
+        return null;
       }
     );
   }
@@ -474,7 +502,7 @@ class DBA {
      * @param {Number} participantId
      * @returns {Promise<Boolean>} delete successfully
      */
-  static async deleteParticipantProject(projectId, participantId) {
+  async deleteParticipantProject(projectId, participantId) {
     return await Voucher.destroy({ where: { projectId: projectId, participantId: participantId } });
   }
 
@@ -482,27 +510,106 @@ class DBA {
      * Add participant to a project
      * @param {Number} userId 
      * @param {Number} voucherId 
-     * @returns {Promise<User>} created participant
+     * @returns {Promise<models.User>} created participant
      */
-  static async addParticipantProject(userId, voucherId) {
+  async addParticipantProject(userId, voucherId) {
     const voucher = await Voucher.findOne({ where: { id: voucherId, participantId: null }, lock: true });
     if (voucher === null) {
-      throw new Error('Voucher not found');
+      throw new FunctionalError('VOUCHER_NOT_FOUND');
     }
     await voucher.setParticipant(userId);
     return await voucher.getParticipant();
   }
 
+  /** 
+   * Validate & remove fields that are not needed
+   * @param {Object} dbValues
+   * @param {models.Event} event
+  */
+  async validateRegistration(dbValues, event) {
+    await this.validateUser(dbValues, event);
+    await this.validateProject(dbValues, event);
+  }
+
+  /**
+   * Validate project fields
+   * @param {*} dbValues 
+   * @param {*} event 
+   */
+  async validateProject(dbValues, event) {
+    // 4) check if own project or participant
+    if (!dbValues.project_code) {
+      if (!dbValues.project_name || !dbValues.project_descr || !dbValues.project_lang) {
+        throw new Error('Project not filled in');
+      }
+    } else {
+      if (dbValues.project_name || dbValues.project_descr || dbValues.project_lang || dbValues.project_type) {
+        throw new Error('Project filled in');
+      }
+    }
+  }
+
+  /**
+   * Validate the user fields
+   * @param {Object} dbValues
+   * @param {models.Event} event
+   */
+  async validateUser(dbValues, event) {
+    // 1) check if the questions are valid
+    const possibleQuestions = await event.getQuestions();
+
+    // 1a) are all questions mapped to this event
+    for (const q of dbValues.questions) {
+      if (!possibleQuestions.some((value) => value.id === q.QuestionId)) {
+        throw new Error('questions are not from the correct event');
+      }
+    }
+
+    // 1b) are the mandatory approvals filled in
+    for (const q of possibleQuestions.filter((value) => value.mandatory === true)) {
+      if (!dbValues.questions.some((value) => value.QuestionId === q.id)) {
+        throw new Error('mandatory questions not filled in');
+      }
+    }
+
+    // validate data based on event settings
+    const minAgeDate = addYears(endOfMonth(event.officialStartDate), -1 * event.minAge);
+    const maxAgeDate = addYears(startOfMonth(event.officialStartDate), -1 * event.maxAge);
+    console.log('ages:');
+    console.log(event.officialStartDate);
+    console.log(minAgeDate);
+    console.log(maxAgeDate);
+    // 2) check if birthdate is valid
+    console.log(dbValues.birthmonth);
+    if (!(dbValues.birthmonth < minAgeDate && dbValues.birthmonth > maxAgeDate)) {
+      throw new Error('incorrect age');
+    }
+
+    // 3) check if guardian is required
+    const minGuardian = addYears(startOfMonth(event.officialStartDate), -1 * event.minGuardianAge);
+    console.log(minGuardian);
+    if (minGuardian < dbValues.birthmonth) {
+      if (!dbValues.gsm_guardian || !dbValues.email_guardian) {
+        throw new Error('Guardian is required');
+      }
+    } else {
+      // console.log(typeof dbValues.gsm_guardian);
+      if (dbValues.gsm_guardian || dbValues.email_guardian) {
+        throw new Error('Guardian is filled in');
+      }
+    }
+  }
+
   /**
      * Add registration
-     * @param {Registration} registration
-     * @returns {Promise<Registration>} created registration
+     * @param {Object} registrationValues
+     * @returns {Promise<models.Registration>} created registration
      */
-  static async createRegistration(registrationValues) {
+  async createRegistration(registrationValues) {
     return await sequelize.transaction(
       async () => {
         // set the current event
-        const event = await Event.findOne({ where: { current: true } });
+        const event = await this.getEventActive();
         if (event === null) {
           throw new Error('No Active event found');
         }
@@ -517,24 +624,24 @@ class DBA {
         dbValues.firstname = user.firstname;
         dbValues.lastname = user.lastname;
         dbValues.sex = user.sex;
-        dbValues.birthmonth = user.birthmonth;
+        //dbValues.birthmonth = user.birthmonth;
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
         dbValues.gsm_guardian = user.gsm_guardian;
         dbValues.email_guardian = user.email_guardian;
         dbValues.sizeId = user.t_size;
+        dbValues.waiting_list = false;
 
         // to month (set hour to 12)
-        dbValues.birthmonth
-                    = new Date(user.year, user.month, 12);
+        dbValues.birthmonth = new Date(user.year, user.month, 12);
 
         // map the questions to the correct table
         const answers = [];
-        if(user.general_questions){
+        if (user.general_questions) {
           answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
         }
-        if(user.mandatory_approvals){
+        if (user.mandatory_approvals) {
           answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
         }
         dbValues.questions = answers;
@@ -544,7 +651,7 @@ class DBA {
         dbValues.postalcode = address.postalcode;
         dbValues.street = address.street;
         dbValues.house_number = address.house_number;
-        dbValues.bus_number = address.bus_number;
+        dbValues.box_number = address.box_number;
         dbValues.municipality_name = address.municipality_name;
 
         //flatten own project
@@ -562,17 +669,15 @@ class DBA {
           dbValues.project_code = otherProject.project_code;
         }
 
-        // validate mandatory fields for registration 
-        // TODO check if question are for the event & mandatory is filled in
-        const possibleQuestions = await event.getQuestions();
-        console.log(possibleQuestions);
+        await this.validateRegistration(dbValues, event);
 
         // check for waiting list
-        const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ lock: true });
+        const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
         if (registration_count >= event.maxRegistration) {
           dbValues.waiting_list = true;
+          console.log('add to waiting list');
         }
-        return await Registration.create(dbValues, { include: [{ model: models.QuestionRegistration, as: 'questions' }] });
+        return await Registration.create(dbValues, { include: [{ model: QuestionRegistration, as: 'questions' }] });
       }
     );
   }
@@ -580,9 +685,9 @@ class DBA {
   /**
      * Get registration
      * @param {Registration} registration
-     * @returns {Promise<Registration>}
+     * @returns {Promise<models.egistration>}
      */
-  static async getRegistration(registrationId) {
+  async getRegistration(registrationId) {
     return await Registration.findByPk(registrationId, {
       lock: true,
       include: [{ model: QuestionRegistration, as: 'questions' },
@@ -593,18 +698,18 @@ class DBA {
   /**
      * Add registration
      * @param {Registration} registration
-     * @returns {Promise<Registration>}
+     * @returns {Promise<models.Registration>}
      */
-  static async getUser(userId) {
+  async getUser(userId) {
     return User.findByPk(userId);
   }
 
   /**
      * Add registration
      * @param {Registration} registration
-     * @returns {Promise<Voucher>} list of vouchers for project
+     * @returns {Promise<models.Voucher>} list of vouchers for project
      */
-  static async getVouchers(userId) {
+  async getVouchers(userId) {
     var project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
     let vouchers = [];
     if (project !== null) {
@@ -622,9 +727,9 @@ class DBA {
   /**
      * get Project
      * @param {Registration} registration
-     * @returns {Promise<Registration>} project information
+     * @returns {Promise<models.Registration>} project information
      */
-  static async getProject(userId) {
+  async getProject(userId) {
     // first look for own project
     var project = await Project.findOne({
       where: { ownerId: userId }, include: [
@@ -660,19 +765,20 @@ class DBA {
 
   /**
      * Check if email address exists in User records table
-     * @param {String} email
+     * @param {String} emailAddress
+     * @param {models.Event} event
      * @returns {Promise<Boolean>} 
      */
-  static async doesEmailExists(emailAddress, event) {
+  async doesEmailExists(emailAddress, event) {
     const count = await User.count({ where: { email: emailAddress, eventId: event.id } });
     return count !== 0;
   }
   /**
      * Get user via email
      * @param {String} email
-     * @returns {Promise<User>}
+     * @returns {Promise<models.User>}
      */
-  static async getUsersViaMail(email) {
+  async getUsersViaMail(email) {
     return await User.findAll({
       where: {
         [Op.or]: [
@@ -689,9 +795,9 @@ class DBA {
   /**
      * Get only user via email
      * @param {String} email
-     * @returns {Promise<User>}
+     * @returns {Promise<models.User>}
      */
-  static async getOnlyUsersViaMail(email, event) {
+  async getOnlyUsersViaMail(email, event) {
     return await User.findAll({
       where: {
         email: email,
@@ -703,9 +809,9 @@ class DBA {
   /**
      * Update token
      * @param {Number} userId
-     * @returns {Promise<User>}
+     * @returns {Promise<models.User>}
      */
-  static async updateLastToken(userId) {
+  async updateLastToken(userId) {
     const user = await User.findByPk(userId);
     user.last_token = new Date();
     await user.save();
@@ -714,20 +820,25 @@ class DBA {
   /**
      * Set the event active
      * @param {Number} eventId
-     * @returns {Promise<Event>}
+     * @returns {Promise<models.Event>}
      */
-  static async setEventActive(eventId) {
+  async setEventActive(eventId) {
     return await sequelize.transaction(
       async () => {
         // cancel previous events
-        await Event.update({ current: false }, { where: {} });
+        await Event.update({ eventEndDate: new Date() }, { where: { id: { [Op.ne]: eventId } } });
 
         //activate current
         const event = await Event.findByPk(eventId);
         if (event === null) {
           throw new Error('No event found');
         }
-        event.current = true;
+        event.eventStartDate = new Date();
+
+        if(event.eventEndDate <= new Date()){
+          event.eventEndDate = addYears(new Date(), 1);
+        }
+
         return await event.save();
       }
     );
@@ -736,78 +847,124 @@ class DBA {
   /**
      * get event by id
      * @param {Number} eventId
-     * @returns {Promise<Event>}
+     * @returns {Promise<models.Event>}
      */
-  static async getEvent(eventId) {
+  async getEvent(eventId) {
     return await Event.findByPk(eventId);
   }
 
   /**
      * get active event
-     * @param {Number} eventId
-     * @returns {Promise<Event>}
+     * @returns {Promise<models.Event>}
      */
-  static async getEventActive() {
-    return await Event.findOne({
-      where: { current: true }, attributes: {
-        include: [
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 1)'), 'tphoto'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 2)'), 'tcontact'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 4)'), 'tclini'],
-          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments)'), 'total_videos'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'f\')'), 'total_females'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'x\')'), 'total_X'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'nl\')'), 'tlang_nl'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'fr\')'), 'tlang_fr'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'en\')'), 'tlang_en'],
-          [sequelize.literal('DATEDIFF(startDate, CURDATE())'), 'days_remaining'],
-          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = eventId)'), 'total_projects'],
-          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = eventId and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
-        ]
-      }
+  async getEventActive() {
+    const activeEventId = await Event.findOne({
+      where: {
+        eventBeginDate: {
+          [Op.lt]: Sequelize.literal('CURDATE()'),
+        },
+        eventEndDate: {
+          [Op.gt]: Sequelize.literal('CURDATE()'),
+        }
+      },
+      attributes: ['id']
     });
+
+    if (!activeEventId) {
+      throw new Error('No Event Active');
+    }
+
+    return await this.getEventDetail(activeEventId.id);
   }
 
   /**
      * get active event
      * @returns {Promise<Event>}
      */
-  static async getEventDetail(eventId) {
-    return await Event.findByPk(eventId, {
+  async getEventDetail(eventId, language = 'en') {
+    const event = await Event.findByPk(eventId, {
       attributes: {
         include: [
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = eventID and Vouchers.participantId > 0)'), 'total_usedVouchers'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId)'), 'pending_users'],
-          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = eventId and waiting_list = 1)'), 'waiting_list'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId)'), 'total_users'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 1)'), 'tphoto'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 2)'), 'tcontact'],
-          [sequelize.literal('(SELECT count(*) from QuestionUsers where QuestionId = 4)'), 'tclini'],
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = Event.id and Vouchers.participantId IS NULL)'), 'total_unusedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Vouchers where Vouchers.eventID = Event.id and Vouchers.participantId > 0)'), 'total_usedVouchers'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = Event.id)'), 'pending_users'],
+          [sequelize.literal('(SELECT count(*) from Registrations where Registrations.eventId = Event.id and waiting_list = 1)'), 'waiting_list'],
           [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments)'), 'total_videos'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'m\')'), 'total_males'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'f\')'), 'total_females'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.sex = \'x\')'), 'total_X'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'nl\')'), 'tlang_nl'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'fr\')'), 'tlang_fr'],
-          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = eventId and Users.language = \'en\')'), 'tlang_en'],
-          [sequelize.literal('DATEDIFF(startDate, CURDATE())'), 'days_remaining'],
-          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = eventId)'), 'total_projects'],
-          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = eventId and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.sex = \'m\')'), 'total_males'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.sex = \'f\')'), 'total_females'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.sex = \'x\')'), 'total_X'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.language = \'nl\')'), 'tlang_nl'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.language = \'fr\')'), 'tlang_fr'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.language = \'en\')'), 'tlang_en'],
+          [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id)'), 'total_users'],
+          [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments INNER JOIN Projects ON Projects.id = Attachments.ProjectId WHERE Projects.eventId = Event.id )'), 'total_videos'],
+          [sequelize.literal('DATEDIFF(eventBeginDate, CURDATE())'), 'days_remaining'],
+          [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = Event.id)'), 'total_projects'],
+          [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = Event.id and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
         ]
       }
     });
+    // count the questions grouped by event & type
+    event.questions = [];
+    const questions = await QuestionUser.findAll({
+      raw: true,
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('UserId')), 'total'],
+        [sequelize.col('QuestionUser.QuestionId'), 'id'],
+        [sequelize.col('Question.name'), 'short'],
+        [sequelize.col('Question.QuestionTranslations.description'), 'description'],
+      ],
+      group: 'QuestionUser.QuestionId',
+      include: [
+        { model: User, attributes: [], where: { 'EventId': eventId }, required: true },
+        {
+          model: Question, attributes: [], required: true,
+          include: [
+            {
+              model: QuestionTranslation, attributes: [], where: { 'language': language }
+            }]
+        }
+      ]
+    });
+
+    if (questions !== null) {
+      event.questions = questions;
+    }
+
+    // count the t-shirts grouped by event & type
+    event.tshirts = [];
+    const tshirts = await User.findAll({
+      raw: true,
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('User.id')), 'total'],
+        [sequelize.col('User.SizeId'), 'id'],
+        [sequelize.col('size.name'), 'short'],
+        [sequelize.col('size.TShirtTranslations.description'), 'description'],
+      ],
+      group: 'User.SizeId',
+      where: { 'EventId': eventId },
+      include: [
+        {
+          model: TShirt, attributes: [], required: true, as: 'size',
+          include: [
+            {
+              model: TShirtTranslation, required: false, attributes: [], where: { 'language': language }
+            }]
+        }
+      ]
+    });
+
+    if (tshirts !== null) {
+      event.tshirts = tshirts;
+    }
+
+    return event;
   }
 
-  static async getTshirtsGroups(language) {
+  async getTshirtsGroups(language, event) {
     return await TShirtGroup.findAll({
       attributes: ['id', 'name'],
+      where: { 'EventId': event.id },
       include: [
         {
           model: TShirtGroupTranslation,
@@ -823,7 +980,7 @@ class DBA {
      * get active event
      * @returns {Promise<TShirt>}
      */
-  static async getTshirts(language, event) {
+  async getTshirts(language, event) {
     return await TShirt.findAll({
       attributes: ['id', 'name'],
       include: [
@@ -846,7 +1003,7 @@ class DBA {
      * get questions
      * @returns {Promise<object>}
      */
-  static async getQuestions(language, event) {
+  async getQuestions(language, event) {
     const optionalQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: { [Op.not]: true } }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: process.env.LANG }] }, required: false, attributes: ['language', 'description', 'positive', 'negative'] }]
@@ -871,7 +1028,7 @@ class DBA {
      * get approvals
      * @returns {Promise<object>}
      */
-  static async getApprovals(language, event) {
+  async getApprovals(language, event) {
     const mandatoryQuestions = await Question.findAll({
       attributes: ['id', 'name'], where: { eventId: event.id, mandatory: true }
       , include: [{ model: QuestionTranslation, where: { [Op.or]: [{ language: language }, { language: 'nl' }] }, required: false, attributes: ['language', 'description'] }]

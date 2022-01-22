@@ -1,14 +1,15 @@
-FROM node:14
+FROM node:16-slim
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-RUN npm install . 
-
 COPY . .
 
-RUN npm install -g .
+RUN npm i
+RUN npm i -g nodemon
+RUN npm i -g sequelize-cli
+RUN npm i -g mocha
+RUN npm i -g nyc
+RUN npm i -g .
 
 EXPOSE 8080
 CMD [ "npm", "run development" ]

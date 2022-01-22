@@ -1,11 +1,23 @@
-const DBA = require('../../dba');
+const Database = require('../../dba');
 const Mailer = require('../../mailer');
 const Tokens = require('../../jwts');
+
+const DBA = new Database();
 
 exports.command = 'mail';
 exports.desc = 'Mail related scripts';
 
 exports.builder = (yargs) => {
+  yargs.command('waitingMail <registrationId>', 'Send waiting mail',
+    () => { },
+    async (argv) => {
+      const registration = await DBA.getRegistration(argv.registrationId);
+      const event = await DBA.getEventActive();
+      const mail = await Mailer.waitingMail(registration, event);
+      console.log(`Mail was send ${mail}`);
+      return;
+    }
+  ),
   yargs.command('activationMail <registrationId>', 'Send activation mail',
     () => { },
     async (argv) => {
@@ -97,17 +109,17 @@ exports.builder = (yargs) => {
       }
     }
   );
-    yargs.command('emailExistsMail <userid>', 'Send email exists Mail',
+  yargs.command('emailExistsMail <userid>', 'Send email exists Mail',
     () => { },
     async (argv) => {
-     try {
-      const user = await DBA.getUser(argv.userid);
-      const mail = await Mailer.emailExistsMail(user.email, user.language);
-      console.log(`email exists was send to:`, user.email, '/', user.language);
-    } catch (error) {
-      console.log(error.message);
-      for (var err of error.errors || []) {
-        console.error(err.message);
+      try {
+        const user = await DBA.getUser(argv.userid);
+        const mail = await Mailer.emailExistsMail(user.email, user.language);
+        console.log('email exists was send to:', user.email, '/', user.language);
+      } catch (error) {
+        console.log(error.message);
+        for (var err of error.errors || []) {
+          console.error(err.message);
         }
       }
     }

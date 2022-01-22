@@ -22,26 +22,43 @@ module.exports = (sequelize, DataTypes) => {
     minGuardianAge: DataTypes.INTEGER,
     maxRegistration: DataTypes.INTEGER,
     maxVoucher: DataTypes.INTEGER,
-    pending_user: DataTypes.VIRTUAL,
-    overdue_registration: DataTypes.VIRTUAL,
-    waiting_list: DataTypes.VIRTUAL,
-    days_remaining: DataTypes.VIRTUAL,
-    t_proj: DataTypes.VIRTUAL,
-    t_users: DataTypes.VIRTUAL,
-    total_males: DataTypes.VIRTUAL,
-    total_females: DataTypes.VIRTUAL,
-    total_X: DataTypes.VIRTUAL,
-    tlang_nl: DataTypes.VIRTUAL,
-    tlang_fr: DataTypes.VIRTUAL,
-    tlang_en: DataTypes.VIRTUAL,
-    tcontact: DataTypes.VIRTUAL,
-    tphoto: DataTypes.VIRTUAL,
-    tclini: DataTypes.VIRTUAL,
-    total_unusedVouchers: DataTypes.VIRTUAL,
-    total_usedVouchers: DataTypes.VIRTUAL,
-    current: DataTypes.BOOLEAN,
-    closed: DataTypes.BOOLEAN,
-    startDate: DataTypes.DATE,
+
+    //timestamps for all the dates in the evt
+    eventBeginDate: DataTypes.DATE,
+    registrationOpenDate: DataTypes.DATE,
+    registrationClosedDate: DataTypes.DATE,
+    projectClosedDate: DataTypes.DATE,
+    officialStartDate: DataTypes.DATE,
+    eventEndDate: DataTypes.DATE,
+
+    current: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['eventBeginDate', 'eventEndDate']),
+      get: function() {
+        return this.get('eventBeginDate') < Date.now() && this.get('eventEndDate') > Date.now();
+      }
+    },
+    closed: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['eventBeginDate', 'eventEndDate']),
+      get: function() {
+        //console.log(Date.now());
+        return Date.now() < this.get('eventBeginDate') || Date.now() > this.get('eventEndDate');
+      }
+    },
+    registrationClosed: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['registrationClosedDate']),
+      get: function() {
+        //console.log(Date.now());
+        return Date.now() > this.get('registrationClosedDate');
+      }
+    },
+    projectClosed: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['projectClosedDate']),
+      get: function() {
+        //console.log(Date.now());
+        return Date.now() > this.get('projectClosedDate');
+      }
+    },
+
     event_title: DataTypes.STRING(25),
     maxFileSize: DataTypes.BIGINT(20)
   }, {

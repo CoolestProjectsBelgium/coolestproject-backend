@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Question.init({
-    name: { type: DataTypes.CHAR(30), unique: true },
+    name: { type: DataTypes.CHAR(30)},
     mandatory: DataTypes.BOOLEAN,
-
   }, {
     sequelize,
     modelName: 'Question',
+    indexes: [{ unique: true, fields: ['eventId', 'name'] }]
   });
   return Question;
 };

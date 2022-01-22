@@ -141,6 +141,7 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
           'description': project.get('project_descr'),
           'agreedToPhoto': agreedToPhoto, 
+          'startTimeShort': new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
         })   
       }
 

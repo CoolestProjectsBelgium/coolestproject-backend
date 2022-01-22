@@ -60,8 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING(254),
       validate: { isEmail: true },
-      defaultValue: null,
-      unique: true
+      defaultValue: null
     },
     firstname: {
       type: DataTypes.STRING,
@@ -111,6 +110,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
+    indexes: [{ unique: true, fields: ['email', 'eventId'] }]
   });
   return User;
 };
