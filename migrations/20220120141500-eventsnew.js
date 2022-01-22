@@ -1,5 +1,5 @@
 'use strict';
-const tname = 'Eventsnew';
+const tname = 'Events';
 
 var back;
 module.exports = {
