@@ -4,6 +4,7 @@
   "description": "Coolest project services",
   "main": "index.js",
   "scripts": {
+    "prestart": "sh ./start.sh",
     "start": "node index.js",
     "development": "nodemon index.js",
     "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
