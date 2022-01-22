@@ -10,11 +10,11 @@ module.exports = {
       });
       await queryInterface.removeConstraint('Questions', 'name');
 
-      await queryInterface.addConstraint('Registration', { 
+      await queryInterface.addConstraint('Registrations', { 
         fields: ['email', 'eventId'],
         type: 'UNIQUE'
       });
-      await queryInterface.removeConstraint('Registration', 'email');
+      await queryInterface.removeConstraint('Registrations', 'email');
 
       await queryInterface.addConstraint('TShirtGroups', { 
         fields: ['name', 'eventId'],
