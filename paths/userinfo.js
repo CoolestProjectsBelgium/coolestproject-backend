@@ -60,6 +60,12 @@ module.exports = function(database, models, jwt, mailer) {
 
   async function PATCH(req, res) {
     const user = req.user || null;  
+
+    const event = await user.getEvent();
+    if(event.projectClosed){
+      throw new Error('Project update is not allowed');
+    }
+
     const changed_fields = req.body;
     await database.updateUser(changed_fields, user.id);
     res.status(200).json(await getUserDetails(await database.getUser(user.id)));

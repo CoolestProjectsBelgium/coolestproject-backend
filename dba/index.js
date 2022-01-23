@@ -278,6 +278,10 @@ class DBA {
   async createProject(project, userId) {
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
+    if(event.projectClosed){
+      throw new Error('Project update is not allowed');
+    }
+
     project.ownerId = userId;
     project.max_tokens = event.maxVoucher;
 
@@ -306,6 +310,10 @@ class DBA {
 
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
+
+    if(event.projectClosed){
+      throw new Error('Project update is not allowed');
+    }
 
     this.validateProject(changedFields, event);
 
