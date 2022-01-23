@@ -610,7 +610,7 @@ class DBA {
       async () => {
         // set the current event
         const event = await this.getEventActive();
-        if (event === null || !event.registrationOpen) {
+        if (!event || !event.registrationOpen) {
           throw new FunctionalError('NO_ACTIVE_EVENT');
         }
         const dbValues = {};
