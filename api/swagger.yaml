@@ -637,7 +637,7 @@ components:
           format: date
         eventTitle:
           type: string
-        isRegistrationClosed:
+        isRegistrationOpen:
           type: boolean
         isProjectClosed:
           type: boolean

@@ -51,6 +51,13 @@ module.exports = (sequelize, DataTypes) => {
         return Date.now() > this.get('registrationClosedDate');
       }
     },
+    registrationOpen: {
+      type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['registrationOpenDate', 'registrationClosedDate']),
+      get: function() {
+        //console.log(Date.now());
+        return this.get('registrationOpenDate') < Date.now()  && this.get('registrationClosedDate') > Date.now();
+      }
+    },
     projectClosed: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['projectClosedDate']),
       get: function() {
@@ -58,7 +65,6 @@ module.exports = (sequelize, DataTypes) => {
         return Date.now() > this.get('projectClosedDate');
       }
     },
-
     event_title: DataTypes.STRING(25),
     maxFileSize: DataTypes.BIGINT(20)
   }, {

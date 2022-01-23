@@ -59,7 +59,8 @@ module.exports = function(models, database) {
       eventEndDate: event.eventEndDate.toISOString().substring(0, 10),
       eventTitle: event.event_title,
 
-      isRegistrationClosed: event.registrationClosed,
+      isRegistrationOpen: event.registrationOpen,
+      //isRegistrationClosed: event.registrationClosed,
       isProjectClosed: event.projectClosed,
 
       maxRegistration: event.maxRegistration,
