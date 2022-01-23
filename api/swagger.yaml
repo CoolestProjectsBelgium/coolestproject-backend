@@ -650,10 +650,16 @@ components:
       items:
         type: object
         properties:
-          id:
-            type: string
-          name:
-            type: string
+          group: string
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
     Address:
       required:
       - postalcode
