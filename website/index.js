@@ -153,10 +153,11 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
   }
   console.log(result)  
 
-  const startDay = event.officialStartDate.toISOString().substr(8, 2) 
-      + "." + event.officialStartDate.toISOString().substr(5, 2)
-      + "." + event.officialStartDate.toISOString().substr(0, 4)
-  res.render('calendar.handlebars', { eventName: event.event_title, eventStart: startDay, grid: result })
+  res.render('calendar.handlebars', { 
+    eventName: event.event_title, 
+    eventDate: new Intl.DateTimeFormat('nl-BE', {  dateStyle: 'short' }).format(event.officialStartDate), 
+    grid: result 
+    })
 }); 
 
 module.exports = router;  
