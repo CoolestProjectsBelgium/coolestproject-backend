@@ -153,7 +153,11 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
   }
   console.log(result)   
 
-  res.render('calendar.handlebars', { eventName: event.event_title, grid: result })
+  res.render('calendar.handlebars', { 
+    eventName: event.event_title, 
+    eventDate: new Intl.DateTimeFormat('nl-BE', {  dateStyle: 'short' }).format(event.officialStartDate), 
+    grid: result 
+    })
 }); 
 
 module.exports = router;  
