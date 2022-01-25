@@ -1,6 +1,17 @@
 {{!< default}}
+
+
+    <button onclick="Convert_HTML_To_PDF();">Export Planning to PDF</button>
+<p>  
+    -->Click Link to show:
+<a href="/website/projects.xml" class="button-link">Project.xml</a>
+    ..-->Click Link to show:
+<a href="/website/projects.json" class="button-link">Project.json</a>
+</p> 
+<div id="contentToPrint">
 <div class="container-fluid">
-    <h2 class="display-6"><i class="bi bi-calendar"></i> {{ eventName }} Date: 25 april 2021</h2>
+     
+    <h2 class="display-6"><i class="bi bi-calendar"></i> {{ eventName }} {{ eventStart }}</h2>
     {{#each grid}}
         <div class="row flex-row flex-nowrap g-2 mb-3">
             {{#each this}}
@@ -37,5 +48,57 @@
     {{/each}}
     </div>
 </div>
+</div>
 
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.0/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+function Convert_HTML_To_PDF() {
+
+ // const { jsPDF } = require("jspdf"); // will automatically load the node version
+
+  var elementHTML = document.getElementById('contentToPrint');
+
+  html2canvas(elementHTML, {
+    useCORS: true,
+    onrendered: function(canvas) {
+
+      var pdf = new jsPDF('landscape', 'pt', 'a4');
+
+      var pageHeight = 1800;
+      var pageWidth =  980;
+      for (var i = 0; i <= elementHTML.clientHeight / pageHeight; i++) {
+        var srcImg = canvas;
+        var sX = 0;
+        var sY = pageHeight * i; // start 1 pageHeight down for every new page
+        var sWidth = pageWidth;
+        var sHeight = pageHeight;
+        var dX = 0;
+        var dY = 0;
+        var dWidth = pageWidth;
+        var dHeight = pageHeight;
+
+        window.onePageCanvas = document.createElement("canvas");
+        onePageCanvas.setAttribute('width', pageWidth);
+        onePageCanvas.setAttribute('height', pageHeight);
+        var ctx = onePageCanvas.getContext('2d');
+        ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+
+        var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+        var width = onePageCanvas.width;
+        var height = onePageCanvas.clientHeight;
+
+        if (i > 0) // if we're on anything other than the first page, add another page
+          pdf.addPage(770, 430); // 8.5" x 12" in pts (inches*72)
+
+        pdf.setPage(i + 1); // now we declare that we're working on that page
+ 	pdf.addImage(canvasDataURL, 'PNG', 10, 20, (width * .72), (height * .71)); // add content to the page
+
+      }
+      console.log("does not work");
+      pdf.save('/website/documentImage.pdf');
+    }
+  }
+  )};
+
+</script>
