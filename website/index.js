@@ -11,7 +11,7 @@ const Event = models.Event;
 const Sequelize = require('sequelize');
 
 var router = express.Router(); 
-
+let eventId = 2;
 const corsOptions = {
   origin: '*',
   methods: [],
@@ -19,12 +19,17 @@ const corsOptions = {
   exposedHeaders: [],
   credentials: true
 };
+var handlebars = require('handlebars');
+handlebars.registerHelper("setVar", function(varName, varValue, options) {
+  options.data.root[varName] = varValue;
+});
+
 
 router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
-
-  var projects = await Project.findAll();
+  console.log("Event=======================>",eventId);
+  var projects = await Project.findAll({ where: {eventId: eventId }});
   
   for(let project of projects){
     let owner = await project.getOwner()
@@ -37,7 +42,7 @@ router.get('/projects.xml', cors(corsOptions), async function (req, res) {
       'ProjectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
-      'Description': project.get('project_descr') 
+      'Description': project.get('project_descr')
     });
   }
   const xml = root.end({ pretty: true});
@@ -46,11 +51,11 @@ router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   
 });
 
+
 router.get('/projects.json', cors(corsOptions), async function (req, res) {
-  var projects = await Project.findAll();
-  
+  var projects = await Project.findAll({ where: {eventId: eventId }});
   var response = []
-  for(let project of projects){
+ for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
     let attachments = await project.getAttachments({where:{confirmed:true}})
@@ -80,7 +85,7 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
   if (event === null) {
     return next(new Error('event not found'))
   }
-
+  eventId = event.id;
   const locations = await event.getLocations() 
   const tablesGroupedCount = await Table.findAll(
     {
@@ -129,12 +134,21 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
         } else if(project.get('project_lang') == 'fr'){
           cardStyle = 'border-secondary'
         } 
+        let endTime = new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('endTime'));
+        let startTime = new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));
+        let testTime = new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));   
+        let yesdescript = true;
+        let Needs = false;
 
+        if (endTime == '00:00'){ endTime = 0; yesdescript = false; Needs = true};
+        if (testTime == '00:00'){ endTime = 0; yesdescript = false; Needs = true};
+
+        let requirements = project.get('project_type');
         projectList.push({
           'style': cardStyle,
           'language': project.get('project_lang'),
-          'startTime': new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
-          'endTime': new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('endTime')),
+          'startTime': startTime,
+          'endTime': endTime,
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
           'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
@@ -142,7 +156,11 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
           'description': project.get('project_descr'),
           'agreedToPhoto': agreedToPhoto, 
           'startTimeShort': new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
-        })   
+          'techrequire': requirements,
+          'Needs': Needs,
+          'yesdescript': yesdescript
+        }) 
+        console.log(projectList)  ;
       }
 
       result[j+1][i] = {
@@ -151,7 +169,7 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
       }
     }
   }
-  console.log(result)  
+ // console.log(result)  
 
   res.render('calendar.handlebars', { 
     eventName: event.event_title, 

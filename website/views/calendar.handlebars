@@ -1,4 +1,10 @@
 {{!< default}}
+<p>  
+    -->Click Link to show:
+<a href="/website/projects.xml" class="button-link">Project.xml</a>
+    ..-->Click Link to show:
+<a href="/website/projects.json" class="button-link">Project.json</a>
+</p> 
 <div class="container-fluid">
     <h2 class="display-6"><i class="bi bi-calendar"></i> {{ eventName }} {{ eventDate }}</h2>
     {{#each grid}}
@@ -7,27 +13,34 @@
                 {{#if this.header}}
                 {{else}}
                     <div class="col">
-                        <h5><i class="display-7 bi bi-house-fill"> </i>{{this.name}}</h5>
+                        <h5><i class="bi bi-table"> </i>{{this.name}}</h5>
                         {{#each this.projects}}
+                        {{#if this.endTime }}
                          <h5><i class =" display-7 bi bi-clock-fill"></i> {{this.startTimeShort}} - {{this.endTime}}</h5>
+                        {{/if}}
                             <div class="card {{ this.style }}" style="width: 18rem;">
-                                <div class="card-header bg-info text-white">
-                                    {{this.projectName}}
-                                </div>
+                                <div class="card-header bg-info text-white"> {{this.projectName}}</div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">{{this.participants}}</li>
                                     <li class="list-group-item"><i class="bi bi-globe"></i> {{this.language}}, 
                                             {{#if this.agreedToPhoto}}<i class="bi bi-camera-video-fill text-success"></i>{{else}}<i class="bi bi-camera-video-off-fill text-danger"></i>{{/if}}</li>
-                                    <li class="list-group-item"><i class="bi bi-calendar"></i> {{this.startTime}} - {{this.endTime}}</li>
-                                </ul>
+                                     {{#if this.endTime}}  
+                                        <li class="list-group-item"><i class="bi bi-calendar"></i> {{this.startTime}} - {{this.endTime}}</li>
+                                     {{/if}}</li> 
+                                     {{#if this.Needs}} 
+                                        <li class="list-group-item">Needs: {{this.techrequire}}</li>
+                                     {{/if}}</li> 
                                 {{#if this.link}}
                                     <div class="card-body">
                                         <a href="{{this.link}}" class="card-link"><i class="bi bi-youtube"></i> YouTube link</a>
                                     </div>
                                 {{/if}}
-                                <div class="card-body">                              
-                                    <p style="max-height: 200px;" class= "card-text overflow-auto ">{{this.description}}</p>
-                                </div> 
+                                {{#if this.yesdescript}}
+                                    <div class="card-body">                              
+                                       <p style="max-height: 200px;" class= "card-text overflow-auto ">{{this.description}}</p>
+                                    </div> 
+                                {{/if}}
+
                             </div>
                         {{/each}}
                     </div>
