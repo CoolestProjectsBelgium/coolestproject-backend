@@ -54,7 +54,7 @@
   "<strong>{{ hash.title }} {{hash.year}}</strong>": "<strong>{{ hash.title }} {{hash.year}}</strong>",
   "We are very pleased that you want to participate on the next {{{hash.title}}} an HYBRIDE edition, so\n            that will be extra special !": "Nous sommes très heureux de te voir participer à la prochaine édition de Coolest Projects Belgium 2022!",
   "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>": "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>",
-  "<a\n                    href=\"{{hash.link}}\">Activation Link</a>": "<a\n                    href=\"{{hash.link}}\">Activation Link</a>",
+  "<a\n                    href=\"{{hash.link}}\">Activation Link</a>": "<a\n                    href=\"{{hash.link}}\">Lien d'activation</a>",
   "Be sure to activate": "Assure-toi de cliquer sur ce lien d'activation dans les 2 jours pour confirmer ta participation.",
   "{{ hash.title }} {{hash.year}}": "{{ hash.title }} {{hash.year}}",
   "Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "Copie et colle ce lien entre \"...\"\n\n\"{{{hash.url}}}\"\n\ndans ton navigateur.",
