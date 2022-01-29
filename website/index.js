@@ -28,7 +28,6 @@ handlebars.registerHelper("setVar", function(varName, varValue, options) {
 router.get('/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
-  console.log("Event=======================>",eventId);
   var projects = await Project.findAll({ where: {eventId: eventId }});
   
   for(let project of projects){
