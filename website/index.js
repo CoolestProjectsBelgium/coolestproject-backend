@@ -85,6 +85,7 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
   if (event === null) {
     return next(new Error('event not found'))
   }
+   // Save eventId from user input
   eventId = event.id;
   const locations = await event.getLocations() 
   const tablesGroupedCount = await Table.findAll(
