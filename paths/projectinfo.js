@@ -149,6 +149,10 @@ module.exports = function(models, database, azure, mailer) {
       project.project_descr = ownProject.project_descr;
       project.project_type = ownProject.project_type;
       project.project_lang = ownProject.project_lang;
+
+      const event = await user.getEvent();
+      project.eventId = event.id;
+      
       await database.createProject(project, user.id);
     } else if (otherProject) {
       // add user to voucher
