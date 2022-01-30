@@ -221,10 +221,11 @@ class DBA {
       delete changedFields.address;
 
       // cleanup guardian fields when not needed anymore
-      const user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
+      let user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
       const event = await user.getEvent();
 
-      await user.setQuestions(changedFields.mandatory_approvals.concat(changedFields.general_questions));
+      changedFields.questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
+      await user.setQuestions(changedFields.questions);
 
       // map questions
       delete changedFields.mandatory_approvals;
