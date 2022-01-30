@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Event.init({
-    azure_storage_container: DataTypes.STRING(20),
+    azure_storage_container: DataTypes.STRING(200),
     minAge: DataTypes.INTEGER,
     maxAge: DataTypes.INTEGER,
     minGuardianAge: DataTypes.INTEGER,
