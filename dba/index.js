@@ -227,7 +227,7 @@ class DBA {
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
       await user.setQuestions(questions);
 
-      changedFields.questions = questions.map((q) => { QuestionId: q });
+      changedFields.questions = questions.map((q) => { return { QuestionId: q }});
 
       // map questions
       delete changedFields.mandatory_approvals;
