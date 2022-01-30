@@ -227,7 +227,7 @@ class DBA {
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
       await user.setQuestions(questions);
 
-      changedFields.questions = questions.map((q) => { return { QuestionId: q }});
+      changedFields.questions = questions.map((q) => { return { QuestionId: q };});
 
       // map questions
       delete changedFields.mandatory_approvals;
@@ -592,7 +592,7 @@ class DBA {
     console.log(maxAgeDate);
     // 2) check if birthdate is valid
     console.log(dbValues.birthmonth);
-    if (!(dbValues.birthmonth < minAgeDate && dbValues.birthmonth > maxAgeDate)) {
+    if (!(dbValues.birthmonth <= minAgeDate && dbValues.birthmonth >= maxAgeDate)) {
       throw new Error('incorrect age');
     }
 
