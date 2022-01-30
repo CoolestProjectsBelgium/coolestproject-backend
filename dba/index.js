@@ -224,8 +224,10 @@ class DBA {
       let user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
       const event = await user.getEvent();
 
-      changedFields.questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
-      await user.setQuestions(changedFields.questions);
+      let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
+      await user.setQuestions(questions);
+
+      changedFields.questions = questions.map((q) => { QuestionId: q });
 
       // map questions
       delete changedFields.mandatory_approvals;
