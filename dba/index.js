@@ -466,7 +466,7 @@ class DBA {
         if (attachment === null) {
           throw new Error('Attachment failed');
         }
-        const sas = await this.azure.generateSAS(blobName, containerName=azureInfo.container_name);
+        const sas = await this.azure.generateSAS(blobName, containerName=containerName);
 
         return sas;
       }
