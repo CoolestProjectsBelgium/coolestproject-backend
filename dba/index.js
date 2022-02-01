@@ -421,7 +421,8 @@ class DBA {
     if (azureInfo === null) {
       throw new Error('No attachment found');
     }
-    return await this.azure.generateSAS(name, containerName=azureInfo.container_name);
+    //blobName, type = 'w', filename=null, containerName=process.env.AZURE_STORAGE_CONTAINER
+    return await this.azure.generateSAS(name,'w', null, azureInfo.container_name);
   }
 
   /**
@@ -466,7 +467,8 @@ class DBA {
         if (attachment === null) {
           throw new Error('Attachment failed');
         }
-        const sas = await this.azure.generateSAS(blobName, containerName=containerName);
+        //blobName, type = 'w', filename=null, containerName=process.env.AZURE_STORAGE_CONTAINER
+        const sas = await this.azure.generateSAS(blobName,'w', null, containerName);
 
         return sas;
       }
