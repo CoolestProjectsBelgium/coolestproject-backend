@@ -2,12 +2,12 @@
 const { BlobServiceClient, BlobSASPermissions } = require('@azure/storage-blob');
 
 class Azure{
-  static async syncSetting() {
+  static async syncSetting(containerName=process.env.AZURE_STORAGE_CONTAINER) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
     //blobServiceClient.setProperties(
     //  {cors: [{ allowedOrigins : process.env.URL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]});
 
-    const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
     await containerClient.createIfNotExists();
 
     await blobServiceClient.setProperties({ cors: [
@@ -15,22 +15,22 @@ class Azure{
       { allowedOrigins : process.env.BACKENDURL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]
     });
   }
-  static async deleteBlob(blobName) {
+  static async deleteBlob(blobName, containerName=process.env.AZURE_STORAGE_CONTAINER) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-    const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
     const containerBlobClient = containerClient.getBlockBlobClient(blobName);
 
     await containerBlobClient.deleteIfExists();
   }
-  static async checkBlobExists(blobName) {
+  static async checkBlobExists(blobName, containerName=process.env.AZURE_STORAGE_CONTAINER) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-    const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
     const containerBlobClient = containerClient.getBlockBlobClient(blobName);
     return await containerBlobClient.exists();
   }
-  static async generateSAS(blobName, type = 'w', filename=null) {
+  static async generateSAS(blobName, type = 'w', filename=null, containerName=process.env.AZURE_STORAGE_CONTAINER) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
-    const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_STORAGE_CONTAINER); 
+    const containerClient = blobServiceClient.getContainerClient(containerName); 
     const containerBlobClient = containerClient.getBlockBlobClient(blobName);
   
     const expiresOn = new Date(Date.now() + 86400 * 1000);

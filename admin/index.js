@@ -287,7 +287,7 @@ const adminBroOptions = {
               const { record, resource, currentAdmin, h } = data
               try {
                 const evt = await database.getEventDetail(request.params.recordId);
-                await Azure.syncSetting(evt);
+                await Azure.syncSetting(evt.azure_storage_container);
                 return {
                   record: record.toJSON(currentAdmin),
                   redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
@@ -584,7 +584,8 @@ const adminBroOptions = {
                   let confirmedId = -1;
                   let confirmedHref = '';
                   for (let a of attachments.rows) {
-                    successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                    const azureBlob = await a.getAzureBlob();
+                    successCount += (await Azure.checkBlobExists(azureBlob.get('blob_name'), azureBlob.get('container_name'))) ? 1 : 0;
                     if (a.get('confirmed')) {
                       confirmed = true
                       confirmedId = a.get('id')
@@ -614,7 +615,8 @@ const adminBroOptions = {
                 let confirmedId = -1;
                 let confirmedHref = '';
                 for (let a of attachments.rows) {
-                  successCount += (await Azure.checkBlobExists((await a.getAzureBlob())?.get('blob_name'))) ? 1 : 0;
+                  const azureBlob = await a.getAzureBlob();
+                  successCount += (await Azure.checkBlobExists(azureBlob.get('blob_name'), azureBlob.get('container_name'))) ? 1 : 0;
                   if (a.get('confirmed')) {
                     confirmed = true
                     confirmedId = a.get('id')
@@ -826,9 +828,9 @@ const adminBroOptions = {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
                   const attachment = await Attachment.findByPk(r.id, { include: [{ model: AzureBlob }] });
-                  const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                  const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, attachment.AzureBlob.container_name)
                   r.params['downloadLink'] = sas.url
-                  r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
+                  r.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name, attachment.AzureBlob.container_name);
                 } catch (error) {
                   //ignore
                 }
@@ -841,9 +843,9 @@ const adminBroOptions = {
             after: async (response, request, context) => {
               try {
                 const attachment = await Attachment.findByPk(response.record.params.id, { include: [{ model: AzureBlob }] });
-                const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, process.env.BACKENDURL)
+                const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, attachment.AzureBlob.container_name)
                 response.record.params['downloadLink'] = sas.url
-                response.record.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name);
+                response.record.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name, attachment.AzureBlob.container_name);
               } catch (error) {
                 console.log(error)
               }
@@ -899,8 +901,8 @@ const adminBroOptions = {
               response.records = await Promise.all(response.records.map(async (r) => {
                 try {
                   const blob = await AzureBlob.findByPk(r.id, { include: [{ model: Attachment }] });
-                  const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
-                  r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
+                  const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, blob.container_name)
+                  r.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name, blob.container_name);
                   r.params['downloadLink'] = sas.url
                 } catch (error) {
                   //ignore
@@ -914,9 +916,9 @@ const adminBroOptions = {
             after: async (response, request, context) => {
               try {
                 const blob = await AzureBlob.findByPk(response.record.params.id, { include: [{ model: Attachment }] });
-                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, process.env.BACKENDURL)
+                const sas = await Azure.generateSAS(blob.blob_name, 'r', blob.Attachment.filename, blob.container_name)
                 response.record.params['downloadLink'] = sas.url
-                response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name);
+                response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name, blob.container_name);
               } catch (error) {
                 console.log(error)
               }

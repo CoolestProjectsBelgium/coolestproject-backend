@@ -74,12 +74,12 @@ module.exports = function(models, database, azure, mailer) {
       const blob = await a.getAzureBlob();
   
       //skip when the file is not found
-      const exists = await azure.checkBlobExists(blob.blob_name);
+      const exists = await azure.checkBlobExists(blob.blob_name, blob.container_name);
       if(!exists){
         console.error(`Blob not found ${ blob.blob_name }`);
       }
   
-      const readSAS = await azure.generateSAS(blob.blob_name, 'r', a.filename);
+      const readSAS = await azure.generateSAS(blob.blob_name, 'r', a.filename, blob.container_name);
       attachments.push({
         id: blob.blob_name,
         name: a.name,

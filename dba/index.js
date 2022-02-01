@@ -358,7 +358,7 @@ class DBA {
           // delete files on azure
           for (const a of await project.getAttachments()) {
             const blob = await a.getAzureBlob();
-            await this.azure.deleteBlob(blob.blob_name);
+            await this.azure.deleteBlob(blob.blob_name, blob.container_name);
           }
           return await Project.destroy({ where: { ownerId: userId } });
         } else {
@@ -421,7 +421,7 @@ class DBA {
     if (azureInfo === null) {
       throw new Error('No attachment found');
     }
-    return await this.azure.generateSAS(name);
+    return await this.azure.generateSAS(name, containerName=azureInfo.container_name);
   }
 
   /**
@@ -446,7 +446,7 @@ class DBA {
         }
 
         const blobName = uuidv4();
-        const containerName = process.env.AZURE_STORAGE_CONTAINER;
+        const containerName = event.azure_storage_container;
 
         // create AzureBlob & create Attachment
         const attachment = await AzureBlob.create({
@@ -466,7 +466,7 @@ class DBA {
         if (attachment === null) {
           throw new Error('Attachment failed');
         }
-        const sas = await this.azure.generateSAS(blobName);
+        const sas = await this.azure.generateSAS(blobName, containerName=azureInfo.container_name);
 
         return sas;
       }
@@ -500,7 +500,7 @@ class DBA {
         }
         await Attachment.destroy({ where: { id: azureInfo.Attachment.id } });
 
-        await this.azure.deleteBlob(name);
+        await this.azure.deleteBlob(name, azureInfo.container_name);
 
         return null;
       }
