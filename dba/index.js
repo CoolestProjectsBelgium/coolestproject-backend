@@ -433,7 +433,7 @@ class DBA {
     return await sequelize.transaction(
       async () => {
         // check if we have a project owner
-        const project = await Project.findOne({ where: { ownerId: userId }, attributes: ['id'] });
+        const project = await Project.findOne({ where: { ownerId: userId } });
         if (project === null) {
           throw new Error('No project found');
         }
@@ -442,6 +442,10 @@ class DBA {
         // this just checks if the provided files size is bigger than the allowed one 
         // this is user input, you need to validate this later on (TODO look into azure blob hooks)
         const event = await project.getEvent();
+        if (event === null) {
+          throw new Error('No Event Found');
+        }
+
         if (attachment_fields.size > event.maxFileSize) {
           throw new Error('File validation failed');
         }
