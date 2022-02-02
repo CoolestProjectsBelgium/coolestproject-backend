@@ -10,10 +10,14 @@ class Azure{
     const containerClient = blobServiceClient.getContainerClient(containerName);
     await containerClient.createIfNotExists();
 
-    await blobServiceClient.setProperties({ cors: [
+    const currentSettings = await blobServiceClient.getProperties();
+    
+    const mergedCors = currentSettings.cors.concat([
       { allowedOrigins : process.env.URL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200},
-      { allowedOrigins : process.env.BACKENDURL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}]
-    });
+      { allowedOrigins : process.env.BACKENDURL, allowedMethods: 'OPTIONS,PUT,POST,GET', allowedHeaders:'*', exposedHeaders: '*', maxAgeInSeconds: 7200}
+    ]);
+
+    await blobServiceClient.setProperties({ cors: mergedCors });
   }
   static async deleteBlob(blobName, containerName=process.env.AZURE_STORAGE_CONTAINER) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING);
