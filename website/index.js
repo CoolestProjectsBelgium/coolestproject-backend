@@ -11,7 +11,6 @@ const Event = models.Event;
 const Sequelize = require('sequelize');
 
 var router = express.Router(); 
-let eventId = 2;
 const corsOptions = {
   origin: '*',
   methods: [],
@@ -19,16 +18,17 @@ const corsOptions = {
   exposedHeaders: [],
   credentials: true
 };
+
 var handlebars = require('handlebars');
 handlebars.registerHelper("setVar", function(varName, varValue, options) {
   options.data.root[varName] = varValue;
 });
 
 
-router.get('/projects.xml', cors(corsOptions), async function (req, res) {
+router.get('/planning/:eventId/projects.xml', cors(corsOptions), async function (req, res) {
   const { create } = require('xmlbuilder');
   var root = create('projects.xml');
-  var projects = await Project.findAll({ where: {eventId: eventId }});
+  var projects = await Project.findAll({ where: { eventId: req.params.eventId }});
   
   for(let project of projects){
     let owner = await project.getOwner()
@@ -51,41 +51,46 @@ router.get('/projects.xml', cors(corsOptions), async function (req, res) {
 });
 
 
-router.get('/projects.json', cors(corsOptions), async function (req, res) {
-  var projects = await Project.findAll({ where: {eventId: eventId }});
+router.get('/planning/:eventId/projects.json', cors(corsOptions), async function (req, res) {
+  var projects = await Project.findAll({ where: {eventId: req.params.eventId }});
   var response = []
+
  for(let project of projects){
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
     let attachments = await project.getAttachments({where:{confirmed:true}})
     let table = await project.getTables()
-
+    let tableEquip = table[0]?.requirements
+    if (!tableEquip ) {tableEquip = ""}
     response.push({
       'projectName': project.get('project_name'),
       'Language': project.get('project_lang'),
       'projectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
-      'location': table[0]?.location,
+      'location': table[0]?.LocationId,
       'place': table[0]?.name,
       'usedPlaces': table[0]?.ProjectTable.get('usedPlaces'),
+      'techrequire': project.get('project_type'),
+      'tableEquip': tableEquip,
       'description': project.get('project_descr')
     })
   }
   res.json(response);
 });
 
-router.get('/planning/:eventId', cors(corsOptions), async function (req, res, next) {
+router.get('/planning/:eventId/', cors(corsOptions), async function (req, res, next) {
   // create a planning table structure 
   // x -> list of locations
   // y -> list of table
   // z -> list of projects
+
   const event = await Event.findByPk(req.params.eventId)
   if (event === null) {
     return next(new Error('event not found'))
   }
    // Save eventId from user input
-  eventId = event.id;
+  //eventId = event.id;
   const locations = await event.getLocations() 
   const tablesGroupedCount = await Table.findAll(
     {
@@ -103,11 +108,20 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
       name: location.get('text'),
       header: true 
     }
+    
 
     let tables = await location.getTables()
     for (const [j, table] of tables.entries()) {
       let projectList = []
       let projects = await table.getProjects()
+      let Needs = true
+      let tableEquip = "";
+      if (tables[j]?.requirements !== null){tableEquip = JSON.stringify(tables[j]?.requirements);Needs=true}
+
+     //console.log("tableEquip:",tableEquip)
+     //console.log("Needs:",Needs)
+
+
       for(let project of projects){
         let participantsList = []
         let owner = await project.getOwner()
@@ -138,12 +152,12 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
         let startTime = new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));
         let testTime = new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));   
         let yesdescript = true;
-        let Needs = false;
+       // let Needs = false;
 
         if (endTime == '00:00'){ endTime = 0; yesdescript = false; Needs = true};
         if (testTime == '00:00'){ endTime = 0; yesdescript = false; Needs = true};
-
         let requirements = project.get('project_type');
+
         projectList.push({
           'style': cardStyle,
           'language': project.get('project_lang'),
@@ -158,9 +172,16 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
           'startTimeShort': new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime')),
           'techrequire': requirements,
           'Needs': Needs,
+          'tableEquip': tableEquip,
           'yesdescript': yesdescript
         }) 
-        console.log(projectList)  ;
+        //console.log(projectList)  ;
+        
+        const url = req.originalUrl  ;
+        const last = url.charAt(url.length - 1);
+        if (last !='/'){eventId = last}
+        console.log(req.originalUrl)  ;
+        console.log(last)  ;
       }
 
       result[j+1][i] = {
@@ -169,7 +190,7 @@ router.get('/planning/:eventId', cors(corsOptions), async function (req, res, ne
       }
     }
   }
- // console.log(result)  
+ //console.log(result)  
 
   res.render('calendar.handlebars', { 
     eventName: event.event_title, 

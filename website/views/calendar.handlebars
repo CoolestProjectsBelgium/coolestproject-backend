@@ -1,8 +1,8 @@
 {{!< default}}
 <p>  -->Click Link to show:
-<a href="/website/projects.xml" class="button-link">Project.xml</a>
+<a href="projects.xml" class="button-link">Project.xml</a>
     ..-->Click Link to show:
-<a href="/website/projects.json" class="button-link">Project.json</a>
+<a href="projects.json" class="button-link">Project.json</a>
 </p> 
 <div class="container-fluid">
     <h2 class="display-6"><i class="bi bi-calendar"></i> {{ eventName }} {{ eventDate }}</h2>
@@ -13,6 +13,7 @@
                 {{else}}
                     <div class="col">
                         <h5><i class="bi bi-table"> </i>{{this.name}}</h5>
+                        <li class="list-group-item">T_Equip: {{this.tableEquip}}</li>
                         {{#each this.projects}}
                         {{#if this.endTime }}
                          <h5><i class =" display-7 bi bi-clock-fill"></i> {{this.startTimeShort}} - {{this.endTime}}</h5>
@@ -28,7 +29,8 @@
                                      {{/if}}</li> 
                                      {{#if this.Needs}} 
                                         <li class="list-group-item">Needs: {{this.techrequire}}</li>
-                                     {{/if}}</li> 
+                                        <li class="list-group-item">T_Equip: {{this.tableEquip}}</li>
+                                     {{/if}}
                                 {{#if this.link}}
                                     <div class="card-body">
                                         <a href="{{this.link}}" class="card-link"><i class="bi bi-youtube"></i> YouTube link</a>

@@ -19,6 +19,7 @@ const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
 var Mail = require('../mailer');
 const Token = require('../jwts');
+const { triggerAsyncId } = require('async_hooks');
 
 
 const projectParent = {
@@ -118,21 +119,38 @@ const adminBroOptions = {
       resource: db.Account,
       options: {
         navigation: adminParent,
+        properties: {
+          account_type: {
+            isVisible: {
+              edit: false,
+              show: true,
+              list: true,
+              filter: false
+              }
+            }
+           },
         actions: {
           new: {
             isAccessible: superAdminAllowed
           },
           edit: {
-            isAccessible: superAdminAllowed
+            isAccessible: adminAllowed,
           },
           delete: {
-            isAccessible: superAdminAllowed
+            isAccessible: adminAllowed
           },
           show: {
-            isAccessible: superAdminAllowed
+            isAccessible: adminAllowed
           },
           list: {
-            isAccessible: superAdminAllowed
+            before: async (request, { currentAdmin }) => {
+              console.log(currentAdmin);
+              if(currentAdmin.account_type != 'super_admin')
+               // edit: {isVisible: false}
+                request.query = { ...request.query, 'filters.email': currentAdmin.email }
+              return request
+            },
+            isAccessible: adminAllowed
           }
         }
       },

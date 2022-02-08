@@ -915,7 +915,7 @@ class DBA {
           [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id and Users.language = \'en\')'), 'tlang_en'],
           [sequelize.literal('(SELECT count(*) from Users where Users.eventId = Event.id)'), 'total_users'],
           [sequelize.literal('(SELECT count(DISTINCT Attachments.ProjectId ) from Attachments INNER JOIN Projects ON Projects.id = Attachments.ProjectId WHERE Projects.eventId = Event.id )'), 'total_videos'],
-          [sequelize.literal('DATEDIFF(eventBeginDate, CURDATE())'), 'days_remaining'],
+          [sequelize.literal('DATEDIFF(officialStartDate, CURDATE())'), 'days_remaining'],
           [sequelize.literal('(SELECT count(*) from Projects where Projects.eventId = Event.id)'), 'total_projects'],
           [sequelize.literal(`(SELECT count(*) from Registrations where Registrations.eventId = Event.id and DATE_ADD(Registrations.createdAt, INTERVAL ${process.env.TOKEN_VALID_TIME} SECOND) < CURDATE() )`), 'overdue_registration']
         ]
