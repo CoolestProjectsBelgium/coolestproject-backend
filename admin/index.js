@@ -70,6 +70,11 @@ function adminAllowed({ currentAdmin }){
   return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
 }
 
+function adminAllowedOwnUser(context){
+  return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
+}
+
+
 const adminBroOptions = {
   databases: [db],
   rootPath: '/admin',
@@ -120,21 +125,39 @@ const adminBroOptions = {
       options: {
         navigation: adminParent,
         properties: {
-          account_type: {
-            isVisible: {
-              edit: false,
-              show: true,
-              list: true,
-              filter: false
-              }
-            }
-           },
+          account_type:{
+          isVisible: {
+            edit: true
+          }
+        }
+        },
         actions: {
           new: {
             isAccessible: superAdminAllowed
           },
           edit: {
-            isAccessible: adminAllowed,
+            isAccessible: adminAllowedOwnUser,
+            before: async (request, { currentAdmin }) => {
+              function changeAccountType(){
+                if (currentAdmin.account_type === 'super_admin'){
+                  return request.payload.account_type
+                }
+                return currentAdmin.account_type
+              }
+              request.payload = {
+                ...request.payload,
+                account_type: changeAccountType()
+              }
+              return request
+
+
+
+
+              if(currentAdmin.account_type === 'super_admin')
+                
+                console.log('super admin:')
+                return request
+            }
           },
           delete: {
             isAccessible: adminAllowed
@@ -146,7 +169,6 @@ const adminBroOptions = {
             before: async (request, { currentAdmin }) => {
               console.log(currentAdmin);
               if(currentAdmin.account_type != 'super_admin')
-               // edit: {isVisible: false}
                 request.query = { ...request.query, 'filters.email': currentAdmin.email }
               return request
             },
