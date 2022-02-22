@@ -223,8 +223,9 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
       having : { 'EventId': event.get('id') }
     }
   )
+
   // we need header values in the first row so + 1 for length
-  const maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0) + 1;
+  const maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0)  + 1;
 
   const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
   for (const [i, location] of locations.entries()) {
@@ -271,11 +272,8 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
                 } else if(project.get('project_lang') == 'fr'){
                   cardStyle = 'border-secondary'
                 } 
-              let endTime = new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('endTime'));
-              let startTime = new Intl.DateTimeFormat('nl-BE', { dateStyle: 'medium', timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));
-              let testTime = new Intl.DateTimeFormat('nl-BE', {  timeStyle: 'short' }).format(project.ProjectTable.get('startTime'));   
 
-              projectList.push({
+                projectList.push({
                 'style': cardStyle,
                 'language': project.get('project_lang'),
                 'name': table.name,

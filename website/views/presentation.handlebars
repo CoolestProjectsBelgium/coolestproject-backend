@@ -6,11 +6,11 @@
                 {{#if this.header}}
                 {{else}}
                     <div class="col">
-                        <div class="card {{ this.style }}" style="width: 118rem;height:55px; font-size: 48px;">
+                        <div class="card {{ this.style }}" style="width: 118rem;height:1px; font-size: 48px;">
                         <div class="card-header text-center bg-info text-white"> Coolest Projects Belgium 2022 Edition Detail Fiches</div>
                         <P></P>
                         {{#each this.projects}}
-                                <div class="card {{ this.style }}" style="height: 860px; width: 58rem;font-size: 24px;">
+                                <div class="card {{ this.style }}" style="height: 1080px; width: 58rem;font-size: 24px;">
                                 <div class="card-header bg-info text-white"> {{this.projectName}}</div>
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item">{{this.participants}}</li>
@@ -30,12 +30,12 @@
                                                   
                             </div> 
                                 <div id="myDIV2">
-                                    <marquee scrollamount = "5" attribute_name = "attribute_value" attribute_name_2 = "attribute_value_2" . >
+                                    <marquee scrollamount = "10" attribute_name = "attribute_value" attribute_name_2 = "attribute_value_2" . >
                                     <div class="float-left bg-scondary {{ this.style }}" style="background: rgb(231, 220, 161);width: 118rem;font-size: 48px;">
                                          {{messages}}
                                     </marquee>
                                 </div> 
-             
+                     
                         {{/each}}     
                
                 {{/if}}
