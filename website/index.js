@@ -284,28 +284,24 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
                 'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
                 'link': (await attachments.pop()?.getHyperlink())?.get('href'),
                 'description': project.get('project_descr'),
+                'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<',
+                // https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm
                 'agreedToPhoto': agreedToPhoto
               }) 
               console.log("====>projectList")  
-              console.log(projectList)  
-            
+              console.log(projectList)   
+
               result[j+1][i] = {
                 name: table.get('name'),
                 projects: projectList
                 }
-            
-          
             }
-        
           }
         }
      }
-      
   }
 
- 
   console.log(result)  
-
 
   res.render('presentation.handlebars', { 
     eventName: event.event_title, 
