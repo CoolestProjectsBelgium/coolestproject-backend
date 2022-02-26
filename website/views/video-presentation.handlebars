@@ -1,0 +1,48 @@
+{{!< default}}
+
+<div class="container-fluid">
+    {{#each grid}}
+        <div class="row flex-row flex-nowrap g-2 mb-3">
+            {{#each this}}
+                    <div class="col">
+                        <div class="card {{ this.style }}" style="width: 118rem;height:1px; font-size: 48px;">
+                        <div class="card-header text-center bg-info text-white"> Coolest Projects Belgium 2022 Edition Detail Fiches</div>
+                        <P></P>
+                        {{#each this.projects}}
+                                <div class="card {{ this.style }}" style="height: 883px; width: 58rem;font-size: 24px;">
+                                <div class="card-header bg-info text-white"> {{this.projectName}}</div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">{{this.participants}}</li>
+                                    <li class="list-group-item"><i class="bi bi-globe"></i> {{this.language}}, 
+                                            {{#if this.agreedToPhoto}}<i class="bi bi-camera-video-fill text-success"></i>{{else}}<i class="bi bi-camera-video-off-fill text-danger"></i>{{/if}}
+                                    </li>
+
+                                    <i class="card-body">
+                                        <a href="{{this.link}}" class="card-link"><i class="bi bi-youtube"></i> YouTube link</a>
+                                    </i>
+                                        <iframe  width="750" height="430" src="{{link2}}" ></iframe>
+                                        <div class="card-body">
+                                            <b>Project Decription</b>                            
+                                        <p style="height: 100px;" class= "card-text overflow-auto ">{{this.description}}</p>                                        
+                                </ul>
+                                        <div class="card-body text-center">  
+                                        <h2><i class="bi bi-table"> </i>{{this.name}}</h2> 
+                                </div>
+                                                  
+                            </div> 
+                                <div id="myDIV2">
+                                    <marquee scrollamount = "10" attribute_name = "attribute_value" attribute_name_2 = "attribute_value_2" . >
+                                    <div class="float-left bg-scondary {{ this.style }}" style="background: rgb(231, 220, 161);width: 118rem;font-size: 48px;">
+                                         {{messages}}
+
+                                    </marquee>
+                                </div> 
+                     
+                        {{/each}}     
+
+                    </div>
+            {{/each}}
+        </div>  
+    {{/each}}
+    </div>
+</div>

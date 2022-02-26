@@ -199,7 +199,7 @@ router.get('/planning/:eventId/', cors(corsOptions), async function (req, res, n
     eventDate: new Intl.DateTimeFormat('nl-BE', {  dateStyle: 'short' }).format(event.officialStartDate), 
     grid: result 
     })
-}),
+});
 
 router.get('/presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
   // create a planning table structure 
@@ -306,6 +306,106 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
     eventDate: new Intl.DateTimeFormat('nl-BE', {  dateStyle: 'short' }).format(event.officialStartDate), 
     grid: result 
     })
-}); 
+});
 
-module.exports = router;  
+router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
+    var projects = await Project.findAll({ where: {eventId: req.params.eventId }});
+    let projectList = []
+    let participantsList = []
+    let pCount = 0
+    
+   
+    // create a planning table structure 
+    // x -> list of locations
+    // y -> list of table
+    // z -> list of projects
+
+    const event = await Event.findByPk(req.params.eventId)
+    if (event === null) {
+      return next(new Error('event not found'))
+    }
+
+    const locations = await event.getLocations() 
+    const tablesGroupedCount = await Table.findAll(
+      {
+      attributes: ['LocationId','EventId', [Sequelize.fn('count', Sequelize.col('LocationId')), 'count']],
+      group: ['LocationId','EventId'],
+      having : { 'EventId': event.get('id') }
+      }
+    )
+    // we need header values in the first row so + 1 for length
+    let maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0) + 1
+    maxTablesCount = 1
+    const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
+    console.log("maxTablesCount:", maxTablesCount)
+    pCount = 1
+    for(let project of projects){
+
+      if(project.get('id') == req.query.ProjectId){
+
+        let participantsList = []
+        let attachments = await project.getAttachments({where:{confirmed:true}})
+        let table = await project.getTables()
+        let agreedToPhoto = true
+
+        let owner = await project.getOwner()
+        if(owner){
+          participantsList.push(owner)
+          agreedToPhoto = agreedToPhoto && (await owner.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
+        }
+        let participants = await project.getParticipant()  
+        if(participants){
+            for(let participant of participants){
+              agreedToPhotopCount = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
+            }
+            participantsList.push(...participants) 
+        } 
+
+          let cardStyle = ''
+          if(!agreedToPhoto){
+              cardStyle = 'border-danger'
+            } else if(project.get('project_lang') == 'nl'){
+              cardStyle = 'border-primary'
+            } else if(project.get('project_lang') == 'fr'){
+                      cardStyle = 'border-secondary'
+            } 
+          let hlink2 =""
+          let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
+          //console.log("Youtube code:",hcode)
+          if (hcode){let res = hcode.split("/")
+            hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1'
+          } else {hlink2 = "no video found"}
+          tName = table[0]?.name
+          if(!tName){tName ="not yet assigned"}
+          projectList.push({
+            'style': cardStyle,
+            'language': project.get('project_lang'),
+            'projectName': project.get('project_name'),
+            'projectID': project.get('id'),
+            'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
+            'link': hcode,
+            'link2': hlink2,
+            'description': project.get('project_descr'),
+            'agreedToPhoto': agreedToPhoto, 
+            'location': table[0]?.LocationId,
+            'name': tName,
+            'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
+            // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
+          })
+          //console.log(projectList)  
+          result[0][0] = {
+            name: table[0]?.name,
+            projects: projectList,
+          }
+            res.render('video-presentation.handlebars', { 
+            grid: result
+            })
+        }
+    
+  }
+
+    return
+    
+});
+
+module.exports = router; 
