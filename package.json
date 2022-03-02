@@ -70,6 +70,7 @@
     "randomstring": "^1.2.1",
     "sequelize": "^6.11.0",
     "swagger-tools": "^0.10.4",
+    "umzug": "^3.0.0",
     "uuid": "^8.3.2",
     "xmlbuilder2": "^3.0.2",
     "yargs": "^17.2.1"

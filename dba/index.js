@@ -781,6 +781,23 @@ class DBA {
   }
 
   /**
+   * Get the project based on its id
+   * @param {Integer} projectId
+   * @returns {Promise<models.Project>}
+   */
+  async getProjectById(projectId)
+  {
+    const event = await getEventActive();
+    if (!event) {
+      return;
+    }
+    const project = await Project.findOne({
+      where: { Id: projectId, eventId = event.Id }
+    });
+    return project;
+  }
+
+  /**
      * Check if email address exists in User records table
      * @param {String} emailAddress
      * @param {models.Event} event

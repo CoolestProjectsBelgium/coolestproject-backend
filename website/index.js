@@ -2,15 +2,18 @@ const express = require('express');
 var cors = require('cors')
 const models = require('../models');
 const Project = models.Project;
-const Location = models.Location;
-const Attachment = models.Attachment;
-const Hyperlink = models.Hyperlink;
-const User = models.User;
+const PublicVote = models.publicvote;
 const Table = models.Table;
 const Event = models.Event;
 const Sequelize = require('sequelize');
+const bodyParser = require('body-parser');
 
-var router = express.Router(); 
+const DBA = require('../dba');
+const database = new DBA();
+
+var router = express.Router();
+router.use(bodyParser.urlencoded({ extended: false })); // for SMS
+
 const corsOptions = {
   origin: '*',
   methods: [],
@@ -20,6 +23,7 @@ const corsOptions = {
 };
 
 var handlebars = require('handlebars');
+const publicvote = require('../models/publicvote');
 handlebars.registerHelper("setVar", function(varName, varValue, options) {
   options.data.root[varName] = varValue;
 });
@@ -306,6 +310,22 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
     eventDate: new Intl.DateTimeFormat('nl-BE', {  dateStyle: 'short' }).format(event.officialStartDate), 
     grid: result 
     })
+});
+
+/**
+ * Called by the Twilio webhook whenever a SMS comes in
+ */
+router.post('/sms', async function (req, res, next) {
+
+  console.log(req.body);
+  
+  const projectId = parseInt(req.body.Body);
+  const project = await database.getProjectById(projectId);
+  const phone = req.body.From || null;
+
+  const pv = await PublicVote.create( {projectId: project.id, phone } );
+
+  res.status(200).send(null);
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
