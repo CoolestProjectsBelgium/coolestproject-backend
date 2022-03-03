@@ -787,12 +787,12 @@ class DBA {
    */
   async getProjectById(projectId)
   {
-    const event = await getEventActive();
+    const event = await this.getEventActive();
     if (!event) {
       return;
     }
     const project = await Project.findOne({
-      where: { Id: projectId, eventId = event.Id }
+      where: { Id: projectId, eventId : event.Id }
     });
     return project;
   }

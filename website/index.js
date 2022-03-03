@@ -314,6 +314,7 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
 
 /**
  * Called by the Twilio webhook whenever a SMS comes in
+ * https://www.twilio.com/docs/messaging/guides/webhook-request
  */
 router.post('/sms', async function (req, res, next) {
 
@@ -323,8 +324,21 @@ router.post('/sms', async function (req, res, next) {
   const project = await database.getProjectById(projectId);
   const phone = req.body.From || null;
 
-  const pv = await PublicVote.create( {projectId: project.id, phone } );
+  try {
+    const pv = await PublicVote.create( {projectId: project.id, phone } );
+  } catch (error) {
+    res.status(201).send("Double vote");
+  }
+  
+  const sid = req.body.MessagingServiceSid;
+  const expectedSid = process.env('TwilioSID');
 
+  if (sid != expectedSid) {
+    res.status(403).send("Unexpected sender");
+    return;
+  }
+
+  // Success
   res.status(200).send(null);
 });
 
