@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      PublicVote.belongsTo(models.Project, { as: 'project', optional: false, require: true });
+      PublicVote.belongsTo(models.Project, { as: 'project', optional: false, require: true, allowNull: false });
     }
   }
   PublicVote.init({
-    phone: { type: DataTypes.CHAR(100), require: true }
+    phone: { type: DataTypes.CHAR(100), allowNull: false, require: true }
   }, {
     sequelize,
     modelName: 'PublicVote',

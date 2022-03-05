@@ -19,6 +19,7 @@ const Sequelize = require('sequelize');
 Sequelize.useCLS(namespace);
 
 const bcrypt = require('bcrypt');
+const { logger } = require('handlebars');
 
 const Account = models.Account;
 const QuestionRegistration = models.QuestionRegistration;
@@ -791,9 +792,13 @@ class DBA {
     if (!event) {
       return;
     }
+    console.log(event.id);
+
     const project = await Project.findOne({
-      where: { Id: projectId, eventId : event.Id }
+      where: { Id: projectId, eventId : event.id }
     });
+    //console.log(project);
+
     return project;
   }
 
@@ -857,7 +862,7 @@ class DBA {
      * @returns {Promise<models.Event>}
      */
   async setEventActive(eventId) {
-    return await sequelize.transaction(
+    return sequelize.transaction(
       async () => {
         // cancel previous events
         await Event.update({ eventEndDate: new Date() }, { where: { id: { [Op.ne]: eventId } } });
@@ -873,7 +878,7 @@ class DBA {
           event.eventEndDate = addYears(new Date(), 1);
         }
 
-        return await event.save();
+        return event.save();
       }
     );
   }
@@ -892,7 +897,7 @@ class DBA {
      * @returns {Promise<models.Event>}
      */
   async getEventActive() {
-    const activeEventId = await Event.findOne({
+    const activeEvent = await Event.findOne({
       where: {
         eventBeginDate: {
           [Op.lt]: Sequelize.literal('CURDATE()'),
@@ -904,11 +909,11 @@ class DBA {
       attributes: ['id']
     });
 
-    if (!activeEventId) {
+    if (!activeEvent) {
       throw new Error('No Event Active');
     }
 
-    return await this.getEventDetail(activeEventId.id);
+    return this.getEventDetail(activeEvent.id);
   }
 
   /**
