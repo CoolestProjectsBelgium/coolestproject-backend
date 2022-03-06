@@ -11,6 +11,7 @@ const Event = models.Event;
 const Sequelize = require('sequelize');
 
 var router = express.Router(); 
+router.use('/static', express.static('static'));
 const corsOptions = {
   origin: '*',
   methods: [],
@@ -371,7 +372,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
        let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
        //console.log("Youtube code:",hcode)
        if (hcode){let res = hcode.split("/")
-         hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1'
+         hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1&cc_lang_pref=nl&cc_load_policy=1&controls=0'
        } else {hlink2 = "no video found"}
        tName = table[0]?.name
        if(!tName){tName ="not yet assigned"}
