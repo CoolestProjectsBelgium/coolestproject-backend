@@ -13,7 +13,8 @@ module.exports = function(models, database, mailer, jwt) {
       logger.info('user found: ' + user.id);
       const event = await user.getEvent();
       if (event.closed) {
-        throw Error('event is closed');
+        logger.info('event is closed');
+        continue; // jump to the next found user
       }
       // only one token every n seconds
       var tokenTime = -1;
@@ -25,6 +26,7 @@ module.exports = function(models, database, mailer, jwt) {
         await database.updateLastToken(user.id);
         const token = await jwt.generateLoginToken(user.id);
         await mailer.ask4TokenMail(user, token, event);
+        logger.info('Token email send');
       } else {
         logger.info('Token requested but time is not passed yet: ' + user.email);
       }
