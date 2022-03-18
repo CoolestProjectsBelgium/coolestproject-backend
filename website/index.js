@@ -14,7 +14,6 @@ const database = new DBA();
 var router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false })); // for SMS
 
-var router = express.Router(); 
 router.use('/static', express.static('static'));
 const corsOptions = {
   origin: '*',
@@ -320,6 +319,8 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
  */
 router.post('/sms', async function (req, res, next) {
 
+  console.log('SMS Request coming in:');
+  console.log(req);
   console.log(req.body);
 
   const projectId = parseInt(req.body.Body);
