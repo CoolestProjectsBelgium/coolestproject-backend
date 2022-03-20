@@ -320,7 +320,6 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
 router.post('/sms', async function (req, res, next) {
 
   console.log('SMS Request coming in:');
-  console.log(req);
   console.log(req.body);
 
   const projectId = parseInt(req.body.Body);
@@ -328,15 +327,15 @@ router.post('/sms', async function (req, res, next) {
   const phone = req.body.From || null;
 
   const sid = req.body.MessagingServiceSid;
-  const expectedSid = process.env.TWILIO_SID; // does not work: undefined
+  const expectedSid = process.env.TWILIO_SID;
 
   console.log(sid);
   console.log(expectedSid);
 
-  /*   if (sid != expectedSid) {
-      res.status(403).send("Unexpected sender");
-      return;
-    } */
+  if (sid != expectedSid) {
+    res.status(403).send("Unexpected sender!");
+    return;
+  }
   
   console.log(phone);
   const crypto = require('crypto');
@@ -345,15 +344,17 @@ router.post('/sms', async function (req, res, next) {
   console.log(hash);
   
   if (!project) {
-    res.status(202).send("unknown project");
-      return;
+    console.log('Unknown project!');
+    res.status(200).send("Unknown project");
+    return;
   }
 
   try {
     var pv = await PublicVote.create({ phone: hash, projectId: project.id });
   } catch (e) {
     if (e.name === 'SequelizeUniqueConstraintError') {
-      res.status(202).send("double vote");
+      console.log('Double vote!');
+      res.status(200).send("Double vote");
       return;
     } else {
       throw e;
@@ -361,7 +362,7 @@ router.post('/sms', async function (req, res, next) {
   }
 
   // Success
-  res.status(200).send("success");
+  res.status(200).send("OK");
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
