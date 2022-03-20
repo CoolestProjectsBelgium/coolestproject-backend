@@ -345,7 +345,7 @@ router.post('/sms', async function (req, res, next) {
   
   if (!project) {
     console.log('Unknown project!');
-    res.status(200).send("Unknown project");
+    res.status(200);
     return;
   }
 
@@ -354,7 +354,7 @@ router.post('/sms', async function (req, res, next) {
   } catch (e) {
     if (e.name === 'SequelizeUniqueConstraintError') {
       console.log('Double vote!');
-      res.status(200).send("Double vote");
+      res.status(200);
       return;
     } else {
       throw e;
@@ -362,7 +362,7 @@ router.post('/sms', async function (req, res, next) {
   }
 
   // Success
-  res.status(200).send("OK");
+  res.status(200);
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
