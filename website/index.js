@@ -316,7 +316,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
  var projects = await Project.findAll({ where: {eventId: req.params.eventId }});
  let projectList = []
  let pCount = 0
-
+// <img src="/website/static/Tables2.svg" alt="Tables2.svg" width="700px" height="300px" />
  // create a planning table structure 
  // x -> list of locations
  // y -> list of table
@@ -374,9 +374,11 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
        let hlink2 =""
        let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
        //console.log("Youtube code:",hcode)
-       if (hcode){let res = hcode.split("/")
-         hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1&cc_lang_pref=nl&cc_load_policy=1&controls=0'
-       } else {hlink2 = "no video found"}
+       //if (hcode){let res = hcode.split("/")
+        // hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1&cc_lang_pref=nl&cc_load_policy=1&controls=0'
+         hlink2 = '/website/static/coolestProjects.png'
+         //https://img.youtube.com/vi/VFLFp_pHYJQ/hqdefault.jpg
+       //} else {hlink2 = "no video found"}
        tName = table[0]?.name
        if(!tName){tName ="not yet assigned"}
       
@@ -390,9 +392,9 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          'link2': hlink2,
          'description': project.get('project_descr'),
          'agreedToPhoto': agreedToPhoto, 
-         'location': table[0]?.LocationId,
+         'location': 'Voting Number: '+ project.get('id') + '   ',
          'name': tName,
-         'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
+         //'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
          // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
        })
       
