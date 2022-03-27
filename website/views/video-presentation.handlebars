@@ -3,85 +3,94 @@
     {{#each grid}}
         <div class="flex-container {{ this.style }}" style="height: 90%;display: flex; padding: 10px;">
             <div class="card {{ this.style }}" style="width: 100% ;font-size: 48px;">
-            <div class="card-header text-center bg-info text-white"> Coolest Projects Belgium 2022 Edition Detail Fiches</div>
-            <P></P>                                              
-            {{#each this}}
-                        <div class="flex-container {{ this.style }}" style=" background-color: rgb(255, 83, 30);display: flex;
+                <div class="card-header text-center bg-info text-white"> Coolest Projects Belgium 2022 Edition Detail
+                    Fiches
+                </div>
+                <P></P>
+                {{#each this}}
+                    <div class="flex-container {{ this.style }}" style=" background-color: rgb(255, 83, 30);display: flex;
                                                                 flex-direction: row;
                                                                 color: rgb(1, 255, 255);
-                                                                width: 1x; margin: 10px;
+                                                                margin: 10px;
                                                                 width: 1000px;
                                                                 text-align: center; line-height: 75px;
                                                                 font-size: 16px;">
-                         {{#each this.projects}}      
-                                        <div class="flex-child {{ this.style }}" style=" flex: 1 ;border: 1px solid black;
+                        {{#each this.projects}}
+                            <div class="flex-child {{ this.style }}" style=" flex: 1 ;border: 1px solid black;
                                                             display: flex;flex-direction: row;
-                                                            margin-right 10px;padding: 5px; 
+                                                            margin-right: 10px;padding: 5px;
                                                             width: 950px;height: 840px;
                                                             background-color: lightgreen;font-size: 16px;">
-
-                                           <div class="card {{ this.style }}" style="height: 830px; width: 58rem;font-size: 24px; text-align: left;">
-                                                <div class="card-header bg-info text-white"> #{{this.projectID}} {{this.projectName}}</div>
-                                                 <ul class="list-group list-group-flush">
-                                                <li class="list-group-item">{{this.participants}}</li>
-                                                <li class="list-group-item"><i class="bi bi-globe"></i> {{this.language}}, 
-                                                 {{#if this.agreedToPhoto}}<i class="bi bi-camera-video-fill text-success"></i>{{else}}<i class="bi bi-camera-video-off-fill text-danger"></i>{{/if}}
-                                                </li>
-                                                <i class="card-body">
-                                                <a href="{{this.link}}" class="card-link"><i class="bi bi-youtube"></i> YouTube link</a>
-                                                </i>
-                                                <div class="card-body{{this.style}}" style="height: font-size: 32px;line-height: 36px;
+                                <div class="card {{ this.style }}"
+                                     style="height: 830px; width: 58rem;font-size: 24px; text-align: left;">
+                                    <div class="card-header bg-info text-white">
+                                        #{{this.projectID}} {{this.projectName}}
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">{{this.participants}}</li>
+                                        <li class="list-group-item"><i class="bi bi-globe"></i> {{this.language}},
+                                            {{#if this.agreedToPhoto}}
+                                                <i class="bi bi-camera-video-fill text-success"></i>
+                                            {{else}}
+                                                <i class="bi bi-camera-video-off-fill text-danger"></i>
+                                            {{/if}}
+                                        </li>
+                                        <i class="card-body">
+                                            <a href="{{this.link}}" class="card-link"><i class="bi bi-youtube"></i>
+                                                YouTube
+                                                link</a>
+                                        </i>
+                                        <div class="card-body{{this.style}}" style="height: 32px;line-height: 36px;
                                                                                         color: black;padding: 10px">
-                                                        <b>Project Decription</b>                            
-                                                <p style="height: 330px;font-size: 24px;line-height: 28px;color: black;" class= "card-text overflow-auto ">{{this.description}}</p>                                        
-                                                 </ul>
-                                                <div class="card-body text-center {{this.style}}" style="color: black;">  
-                                                         <h2>{{this.location}}<i class="bi bi-table"> </i>{{this.name}}</h2> 
-                                                </div>
-
-                                           </div>
+                                            <b>Project Decription</b>
+                                            <p style="height: 330px;font-size: 24px;line-height: 28px;color: black;"
+                                               class="card-text overflow-auto ">{{this.description}}</p>
                                         </div>
-
-                                        <div class="flex-child {{ this.style }}" style=" flex: 1 ; border: 1px solid black;
+                                    </ul>
+                                    <div class="card-body text-center {{this.style}}" style="color: black;">
+                                        <h2>{{this.location}}<i class="bi bi-table"> </i>{{this.name}}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-child {{ this.style }}" style=" flex: 1 ; border: 1px solid black;
                                                             display: flex; flex-direction: column;
-                                                            margin-right 10px; padding: 5px; 
+                                                            margin-right: 10px; padding: 5px;
                                                             width: 900px; height: 840px;
                                                             background-color: rgb(101, 226, 29);
                                                             font-size: 16px;">
-
-                                        <div class="flex-child2 {{ this.style }}" style=" flex: 1;display: flex;flex-direction: column;
+                                <div class="flex-child2 {{ this.style }}" style=" flex: 1;display: flex;flex-direction: column;
                                                             border: 1px solid rgb(255, 255, 255);
-                                                            margin-right 10px;padding: 1px; 
+                                                            margin-right: 10px;padding: 1px;
                                                             width: 890px; height: 60%;
                                                             background-color: rgb(255, 255, 255);
                                                             font-size: 16px;">
-                
-                                                <h4>
-                                                <iframe  width="800" height="450" src="{{link2}}" ></iframe>                                          
-                                        </div>
-                                        <div class="flex-child2 {{ this.style }}" style=" flex: 1;display: flex;flex-direction: column;
+                                    <iframe width="800" height="450" src="{{link2}}"></iframe>
+                                </div>
+                                <div class="flex-child2 {{ this.style }}" style=" flex: 1;display: flex;flex-direction: column;
                                                             color: rgb(77, 114, 238);
                                                             border: 1px solid black;
-                                                            margin-right 10px;padding: 5px; 
+                                                            margin-right: 10px;padding: 5px;
                                                             width: 890px; height: 40%;
                                                             background-color: rgb(232, 240, 210);
-                                                            font-size: 16px;">                                          
-
-                                               
-                                                <img src="/website/static/Tables2.svg" alt="Tables2.svg" width="790px" height="355px" />
-                                        </div> 
-
-                                  </div>
-                                
-                                  </div>
-                                        <div id="myDIV2">
-                                            <marquee scrollamount = "10" attribute_name = "attribute_value" attribute_name_2 = "attribute_value_2" . >
-                                                <div class="float-left bg-scondary {{ this.style }}" style="background: rgb(231, 220, 161);width: 118rem;font-size: 48px;">
-                                                {{this.messages}}
-                                            </marquee>  
-                                        </div>   
-                         {{/each}}            
+                                                            font-size: 16px;">
+                                    <img src="/website/static/Tables2.svg" alt="Tables2.svg" width="790px"
+                                         height="355px"/>
+                                </div>
+                            </div>
+                            <div id="myDIV2">
+                                <marquee scrollamount="10" attribute_name="attribute_value"
+                                         attribute_name_2="attribute_value_2"
+                                         .>
+                                    <div class="float-left bg-scondary {{ this.style }}"
+                                         style="background: rgb(231, 220, 161);width: 118rem;font-size: 48px;">
+                                        {{this.messages}}
+                                    </div>
+                                </marquee>
+                            </div>
+                        {{/each}}
+                    </div>
                 {{/each}}
+            </div>
         </div>
     {{/each}}
 </div>
