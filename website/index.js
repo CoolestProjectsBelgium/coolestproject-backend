@@ -394,6 +394,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          'agreedToPhoto': agreedToPhoto, 
          'location': 'Voting Number: '+ project.get('id') + '   ',
          'name': tName,
+         'tableNumber': tName.toLowerCase().replaceAll(" ","_")
          //'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
          // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
        })
