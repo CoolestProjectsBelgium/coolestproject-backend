@@ -92,6 +92,7 @@ const adminBroOptions = {
     translations: {
       labels: {
         ShowUserWithNoProject: 'Show User(s) With No Project',
+        showprojectusersemail: 'Show Project Users Email',
         ShowAttachmentLoaded: 'Show Attachment(s) Loaded'
       }
     }
@@ -1051,6 +1052,38 @@ const adminBroOptions = {
         navigation: votingParent
       }
     },
+    {
+    resource: db.showprojectusersemail,
+    options: {
+      name: "Projects met Email en deelnemers)",
+      listProperties: ['ProjectID', 'email', 'participants', 'Project_Name', 'project_descr', 'Language', 'eventId'],
+      parent: reportParent,
+      actions: {
+        list: {
+          before: async (request, { currentAdmin }) => {
+            if(superAdminAllowed({ currentAdmin })){
+              return request;
+            }
+            const event = await database.getEventActive();
+            request.query = { ...request.query, 'filters.eventId': event.id }
+            return request
+          }
+        },
+        
+        new: {
+          isVisible: false
+        },
+        edit: {
+          isVisible: false
+        },
+        delete: {
+          isVisible: false
+        }
+      },
+      properties: {
+      }
+    }
+  },
     {
       resource: db.ShowUserWithNoProject,
       options: {

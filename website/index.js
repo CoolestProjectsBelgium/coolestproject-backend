@@ -432,21 +432,26 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          //https://img.youtube.com/vi/VFLFp_pHYJQ/hqdefault.jpg
        //} else {hlink2 = "no video found"}
        tName = table[0]?.name
-       if(!tName){tName ="not yet assigned"}
-      
+       vNumber =''
+       if(!tName)
+          {tName ="not yet assigned"
+          } else {vNumber = tName.match(/\d+/)[0]}
        projectList.push({
          'style': cardStyle,
          'language': project.get('project_lang'),
          'projectName': project.get('project_name'),
-         'projectID': project.get('id'),
+         //'projectID': project.get('id'),
          'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
          'link': hcode,
          'link2': hlink2,
          'description': project.get('project_descr'),
          'agreedToPhoto': agreedToPhoto, 
-         'location': 'Voting Number: '+ project.get('id') + '   ',
+         //'location': 'Voting Number: '+ project.get('id') + '   ',
+         'location': 'Voting Number: '+ vNumber +'    ',
          'name': tName,
          //'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
+         'messages': '😎====>Fixed text for  important messages 🎯 =====<<===fixed text 😅<'
+         //'messages': ''
          // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
        })
       
