@@ -397,6 +397,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          //'location': 'Voting Number: '+ project.get('id') + '   ',
          'location': 'Voting Number: '+ vNumber +'    ',
          'name': tName,
+         'tableNumber': tName.toLowerCase().replaceAll(" ","_")
          //'messages': '😎<====Running text footer for important messages 🎯 =====<<===Running text 😅<'
          'messages': '😎====>Fixed text for  important messages 🎯 =====<<===fixed text 😅<'
          //'messages': ''
