@@ -38,11 +38,20 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
-const corsOptions = {
-  origin: process.env.URL,
+
+var whitelist = [process.env.URL, process.env.VOTE_URL]
+var corsOptions = {
+  origin: function (origin, callback) {
+    console.log(origin)
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   optionsSuccessStatus: 200,
   credentials: true
-};
+}
 
 app.use(cors(corsOptions));
 
@@ -52,6 +61,14 @@ require('./security')(app);
 // website integration 
 const websiteIntegration = require('./website');
 app.use('/website', websiteIntegration);
+
+//sms voting
+const smsIntegration = require('./sms');
+app.use('/sms', smsIntegration);
+
+//admin voting
+const votingIntegration = require('./voting');
+app.use('/voting', votingIntegration);
 
 // enable admin UI
 const adminUI = require('./admin');
