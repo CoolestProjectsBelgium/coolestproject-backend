@@ -304,8 +304,8 @@ router.get('/planning/:eventId/', cors(corsOptions), async function (req, res, n
         const url = req.originalUrl;
         const last = url.charAt(url.length - 1);
         if (last != '/') { eventId = last }
-        console.log(req.originalUrl);
-        console.log(last);
+        //console.log(req.originalUrl);
+       //console.log(last);
       }
 
       result[j + 1][i] = {
@@ -409,8 +409,8 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
               // https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm
               'agreedToPhoto': agreedToPhoto
             })
-            console.log("====>projectList")
-            console.log(projectList)
+            //console.log("====>projectList")
+            //console.log(projectList)
 
             result[j + 1][i] = {
               name: table.get('name'),
@@ -422,7 +422,7 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
     }
   }
 
-  console.log(result)
+  //console.log(result)
 
   res.render('presentation.handlebars', {
     eventName: event.event_title,
@@ -491,6 +491,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
                    cardStyle = 'border-secondary'
          } 
        let hlink2 =""
+       let QRlink ="/website/static/QRplanning.png"
        let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
        //console.log("Youtube code:",hcode)
        //if (hcode){let res = hcode.split("/")
@@ -511,18 +512,19 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
          'link': hcode,
          'link2': hlink2,
+         'qrlink': QRlink,
          'description': project.get('project_descr'),
          'agreedToPhoto': agreedToPhoto, 
          //'location': 'Voting Number: '+ project.get('id') + '   ',
          'location': 'Voting Number: '+ vNumber +'    ',
          'name': tName,
          'tableNumber': tName.toLowerCase().replaceAll(" ","_"),
-         'messages': '😎====>Fixed text for  important messages 🎯 =====<<===fixed text 😅<'
-         //'messages': ''
+         //'messages': '😎====>Fixed text for  important messages 🎯 =====<<===fixed text 😅<'
+         'messages': ''
          // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
        })
       
-       console.log(projectList)  
+       //console.log(projectList)  
        result[0][0] = {
          name: table[0]?.name,
          projects: projectList,

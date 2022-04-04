@@ -67,8 +67,8 @@ const smsIntegration = require('./sms');
 app.use('/sms', smsIntegration);
 
 //admin voting
-const votingIntegration = require('./voting');
-app.use('/voting', votingIntegration);
+//const votingIntegration = require('./voting');
+//app.use('/voting', votingIntegration);
 
 // enable admin UI
 const adminUI = require('./admin');

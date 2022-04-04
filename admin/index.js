@@ -1037,19 +1037,55 @@ const adminBroOptions = {
     {
       resource: db.VoteCategory,
       options: {
-        navigation: votingParent
+        navigation: votingParent,
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.eventId': event.id }
+               return request
+             }
+           }
+         }
       }
     },
     {
       resource: db.ExternVote,
       options: {
-        navigation: votingParent
+        navigation: votingParent,
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.eventId': event.id }
+               return request
+             }
+           }
+         }
       }
     },
     {
       resource: db.Award,
       options: {
-        navigation: votingParent
+        navigation: votingParent,
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.EventId': event.id }
+               return request
+             }
+           }
+         }
       }
     },
     {
