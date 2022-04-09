@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     name: { type: DataTypes.CHAR(15), unique: true },
     min: { type: DataTypes.INTEGER },
     max: { type: DataTypes.INTEGER },
-    public: { type: DataTypes.BOOLEAN }
+    public: { type: DataTypes.BOOLEAN },
+    optional: { type: DataTypes.BOOLEAN },
   }, {
     sequelize,
     modelName: 'VoteCategory',
