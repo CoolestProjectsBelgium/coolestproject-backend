@@ -9,6 +9,7 @@ const passport = require('passport');
 const VoteCategory = models.VoteCategory;
 const Project = models.Project;
 const Account = models.Account;
+const Vote = models.Vote;
 
 const secretOrPublicKey = 'StRoNGs3crE7';
 
@@ -29,10 +30,13 @@ passport.use(new JsonStrategy(
     const account = await Account.findOne({ where: { email: username, account_type: 'jury' } });
 
     if (!account) { return done(null, false); }
-    //if (!account.verifyPassword(password)) { return done(null, false); }
+    if (!account.verifyPassword(password)) { return done(null, false); }
     return done(null, {id: account.id, email: account.email, user: account.email});
     
     /*
+    console.log(user);
+    if (!user) { return null }
+    if (! await user.verifyPassword(password)) { return null }
     console.log(username);
     console.log(password);
     
@@ -47,12 +51,12 @@ passport.use(new JsonStrategy(
   }
 ));
 
-passport.use(new JwtStrategy({
+passport.use('voting', new JwtStrategy({
   secretOrKey: secretOrPublicKey,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }, (payload, done) => {
   console.log(payload);
-  return done(null, payload.user);
+  return done(null, payload);
 }));
 
 router.post('/auth/login', passport.authenticate('json'), async function (req, res) {
@@ -64,36 +68,37 @@ router.post('/auth/login', passport.authenticate('json'), async function (req, r
     res.status(403);
     return;
   }
-  const token = jwt.sign({ id: account.id, email: account.email, user: account.email }, secretOrPublicKey);
+
+  const token = jwt.sign({ id: account.id, email: account.email }, secretOrPublicKey);
   res.status(200).json({'jwt': token});
 });
 
-router.post('/auth/logout', passport.authenticate('jwt'), async function (req, res) {
+router.post('/auth/logout', passport.authenticate('voting'), async function (req, res) {
   res.send('success');
 });
 
-router.get('/auth/user', passport.authenticate('jwt'), async function (req, res) {
+router.get('/auth/user', passport.authenticate('voting'), async function (req, res) {
   const account = await Account.findByPk(req.user.id);
   res.json({
-    id: account.id,
-    email: account.email,
-    user: account.email
+    user: account.id,
+    //email: account.email
   });
 });
 
-router.get('/projects', passport.authenticate('jwt'), async function (req, res) {
+router.get('/projects', passport.authenticate('voting'), async function (req, res) {
   // get random project
   //load categories
-
   const projects = await Project.findAll({
     limit: 5,
+    where: {
+      id: {
+        [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
+      }
+    },
     attributes: {
       include: [
         [
-          Sequelize.literal(`(
-                    SELECT COUNT(*)
-                    FROM Votes AS vote
-                    WHERE vote.projectId = Project.id )`),
+          Sequelize.literal('(SELECT COUNT(*) FROM Votes AS vote WHERE vote.projectId = Project.id )'),
           'votesRecieved'
         ]
       ]
@@ -104,9 +109,13 @@ router.get('/projects', passport.authenticate('jwt'), async function (req, res) 
   });
 
   const randomProject = projects[Math.floor(Math.random() * projects.length)];
+  if(!randomProject){
+    res.json({message:'done'});
+    return;
+  }
 
   const categories = await VoteCategory.findAll({
-    attributes: ['name', 'max', 'optional'],
+    attributes: ['name', 'max', 'optional','id'],
     where: {
       eventId: 1
     }
@@ -122,11 +131,13 @@ router.get('/projects', passport.authenticate('jwt'), async function (req, res) 
   );
 });
 
-router.post('/projects/:projectId', passport.authenticate('jwt'), async function (req, res) {
-  // save vote
-  console.log(req.params.projectId);
-  console.log(req.user.id);
-  console.log(req.body);
+router.post('/projects/:projectId', passport.authenticate('voting'), async function (req, res) {
+  const votes = [];
+  for (const v of req.body) {
+    votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0 });
+  }
+  await Vote.bulkCreate(votes);
+  res.send('success');
 });
 
 module.exports = router;  

@@ -71,6 +71,7 @@ module.exports = function (app) {
   passport.use(new AnonymousStrategy());
 
   passport.serializeUser(function (user, done) {
+    console.log('usr:' + user);
     done(null, user.id);
   });
 
