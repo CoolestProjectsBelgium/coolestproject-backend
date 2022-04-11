@@ -77,6 +77,18 @@ router.get('/auth/user', passport.authenticate('voting'), async function (req, r
 });
 
 router.get('/projects', passport.authenticate('voting'), async function (req, res) {
+  const activeEvent = await Event.findOne({
+    where: {
+      eventBeginDate: {
+        [Op.lt]: Sequelize.literal('CURDATE()'),
+      },
+      eventEndDate: {
+        [Op.gt]: Sequelize.literal('CURDATE()'),
+      }
+    },
+    attributes: ['id']
+  });
+
   // get random project
   //load categories
   const projects = await Project.findAll({
@@ -84,7 +96,8 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
     where: {
       id: {
         [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
-      }
+      },
+      eventId: activeEvent.id
     },
     attributes: {
       include: [
@@ -108,7 +121,7 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
   const categories = await VoteCategory.findAll({
     attributes: ['name', 'max', 'optional','id'],
     where: {
-      eventId: 1
+      eventId: activeEvent.id
     }
   });
 
