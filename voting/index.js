@@ -32,22 +32,6 @@ passport.use(new JsonStrategy(
     if (!account) { return done(null, false); }
     if (!account.verifyPassword(password)) { return done(null, false); }
     return done(null, {id: account.id, email: account.email, user: account.email});
-    
-    /*
-    console.log(user);
-    if (!user) { return null }
-    if (! await user.verifyPassword(password)) { return null }
-    console.log(username);
-    console.log(password);
-    
-    User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
-      return done(null, user);
-    });*/
-
-    //return done(null, { id: account.id, name: account.email });
   }
 ));
 
@@ -110,7 +94,7 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
 
   const randomProject = projects[Math.floor(Math.random() * projects.length)];
   if(!randomProject){
-    res.json({message:'done'});
+    res.json({message:'finished'});
     return;
   }
 
@@ -134,6 +118,7 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
 router.post('/projects/:projectId', passport.authenticate('voting'), async function (req, res) {
   const votes = [];
   for (const v of req.body) {
+    //TODO add mandatory fill in check
     votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0 });
   }
   await Vote.bulkCreate(votes);
