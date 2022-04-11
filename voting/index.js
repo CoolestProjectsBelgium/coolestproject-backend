@@ -71,8 +71,8 @@ router.post('/auth/logout', passport.authenticate('voting'), async function (req
 router.get('/auth/user', passport.authenticate('voting'), async function (req, res) {
   const account = await Account.findByPk(req.user.id);
   res.json({
-    user: account.id,
-    name: account.email
+    user: {id:account.id,
+    name: account.email}
   });
 });
 
