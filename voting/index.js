@@ -76,7 +76,17 @@ router.get('/auth/user', passport.authenticate('voting'), async function (req, r
   });
 });
 
+router.get('/languages', passport.authenticate('voting'), async function (req, res) {
+  res.json([{ id: 'nl', text: 'Dutch'}, { id: 'fr', text: 'French'}, { id: 'en', text: 'English'}]);
+});
+
 router.get('/projects', passport.authenticate('voting'), async function (req, res) {
+
+  let languages = ['nl', 'fr', 'en']
+  try {
+    languages = JSON.parse(req.params.languages)
+  } catch (e) {}
+
   const activeEvent = await Event.findOne({
     where: {
       eventBeginDate: {
@@ -97,7 +107,10 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
       id: {
         [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
       },
-      eventId: activeEvent.id
+      eventId: activeEvent.id,
+      project_lang: {
+        [Sequelize.Op.any]: languages
+      }
     },
     attributes: {
       include: [
@@ -125,10 +138,13 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
     }
   });
 
+  const location = await randomProject.getTable();
+
   res.json(
     { project_id: randomProject.id, 
       title: randomProject.project_name, 
-      description: randomProject.project_descr, 
+      description: randomProject.project_descr,
+      location: randomProject. 
       language: randomProject.project_lang, 
       categories: categories 
     }
