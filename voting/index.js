@@ -10,7 +10,7 @@ const VoteCategory = models.VoteCategory;
 const Project = models.Project;
 const Account = models.Account;
 const Vote = models.Vote;
-
+const Event = models.Event;
 const secretOrPublicKey = 'StRoNGs3crE7';
 
 const JsonStrategy = require('passport-json').Strategy;
@@ -130,7 +130,8 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
     res.json({message:'finished'});
     return;
   }
-
+  const location = (await randomProject.getTables())?.[0].name;
+  console.log(location);
   const categories = await VoteCategory.findAll({
     attributes: ['name', 'max', 'optional','id'],
     where: {
@@ -146,7 +147,8 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
       description: randomProject.project_descr,
       location: randomProject. 
       language: randomProject.project_lang, 
-      categories: categories 
+      categories: categories,
+      location: location
     }
   );
 });
