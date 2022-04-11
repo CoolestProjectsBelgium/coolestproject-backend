@@ -27,11 +27,18 @@ router.use(passport.initialize());
 
 passport.use(new JsonStrategy(
   async function (username, password, done) {
-    const account = await Account.findOne({ where: { email: username, account_type: 'jury' } });
-
-    if (!account) { return done(null, false); }
-    if (!account.verifyPassword(password)) { return done(null, false); }
-    return done(null, {id: account.id, email: account.email, user: account.email});
+    try {
+      const account = await Account.findOne({ where: { email: username, account_type: 'jury' } });
+      if (!account) { 
+        return done(null, false); 
+      }
+      if (!account.verifyPassword(password)) { 
+        return done(null, false); 
+      }
+      return done(null, {id: account.id, email: account.email, user: account.email});
+    } catch (error) {
+      return done(null, false);
+    }
   }
 ));
 
@@ -58,14 +65,14 @@ router.post('/auth/login', passport.authenticate('json'), async function (req, r
 });
 
 router.post('/auth/logout', passport.authenticate('voting'), async function (req, res) {
-  res.send('success');
+  res.send(null);
 });
 
 router.get('/auth/user', passport.authenticate('voting'), async function (req, res) {
   const account = await Account.findByPk(req.user.id);
   res.json({
     user: account.id,
-    //email: account.email
+    name: account.email
   });
 });
 
@@ -122,7 +129,7 @@ router.post('/projects/:projectId', passport.authenticate('voting'), async funct
     votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0 });
   }
   await Vote.bulkCreate(votes);
-  res.send('success');
+  res.send(null);
 });
 
 module.exports = router;  
