@@ -80,10 +80,10 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
   const activeEvent = await Event.findOne({
     where: {
       eventBeginDate: {
-        [Op.lt]: Sequelize.literal('CURDATE()'),
+        [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
       },
       eventEndDate: {
-        [Op.gt]: Sequelize.literal('CURDATE()'),
+        [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
       }
     },
     attributes: ['id']
