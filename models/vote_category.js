@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   VoteCategory.init({
-    name: { type: DataTypes.CHAR(15), unique: true },
+    name: { type: DataTypes.CHAR(15) },
     min: { type: DataTypes.INTEGER },
     max: { type: DataTypes.INTEGER },
     public: { type: DataTypes.BOOLEAN },
@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'VoteCategory',
+    indexes: [{ unique: true, fields: ['eventId', 'name'] }]
   });
   return VoteCategory;
 };
