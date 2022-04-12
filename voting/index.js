@@ -11,7 +11,7 @@ const Project = models.Project;
 const Account = models.Account;
 const Vote = models.Vote;
 const Event = models.Event;
-const secretOrPublicKey = 'StRoNGs3crE7';
+const secretOrPublicKey = process.env.VOTING_KEY;
 
 const JsonStrategy = require('passport-json').Strategy;
 const bodyParser = require('body-parser');
@@ -25,7 +25,7 @@ router.use(passport.session());
 router.use(bodyParser.json());
 router.use(passport.initialize());
 
-passport.use(new JsonStrategy(
+passport.use('voting_login', new JsonStrategy(
   async function (username, password, done) {
     try {
       const account = await Account.findOne({ where: { email: username, account_type: 'jury' } });
@@ -50,7 +50,7 @@ passport.use('voting', new JwtStrategy({
   return done(null, payload);
 }));
 
-router.post('/auth/login', passport.authenticate('json'), async function (req, res) {
+router.post('/auth/login', passport.authenticate('voting_login'), async function (req, res) {
   console.log(req.user);
 
   const account = await Account.findByPk(req.user.id);
@@ -140,7 +140,6 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
       eventId: activeEvent.id
     }
   });
-
 
   res.json(
     { project_id: randomProject.id, 
