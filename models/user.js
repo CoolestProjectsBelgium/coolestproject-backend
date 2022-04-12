@@ -85,7 +85,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       type: DataTypes.DATE
     },
-    via: DataTypes.STRING,
+    via: { 
+      type: DataTypes.STRING(255)
+    },
     medical: {
       type: DataTypes.STRING(255),
       defaultValue: null

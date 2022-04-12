@@ -710,7 +710,31 @@ const adminBroOptions = {
             show: true,
             filter: false,
             type: 'boolean'
-          }
+          },
+          email_guardian: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          eventId: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          gsm_guardian: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          gsm: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          medical: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          last_token: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
         },
         actions: {
           list: {

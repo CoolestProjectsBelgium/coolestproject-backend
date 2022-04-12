@@ -12,6 +12,7 @@ const Account = models.Account;
 const Vote = models.Vote;
 const Event = models.Event;
 const secretOrPublicKey = process.env.VOTING_KEY;
+console.log(secretOrPublicKey)
 
 const JsonStrategy = require('passport-json').Strategy;
 const bodyParser = require('body-parser');
