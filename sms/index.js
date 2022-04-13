@@ -3,6 +3,9 @@ const models = require('../models');
 const PublicVote = models.PublicVote;
 const bodyParser = require('body-parser');
 
+const Table = models.Table;
+const Project = models.Project;
+
 var router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false })); // for SMS
 
@@ -14,7 +17,25 @@ router.post('/', async function (req, res, next) {
 
     console.log(req.body);
 
-    const projectId = parseInt(req.body.Body);
+    const lookupRegex = /\d+/g;
+    const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
+
+    if(!tableNumber){
+        console.log('no table found');
+    }
+
+   const table = await Table.findOne({
+        where: { 
+            name: {
+                [Sequelize.Op.like]: '%' + tableNumber
+            } 
+        }, 
+        include: [ 
+            { model: Project } 
+        ]
+    });
+
+    const projectId = table.projects?.[0].id;
     const project = await database.getProjectById(projectId);
     const phone = req.body.From || null;
 
