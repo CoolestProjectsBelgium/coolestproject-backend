@@ -147,7 +147,7 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
       description: randomProject.project_descr, 
       language: randomProject.project_lang, 
       categories: categories,
-      location: location
+      location: location || 'No location'
     }
   );
 });
