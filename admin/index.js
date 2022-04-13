@@ -1055,7 +1055,20 @@ const adminBroOptions = {
     {
       resource: db.Vote,
       options: {
-        navigation: votingParent
+        navigation: votingParent,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if(superAdminAllowed({ currentAdmin })){
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
+              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              return request
+            }
+          }
+        }
       }
     },
     {

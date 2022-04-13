@@ -153,6 +153,18 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
 });
 
 router.post('/projects/:projectId', passport.authenticate('voting'), async function (req, res) {
+  const activeEvent = await Event.findOne({
+    where: {
+      eventBeginDate: {
+        [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
+      },
+      eventEndDate: {
+        [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
+      }
+    },
+    attributes: ['id']
+  });
+
   const votes = [];
   for (const v of req.body) {
     //TODO add mandatory fill in check
