@@ -1094,18 +1094,7 @@ const adminBroOptions = {
       resource: db.PublicVote,
       options: {
         navigation: votingParent,
-        actions: {
-          list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.eventId': event.id }
-               return request
-             }
-           }
-         }
+        actions: {}
       }
     },
     {
