@@ -7,6 +7,8 @@ const Sequelize = require('sequelize');
 
 const Table = models.Table;
 const Project = models.Project;
+const Event = models.Event;
+
 
 var router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false })); // for SMS
@@ -17,13 +19,15 @@ router.use(bodyParser.urlencoded({ extended: false })); // for SMS
  */
 router.post('/', async function (req, res, next) {
 
-    console.log(req.body);
+    console.log(req.body.Body);
 
     const lookupRegex = /\d+/g;
     const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
-
+    console.log(tableNumber);
     if (!tableNumber) {
         console.log('no table found');
+        res.status(403).send("no number found in the message");
+        return;
     }
 
     const activeEvent = await Event.findOne({
@@ -50,29 +54,28 @@ router.post('/', async function (req, res, next) {
                 model: Project,
                 required: true,
                 through: {
-                    attributes: []
+                    attributes: ['ProjectId']
                 }
             }
         ]
     });
-
+console.log(table)
     const projectId = table.Projects?.[0].id; //just pick the first project
-
+    console.log(projectId);
     //const project = await database.getProjectById(projectId);
     const phone = req.body.From || null;
 
     const sid = req.body.MessagingServiceSid;
     const expectedSid = process.env.TWILIO_SID; // does not work: undefined
 
-    console.log(sid);
-    console.log(expectedSid);
+console.log(sid,expectedSid)
 
-    /*   if (sid != expectedSid) {
+       if (sid != expectedSid) {
         res.status(403).send("Unexpected sender");
         return;
-      } */
+      } 
 
-    console.log(phone);
+
     const crypto = require('crypto');
     const md5 = crypto.createHash('md5'); // for SMS
     var hash = md5.update(phone).digest('hex');
