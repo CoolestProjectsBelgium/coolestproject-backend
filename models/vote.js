@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Vote.belongsTo(models.Event, { as: 'event', optional: false });
       Vote.belongsTo(models.VoteCategory, { as: 'category', optional: false });
       Vote.belongsTo(models.Project, { as: 'project', optional: false });
       Vote.belongsTo(models.Account, { as: 'account' });

@@ -156,7 +156,7 @@ router.post('/projects/:projectId', passport.authenticate('voting'), async funct
   const votes = [];
   for (const v of req.body) {
     //TODO add mandatory fill in check
-    votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0 });
+    votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0, eventId: activeEvent.id });
   }
   await Vote.bulkCreate(votes);
   res.send(null);
