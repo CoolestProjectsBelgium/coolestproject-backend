@@ -20,6 +20,7 @@ var stream = require('stream');
 var Mail = require('../mailer');
 const Token = require('../jwts');
 const { triggerAsyncId } = require('async_hooks');
+const Sequelize = require('sequelize');
 
 
 const projectParent = {
@@ -1387,7 +1388,7 @@ AdminBro.registerAdapter(AdminBroSequelize)
 const adminBro = new AdminBro(adminBroOptions);
 const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
   async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email }});
+    const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } }});
     console.log(user);
     if (!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
