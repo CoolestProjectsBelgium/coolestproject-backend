@@ -2,6 +2,8 @@ const express = require('express');
 const models = require('../models');
 const PublicVote = models.PublicVote;
 const bodyParser = require('body-parser');
+const Sequelize = require('sequelize');
+
 
 const Table = models.Table;
 const Project = models.Project;
