@@ -491,7 +491,6 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
                    cardStyle = 'border-secondary'
          } 
        let hlink2 =""
-       let QRlink ="/website/static/QRplanning.png"
        let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
        //console.log("Youtube code:",hcode)
        //if (hcode){let res = hcode.split("/")
@@ -512,7 +511,6 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
          'link': hcode,
          'link2': hlink2,
-         'qrlink': QRlink,
          'description': project.get('project_descr'),
          'agreedToPhoto': agreedToPhoto, 
          //'location': 'Voting Number: '+ project.get('id') + '   ',
