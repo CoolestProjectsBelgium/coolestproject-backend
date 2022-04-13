@@ -34,23 +34,23 @@
                                         <b>Project Decription</b>
                                         <p style="font-size: 24px;line-height: 28px;color: black;"
                                            class="card-text overflow-auto ">{{this.description}}</p>
-                                           
+
                                     </div>
-                                    
+
                                 </div>
                                 <div class="card-footer text-center" style="color: black;">
-                                     <h2> 
-                                            {{this.location}}<i class="bi bi-table"> </i>{{this.name}}</h2>
+                                    <h2>
+                                        {{this.location}}<i class="bi bi-table"> </i>{{this.name}}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-6 d-grid" style="grid-template-rows: 1fr 1fr; gap: 1rem">
                             <div class="card">
-                                
+
                                 <img class="card-body"
                                      src="{{link2}}"
                                      style="max-height: 350px; object-fit: contain">
-                                     
+
                             </div>
                             <div class="card">
                                 <div class="card-body">
@@ -60,19 +60,21 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                       
+
                         <marquee scrollamount="0" attribute_name="attribute_value"
                                  attribute_name_2="attribute_value_2">
-                                 <img src="{{qrlink}}" alt="" style="max-height: 100px;max-width: 100px">
                             <div class="bg-secondary{{ this.style }}"
-                                  
-                                  style="background: rgb(243, 243, 245);width: 100rem;font-size: 42px;">
+
+                                 style="background: rgb(243, 243, 245);width: 100rem;font-size: 42px;">
                                 {{this.messages}}
                             </div>
                         </marquee>
                     </div>
                 {{/each}}
             {{/each}}
+        </div>
+        <div class="fixed-bottom">
+            <img src="/website/static/QRplanning.png" alt="" style="max-height: 100px;max-width: 100px">
         </div>
     {{/each}}
 </div>
