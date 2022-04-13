@@ -20,22 +20,36 @@ router.post('/', async function (req, res, next) {
     const lookupRegex = /\d+/g;
     const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
 
-    if(!tableNumber){
+    if (!tableNumber) {
         console.log('no table found');
     }
 
-   const table = await Table.findOne({
-        where: { 
+    const activeEvent = await Event.findOne({
+        where: {
+            eventBeginDate: {
+                [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
+            },
+            eventEndDate: {
+                [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
+            }
+        },
+        attributes: ['id']
+    });
+
+    const table = await Table.findOne({
+        where: {
+            eventId: activeEvent.id,
             name: {
                 [Sequelize.Op.like]: '%' + tableNumber
-            } 
-        }, 
-        include: [ 
-            { model: Project } 
+            }
+        },
+        include: [
+            { model: Project, attributes: [ 'id' ] }
         ]
     });
 
-    const projectId = table.projects?.[0].id;
+    const projectId = table.projects?.[0].id; //just pick the first project
+
     const project = await database.getProjectById(projectId);
     const phone = req.body.From || null;
 
