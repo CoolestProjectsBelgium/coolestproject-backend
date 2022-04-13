@@ -46,13 +46,19 @@ router.post('/', async function (req, res, next) {
             }
         },
         include: [
-            { model: Project, attributes: [ 'id' ] }
+            {
+                model: Project,
+                required: true,
+                through: {
+                    attributes: []
+                }
+            }
         ]
     });
 
-    const projectId = table.projects?.[0].id; //just pick the first project
+    const projectId = table.Projects?.[0].id; //just pick the first project
 
-    const project = await database.getProjectById(projectId);
+    //const project = await database.getProjectById(projectId);
     const phone = req.body.From || null;
 
     const sid = req.body.MessagingServiceSid;
@@ -72,13 +78,13 @@ router.post('/', async function (req, res, next) {
     var hash = md5.update(phone).digest('hex');
     console.log(hash);
 
-    if (!project) {
+    if (!projectId) {
         res.status(202).send("unknown project");
         return;
     }
 
     try {
-        var pv = await PublicVote.create({ phone: hash, projectId: project.id });
+        var pv = await PublicVote.create({ phone: hash, projectId: projectId });
     } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
             res.status(202).send("double vote");
