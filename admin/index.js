@@ -1090,7 +1090,7 @@ const adminBroOptions = {
       }
     },
     {
-      resource: db.ExternVote,
+      resource: db.PublicVote,
       options: {
         navigation: votingParent,
         actions: {
