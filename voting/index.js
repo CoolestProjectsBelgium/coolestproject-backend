@@ -132,7 +132,7 @@ router.get('/projects', passport.authenticate('voting'), async function (req, re
     res.json({message:'finished'});
     return;
   }
-  const location = (await randomProject.getTables())?.[0]?.name;
+  const location = (await randomProject.getTables())?.[0]?.name; 
   console.log(location);
   const categories = await VoteCategory.findAll({
     attributes: ['name', 'max', 'optional','id'],
