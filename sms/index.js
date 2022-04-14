@@ -3,7 +3,7 @@ const models = require('../models');
 const PublicVote = models.PublicVote;
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
-
+const crypto = require('crypto');
 
 const Table = models.Table;
 const Project = models.Project;
@@ -11,7 +11,7 @@ const Event = models.Event;
 
 
 var router = express.Router();
-router.use(bodyParser.urlencoded({ extended: false })); // for SMS
+router.use(bodyParser.urlencoded({ extended: false }));
 
 /**
  * Called by the Twilio webhook whenever a SMS comes in
@@ -19,14 +19,16 @@ router.use(bodyParser.urlencoded({ extended: false })); // for SMS
  */
 router.post('/', async function (req, res, next) {
 
-    console.log(req.body.Body);
+    console.log('** SMS Request coming in **');
+    console.log('Body:', req.body.Body);
 
     const lookupRegex = /\d+/g;
     const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
-    console.log(tableNumber);
+    console.log('Table:', tableNumber);
+
     if (!tableNumber) {
-        console.log('no table found');
-        res.status(403).send("no number found in the message");
+        console.log('No table detected!');
+        res.status(200).send(); // Must respond as OK because Twilio should not retry
         return;
     }
 
@@ -41,6 +43,7 @@ router.post('/', async function (req, res, next) {
         },
         attributes: ['id']
     });
+    console.log('Active Event:', activeEvent.id);
 
     const table = await Table.findOne({
         where: {
@@ -59,38 +62,39 @@ router.post('/', async function (req, res, next) {
             }
         ]
     });
-console.log(table)
-    const projectId = table.Projects?.[0].id; //just pick the first project
-    console.log(projectId);
-    //const project = await database.getProjectById(projectId);
+    console.log('Table:', table)
+
+    const projectId = table.Projects?.[0].id; // Just pick the first project
+    console.log('ProjectId:', projectId);
+
+    if (!projectId) {
+        console.log('Project not found!');
+        res.status(200).send();
+        return;
+    }
+
     const phone = req.body.From || null;
 
     const sid = req.body.MessagingServiceSid;
-    const expectedSid = process.env.TWILIO_SID; // does not work: undefined
+    const expectedSid = process.env.TWILIO_SID; // After setting in configuration.env, reboot container/machine
+    console.log(sid, expectedSid)
 
-console.log(sid,expectedSid)
-
-       if (sid != expectedSid) {
-        res.status(403).send("Unexpected sender");
-        return;
-      } 
-
-
-    const crypto = require('crypto');
-    const md5 = crypto.createHash('md5'); // for SMS
-    var hash = md5.update(phone).digest('hex');
-    console.log(hash);
-
-    if (!projectId) {
-        res.status(202).send("unknown project");
+    if (sid != expectedSid) {
+        console.log('Unexpected sender - abort');
+        res.status(403).send('Unexpected sender'); // Here it is OK to send status, as Twilio should retry
         return;
     }
+
+    const md5 = crypto.createHash('md5');
+    var hash = md5.update(phone).digest('hex');
+    console.log('Phone hash:', hash);
 
     try {
         var pv = await PublicVote.create({ phone: hash, projectId: projectId });
     } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
-            res.status(202).send("double vote");
+            console.log('Double vote');
+            res.status(202).send();
             return;
         } else {
             throw e;
@@ -98,7 +102,7 @@ console.log(sid,expectedSid)
     }
 
     // Success
-    res.status(200).send("success");
+    res.status(200).send();
 });
 
-module.exports = router; 
+module.exports = router;
