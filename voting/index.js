@@ -61,7 +61,7 @@ router.post('/auth/login', passport.authenticate('voting_login'), async function
     return;
   }
 
-  const token = jwt.sign({ id: account.id, email: account.email }, secretOrPublicKey);
+  const token = jwt.sign({ id: account.id, email: account.email }, secretOrPublicKey, { expiresIn: '12h' });
   res.status(200).json({'jwt': token});
 });
 
