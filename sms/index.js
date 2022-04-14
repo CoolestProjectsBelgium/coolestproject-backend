@@ -24,7 +24,7 @@ router.post('/', async function (req, res, next) {
 
     const lookupRegex = /\d+/g;
     const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
-    console.log('Table:', tableNumber);
+    console.log('Table1:', tableNumber);
 
     if (!tableNumber) {
         console.log('No table detected!');
@@ -62,11 +62,7 @@ router.post('/', async function (req, res, next) {
             }
         ]
     });
-    console.log('Table:', table)
-
-    const projectId = table.Projects?.[0].id; // Just pick the first project
-    console.log('ProjectId:', projectId);
-
+    const projectId = table?.Projects?.[0].id; // Just pick the first project
     if (!projectId) {
         console.log('Project not found!');
         res.status(200).send();
@@ -92,6 +88,7 @@ router.post('/', async function (req, res, next) {
     try {
         var pv = await PublicVote.create({ phone: hash, projectId: projectId });
     } catch (e) {
+        console.log(e);
         if (e.name === 'SequelizeUniqueConstraintError') {
             console.log('Double vote');
             res.status(202).send();
