@@ -51,127 +51,128 @@ passport.use('voting', new JwtStrategy({
   return done(null, payload);
 }));
 
-router.post('/auth/login', passport.authenticate('voting_login'), async function (req, res) {
-  console.log(req.user);
+router.post('/auth/login', passport.authenticate('voting_login'), async (req, res) => {
+    console.log(req.user);
 
-  const account = await Account.findByPk(req.user.id);
-  console.log(account);
-  if(!account) {
-    res.status(403);
-    return;
-  }
+    const account = await Account.findByPk(req.user.id);
+    console.log(account);
+    if (!account) {
+      res.status(403);
+      return;
+    }
 
-  const token = jwt.sign({ id: account.id, email: account.email }, secretOrPublicKey);
-  res.status(200).json({'jwt': token});
-});
-
-router.post('/auth/logout', passport.authenticate('voting'), async function (req, res) {
-  res.send(null);
-});
-
-router.get('/auth/user', passport.authenticate('voting'), async function (req, res) {
-  const account = await Account.findByPk(req.user.id);
-  res.json({
-    user: { id:account.id, name: account.email }
-  });
-});
-
-router.get('/languages', passport.authenticate('voting'), async function (req, res) {
-  res.json([{ id: 'nl', text: 'Dutch'}, { id: 'fr', text: 'French'}, { id: 'en', text: 'English'}]);
-});
-
-router.get('/projects', passport.authenticate('voting'), async function (req, res) {
-
-  let languages = ['nl', 'fr', 'en']
-  console.log(req.query)
-  try {
-    languages = JSON.parse(req.query.languages)
-
-  } catch (e) {}
-
-  const activeEvent = await Event.findOne({
-    where: {
-      eventBeginDate: {
-        [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
-      },
-      eventEndDate: {
-        [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
-      }
-    },
-    attributes: ['id']
+    const token = jwt.sign({ id: account.id, email: account.email }, secretOrPublicKey);
+    res.status(200).json({ 'jwt': token });
   });
 
-  // get random project
-  //load categories
-  const projects = await Project.findAll({
-    limit: 5,
-    where: {
-      id: {
-        [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
+router.post('/auth/logout', passport.authenticate('voting'), async (req, res) => {
+    res.send(null);
+  });
+
+router.get('/auth/user', passport.authenticate('voting'), async (req, res) => {
+    const account = await Account.findByPk(req.user.id);
+    res.json({
+      user: { id: account.id, name: account.email }
+    });
+  });
+
+router.get('/languages', passport.authenticate('voting'), async (req, res) => {
+    res.json([{ id: 'nl', text: 'Dutch' }, { id: 'fr', text: 'French' }, { id: 'en', text: 'English' }]);
+  });
+
+router.get('/projects', passport.authenticate('voting'), async (req, res) => {
+
+    let languages = ['nl', 'fr', 'en'];
+    console.log(req.query);
+    try {
+      languages = JSON.parse(req.query.languages);
+
+    } catch (e) { }
+
+    const activeEvent = await Event.findOne({
+      where: {
+        eventBeginDate: {
+          [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
+        },
+        eventEndDate: {
+          [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
+        }
       },
-      eventId: activeEvent.id,
-      project_lang: {
-        [Sequelize.Op.in]: languages
-      }
-    },
-    attributes: {
-      include: [
-        [
-          Sequelize.literal('(SELECT COUNT(*) FROM Votes AS vote WHERE vote.projectId = Project.id )'),
-          'votesRecieved'
+      attributes: ['id']
+    });
+
+    // get random project
+    //load categories
+    const projects = await Project.findAll({
+      limit: 5,
+      where: {
+        id: {
+          [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
+        },
+        eventId: activeEvent.id,
+        project_lang: {
+          [Sequelize.Op.in]: languages
+        }
+      },
+      attributes: {
+        include: [
+          [
+            Sequelize.literal('(SELECT COUNT(*) FROM Votes AS vote WHERE vote.projectId = Project.id )'),
+            'votesRecieved'
+          ]
         ]
-      ]
-    },
-    order: [
-      [Sequelize.literal('votesRecieved'), 'DESC']
-    ]
-  });
-
-  const randomProject = projects[Math.floor(Math.random() * projects.length)];
-  if(!randomProject){
-    res.json({message:'finished'});
-    return;
-  }
-  const location = (await randomProject.getTables())?.[0]?.name; 
-  console.log(location);
-  const categories = await VoteCategory.findAll({
-    attributes: ['name', 'max', 'optional','id'],
-    where: {
-      eventId: activeEvent.id
-    }
-  });
-
-  res.json(
-    { project_id: randomProject.id, 
-      title: randomProject.project_name, 
-      description: randomProject.project_descr, 
-      language: randomProject.project_lang, 
-      categories: categories,
-      location: location || 'No location'
-    }
-  );
-});
-
-router.post('/projects/:projectId', passport.authenticate('voting'), async function (req, res) {
-  const activeEvent = await Event.findOne({
-    where: {
-      eventBeginDate: {
-        [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
       },
-      eventEndDate: {
-        [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
+      order: [
+        [Sequelize.literal('votesRecieved'), 'DESC']
+      ]
+    });
+
+    const randomProject = projects[Math.floor(Math.random() * projects.length)];
+    if (!randomProject) {
+      res.json({ message: 'finished' });
+      return;
+    }
+    const location = (await randomProject.getTables())?.[0]?.name;
+    console.log(location);
+    const categories = await VoteCategory.findAll({
+      attributes: ['name', 'max', 'optional', 'id'],
+      where: {
+        eventId: activeEvent.id
       }
-    },
-    attributes: ['id']
+    });
+
+    res.json(
+      {
+        project_id: randomProject.id,
+        title: randomProject.project_name,
+        description: randomProject.project_descr,
+        language: randomProject.project_lang,
+        categories: categories,
+        location: location || 'No location'
+      }
+    );
   });
 
-  const votes = [];
-  for (const v of req.body) {
-    //TODO add mandatory fill in check
-    votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0, eventId: activeEvent.id });
-  }
-  await Vote.bulkCreate(votes);
-  res.send(null);
-});
+router.post('/projects/:projectId', passport.authenticate('voting'), async (req, res) => {
+    const activeEvent = await Event.findOne({
+      where: {
+        eventBeginDate: {
+          [Sequelize.Op.lt]: Sequelize.literal('CURDATE()'),
+        },
+        eventEndDate: {
+          [Sequelize.Op.gt]: Sequelize.literal('CURDATE()'),
+        }
+      },
+      attributes: ['id']
+    });
+
+    const votes = [];
+    for (const v of req.body) {
+      //TODO add mandatory fill in check
+      votes.push({ categoryId: v.id, projectId: req.params.projectId, accountId: req.user.id, amount: v.value || 0, eventId: activeEvent.id });
+    }
+    await Vote.bulkCreate(votes);
+    res.send(null);
+  });
 
 module.exports = router;  
