@@ -9,7 +9,9 @@
     "development": "nodemon index.js",
     "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
     "dev:clean": "./helpers/index.js init_db && npx sequelize db:seed:all && nodemon index.js",
-    "test_local": "nyc mocha"
+    "test_local": "nyc mocha",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "nodemonConfig": {
     "ignore": [
@@ -76,7 +78,8 @@
     "umzug": "^3.0.0",
     "uuid": "^8.3.2",
     "xmlbuilder2": "^3.0.2",
-    "yargs": "^17.2.1"
+    "yargs": "^17.2.1",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
@@ -93,5 +96,6 @@
     "sequelize-cli": "^6.4.1",
     "sqlite3": "^5.0.2",
     "ts-node": "^10.4.0"
-  }
+  },
+  "snyk": true
 }
