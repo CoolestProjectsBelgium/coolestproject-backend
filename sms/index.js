@@ -70,6 +70,7 @@ router.post('/', async function (req, res, next) {
     }
 
     const phone = req.body.From || null;
+    console.log('Phone:',phone)
 
     const sid = req.body.MessagingServiceSid;
     const expectedSid = process.env.TWILIO_SID; // After setting in configuration.env, reboot container/machine
@@ -77,7 +78,7 @@ router.post('/', async function (req, res, next) {
 
     if (sid != expectedSid) {
         console.log('Unexpected sender - abort');
-        res.status(403).send('Unexpected sender'); // Here it is OK to send status, as Twilio should retry
+        res.status(403).send('Unexpected sender'); // Here it is OK to send status, as Twilio should retry or fix config
         return;
     }
 
@@ -86,9 +87,8 @@ router.post('/', async function (req, res, next) {
     console.log('Phone hash:', hash);
 
     try {
-        var pv = await PublicVote.create({ phone: hash, projectId: projectId });
+        await PublicVote.create({ phone: hash, projectId: projectId });
     } catch (e) {
-        console.log(e);
         if (e.name === 'SequelizeUniqueConstraintError') {
             console.log('Double vote');
             res.status(202).send();
