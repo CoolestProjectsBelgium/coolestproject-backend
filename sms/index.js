@@ -17,7 +17,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
  * Called by the Twilio webhook whenever a SMS comes in
  * https://www.twilio.com/docs/messaging/guides/webhook-request
  */
-router.post('/', async function (req, res, next) {
+router.post('/', async function (req, res, _next) {
 
     console.log('** SMS Request coming in **');
     console.log('Body:', req.body.Body);
