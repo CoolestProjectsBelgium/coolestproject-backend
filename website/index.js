@@ -2,6 +2,7 @@ const express = require('express');
 var cors = require('cors')
 const models = require('../models');
 const Project = models.Project;
+const Message = models.Message;
 const PublicVote = models.PublicVote;
 const Table = models.Table;
 const Event = models.Event;
@@ -432,7 +433,7 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
- var projects = await Project.findAll({ where: {eventId: req.params.eventId }});
+ var project = await Project.findByPk(req.query.ProjectId);
  let projectList = []
  let pCount = 0
 // <img src="/website/static/Tables2.svg" alt="Tables2.svg" width="700px" height="300px" />
@@ -446,23 +447,31 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
    return next(new Error('event not found'))
  }
 
+ const activeMessage = await Message.findOne({ 
+   where: { 
+      startAt: { [Sequelize.Op.lt]: Sequelize.literal('CURRENT_TIMESTAMP()') },
+      endAt: { [Sequelize.Op.gt]: Sequelize.literal('CURRENT_TIMESTAMP()') } 
+    } 
+  });
+
  const locations = await event.getLocations() 
  const tablesGroupedCount = await Table.findAll(
    {
    attributes: ['LocationId','EventId', [Sequelize.fn('count', Sequelize.col('LocationId')), 'count']],
    group: ['LocationId','EventId'],
-   having : { 'EventId': event.get('id') }
+   having : { 'EventId': event.get('id') } 
    }
  )
  // we need header values in the first row so + 1 for length
  let maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0) + 1
  maxTablesCount = 1
- const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
+ //const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
+ //let result = null
  console.log("maxTablesCount:", maxTablesCount)
  pCount = 1
- for(let project of projects){
+ //for(let project of projects){
 
-   if(project.get('id') == req.query.ProjectId){
+   //if(project.get('id') == req.query.ProjectId){
 
      let participantsList = []
      let attachments = await project.getAttachments({where:{confirmed:true}})
@@ -491,11 +500,12 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
                    cardStyle = 'border-secondary'
          } 
        let hlink2 =""
-       let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
+       //let hcode = (await attachments.pop()?.getHyperlink())?.get('href')
        //console.log("Youtube code:",hcode)
        //if (hcode){let res = hcode.split("/")
         // hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1&cc_lang_pref=nl&cc_load_policy=1&controls=0'
-         hlink2 = '/website/static/coolestProjects.png'
+         //hlink2 = '/website/static/coolestProjects.png'
+         hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-0.png'
          //https://img.youtube.com/vi/VFLFp_pHYJQ/hqdefault.jpg
        //} else {hlink2 = "no video found"}
        tName = table[0]?.name
@@ -503,13 +513,12 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
        if(!tName)
           {tName ="not yet assigned"
           } else {vNumber = tName.match(/\d+/)[0]}
-       projectList.push({
+        const projectforUI = {
          'style': cardStyle,
          'language': project.get('project_lang'),
          'projectName': project.get('project_name'),
          //'projectID': project.get('id'),
          'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') } ).join(', '),
-         'link': hcode,
          'link2': hlink2,
          'description': project.get('project_descr'),
          'agreedToPhoto': agreedToPhoto, 
@@ -517,21 +526,22 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
          'location': 'Voting Number: '+ vNumber +'    ',
          'name': tName,
          'tableNumber': tName.toLowerCase().replaceAll(" ","_"),
-         //'messages': '😎====>Fixed text for  important messages 🎯 =====<<===fixed text 😅<'
-         'messages': ''
+         'messages': activeMessage?.message//'😎====>Fixed text4important messages 🎯 =====<<===fixed text 😅<'
+         //'messages': ''
          // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
-       })
+       }
       
        //console.log(projectList)  
-       result[0][0] = {
-         name: table[0]?.name,
-         projects: projectList,
+       const result = {
+         //name: table[0]?.name,
+         project: projectforUI,
        }
         res.render('video-presentation.handlebars', { 
-          grid: result
+          //grid: result
+          project: projectforUI, 
           })
-  }
-}
+  //}
+//}
   return
 
 });
