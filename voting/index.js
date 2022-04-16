@@ -65,7 +65,7 @@ router.post('/auth/login', passport.authenticate('voting_login'), async (req, re
     res.status(200).json({ 'jwt': token });
   });
 
-router.post('/auth/logout', passport.authenticate('voting'), async (req, res) => {
+router.post('/auth/logout', passport.authenticate('voting'), async (_req, res) => {
     res.send(null);
   });
 
@@ -76,7 +76,7 @@ router.get('/auth/user', passport.authenticate('voting'), async (req, res) => {
     });
   });
 
-router.get('/languages', passport.authenticate('voting'), async (req, res) => {
+router.get('/languages', passport.authenticate('voting'), async (_req, res) => {
     res.json([{ id: 'nl', text: 'Dutch' }, { id: 'fr', text: 'French' }, { id: 'en', text: 'English' }]);
   });
 
