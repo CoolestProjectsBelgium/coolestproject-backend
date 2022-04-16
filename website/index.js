@@ -450,7 +450,8 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
  const activeMessage = await Message.findOne({ 
    where: { 
       startAt: { [Sequelize.Op.lt]: Sequelize.literal('CURRENT_TIMESTAMP()') },
-      endAt: { [Sequelize.Op.gt]: Sequelize.literal('CURRENT_TIMESTAMP()') } 
+      endAt: { [Sequelize.Op.gt]: Sequelize.literal('CURRENT_TIMESTAMP()') },
+      eventId: event.id
     } 
   });
 
