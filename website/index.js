@@ -432,6 +432,29 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
   })
 });
 
+router.get('/project-list/:eventId', cors(corsOptions), async function (req, res, next) {
+  const event = await Event.findByPk(req.params.eventId)
+  if (event === null) {
+    return next(new Error('event not found'))
+  }
+
+  const projects = await Project.findAll({
+    where: {
+      eventId: event.id,
+    },
+    attributes: ['id'],
+    include:[
+      {
+        model: Table,
+        required: true,
+        attributes: []
+      }
+    ]
+  });
+
+  res.json(projects);
+});
+
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
  var project = await Project.findByPk(req.query.ProjectId);
  let projectList = []
@@ -507,6 +530,8 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
         // hlink2 = 'https://youtube.be/embed/' + res[3]+ '?autoplay=1&cc_lang_pref=nl&cc_load_policy=1&controls=0'
          //hlink2 = '/website/static/coolestProjects.png'
          hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-0.png'
+         hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-' + project.id + '.png'
+         console.log(hlink2)
          //https://img.youtube.com/vi/VFLFp_pHYJQ/hqdefault.jpg
        //} else {hlink2 = "no video found"}
        tName = table[0]?.name
