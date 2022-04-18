@@ -4,6 +4,8 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const AnonymousStrategy = require('passport-anonymous').Strategy;
+const BasicStrategy = require('passport-http').BasicStrategy;
+
 const Azure = require('../azure');
 
 const DBA = require('../dba');
@@ -69,6 +71,23 @@ module.exports = function (app) {
     }
   }));
   passport.use(new AnonymousStrategy());
+
+  passport.use('planning_login', new BasicStrategy(
+    async function (username, password, done) {
+      try {
+        const account = await Account.findOne({ where: { email: username, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
+        if (!account) { 
+          return done(null, false); 
+        }
+        if (!account.verifyPassword(password)) { 
+          return done(null, false); 
+        }
+        return done(null, {id: account.id, email: account.email, user: account.email});
+      } catch (error) {
+        return done(null, false);
+      }
+    }
+  ));
 
   passport.serializeUser(function (user, done) {
     console.log('usr:' + user);
