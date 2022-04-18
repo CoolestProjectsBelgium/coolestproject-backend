@@ -9,8 +9,19 @@ const Event = models.Event;
 const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const slugify = require('slugify')
+const slugify = require('slugify');
+const qr = require('qrcode');
+const Stream = require('stream')
+const fs = require('fs');
+const path = require('path');
+const os = require('os'); 
 
+//temp folder for qrcodes
+const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'coolestproject'))
+
+if (!fs.existsSync(tmpPath)) {
+  fs.mkdirSync(tmpPath)
+}
 
 const DBA = require('../dba');
 const database = new DBA();
@@ -30,6 +41,49 @@ const corsOptions = {
 var handlebars = require('handlebars');
 handlebars.registerHelper("setVar", function (varName, varValue, options) {
   options.data.root[varName] = varValue;
+});
+
+router.get('/qr/sms/:projectId', cors(corsOptions), async function (req, res, next) {
+  const project = await Project.findOne({
+    where: {
+      id: req.params.projectId,
+    },
+    include:[
+      {
+        model: Table,
+        required: true
+      }
+    ]
+  });
+
+  if (!project) {
+    return next(new Error('Project not found'))
+  }
+
+  const qrCodeText = `SMSTO:${ process.env.TWILIO_NUMBER }:Table ${ project.Table[0].id }`
+  
+  const qrcode_filename = path.join(tmpPath, `sms${ req.params.projectId }.png`);
+  if(!fs.existsSync(qrcode_filename)){
+    const stream = fs.createWriteStream(qrcode_filename);
+    await qr.toFileStream(stream, qrCodeText)
+  }
+  res.sendFile(qrcode_filename);
+});
+
+router.get('/qr/planning/:eventId', cors(corsOptions), async function (req, res, next) {
+  const event = await Event.findByPk(req.params.eventId, { attributes: ['id', 'event_title'] });
+  if (!event) {
+    return next(new Error('Event not found'))
+  }
+
+  const qrCodeText = `${ new URL(slugify(event.event_title), process.env.BACKENDURL) }`
+  
+  const qrcode_filename = path.join(tmpPath, `planning${ req.params.eventId }.png`);
+  if(!fs.existsSync(qrcode_filename)){
+    const stream = fs.createWriteStream(qrcode_filename);
+    await qr.toFileStream(stream, qrCodeText)
+  }
+  res.sendFile(qrcode_filename);
 });
 
 router.get('/:eventSlug/', cors(corsOptions), async function (req, res, next) {
