@@ -8,6 +8,7 @@ const Table = models.Table;
 const Event = models.Event;
 const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const DBA = require('../dba');
 const database = new DBA();
@@ -203,7 +204,7 @@ router.get('/planning/:eventId/projects.json', cors(corsOptions), async function
   res.json(response);
 });
 
-router.get('/planning/:eventId/', cors(corsOptions), async function (req, res, next) {
+router.get('/planning/:eventId/', cors(corsOptions), passport.authenticate('planning_login'), async function (req, res, next) {
   // create a planning table structure 
   // x -> list of locations
   // y -> list of table
