@@ -1,10 +1,12 @@
 'use strict';
-
+const models = require('../models');
+const Sequelize = require('sequelize');
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const AnonymousStrategy = require('passport-anonymous').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
+const Account = models.Account;
 
 const Azure = require('../azure');
 
