@@ -76,7 +76,7 @@ router.get('/qr/planning/:eventId', cors(corsOptions), async function (req, res,
     return next(new Error('Event not found'))
   }
 
-  const qrCodeText = `${ new URL(slugify(event.event_title), process.env.BACKENDURL) }`
+  const qrCodeText = `${ new URL('website/' + slugify(event.event_title), process.env.BACKENDURL) }`
   
   const qrcode_filename = path.join(tmpPath, `planning${ req.params.eventId }.png`);
   if(!fs.existsSync(qrcode_filename)){
