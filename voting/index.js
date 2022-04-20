@@ -10,6 +10,7 @@ const VoteCategory = models.VoteCategory;
 const Project = models.Project;
 const Account = models.Account;
 const Vote = models.Vote;
+const Table = models.Table;
 const Event = models.Event;
 const secretOrPublicKey = process.env.VOTING_KEY;
 console.log(secretOrPublicKey)
@@ -114,12 +115,18 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
           [Sequelize.Op.in]: languages
         }
       },
+      include:[
+        {
+          model: Table,
+          required: true
+        }
+      ],
       attributes: {
         include: [
           [
             Sequelize.literal('(SELECT COUNT(*) FROM Votes AS vote WHERE vote.projectId = Project.id )'),
             'votesRecieved'
-          ]
+          ],
         ]
       },
       order: [
