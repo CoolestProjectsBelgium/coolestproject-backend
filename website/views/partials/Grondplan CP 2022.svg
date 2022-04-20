@@ -1,317 +1,317 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     style="display:block; margin: auto; max-height: 350px;"
-     viewBox="0 0 1190.55 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="st44">
+	 style="display:block; margin: auto; max-height: 350px;"
+	 viewBox="0 0 1190.55 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="st44">
 	 <!--width="16.5354in" height="11.6929in"-->
 
 	<style type="text/css">
 		.table {
-            fill: #ffcd5f;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+			fill: #ffcd5f;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .number {
-            fill: #000000;
-            font-family: Calibri, serif;
-            font-size: 0.833336em
-        }
+		.number {
+			fill: #000000;
+			font-family: Calibri, serif;
+			font-size: 0.833336em
+		}
 
-        #{{selected}} .table {
-                          fill: #b60000;
-                      }
+		#{{selected}} .table {
+			fill: #b60000;
+		}
 
-        #{{selected}} .number {
-                          fill: white;
-                          font-size: 1.2em;
-                      }
+		#{{selected}} .number {
+			fill: white;
+			font-size: 1.2em;
+		}
 
-        .st1 {
-            fill: none;
-            stroke: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st1 {
+			fill: none;
+			stroke: none;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st3 {
-            fill: #ffe8cf
-        }
+		.st3 {
+			fill: #ffe8cf
+		}
 
-        .st4 {
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75;
-            visibility: hidden
-        }
+		.st4 {
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75;
+			visibility: hidden
+		}
 
-        .st5 {
-            fill: #000000
-        }
+		.st5 {
+			fill: #000000
+		}
 
 
-        .st7 {
-            fill: #db904d;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st7 {
+			fill: #db904d;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st8 {
-            fill: #515151;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st8 {
+			fill: #515151;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st9 {
-            fill: #7f7f7f;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st9 {
+			fill: #7f7f7f;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st10 {
-            fill: #cbf3cb;
-            shape-rendering: crispEdges;
-            stroke: #000000;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.72
-        }
+		.st10 {
+			fill: #cbf3cb;
+			shape-rendering: crispEdges;
+			stroke: #000000;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.72
+		}
 
-        .st11 {
-            fill: #000000;
-            font-family: Calibri;
-            font-size: 1.00001em
-        }
+		.st11 {
+			fill: #000000;
+			font-family: Calibri;
+			font-size: 1.00001em
+		}
 
-        .st12 {
-            font-size: 1em
-        }
+		.st12 {
+			font-size: 1em
+		}
 
-        .st13 {
-            fill: #ff0000;
-            stroke: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st13 {
+			fill: #ff0000;
+			stroke: none;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st14 {
-            fill: none;
-            stroke: #000000;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st14 {
+			fill: none;
+			stroke: #000000;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st15 {
-            fill: #000000;
-            stroke: none;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st15 {
+			fill: #000000;
+			stroke: none;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st16 {
-            fill: #ffffff;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st16 {
+			fill: #ffffff;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st17 {
-            fill: #353031;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st17 {
+			fill: #353031;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st18 {
-            fill: #e8e8e8;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st18 {
+			fill: #e8e8e8;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st19 {
-            fill: #e1f7b7;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st19 {
+			fill: #e1f7b7;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st20 {
-            fill: none
-        }
+		.st20 {
+			fill: none
+		}
 
-        .st21 {
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st21 {
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st22 {
-            fill: #353535;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st22 {
+			fill: #353535;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st23 {
-            fill: #282b32;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st23 {
+			fill: #282b32;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st24 {
-            fill: #fbb8a7;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st24 {
+			fill: #fbb8a7;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st25 {
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.375
-        }
+		.st25 {
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.375
+		}
 
-        .st26 {
-            fill: #00b0f0;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st26 {
+			fill: #00b0f0;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st27 {
-            fill: #00b0f0
-        }
+		.st27 {
+			fill: #00b0f0
+		}
 
-        .st28 {
-            fill: #a5a5a5;
-            stroke: #ffff00;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 3
-        }
+		.st28 {
+			fill: #a5a5a5;
+			stroke: #ffff00;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 3
+		}
 
-        .st29 {
-            fill: #eaeaea;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st29 {
+			fill: #eaeaea;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st30 {
-            fill: #d7b788;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st30 {
+			fill: #d7b788;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st31 {
-            fill: #353535;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.375
-        }
+		.st31 {
+			fill: #353535;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.375
+		}
 
-        .st32 {
-            fill: #d8d8d8;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.375
-        }
+		.st32 {
+			fill: #d8d8d8;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.375
+		}
 
-        .st33 {
-            fill: #d8d8d8;
-            stroke: none;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st33 {
+			fill: #d8d8d8;
+			stroke: none;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st34 {
-            fill: #ffffff;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.375
-        }
+		.st34 {
+			fill: #ffffff;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.375
+		}
 
-        .st35 {
-            fill: #f478a1;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st35 {
+			fill: #f478a1;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st36 {
-            fill: #f478a1
-        }
+		.st36 {
+			fill: #f478a1
+		}
 
-        .st37 {
-            fill: #ffffff
-        }
+		.st37 {
+			fill: #ffffff
+		}
 
-        .st38 {
-            fill: #7a7a7a;
-            stroke: #000000;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st38 {
+			fill: #7a7a7a;
+			stroke: #000000;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st39 {
-            fill: #e8b174;
-            stroke: #000000;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st39 {
+			fill: #e8b174;
+			stroke: #000000;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st40 {
-            fill: #7f5a2d;
-            stroke: #000000;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st40 {
+			fill: #7f5a2d;
+			stroke: #000000;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st41 {
-            fill: #a2a5aa
-        }
+		.st41 {
+			fill: #a2a5aa
+		}
 
-        .st42 {
-            fill: #191919;
-            stroke: none;
-            stroke-linecap: butt;
-            stroke-width: 0.75
-        }
+		.st42 {
+			fill: #191919;
+			stroke: none;
+			stroke-linecap: butt;
+			stroke-width: 0.75
+		}
 
-        .st43 {
-            fill: #666666;
-            fill-opacity: 0.2;
-            stroke: #333333;
-            stroke-dasharray: 0, 2.25;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-width: 0.75
-        }
+		.st43 {
+			fill: #666666;
+			fill-opacity: 0.2;
+			stroke: #333333;
+			stroke-dasharray: 0, 2.25;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-width: 0.75
+		}
 
-        .st44 {
-            fill: none;
-            fill-rule: evenodd;
-            font-size: 12px;
-            overflow: visible;
-            stroke-linecap: square;
-            stroke-miterlimit: 3
-        }
+		.st44 {
+			fill: none;
+			fill-rule: evenodd;
+			font-size: 12px;
+			overflow: visible;
+			stroke-linecap: square;
+			stroke-miterlimit: 3
+		}
 	</style>
 
-    <g>
+	<g>
 		<g id="background" transform="translate(8.50393,-61.1453)">
 			<title>Blad.1</title>
-            <image x="0" y="130.294" width="1173.54" height="711.596" preserveAspectRatio="none" xlink:href="data:image/png;base64,
+			<image x="0" y="130.294" width="1173.54" height="711.596" preserveAspectRatio="none" xlink:href="data:image/png;base64,
 						iVBORw0KGgoAAAANSUhEUgAABv8AAAQ+CAIAAAB3JLTcAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7D
 						AcdvqGQAAP+lSURBVHhe7N1P6DTJfd/x556DHYjAgWDHtkAWQRHCmjVJ2DiOJTlSZFoOyEFLRBSYOBucxVnC5La+iIGI2NZhcA4rnDCQ
 						sMbJYEcJIXNw8OK5WBgGaclhsHIa+zjXuTqfX39ryrXVMzXdM/2/36/DPFXV9fR013yrq7p+8+fVnwMAAAAAAADAGLH6CQAAAAAAAGCc
@@ -1366,632 +1366,632 @@
 						PoL7FajKR9C6QFU+gvsVqMpH0DQfQesCVfkI7legKh9B6wJV+Qia5iO4X4GqfAStC1TlI2iaj6CzApEsy06Vy9f8LFCFTgMAAAAAAABg
 						ir73vf8/q6uBDX4kJkYAAAAASUVORK5CYII="/>
 		</g>
-        <g id="table_01" transform="translate(1000.63,1062.99) rotate(180)">
+		<g id="table_01" transform="translate(1000.63,1062.99) rotate(180)">
 			<title>Tafel.1284</title>
-            <desc>1.</desc>
-            <g id="shape1285-116">
+			<desc>1.</desc>
+			<g id="shape1285-116">
 				<title>Blad.1285</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1284-124">
+			<g id="shape1284-124">
 				<text x="812.58" y="-8.34" transform="rotate(90)" class="number">1.</text>			</g>
 		</g>
-        <g id="table_03" transform="translate(1207.58,-144.738) rotate(15)">
+		<g id="table_03" transform="translate(1207.58,-144.738) rotate(15)">
 			<title>Tafel.2079</title>
-            <desc>3.</desc>
-            <g id="shape2080-1064">
+			<desc>3.</desc>
+			<g id="shape2080-1064">
 				<title>Blad.2080</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape2079-1072">
+			<g id="shape2079-1072">
 				<text x="-820.17" y="14.34" transform="rotate(-90)" class="number">3.</text>			</g>
 		</g>
-        <g id="table_04" transform="translate(116.878,863.811) rotate(-100)">
+		<g id="table_04" transform="translate(116.878,863.811) rotate(-100)">
 			<title>Tafel.1218</title>
-            <desc>4.</desc>
-            <g id="shape1219-28">
+			<desc>4.</desc>
+			<g id="shape1219-28">
 				<title>Blad.1219</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1218-36">
+			<g id="shape1218-36">
 				<text x="812.58" y="-8.34" transform="rotate(90)" class="number">4.</text>			</g>
 		</g>
-        <g id="table_05" transform="translate(649.013,-405.515) rotate(35)">
+		<g id="table_05" transform="translate(649.013,-405.515) rotate(35)">
 			<title>Tafel.1198</title>
-            <desc>5.</desc>
-            <g id="shape1199-590">
+			<desc>5.</desc>
+			<g id="shape1199-590">
 				<title>Blad.1199</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1198-598">
+			<g id="shape1198-598">
 				<text x="-820.17" y="14.34" transform="rotate(-90)" class="number">5.</text>			</g>
 		</g>
-        <g id="table_06" transform="translate(1004.86,-59.6123) rotate(70)">
+		<g id="table_06" transform="translate(1004.86,-59.6123) rotate(70)">
 			<desc>6.</desc>
-            <g id="shape1211-6">
+			<g id="shape1211-6">
 				<title>Blad.1211</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1210-14">
+			<g id="shape1210-14">
 				<text x="-820.17" y="14.34" transform="rotate(-90)" class="number">6.</text>
 			</g>
 		</g>
-        <g id="table_08" transform="translate(1199.8,273.457) rotate(94.2)">
+		<g id="table_08" transform="translate(1199.8,273.457) rotate(94.2)">
 			<title>Tafel.1030</title>
-            <desc>8.</desc>
-            <g id="shape1001-193">
+			<desc>8.</desc>
+			<g id="shape1001-193">
 				<title>Blad.1001</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1000-201">
+			<g id="shape1000-201">
 				<text x="-820.17" y="14.34" transform="rotate(-90)" class="number">8.</text>			</g>
 		</g>
-        <g id="table_10" transform="translate(1272.58,602.563) rotate(115)">
+		<g id="table_10" transform="translate(1272.58,602.563) rotate(115)">
 			<title>Tafel.1274</title>
-            <desc>10.</desc>
-            <g id="shape1275-270">
+			<desc>10.</desc>
+			<g id="shape1275-270">
 				<title>Blad.1275</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1274-278">
+			<g id="shape1274-278">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">10.</text>			</g>
 		</g>
-        <g id="table_12" transform="translate(1074.17,1131.86) rotate(145.3)">
+		<g id="table_12" transform="translate(1074.17,1131.86) rotate(145.3)">
 			<title>Tafel.1250</title>
-            <desc>12.</desc>
-            <g id="shape1251-105">
+			<desc>12.</desc>
+			<g id="shape1251-105">
 				<title>Blad.1251</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1250-113">
+			<g id="shape1250-113">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">12.</text>			</g>
 		</g>
-        <g id="table_13" transform="translate(1169.25,1134.87) rotate(140)">
+		<g id="table_13" transform="translate(1169.25,1134.87) rotate(140)">
 			<title>Tafel.1329</title>
-            <desc>13.</desc>
-            <g id="shape1330-160">
+			<desc>13.</desc>
+			<g id="shape1330-160">
 				<title>Blad.1330</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1329-168">
+			<g id="shape1329-168">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">13.</text>			</g>
 		</g>
-        <g id="table_14" transform="translate(1312.37,1078.6) rotate(130)">
+		<g id="table_14" transform="translate(1312.37,1078.6) rotate(130)">
 			<title>Tafel.1234</title>
-            <desc>14.</desc>
-            <g id="shape1235-72">
+			<desc>14.</desc>
+			<g id="shape1235-72">
 				<title>Blad.1235</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1234-80">
+			<g id="shape1234-80">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">14.</text>			</g>
 		</g>
-        <g id="table_15" transform="translate(1428.41,1027.35) rotate(122.3)">
+		<g id="table_15" transform="translate(1428.41,1027.35) rotate(122.3)">
 			<title>Tafel.1230</title>
-            <desc>15.</desc>
-            <g id="shape1231-61">
+			<desc>15.</desc>
+			<g id="shape1231-61">
 				<title>Blad.1231</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1230-69">
+			<g id="shape1230-69">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">15.</text>			</g>
 		</g>
-        <g id="table_16" transform="translate(1610.53,650.9) rotate(93)">
+		<g id="table_16" transform="translate(1610.53,650.9) rotate(93)">
 			<title>Tafel.1242</title>
-            <desc>16.</desc>
-            <g id="shape1243-83">
+			<desc>16.</desc>
+			<g id="shape1243-83">
 				<title>Blad.1243</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1242-91">
+			<g id="shape1242-91">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">16.</text>			</g>
 		</g>
-        <g id="table_17" transform="translate(1590.87,244.92) rotate(64.5)">
+		<g id="table_17" transform="translate(1590.87,244.92) rotate(64.5)">
 			<title>Tafel.1246</title>
-            <desc>17.</desc>
-            <g id="shape1247-94">
+			<desc>17.</desc>
+			<g id="shape1247-94">
 				<title>Blad.1247</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1246-102">
+			<g id="shape1246-102">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">17.</text>			</g>
 		</g>
-        <g id="table_18" transform="translate(1206.26,-203.423) rotate(22.3)">
+		<g id="table_18" transform="translate(1206.26,-203.423) rotate(22.3)">
 			<title>Tafel.1222</title>
-            <desc>18.</desc>
-            <g id="shape1223-39">
+			<desc>18.</desc>
+			<g id="shape1223-39">
 				<title>Blad.1223</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1222-47">
+			<g id="shape1222-47">
 				<text x="-822.59" y="14.34" transform="rotate(-90)" class="number">18.</text>			</g>
 		</g>
-        <g id="table_19" transform="translate(865.808,-326.894) rotate(-2.7)">
+		<g id="table_19" transform="translate(865.808,-326.894) rotate(-2.7)">
 			<title>Tafel.1202</title>
-            <desc>19.</desc>
-            <g id="shape1203-601">
+			<desc>19.</desc>
+			<g id="shape1203-601">
 				<title>Blad.1203</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1202-609">
+			<g id="shape1202-609">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">19.</text>			</g>
 		</g>
-        <g id="table_20" transform="translate(253.542,-88.8104) rotate(-50)">
+		<g id="table_20" transform="translate(253.542,-88.8104) rotate(-50)">
 			<title>Tafel.1190</title>
-            <desc>20.</desc>
-            <g id="shape1191-248">
+			<desc>20.</desc>
+			<g id="shape1191-248">
 				<title>Blad.1191</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1190-256">
+			<g id="shape1190-256">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">20.</text>			</g>
 		</g>
-        <g id="table_21" transform="translate(2.11838,342.907) rotate(-85)">
+		<g id="table_21" transform="translate(2.11838,342.907) rotate(-85)">
 			<title>Tafel.1186</title>
-            <desc>21.</desc>
-            <g id="shape1187-237">
+			<desc>21.</desc>
+			<g id="shape1187-237">
 				<title>Blad.1187</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1186-245">
+			<g id="shape1186-245">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">21.</text>			</g>
 		</g>
-        <g id="table_23" transform="translate(-119.067,501.21) rotate(-96)">
+		<g id="table_23" transform="translate(-119.067,501.21) rotate(-96)">
 			<title>Tafel.1137</title>
-            <desc>23.</desc>
-            <g id="shape1138-215">
+			<desc>23.</desc>
+			<g id="shape1138-215">
 				<title>Blad.1138</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1137-223">
+			<g id="shape1137-223">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">23.</text>			</g>
 		</g>
-        <g id="table_24" transform="translate(-174.219,566.54) rotate(-100)">
+		<g id="table_24" transform="translate(-174.219,566.54) rotate(-100)">
 			<title>Tafel.1133</title>
-            <desc>24.</desc>
-            <g id="shape1134-204">
+			<desc>24.</desc>
+			<g id="shape1134-204">
 				<title>Blad.1134</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1133-212">
+			<g id="shape1133-212">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">24.</text>			</g>
 		</g>
-        <g id="table_25" transform="translate(1228.68,213.586) rotate(75)">
+		<g id="table_25" transform="translate(1228.68,213.586) rotate(75)">
 			<title>Tafel.1333</title>
-            <desc>25.</desc>
-            <g id="shape1334-171">
+			<desc>25.</desc>
+			<g id="shape1334-171">
 				<title>Blad.1334</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1333-179">
+			<g id="shape1333-179">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">25.</text>			</g>
 		</g>
-        <g id="table_26" transform="translate(1156.86,638.116) rotate(105)">
+		<g id="table_26" transform="translate(1156.86,638.116) rotate(105)">
 			<title>Tafel.1337</title>
-            <desc>26.</desc>
-            <g id="shape1338-182">
+			<desc>26.</desc>
+			<g id="shape1338-182">
 				<title>Blad.1338</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1337-190">
+			<g id="shape1337-190">
 				<text x="-822.71" y="14.34" transform="rotate(-90)" class="number">26.</text>			</g>
 		</g>
-        <g id="table_27" transform="translate(528.79,1178.76) rotate(165)">
+		<g id="table_27" transform="translate(528.79,1178.76) rotate(165)">
 			<title>Tafel.1313</title>
-            <desc>27.</desc>
-            <g id="shape1314-149">
+			<desc>27.</desc>
+			<g id="shape1314-149">
 				<title>Blad.1314</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1313-157">
+			<g id="shape1313-157">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">27.</text>			</g>
 		</g>
-        <g id="table_28" transform="translate(-368.874,747.209) rotate(-120)">
+		<g id="table_28" transform="translate(-368.874,747.209) rotate(-120)">
 			<title>Tafel.1206</title>
-            <desc>28.</desc>
-            <g id="shape1207-612">
+			<desc>28.</desc>
+			<g id="shape1207-612">
 				<title>Blad.1207</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1206-620">
+			<g id="shape1206-620">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">28.</text>			</g>
 		</g>
-        <g id="table_29" transform="translate(-366.055,54.8309) rotate(-70)">
+		<g id="table_29" transform="translate(-366.055,54.8309) rotate(-70)">
 			<title>Table.1441</title>
-            <desc>29.</desc>
-            <g id="shape1470-303">
+			<desc>29.</desc>
+			<g id="shape1470-303">
 				<title>Blad.1470</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1469-311">
+			<g id="shape1469-311">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">29.</text>			</g>
 		</g>
-        <g id="table_30" transform="translate(-114.504,-200.974) rotate(-45)">
+		<g id="table_30" transform="translate(-114.504,-200.974) rotate(-45)">
 			<title>Tafel.1465</title>
-            <desc>30.</desc>
-            <g id="shape1466-292">
+			<desc>30.</desc>
+			<g id="shape1466-292">
 				<title>Blad.1466</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1465-300">
+			<g id="shape1465-300">
 				<text x="810.05" y="-8.34" transform="rotate(90)" class="number">30.</text>			</g>
 		</g>
-        <g id="group1214-16" transform="translate(270.742,1109.66) rotate(-120)">
+		<g id="group1214-16" transform="translate(270.742,1109.66) rotate(-120)">
 			<g id="shape1215-17">
 				<title>Blad.1215</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1214-25">
+			<g id="shape1214-25">
 				<text x="815.12" y="-8.34" transform="rotate(90)" class="number">.</text>
 			</g>
 		</g>
-        <g id="group1226-49" transform="translate(1111.18,209.764) rotate(90)">
+		<g id="group1226-49" transform="translate(1111.18,209.764) rotate(90)">
 			<title>Tafel.1226</title>
-            <desc>.</desc>
-            <g id="shape1227-50">
+			<desc>.</desc>
+			<g id="shape1227-50">
 				<title>Blad.1227</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1226-58">
+			<g id="shape1226-58">
 				<text x="-817.64" y="14.34" transform="rotate(-90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1288-126" transform="translate(1825.51,198.425) rotate(90)">
+		<g id="group1288-126" transform="translate(1825.51,198.425) rotate(90)">
 			<title>Tafel.1288</title>
-            <desc>.</desc>
-            <g id="shape1289-127">
+			<desc>.</desc>
+			<g id="shape1289-127">
 				<title>Blad.1289</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1288-135">
+			<g id="shape1288-135">
 				<text x="-817.64" y="14.34" transform="rotate(-90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1292-137" transform="translate(1000.63,1114.02) rotate(180)">
+		<g id="group1292-137" transform="translate(1000.63,1114.02) rotate(180)">
 			<title>Tafel.1292</title>
-            <desc>.</desc>
-            <g id="shape1293-138">
+			<desc>.</desc>
+			<g id="shape1293-138">
 				<title>Blad.1293</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1292-146">
+			<g id="shape1292-146">
 				<text x="815.12" y="-8.34" transform="rotate(90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1182-225" transform="translate(1207.56,503.436) rotate(110)">
+		<g id="group1182-225" transform="translate(1207.56,503.436) rotate(110)">
 			<title>Tafel.1182</title>
-            <desc>.</desc>
-            <g id="shape1183-226">
+			<desc>.</desc>
+			<g id="shape1183-226">
 				<title>Blad.1183</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1182-234">
+			<g id="shape1182-234">
 				<text x="-817.64" y="14.34" transform="rotate(-90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1194-258" transform="translate(-50.9317,433.553) rotate(-91.5)">
+		<g id="group1194-258" transform="translate(-50.9317,433.553) rotate(-91.5)">
 			<title>Tafel.1194</title>
-            <desc>.</desc>
-            <g id="shape1195-259">
+			<desc>.</desc>
+			<g id="shape1195-259">
 				<title>Blad.1195</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1194-267">
+			<g id="shape1194-267">
 				<text x="815.12" y="-8.34" transform="rotate(90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1441-280" transform="translate(1285.94,688.81) rotate(120)">
+		<g id="group1441-280" transform="translate(1285.94,688.81) rotate(120)">
 			<title>Tafel.1441</title>
-            <desc>.</desc>
-            <g id="shape1442-281">
+			<desc>.</desc>
+			<g id="shape1442-281">
 				<title>Blad.1442</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1441-289">
+			<g id="shape1441-289">
 				<text x="-817.64" y="14.34" transform="rotate(-90)" class="number">.</text>			</g>
 		</g>
-        <g id="group1780-581" transform="translate(592.441,-713.622)">
+		<g id="group1780-581" transform="translate(592.441,-713.622)">
 			<title>Ruimte.1033.1780</title>
-            <g id="shape1780-582">
+			<g id="shape1780-582">
 				<rect x="0" y="812.126" width="198.425" height="29.7638" class="st10"/>
 			</g>
-            <g id="shape1781-586">
+			<g id="shape1781-586">
 				<title>Blad.1781</title>
 
-                <text x="77.76" y="824.53" class="st11">Vestiaire<tspan
-                        x="83.23" dy="2.4em" class="st12">7 vk m</tspan></text>			</g>
+				<text x="77.76" y="824.53" class="st11">Vestiaire<tspan
+						x="83.23" dy="2.4em" class="st12">7 vk m</tspan></text>			</g>
 		</g>
-        <g id="group1824-634" transform="translate(817.795,1053.66) rotate(180)">
+		<g id="group1824-634" transform="translate(817.795,1053.66) rotate(180)">
 			<title>Tafel.1213</title>
-            <desc>Pop-up</desc>
-            <g id="shape1825-635">
+			<desc>Pop-up</desc>
+			<g id="shape1825-635">
 				<title>Blad.1825</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1824-643">
+			<g id="shape1824-643">
 				<text x="804.19" y="-8.34" transform="rotate(90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1828-645" transform="translate(817.307,1106.93) rotate(180)">
+		<g id="group1828-645" transform="translate(817.307,1106.93) rotate(180)">
 			<title>Tafel.1217</title>
-            <desc>Pop-up</desc>
-            <g id="shape1829-646">
+			<desc>Pop-up</desc>
+			<g id="shape1829-646">
 				<title>Blad.1829</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1828-654">
+			<g id="shape1828-654">
 				<text x="801.75" y="-8.34" transform="rotate(90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1832-656" transform="translate(1576.06,188.504) rotate(90)">
+		<g id="group1832-656" transform="translate(1576.06,188.504) rotate(90)">
 			<title>Tafel.1221</title>
-            <desc>Pop-up</desc>
-            <g id="shape1833-657">
+			<desc>Pop-up</desc>
+			<g id="shape1833-657">
 				<title>Blad.1833</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1832-665">
+			<g id="shape1832-665">
 				<text x="-831.01" y="14.34" transform="rotate(-90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1836-667" transform="translate(1525.04,188.504) rotate(90)">
+		<g id="group1836-667" transform="translate(1525.04,188.504) rotate(90)">
 			<title>Tafel.1225</title>
-            <desc>Pop-up</desc>
-            <g id="shape1837-668">
+			<desc>Pop-up</desc>
+			<g id="shape1837-668">
 				<title>Blad.1837</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1836-676">
+			<g id="shape1836-676">
 				<text x="-831.01" y="14.34" transform="rotate(-90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1840-678" transform="translate(640.63,-579.196)">
+		<g id="group1840-678" transform="translate(640.63,-579.196)">
 			<title>Tafel.1229</title>
-            <desc>Pop-up</desc>
-            <g id="shape1841-679">
+			<desc>Pop-up</desc>
+			<g id="shape1841-679">
 				<title>Blad.1841</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1840-687">
+			<g id="shape1840-687">
 				<text x="-831.01" y="14.34" transform="rotate(-90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1844-689" transform="translate(640.63,-525.827)">
+		<g id="group1844-689" transform="translate(640.63,-525.827)">
 			<title>Tafel.1233</title>
-            <desc>Pop-up</desc>
-            <g id="shape1845-690">
+			<desc>Pop-up</desc>
+			<g id="shape1845-690">
 				<title>Blad.1845</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1844-698">
+			<g id="shape1844-698">
 				<text x="-831.01" y="14.34" transform="rotate(-90)" class="number">Pop-up</text>			</g>
 		</g>
-        <g id="group1900-793" transform="translate(907.087,521.575) rotate(90)">
+		<g id="group1900-793" transform="translate(907.087,521.575) rotate(90)">
 			<title>Tafel.1004</title>
-            <desc>HADO (Trefbal AR)</desc>
-            <g id="shape1901-794">
+			<desc>HADO (Trefbal AR)</desc>
+			<g id="shape1901-794">
 				<title>Blad.1901</title>
-                <path transform="" d="M0 505.47 C0 503.41 2 501.73 4.48 501.73 L222.3 501.73 C224.77 501.73 226.77 503.41 226.77
+				<path transform="" d="M0 505.47 C0 503.41 2 501.73 4.48 501.73 L222.3 501.73 C224.77 501.73 226.77 503.41 226.77
 							 505.47 L226.77 838.15 C226.77 840.22 224.76 841.89 222.3 841.89 L4.48 841.89 C2 841.89 0 840.22 0 838.15
 							 L0 505.47 Z" class="st26"/>
 			</g>
-            <g id="shape1900-802">
+			<g id="shape1900-802">
 				<text x="-709.47" y="116.39" transform="rotate(-90)" class="number">HADO (Trefbal AR)</text>			</g>
 		</g>
-        <g id="group1907-804" transform="translate(-148.52,-4.92546) rotate(-45)">
+		<g id="group1907-804" transform="translate(-148.52,-4.92546) rotate(-45)">
 			<title>Tafel.1907</title>
-            <desc>Hado 1</desc>
-            <g id="shape1908-805">
+			<desc>Hado 1</desc>
+			<g id="shape1908-805">
 				<title>Blad.1908</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1907-813">
+			<g id="shape1907-813">
 				<text x="801.94" y="-8.34" transform="rotate(90)" class="number">Hado 1</text>			</g>
 		</g>
-        <g id="group1911-815" transform="translate(-156.221,85.6432) rotate(-50)">
+		<g id="group1911-815" transform="translate(-156.221,85.6432) rotate(-50)">
 			<title>Tafel.1911</title>
-            <desc>Hado 2</desc>
-            <g id="shape1912-816">
+			<desc>Hado 2</desc>
+			<g id="shape1912-816">
 				<title>Blad.1912</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1911-824">
+			<g id="shape1911-824">
 				<text x="801.94" y="-8.34" transform="rotate(90)" class="number">Hado 2</text>			</g>
 		</g>
-        <g id="group1987-856" transform="translate(1247.24,651.968) rotate(90)">
+		<g id="group1987-856" transform="translate(1247.24,651.968) rotate(90)">
 			<title>Tafel.1500</title>
-            <desc>RATO Education 3 x 10</desc>
-            <g id="shape1988-857">
+			<desc>RATO Education 3 x 10</desc>
+			<g id="shape1988-857">
 				<title>Blad.1988</title>
-                <path transform="" d="M0 561.54 C0 559.82 0.75 558.43 1.68 558.43 L83.36 558.43 C84.29 558.43 85.04 559.82 85.04
+				<path transform="" d="M0 561.54 C0 559.82 0.75 558.43 1.68 558.43 L83.36 558.43 C84.29 558.43 85.04 559.82 85.04
 							 561.54 L85.04 838.77 C85.04 840.49 84.29 841.89 83.36 841.89 L1.68 841.89 C0.75 841.89 0 840.49 0 838.77
 							 L0 561.54 Z" class="st26"/>
 			</g>
-            <g id="shape1987-865">
+			<g id="shape1987-865">
 				<text x="-732.93" y="39.52" transform="rotate(-90)" class="number">RATO Education<tspan
-                        x="-712.19" dy="1.2em" class="st12">3 x 10</tspan></text>			</g>
+						x="-712.19" dy="1.2em" class="st12">3 x 10</tspan></text>			</g>
 		</g>
-        <g id="group1991-868" transform="translate(-50.7888,428.106) rotate(-70)">
+		<g id="group1991-868" transform="translate(-50.7888,428.106) rotate(-70)">
 			<title>Tafel.1504</title>
-            <desc>RATO</desc>
-            <g id="shape1992-869">
+			<desc>RATO</desc>
+			<g id="shape1992-869">
 				<title>Blad.1992</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1991-877">
+			<g id="shape1991-877">
 				<text x="805.02" y="-8.34" transform="rotate(90)" class="number">RATO</text>			</g>
 		</g>
-        <g id="group1995-879" transform="translate(-34.6008,580.06) rotate(-80)">
+		<g id="group1995-879" transform="translate(-34.6008,580.06) rotate(-80)">
 			<title>Tafel.1508</title>
-            <desc>RATO</desc>
-            <g id="shape1996-880">
+			<desc>RATO</desc>
+			<g id="shape1996-880">
 				<title>Blad.1996</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape1995-888">
+			<g id="shape1995-888">
 				<text x="805.02" y="-8.34" transform="rotate(90)" class="number">RATO</text>			</g>
 		</g>
-        <g id="group1999-890" transform="translate(59.5276,-303.307)">
+		<g id="group1999-890" transform="translate(59.5276,-303.307)">
 			<title>Blad.1999</title>
-            <g id="group2000-891">
+			<g id="group2000-891">
 				<title>Tafel.1004</title>
-                <desc>Podium</desc>
-                <g id="shape2001-892">
+				<desc>Podium</desc>
+				<g id="shape2001-892">
 					<title>Blad.2001</title>
-                    <path transform="" d="M0 673.68 C0 672.65 0.75 671.81 1.68 671.81 L83.36 671.81 C84.29 671.81 85.04 672.65 85.04
+					<path transform="" d="M0 673.68 C0 672.65 0.75 671.81 1.68 671.81 L83.36 671.81 C84.29 671.81 85.04 672.65 85.04
 								 673.68 L85.04 840.02 C85.04 841.05 84.29 841.89 83.36 841.89 L1.68 841.89 C0.75 841.89 0 841.05
 								 0 840.02 L0 673.68 Z" class="st26"/>
 				</g>
-                <g id="shape2000-900">
+				<g id="shape2000-900">
 					<text x="-772.47" y="45.52" transform="rotate(-90)" class="number">Podium</text>				</g>
 			</g>
-            <g id="group2004-902" transform="translate(14.9764,-170.079)">
+			<g id="group2004-902" transform="translate(14.9764,-170.079)">
 				<title>Bar.1008</title>
-                <g id="shape2005-903">
+				<g id="shape2005-903">
 					<title>Blad.2005</title>
-                    <path transform="" d="M0 841.89 L0 833.24 L52.58 833.24 L52.58 841.89 L0 841.89 Z" class="st29"/>
+					<path transform="" d="M0 841.89 L0 833.24 L52.58 833.24 L52.58 841.89 L0 841.89 Z" class="st29"/>
 				</g>
-                <g id="shape2006-905" transform="translate(0,-2.16142)">
+				<g id="shape2006-905" transform="translate(0,-2.16142)">
 					<title>Blad.2006</title>
-                    <path transform="" d="M52.58 837.57 L0 837.57" class="st21"/>
-                    <path transform="" d="M52.58 841.89 L0 841.89" class="st21"/>
-                    <path transform="" d="M52.58 839.73 L0 839.73" class="st21"/>
+					<path transform="" d="M52.58 837.57 L0 837.57" class="st21"/>
+					<path transform="" d="M52.58 841.89 L0 841.89" class="st21"/>
+					<path transform="" d="M52.58 839.73 L0 839.73" class="st21"/>
 				</g>
 			</g>
 		</g>
-        <g id="group2083-1074" transform="translate(1370.55,188.504) rotate(90)">
+		<g id="group2083-1074" transform="translate(1370.55,188.504) rotate(90)">
 			<title>Tafel.2083</title>
-            <desc>R Pi admin</desc>
-            <g id="shape2084-1075">
+			<desc>R Pi admin</desc>
+			<g id="shape2084-1075">
 				<title>Blad.2084</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape2083-1083">
+			<g id="shape2083-1083">
 				<text x="-837.8" y="14.34" transform="rotate(-90)" class="number">R Pi admin</text>			</g>
 		</g>
-        <g id="group2087-1085" transform="translate(1424.41,188.504) rotate(90)">
+		<g id="group2087-1085" transform="translate(1424.41,188.504) rotate(90)">
 			<title>Tafel.2087</title>
-            <desc>R Pi admin</desc>
-            <g id="shape2088-1086">
+			<desc>R Pi admin</desc>
+			<g id="shape2088-1086">
 				<title>Blad.2088</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape2087-1094">
+			<g id="shape2087-1094">
 				<text x="-837.8" y="14.34" transform="rotate(-90)" class="number">R Pi admin</text>			</g>
 		</g>
-        <g id="group2103-1108" transform="translate(28.3465,731.339) rotate(-90)">
+		<g id="group2103-1108" transform="translate(28.3465,731.339) rotate(-90)">
 			<title>Tafel.2103</title>
-            <desc>.</desc>
-            <g id="shape2104-1109">
+			<desc>.</desc>
+			<g id="shape2104-1109">
 				<title>Blad.2104</title>
-                <path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
+				<path transform="" d="M0 791.43 C0 791.12 0.2 790.87 0.45 790.87 L22.23 790.87 C22.48 790.87 22.68 791.12 22.68 791.43
 							 L22.68 841.33 C22.68 841.64 22.48 841.89 22.23 841.89 L0.45 841.89 C0.2 841.89 0 841.64 0 841.33 L0
 							 791.43 Z" class="table"/>
 			</g>
-            <g id="shape2103-1117">
+			<g id="shape2103-1117">
 				<text x="815.12" y="-8.34" transform="rotate(90)" class="number">.</text>			</g>
 		</g>
-        <g id="group2107-1119" transform="translate(881.948,1555.27) rotate(179)">
+		<g id="group2107-1119" transform="translate(881.948,1555.27) rotate(179)">
 			<title>Televisie</title>
-            <g id="shape2108-1120">
+			<g id="shape2108-1120">
 				<title>Blad.2108</title>
-                <path transform="" d="M45.49 832.65 L38.34 832.65 L33.46 829.75 L13.25 829.75 L8.37 832.65 L1.23 832.65 L0 834.9
+				<path transform="" d="M45.49 832.65 L38.34 832.65 L33.46 829.75 L13.25 829.75 L8.37 832.65 L1.23 832.65 L0 834.9
 							 L0 837.17 L3.31 840.31 L43.41 840.31 L46.71 837.17 L46.71 834.9 L45.49 832.65 ZM33.28 840.3 L33.28 840.6
 							 C33.28 841.31 32.72 841.89 32.02 841.89 L14.7 841.89 C14 841.89 13.43 841.31 13.43 840.6 L13.43 840.3
 							 L33.28 840.3 Z" class="st41"/>
-                <path transform="" d="M38.34 832.65 L8.37 832.65" class="st21"/>
-                <path transform="" d="M0 834.9 L46.71 834.9" class="st21"/>
-                <path transform="" d="M46.71 837.17 L0 837.17" class="st21"/>
-                <path transform="" d="M41.58 840.27 L44.86 837.17" class="st21"/>
-                <path transform="" d="M5.14 840.27 L1.85 837.17" class="st21"/>
-                <path transform="" d="M45.49 832.65 L38.34 832.65 L33.46 829.75 L13.25 829.75 L8.37 832.65 L1.23 832.65 L0 834.9
+				<path transform="" d="M38.34 832.65 L8.37 832.65" class="st21"/>
+				<path transform="" d="M0 834.9 L46.71 834.9" class="st21"/>
+				<path transform="" d="M46.71 837.17 L0 837.17" class="st21"/>
+				<path transform="" d="M41.58 840.27 L44.86 837.17" class="st21"/>
+				<path transform="" d="M5.14 840.27 L1.85 837.17" class="st21"/>
+				<path transform="" d="M45.49 832.65 L38.34 832.65 L33.46 829.75 L13.25 829.75 L8.37 832.65 L1.23 832.65 L0 834.9
 							 L0 837.17 L3.31 840.31 L43.41 840.31 L46.71 837.17 L46.71 834.9 L45.49 832.65"
-                      class="st21"/>
-                <path transform="" d="M33.28 840.3 L33.28 840.6 C33.28 841.31 32.72 841.89 32.02 841.89 L14.7 841.89 C14 841.89 13.43
+					  class="st21"/>
+				<path transform="" d="M33.28 840.3 L33.28 840.6 C33.28 841.31 32.72 841.89 32.02 841.89 L14.7 841.89 C14 841.89 13.43
 							 841.31 13.43 840.6 L13.43 840.3" class="st21"/>
-                <path transform="" d="" class="st21"/>
+				<path transform="" d="" class="st21"/>
 			</g>
-            <g id="shape2109-1130" transform="translate(1.85116,-1.58377)">
+			<g id="shape2109-1130" transform="translate(1.85116,-1.58377)">
 				<title>Blad.2109</title>
-                <path transform="" d="M36.51 834.25 L6.5 834.25 L11.4 831.33 L31.61 831.33 L36.51 834.25 ZM39.7 841.89 L3.31 841.88
+				<path transform="" d="M36.51 834.25 L6.5 834.25 L11.4 831.33 L31.61 831.33 L36.51 834.25 ZM39.7 841.89 L3.31 841.88
 							 L0 838.76 L43.01 838.76 L39.7 841.89 Z" class="st42"/>
 			</g>
 		</g>
