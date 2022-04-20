@@ -668,7 +668,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   //if(project.get('id') == req.query.ProjectId){
 
   let participantsList = []
-  let attachments = await project.getAttachments({ where: { confirmed: true } })
+  //let attachments = await project.getAttachments({ where: { confirmed: true } })
   let table = await project.getTables()
   let agreedToPhoto = true
 
