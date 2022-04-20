@@ -285,7 +285,9 @@ router.get('/coolestprojects2022/:eventId/', cors(corsOptions), async function (
           'endTime': endTime,
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
-          'participants': participantsList.map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
+          'participants': participantsList.map((ele) => { 
+            return ele.get('firstname') + ' ' + ele.get('lastname') + 
+            !(await ele.getQuestions()).includes((ele) => { return ele.name == 'Agreed to Photo' }) ? ' (no photo)' : ''  }).join(', '),
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
           'description': project.get('project_descr'),
           'agreedToPhoto': agreedToPhoto,
@@ -626,14 +628,22 @@ router.get('/project-list/:eventId', cors(corsOptions), async function (req, res
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
-  var project = await Project.findByPk(req.query.ProjectId);
-  let projectList = []
-  let pCount = 0
-  // <img src="/website/static/Tables2.svg" alt="Tables2.svg" width="700px" height="300px" />
-  // create a planning table structure 
-  // x -> list of locations
-  // y -> list of table
-  // z -> list of projects
+  const project = await Project.findOne({
+    where: {
+      projectId: req.query.ProjectId,
+      eventId: req.params.eventId
+    },
+    include:[
+      {
+        model: Table,
+        required: true
+      }
+    ]
+  });
+
+  if(!project){
+    return next(new Error('project not found'))
+  }
 
   const event = await Event.findByPk(req.params.eventId)
   if (event === null) {
@@ -648,27 +658,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
     }
   });
 
-  const locations = await event.getLocations()
-  const tablesGroupedCount = await Table.findAll(
-    {
-      attributes: ['LocationId', 'EventId', [Sequelize.fn('count', Sequelize.col('LocationId')), 'count']],
-      group: ['LocationId', 'EventId'],
-      having: { 'EventId': event.get('id') }
-    }
-  )
-  // we need header values in the first row so + 1 for length
-  let maxTablesCount = Math.max(...tablesGroupedCount.map(o => o.get('count')), 0) + 1
-  maxTablesCount = 1
-  //const result = Array(maxTablesCount).fill().map(() => Array(locations.length));
-  //let result = null
-  console.log("maxTablesCount:", maxTablesCount)
-  pCount = 1
-  //for(let project of projects){
-
-  //if(project.get('id') == req.query.ProjectId){
-
   let participantsList = []
-  //let attachments = await project.getAttachments({ where: { confirmed: true } })
   let table = await project.getTables()
   let agreedToPhoto = true
 
@@ -680,7 +670,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   let participants = await project.getParticipant()
   if (participants) {
     for (let participant of participants) {
-      agreedToPhotopCount = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
+      agreedToPhoto = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
     }
     participantsList.push(...participants)
   }
@@ -693,47 +683,36 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   } else if (project.get('project_lang') == 'fr') {
     cardStyle = 'border-secondary'
   }
-  let hlink2 = ""
 
-  hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-0.png'
-  hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-' + project.id + '.png'
+  let hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-' + project.id + '.png'
 
   tName = table[0]?.name
   vNumber = ''
   if (!tName) {
     tName = "not yet assigned"
   } else { vNumber = tName.match(/\d+/)[0] }
+
   const projectforUI = {
     'style': cardStyle,
     'language': project.get('project_lang'),
     'projectName': project.get('project_name'),
-    //'projectID': project.get('id'),
     'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
     'link2': hlink2,
     'description': project.get('project_descr'),
     'agreedToPhoto': agreedToPhoto,
-    //'location': 'Voting Number: '+ project.get('id') + '   ',
     'location': 'Voting Number: ' + vNumber + '    ',
     'name': tName,
     'tableNumber': tName.toLowerCase().replaceAll(" ", "_"),
-    'messages': activeMessage?.message//'😎====>Fixed text4important messages 🎯 =====<<===fixed text 😅<'
-    //'messages': ''
-    // === https://getemoji.com/     https://www.tutorialspoint.com/html/html_marquees.htm ===
+    'messages': activeMessage?.message
   }
 
-  //console.log(projectList)  
   const result = {
-    //name: table[0]?.name,
     project: projectforUI,
   }
   res.render('video-presentation.handlebars', {
-    //grid: result
     project: projectforUI,
   })
-  //}
-  //}
   return
-
 });
 
 
