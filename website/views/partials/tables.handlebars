@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     style="display:block; margin: auto; max-height: 350px;"
-     viewBox="0 0 1190.55 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="st44">
+     style="display:block; margin: auto; max-height: 400px;"
+     viewBox="0 60 1190.55 740" xml:space="preserve" color-interpolation-filters="sRGB" class="st44">
 	 <!--width="16.5354in" height="11.6929in"-->
 
 	<style type="text/css">
@@ -17,8 +17,10 @@
             font-size: 0.833336em
         }
 
+        @keyframes blink { 0%{ fill:#b60000; } 50%{ fill:#ffcd5f; } 100%{ fill:#b60000; }}
+
         #{{selected}} .table {
-                          fill: #b60000;
+                          animation: blink 1s infinite;
                       }
 
         #{{selected}} .number {
