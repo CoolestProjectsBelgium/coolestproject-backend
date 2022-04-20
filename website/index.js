@@ -696,7 +696,9 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
     'style': cardStyle,
     'language': project.get('project_lang'),
     'projectName': project.get('project_name'),
-    'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
+    'participants': participantsList.map((ele) => { 
+      return ele.get('firstname') + ' ' + ele.get('lastname') + 
+      !(await ele.getQuestions()).includes((ele) => { return ele.name == 'Agreed to Photo' }) ? ' (no photo)' : ''  }).join(', '),
     'link2': hlink2,
     'description': project.get('project_descr'),
     'agreedToPhoto': agreedToPhoto,
