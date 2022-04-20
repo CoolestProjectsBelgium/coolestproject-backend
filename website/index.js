@@ -277,6 +277,14 @@ router.get('/coolestprojects2022/:eventId/', cors(corsOptions), async function (
         if (testTime == '00:00') { endTime = 0; yesdescript = true };
         let requirements = project.get('project_type');
 
+        const participantsPhotoList = []
+        for (const participant of participantsList) {
+          const questions = await participant.getQuestions();
+          const photoAllowed = questions.some((q) => { return q.name == 'Agreed to Photo' });
+          participantsPhotoList.push(
+            participant.get('firstname') + ' ' + participant.get('lastname') + ((!photoAllowed) ? ' (no photo)' : '')
+          )
+        }
 
         projectList.push({
           'style': cardStyle,
@@ -285,9 +293,7 @@ router.get('/coolestprojects2022/:eventId/', cors(corsOptions), async function (
           'endTime': endTime,
           'projectName': project.get('project_name'),
           'projectID': project.get('id'),
-          'participants': participantsList.map((ele) => { 
-            return ele.get('firstname') + ' ' + ele.get('lastname') + 
-            !(await ele.getQuestions()).includes((ele) => { return ele.name == 'Agreed to Photo' }) ? ' (no photo)' : ''  }).join(', '),
+          'participants': participantsPhotoList.join(', '),
           'link': (await attachments.pop()?.getHyperlink())?.get('href'),
           'description': project.get('project_descr'),
           'agreedToPhoto': agreedToPhoto,
@@ -630,7 +636,7 @@ router.get('/project-list/:eventId', cors(corsOptions), async function (req, res
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
   const project = await Project.findOne({
     where: {
-      projectId: req.query.ProjectId,
+      id: req.query.ProjectId,
       eventId: req.params.eventId
     },
     include:[
@@ -692,13 +698,20 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
     tName = "not yet assigned"
   } else { vNumber = tName.match(/\d+/)[0] }
 
+  const participantsPhotoList = []
+  for (const participant of participantsList) {
+    const questions = await participant.getQuestions();
+    const photoAllowed = questions.some((q) => { return q.name == 'Agreed to Photo' });
+    participantsPhotoList.push(
+      participant.get('firstname') + ' ' + participant.get('lastname') + ((!photoAllowed) ? ' (no photo)' : '')
+    )
+  }
+
   const projectforUI = {
     'style': cardStyle,
     'language': project.get('project_lang'),
     'projectName': project.get('project_name'),
-    'participants': participantsList.map((ele) => { 
-      return ele.get('firstname') + ' ' + ele.get('lastname') + 
-      !(await ele.getQuestions()).includes((ele) => { return ele.name == 'Agreed to Photo' }) ? ' (no photo)' : ''  }).join(', '),
+    'participants': participantsPhotoList.join(','),
     'link2': hlink2,
     'description': project.get('project_descr'),
     'agreedToPhoto': agreedToPhoto,
