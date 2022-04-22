@@ -999,20 +999,8 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          projectId: {
-            list: true,
-            show: true,
-            new: false,
-            filter: false
-          },
-          projectName: {
-            list: true,
-            show: true,
-            new: false,
-            filter: false
-          }
+
         },
-        actions: {
           list: {
             before: async (request, { currentAdmin }) => {
               if(superAdminAllowed({ currentAdmin })){
@@ -1049,8 +1037,7 @@ const adminBroOptions = {
               }
               return response;
             }
-          }
-        },
+          },
       },
     },
     {
@@ -1097,6 +1084,35 @@ const adminBroOptions = {
         actions: {}
       }
     },
+
+    {
+      resource: db.Message,
+      options: {
+        navigation: planningParent,
+        properties: {
+          endAt: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          startAt: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+        },
+        actions: {
+          list: {
+             before: async (request, { currentAdmin }) => {
+               if(superAdminAllowed({ currentAdmin })){
+                 return request;
+               }
+               const event = await database.getEventActive();
+               request.query = { ...request.query, 'filters.eventId': event.id }
+               return request
+             }
+           }
+         }
+        }
+      
+    },
+
     {
       resource: db.Award,
       options: {
