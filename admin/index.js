@@ -998,9 +998,7 @@ const adminBroOptions = {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent,
-        properties: {
-
-        },
+        actions: {
           list: {
             before: async (request, { currentAdmin }) => {
               if(superAdminAllowed({ currentAdmin })){
@@ -1037,7 +1035,8 @@ const adminBroOptions = {
               }
               return response;
             }
-          },
+          }
+        }
       },
     },
     {
