@@ -17,7 +17,7 @@ import {
     TableCell,
     TableHead,
     Tooltip
-} from '@admin-bro/design-system'
+} from '@adminjs/design-system'
 
 const Card = styled(Box)`
   display: ${({ flex }) => (flex ? 'flex' : 'block')};

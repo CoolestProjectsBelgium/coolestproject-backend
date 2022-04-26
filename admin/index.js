@@ -1,9 +1,19 @@
-const AdminBro = require('admin-bro');
-const AdminBroSequelize = require('admin-bro-sequelizejs');
-const AdminBroExpress = require('admin-bro-expressjs');
+const AdminJS = require('adminjs')
+const AdminJSExpress = require('@adminjs/express')
+
+const express = require('express')
+const app = express()
+const db = require('../models');
+
+//const router = AdminJSExpress.buildRouter(adminJs)
+const AdminJSSequelize = require('@adminjs/sequelize')
+
+//const AdminBro = require('admin-bro');
+//const AdminBroSequelize = require('admin-bro-sequelizejs');
+//const AdminBroExpress = require('admin-bro-expressjs');
 const session = require("express-session");
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const db = require('../models');
+
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
 const ProjectTable = db.ProjectTable;
@@ -76,7 +86,7 @@ function adminAllowedOwnUser(context){
 }
 
 
-const adminBroOptions = {
+const adminJsOptions = {
   databases: [db],
   rootPath: '/admin',
   dashboard: {
@@ -84,7 +94,7 @@ const adminBroOptions = {
       const evt = await database.getEventActive()
       return { ...evt.dataValues, questions: evt.questions, tshirts: evt.tshirts };
     },
-    component: AdminBro.bundle('./components/dashboard')
+    component: AdminJS.bundle('./components/dashboard')
   },
   branding: {
     companyName: 'Coolest Projects',
@@ -362,7 +372,7 @@ const adminBroOptions = {
                 record: record.toJSON(evt),
               }
             },
-            component: AdminBro.bundle('./components/eventDashboard')
+            component: AdminJS.bundle('./components/eventDashboard')
           },
           setActive: {
             isAccessible: superAdminAllowed,
@@ -871,8 +881,8 @@ const adminBroOptions = {
               filter: false,
             },
             components: {
-              list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),
+              list: AdminJS.bundle('./components/file'),
+              show: AdminJS.bundle('./components/file'),
             },
           }
         },
@@ -934,8 +944,8 @@ const adminBroOptions = {
               filter: false,
             },
             components: {
-              list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),
+              list: AdminJS.bundle('./components/file'),
+              show: AdminJS.bundle('./components/file'),
             },
           },
           azureExists: {
@@ -998,6 +1008,7 @@ const adminBroOptions = {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent,
+        sort:{direction:'desc',sortBy: 'id'},
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -1387,18 +1398,22 @@ const adminBroOptions = {
   ]
 }
 
-AdminBro.registerAdapter(AdminBroSequelize)
+//AdminBro.registerAdapter(AdminBroSequelize)
+AdminJS.registerAdapter(AdminJSSequelize)
+const adminJs = new AdminJS(adminJsOptions)
 
-const adminBro = new AdminBro(adminBroOptions);
-const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+
+//const adminJs = new AdminJS(adminJsOptions);
+//const router = AdminJSExpress.buildRouter(adminJs)
+const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
   async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } }});
-    console.log(user);
-    if (!user) { return null }
+   const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } }});
+   console.log(user);
+   if (!user) { return null }
     if (! await user.verifyPassword(password)) { return null }
     return { 'email': user.email, 'account_type': user.account_type };
   },
-  cookieName: 'adminbro',
+  cookieName: 'adminjs',
   cookiePassword: process.env.SECRET_KEY
 }, null, {
   store: sessionStore

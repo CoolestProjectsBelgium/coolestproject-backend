@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ApiClient } from 'admin-bro'
+import { ApiClient } from 'adminjs'
 
 import styled from 'styled-components'
 import {
@@ -19,7 +19,7 @@ import {
     TableCell,
     TableHead,
     Tooltip
-} from '@admin-bro/design-system'
+} from '@adminjs/design-system'
 
 const pageHeaderHeight = 284
 const pageHeaderPaddingY = 74
