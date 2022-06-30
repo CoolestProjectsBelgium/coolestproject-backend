@@ -59,7 +59,7 @@
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.1",
     "nodemailer-express-handlebars": "^4.0.0",
-    "passport": "^0.4.1",
+    "passport": "^0.6.0",
     "passport-anonymous": "^1.0.1",
     "passport-cookie": "^1.0.9",
     "passport-http": "^0.3.0",
