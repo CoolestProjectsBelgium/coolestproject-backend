@@ -430,6 +430,7 @@ const adminJsOptions = {
         actions: {
           list: {
              before: async (request, { currentAdmin }) => {
+               request.query.perPage ??= 100;
                if(superAdminAllowed({ currentAdmin })){
                  return request;
                }
@@ -487,6 +488,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
               if(superAdminAllowed({ currentAdmin })){
                 return request;
               }
@@ -504,6 +506,7 @@ const adminJsOptions = {
         navigation: registerParent,
         actions: {          list: {
           before: async (request, { currentAdmin }) => {
+            request.query.perPage ??= 100;
             if(superAdminAllowed({ currentAdmin })){
               return request;
             }
@@ -618,6 +621,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if(superAdminAllowed({ currentAdmin })){
                 return request;
               }
@@ -750,6 +754,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if(superAdminAllowed({ currentAdmin })){
                 return request;
               }
@@ -1008,7 +1013,7 @@ const adminJsOptions = {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent,
-        sort:{direction:'desc',sortBy: 'id'},
+        //sort:{direction:'DESC',sortBy: 'Attachment.id'},
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {

@@ -6,7 +6,8 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Hyperlink extends Model {
     static associate(models) {
-      Hyperlink.belongsTo(models.Attachment, {});
+      Hyperlink.belongsTo(models.Attachment,  {limit: 100, order: [[ 'AttachmentId', 'DESC' ]] }
+      );
     }
   }
   Hyperlink.init({
