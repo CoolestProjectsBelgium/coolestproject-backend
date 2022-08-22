@@ -60,7 +60,13 @@ router.get('/qr/sms/:projectId', cors(corsOptions), async function (req, res, ne
     return next(new Error('Project not found'))
   }
 
-  const qrCodeText = `SMSTO:${ process.env.TWILIO_NUMBER }:Tables ${ project.Tables[0].id }`
+  let tableTxt = 'Table'
+  if (project.project_lang == 'fr') {
+    tableTxt = 'Table'
+  } else if (project.project_lang == 'nl') {
+    tableTxt = 'Tafel'
+  }
+  const qrCodeText = `SMSTO:${ process.env.TWILIO_NUMBER }:${ tableTxt } ${ project.Tables[0].id }`
   
   const qrcode_filename = path.join(tmpPath, `sms${ req.params.projectId }.png`);
   if(!fs.existsSync(qrcode_filename)){
