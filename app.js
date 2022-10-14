@@ -4,6 +4,14 @@ const DBA = require('./dba');
 const models = require('./models');
 const express = require('express');
 const app = express();
+
+const session = require("express-session");
+app.use("/website/*", session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
 var exphbs  = require('express-handlebars');
 const fs = require('fs');
 const cors = require('cors');
@@ -34,7 +42,7 @@ app.use(requestLanguage({
   }
 }));  
 
-app.engine('handlebars', exphbs());
+app.engine('handlebars', exphbs.engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
@@ -55,8 +63,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-// secure routes
-require('./security')(app);
+
 
 // website integration 
 const websiteIntegration = require('./website');
@@ -73,6 +80,9 @@ app.use('/voting', votingIntegration);
 // enable admin UI
 const adminUI = require('./admin');
 app.use('/admin', adminUI);
+
+// secure routes
+require('./security')(app);
 
 //enable i18n
 const i18n = require('i18n');
