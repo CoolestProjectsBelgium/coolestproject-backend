@@ -589,11 +589,47 @@ const adminJsOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext' },
+          project_id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          }, 
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },          
+          project_lang: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          project_type: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
           project_name: {
             isTitle: true,
-            label: 'project'
+            label: 'project',
+            isVisible: { list: true, filter: false, show: true, edit: true },
           },
+          ownerId: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          eventId: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          max_tokens: {
+            isVisible: { list: false, filter: false, show: true, edit: true },
+          },
+          project_descr: { 
+            isVisible: { list: true, filter: false, show: true, edit: true }
+
+          },
+          internalinfo: { 
+            isVisible: { list: true, filter: false, show: true, edit: true },
+            type: 'richtext' },
+          
+          /*
           totalAttachments: {
             list: true,
             show: true,
@@ -619,7 +655,7 @@ const adminJsOptions = {
             list: true,
             show: true,
             filter: false
-          }
+          }*/
         },
         actions: {
           list: {
@@ -710,27 +746,26 @@ const adminJsOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext' },
-          isOwner: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          sizeId: {
+            isVisible: { list: false, filter: true, show: true, edit: true },
           },
-          isParticipant: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          street: {
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
-          hasProject: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          house_number: {
+            isVisible: { list: false, filter: false, show: true, edit: true },
+          },
+          box_number: {
+            isVisible: { list: false, filter: false, show: true, edit: true },
+          },
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          via: {
+            isVisible: { list: false, filter: false, show: true, edit: true},
           },
           email_guardian: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           eventId: {
             isVisible: { list: false, filter: false, show: true, edit: false },
@@ -742,17 +777,39 @@ const adminJsOptions = {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
           gsm_guardian: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           gsm: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           medical: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           last_token: {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
+          internalinfo: { type: 'richtext',
+          isVisible: { list: false, filter: false, show: true, edit: true }, },
+          isOwner: {
+            list: false,
+            show: true,
+            edit: false,
+            filter: false,
+            type: 'boolean'
+          },
+                    /*
+          isParticipant: {
+            list: false,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },
+          hasProject: {
+            list: false,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },*/
         },
         actions: {
           list: {
@@ -850,6 +907,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -861,7 +919,20 @@ const adminJsOptions = {
           }
         },
         properties: {
-          text: { type: 'richtext' }
+          text: { type: 'richtext' },
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+            type: 'richtext' ,
+          },
+          ProjectId: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
         }
       }
     },
