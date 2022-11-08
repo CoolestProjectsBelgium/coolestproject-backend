@@ -6,7 +6,9 @@ const express = require('express');
 const app = express();
 
 const session = require("express-session");
-app.use("/website/*", session({
+   
+//app.use("/website/*", session({
+app.use(/(?!^admin.*$)(^.*$)/, session({
   secret: process.env.SECRET_KEY,
   resave: false,
   saveUninitialized: true,
@@ -29,8 +31,8 @@ const Mailer = require('./mailer');
 const Azure = require('./azure');
 
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
-app.use(requestLanguage({
+app.use(/(?!^admin.*$)(^.*$)/,cookieParser());
+app.use(/(?!^admin.*$)(^.*$)/,requestLanguage({
   languages: ['en', 'fr', 'nl'],
   cookie: {
     name: 'language',
@@ -50,7 +52,7 @@ app.set('views', path.join(__dirname, 'website', 'views'));
 var whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 var corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin)
+    //console.log(origin)
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
@@ -61,9 +63,9 @@ var corsOptions = {
   credentials: true
 }
 
-app.use(cors(corsOptions));
+app.use(/(?!^admin.*$)(^.*$)/,cors(corsOptions));
 
-
+app.use(/(?!^admin.*$)(^.*$)/,(req,resp,next)=>{console.log("++++++++++++testuse+++++++++++++++");next();});
 
 // website integration 
 const websiteIntegration = require('./website');

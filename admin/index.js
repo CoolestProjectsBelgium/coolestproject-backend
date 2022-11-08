@@ -179,7 +179,7 @@ const adminJsOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
-              console.log(currentAdmin);
+             // console.log(currentAdmin);
               if (currentAdmin.account_type != 'super_admin')
                 request.query = { ...request.query, 'filters.email': currentAdmin.email }
               return request
@@ -1485,8 +1485,8 @@ const adminJs = new AdminJS(adminJsOptions)
 
 const authenticate = async (email, password) => {
   const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
-  console.log("User:");
-  console.log(user);
+  //console.log("User:");
+  //console.log(user);
   if (!user) { return null }
   if (! await user.verifyPassword(password)) { return null }
   return { 'email': user.email, 'account_type': user.account_type };
