@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     postalcode: {
       type: DataTypes.INTEGER,
       validate: { min: 1000, max: 9999, },
-      allowNull: false
+      allowNull: true
     },
     municipality_name: {
       type: DataTypes.STRING(30)

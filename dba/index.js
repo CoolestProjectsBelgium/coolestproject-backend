@@ -214,11 +214,13 @@ class DBA {
 
       //flatten address
       const address = changedFields.address;
-      changedFields.postalcode = address.postalcode;
-      changedFields.street = address.street;
-      changedFields.house_number = address.house_number;
-      changedFields.box_number = address.box_number;
-      changedFields.municipality_name = address.municipality_name;
+      if(address){
+        changedFields.postalcode = address.postalcode;
+        changedFields.street = address.street;
+        changedFields.house_number = address.house_number;
+        changedFields.box_number = address.box_number;
+        changedFields.municipality_name = address.municipality_name;
+      }
       delete changedFields.address;
 
       // cleanup guardian fields when not needed anymore
@@ -666,11 +668,13 @@ class DBA {
 
         //flatten address
         const address = user.address;
-        dbValues.postalcode = address.postalcode;
-        dbValues.street = address.street;
-        dbValues.house_number = address.house_number;
-        dbValues.box_number = address.box_number;
-        dbValues.municipality_name = address.municipality_name;
+        if (address) {
+          dbValues.postalcode = address.postalcode;
+          dbValues.street = address.street;
+          dbValues.house_number = address.house_number;
+          dbValues.box_number = address.box_number;
+          dbValues.municipality_name = address.municipality_name;
+        }
 
         //flatten own project
         const ownProject = registrationValues.project.own_project;

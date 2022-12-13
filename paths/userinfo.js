@@ -42,7 +42,7 @@ module.exports = function(database, models, jwt, mailer) {
       general_questions: general_questions,
       mandatory_approvals: mandatory_approvals,
       address: {
-        postalcode: user.postalcode + '' ,
+        postalcode: user.postalcode,
         street: user.street,
         house_number: user.house_number,
         box_number: user.box_number,

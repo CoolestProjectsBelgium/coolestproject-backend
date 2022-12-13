@@ -674,8 +674,6 @@ components:
         name:
           type: string
     Address:
-      required:
-      - postalcode
       type: object
       properties:
         street:
