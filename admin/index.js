@@ -1,6 +1,6 @@
 const AdminJS = require('adminjs')
 const AdminJSExpress = require('@adminjs/express')
-
+const passport = require('passport')
 const express = require('express')
 const app = express()
 const db = require('../models');
@@ -8,11 +8,8 @@ const db = require('../models');
 //const router = AdminJSExpress.buildRouter(adminJs)
 const AdminJSSequelize = require('@adminjs/sequelize')
 
-//const AdminBro = require('admin-bro');
-//const AdminBroSequelize = require('admin-bro-sequelizejs');
-//const AdminBroExpress = require('admin-bro-expressjs');
-const session = require("express-session");
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+//const session = require("express-session");
+//const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
@@ -25,7 +22,7 @@ var DBA = require('../dba');
 const Azure = require('../azure');
 const database = new DBA(Azure);
 const sequelize = db.sequelize;
-const sessionStore = new SequelizeStore({ db: sequelize });
+//const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
 var Mail = require('../mailer');
 const Token = require('../jwts');
@@ -73,16 +70,20 @@ const adminParent = {
   icon: 'Identification'
 }
 
+
 function superAdminAllowed({ currentAdmin }) {
-  return currentAdmin.account_type === 'super_admin'
+ // return currentAdmin.account_type === 'super_admin'
+ return true
 }
 
 function adminAllowed({ currentAdmin }) {
-  return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
+ // return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
+  return true
 }
 
 function adminAllowedOwnUser(context) {
-  return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
+  //return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
+  return true
 }
 
 
@@ -1479,10 +1480,26 @@ const adminJsOptions = {
   ]
 }
 
-//AdminBro.registerAdapter(AdminBroSequelize)
 AdminJS.registerAdapter(AdminJSSequelize)
 const adminJs = new AdminJS(adminJsOptions)
 
+/*
+const passport = require('passport');
+const BasicStrategy = require('passport-http').BasicStrategy;
+
+passport.use('admin_login',new BasicStrategy(
+  async function(email, password, done) {
+  const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
+  console.log("User:");
+  console.log(user);
+  if (!user) { return done(null,false) }
+  if (! await user.verifyPassword(password)) { return done(null,false) }
+  return done(null, { 'email': user.email, 'account_type': user.account_type });
+  }
+));
+*/
+
+/*
 const authenticate = async (email, password) => {
   const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
   //console.log("User:");
@@ -1505,5 +1522,21 @@ const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
   secret: process.env.SECRET_KEY,
   name: 'adminjs',
 });
+*/
+let router = express.Router()
+router.use((req, res, next) => {
+  if (req.session && req.session.admin) {
+    req.session.adminUser = req.session.admin
+    next()
+  } else {
+      //res.redirect(adminJs.options.loginPath)
+      next()
+  }
+})
+router.use(passport.authenticate('planning_login'));
+router = AdminJSExpress.buildRouter(adminJs, router)
 
+
+//const router = AdminJSExpress.buildRouter(adminJs)
+//router.use('/', passport.authenticate('admin_login'));
 module.exports = router
