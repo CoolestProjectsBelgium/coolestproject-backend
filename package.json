@@ -81,6 +81,7 @@
     "yargs": "^17.6.0"
   },
   "devDependencies": {
+    "@nuxtjs/eslint-module": "^3.1.0",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^10.0.0",
     "chai": "^4.3.6",
