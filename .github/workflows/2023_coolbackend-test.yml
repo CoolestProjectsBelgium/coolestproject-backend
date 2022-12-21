@@ -47,7 +47,7 @@ jobs:
         run: zip -r ${{ env.ZIP_PACKAGE_NAME }} ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.AZURE_WEBAPP_NAME }}
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/${{ env.ZIP_PACKAGE_NAME }}
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.AZURE_WEBAPP_NAME }}
 
