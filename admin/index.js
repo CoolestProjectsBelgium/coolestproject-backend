@@ -72,18 +72,15 @@ const adminParent = {
 
 
 function superAdminAllowed({ currentAdmin }) {
- // return currentAdmin.account_type === 'super_admin'
- return true
+ return currentAdmin.account_type === 'super_admin'
 }
 
 function adminAllowed({ currentAdmin }) {
- // return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
-  return true
+ return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
 }
 
 function adminAllowedOwnUser(context) {
-  //return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
-  return true
+  return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
 }
 
 
@@ -428,6 +425,11 @@ const adminJsOptions = {
       resource: db.QuestionTranslation,
       options: {
         navigation: registerParent,
+        properties: {
+          EventId: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          }
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -436,8 +438,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
           }
@@ -475,8 +476,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
           }
@@ -514,8 +514,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
           }
@@ -871,12 +870,12 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
           }
@@ -890,6 +889,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -905,6 +905,7 @@ const adminJsOptions = {
       resource: db.Certificate,
       options: {
         navigation: projectParent,
+        
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -913,14 +914,15 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
           }
         },
         properties: {
           text: { type: 'richtext' },
+          EventId: {
+            isVisible: { list: false, filter: false, show: false, edit: true },},
           id: {
             isVisible: { list: false, filter: false, show: true, edit: false },
             type: 'richtext' ,
@@ -976,8 +978,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             },
             after: async (response, request, context) => {
@@ -1418,19 +1419,64 @@ const adminJsOptions = {
       resource: db.ProjectTable,
       options: {
         navigation: planningParent,
+        properties: {
+        projectId: {
+            isVisible: { list: false, filter: false, show: false, edit: true },
+        },
+        tableId: {
+            isVisible: { list: false, filter: false, show: false, edit: true},
+        },
+        eventId: {
+        isVisible: { list: false, filter: false, show: false, edit: false},
+        },
+        updatedAt: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        createdAt: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        startTime: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        endTime: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+      },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
               request.query.perPage ??= 100;
-              if (superAdminAllowed({ currentAdmin })) {
+             if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
-              const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-              return request
+             const event = await database.getEventActive();
+             request.query = { ...request.query, 'filters.eventId': event.id }
+             
+            return request
             }
           },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+
+            },
+            new: {
+              before: async (request, { currentAdmin }) => {
+                const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+  
+              },
           switch: {
             actionType: 'record',
             icon: 'Switch',
@@ -1443,37 +1489,6 @@ const adminJsOptions = {
             isVisible: true,
             handler: async () => { }
           },
-          new: {
-            actionType: 'resource',
-            handler: async (request, response, context) => {
-              const { resource, h, currentAdmin, translateMessage } = context
-              if (request.method === 'post') {
-                let record = await resource.build(request.payload ? request.payload : {})
-
-                await resource.create(record.params)
-
-                if (record.isValid()) {
-                  return {
-                    redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
-                    notice: {
-                      message: translateMessage('successfullyCreated', resource.id()),
-                      type: 'success',
-                    },
-                    record: record.toJSON(currentAdmin),
-                  }
-                }
-                return {
-                  record: record.toJSON(currentAdmin),
-                  notice: {
-                    message: translateMessage('thereWereValidationErrors', resource.id()),
-                    type: 'error',
-                  },
-                }
-              }
-              // TODO add wrong implementation error
-              throw new Error('new action can be invoked only via `post` http method')
-            },
-          }
         }
       }
     }
@@ -1483,58 +1498,30 @@ const adminJsOptions = {
 AdminJS.registerAdapter(AdminJSSequelize)
 const adminJs = new AdminJS(adminJsOptions)
 
-/*
-const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
-
-passport.use('admin_login',new BasicStrategy(
-  async function(email, password, done) {
-  const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
-  console.log("User:");
-  console.log(user);
-  if (!user) { return done(null,false) }
-  if (! await user.verifyPassword(password)) { return done(null,false) }
-  return done(null, { 'email': user.email, 'account_type': user.account_type });
-  }
-));
-*/
-
-/*
-const authenticate = async (email, password) => {
-  const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } } });
-  //console.log("User:");
-  //console.log(user);
-  if (!user) { return null }
-  if (! await user.verifyPassword(password)) { return null }
-  return { 'email': user.email, 'account_type': user.account_type };
-}
-
-//const adminJs = new AdminJS(adminJsOptions);
-//const router = AdminJSExpress.buildRouter(adminJs)
-const router = AdminJSExpress.buildAuthenticatedRouter(adminJs, {
-  authenticate,
-  cookieName: 'adminjs',
-  cookiePassword: process.env.SECRET_KEY
-}, null, {
-  store: sessionStore,
-  resave: true,
-  saveUninitialized: true,
-  secret: process.env.SECRET_KEY,
-  name: 'adminjs',
-});
-*/
 let router = express.Router()
-router.use((req, res, next) => {
-  if (req.session && req.session.admin) {
-    req.session.adminUser = req.session.admin
-    next()
-  } else {
-      //res.redirect(adminJs.options.loginPath)
-      next()
-  }
-})
 router.use(passport.authenticate('planning_login'));
+router.use((req, res, next) => {
+
+   req.session.adminUser = req.user
+    next()
+  
+})
+router.get('/login', passport.authenticate('planning_login'),(req,res)=> {
+  req.session.adminUser = req.user
+  res.redirect('/admin' );
+}
+);
+
+router.get('/logout',(req, res, next) => {
+    req.logout(function(err) {
+      req.session.destroy(() => {
+        res.redirect('/admin/login')
+      })
+    });
+})
+
 router = AdminJSExpress.buildRouter(adminJs, router)
+
 
 
 //const router = AdminJSExpress.buildRouter(adminJs)

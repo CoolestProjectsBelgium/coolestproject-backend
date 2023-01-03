@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   TShirtGroupTranslation.init({
     language: DataTypes.ENUM('nl', 'fr', 'en'),
     description: { type: DataTypes.CHAR(250) },
+    EventId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'TShirtGroupTranslation',

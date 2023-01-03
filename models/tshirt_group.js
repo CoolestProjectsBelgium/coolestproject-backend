@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TShirtGroup.init({
-    name: { type: DataTypes.CHAR(15) }
+    name: { type: DataTypes.CHAR(15) },
+    EventId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'TShirtGroup',

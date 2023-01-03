@@ -85,7 +85,7 @@ app.use('/admin', adminUI);
 
 // secure routes
 require('./security')(app);
-
+ 
 //enable i18n
 const i18n = require('i18n');
 i18n.configure({

@@ -84,7 +84,7 @@ module.exports = function (app) {
         if (!account.verifyPassword(password)) { 
           return done(null, false); 
         }
-        return done(null, {id: account.id, email: account.email, user: account.email});
+        return done(null, {id: account.id, email: account.email, user: account.email, account_type:account.account_type});
       } catch (error) {
         return done(null, false);
       }
@@ -98,7 +98,7 @@ module.exports = function (app) {
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const user = await database.getUser(user.id);
+      const user = await database.getUser(id);
       return done(null, user);
     } catch (err) {
       return done(err, false);

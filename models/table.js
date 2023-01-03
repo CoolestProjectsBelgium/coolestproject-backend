@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     name: { type: DataTypes.CHAR(15), unique: true },
     maxPlaces: DataTypes.INTEGER,
     requirements: DataTypes.JSON,
+    EventId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Table',

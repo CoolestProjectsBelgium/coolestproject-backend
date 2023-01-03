@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   Attachment.init({
     name: DataTypes.STRING(50),
     filename: DataTypes.STRING(255),
+    EventId: DataTypes.INTEGER,
     confirmed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
