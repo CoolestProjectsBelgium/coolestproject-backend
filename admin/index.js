@@ -917,7 +917,28 @@ const adminJsOptions = {
               request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             }
-          }
+          },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+          },
+          new: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+           },
+              
         },
         properties: {
           text: { type: 'richtext' },
@@ -1097,9 +1118,9 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
+
             },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {

@@ -14,8 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       QuestionRegistration.belongsTo(models.Question, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
       QuestionRegistration.belongsTo(models.Registration, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
     }
-  };
+  }
   QuestionRegistration.init({
+    EventId: DataTypes.INTEGER,
     RegistrationId: DataTypes.INTEGER,
     QuestionId: DataTypes.INTEGER
   }, {

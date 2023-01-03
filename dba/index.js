@@ -465,6 +465,7 @@ class DBA {
             name: attachment_fields.name,
             filename: attachment_fields.filename,
             ProjectId: project.id,
+            EventId: event.id,
             confirmed: false,
             internal: false
           }

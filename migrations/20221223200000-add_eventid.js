@@ -3,7 +3,7 @@
 Add EventId to the following tables with foreign key relation ship to table Event
 */ 
 const eField = 'EventId'; //Field name to add
-const tname = 'ProjectTables';
+//const tname = 'ProjectTables';
 const tname1 = 'Attachments';
 const tname2 = 'Certificates';
 const tname3 = 'newsticker';
@@ -21,11 +21,12 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction();
     try {
+      /* Table build up from scratch directly in the db 
       await queryInterface.addColumn(tname, eField,{ type: Sequelize.INTEGER });
       await queryInterface.addConstraint(tname, { 
         type: 'foreign key',fields: [eField], name: tname+'_Events_id_fkey',
         references: {table: 'Events',field: 'id'}
-      });
+      });*/
       await queryInterface.addColumn(tname1, eField,{ type: Sequelize.INTEGER });
       await queryInterface.addConstraint(tname1, { 
         type: 'foreign key',fields: [eField], name: tname1+'_Events_id_fkey',
@@ -90,7 +91,7 @@ module.exports = {
   down: async (queryInterface) => {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      await queryInterface.removeColumn(tname, eField);
+      //await queryInterface.removeColumn(tname, eField);
       await queryInterface.removeColumn(tname1, eField);  
       await queryInterface.removeColumn(tname2, eField); 
       await queryInterface.removeColumn(tname3, eField); 

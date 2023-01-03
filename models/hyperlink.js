@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Hyperlink.init({
+    EventId: DataTypes.INTEGER,
     href: {
       type: DataTypes.STRING(250),
       unique: true
