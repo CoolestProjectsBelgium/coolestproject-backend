@@ -13,7 +13,8 @@ const Vote = models.Vote;
 const Table = models.Table;
 const Event = models.Event;
 const secretOrPublicKey = process.env.VOTING_KEY;
-console.log(secretOrPublicKey)
+
+console.log('PassportJwtSecret (VOTING-KEY): %s', secretOrPublicKey);
 
 const JsonStrategy = require('passport-json').Strategy;
 const bodyParser = require('body-parser');

@@ -5,27 +5,35 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
+const sslenabled = Boolean((process.env.SSL_ENABLED) == '1');
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
 // This cannot be done in config.json
-// Do we want to make this configurable?
-const ssl = {
-  dialectOptions: {
-    ssl  : {
-      ca : fs.readFileSync(__dirname + '/DigiCertGlobalRootCA.crt.pem')
-      }  
-    }
-  };
+console.log('Sequelize SSL Enabled: %s', sslenabled);
+let configOptions;
+if (sslenabled) {
+  const ssl = {
+    dialectOptions: {
+      ssl  : {
+        ca : fs.readFileSync(__dirname + '/../DigiCertGlobalRootCA.crt.pem')
+        }  
+      }
+    };
+  configOptions = Object.assign(config, ssl); // Merge config.json and the SSL addition
+}
+else
+{
+  configOptions = config;
+}
 
-const configssl = Object.assign(config, ssl); // Merge config.json and the SSL addition
-console.log('Sequelize DB Options: %s', configssl); // Test
+console.log('Sequelize DB ConfigOptions: %O', configOptions); // Test
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], configssl);
+  sequelize = new Sequelize(process.env[config.use_env_variable], configOptions);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, configssl);
+  sequelize = new Sequelize(config.database, config.username, config.password, configOptions);
 }
 
 fs
