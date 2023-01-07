@@ -427,7 +427,7 @@ const adminJsOptions = {
         navigation: registerParent,
         properties: {
           EventId: {
-            isVisible: { list: false, filter: false, show: false, edit: false },
+            isVisible: { list: true, filter: true, show: false, edit: false },
           }
         },
         actions: {
@@ -487,6 +487,11 @@ const adminJsOptions = {
       resource: db.TShirt,
       options: {
         navigation: registerParent,
+        properties: {
+          EventId: {
+            isVisible: { list: true, filter: true, show: false, edit: false },
+          }
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -607,22 +612,22 @@ const adminJsOptions = {
           project_name: {
             isTitle: true,
             label: 'project',
-            isVisible: { list: true, filter: false, show: true, edit: true },
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
           ownerId: {
-            isVisible: { list: true, filter: false, show: true, edit: true },
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
           createdAt: {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
           eventId: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: true, show: true, edit: false },
           },
           max_tokens: {
             isVisible: { list: false, filter: false, show: true, edit: true },
           },
           project_descr: { 
-            isVisible: { list: true, filter: false, show: true, edit: true }
+            isVisible: { list: true, filter: true, show: true, edit: true }
 
           },
           internalinfo: { 
@@ -747,16 +752,25 @@ const adminJsOptions = {
         navigation: projectParent,
         properties: {
           sizeId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          birthmonth: {
             isVisible: { list: false, filter: true, show: true, edit: true },
           },
+          postalcode: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          municipality_name: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
           street: {
-            isVisible: { list: false, filter: false, show: true, edit: true },
+            isVisible: { list: false, filter: false, show: false, edit: false },
           },
           house_number: {
-            isVisible: { list: false, filter: false, show: true, edit: true },
+            isVisible: { list: false, filter: false, show: false, edit: false },
           },
           box_number: {
-            isVisible: { list: false, filter: false, show: true, edit: true },
+            isVisible: { list: false, filter: false, show: false, edit: false },
           },
           id: {
             isVisible: { list: false, filter: false, show: true, edit: false },
@@ -765,10 +779,10 @@ const adminJsOptions = {
             isVisible: { list: false, filter: false, show: true, edit: true},
           },
           email_guardian: {
-            isVisible: { list: false, filter: false, show: true, edit: true },
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
           eventId: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: true, show: true, edit: false },
           },
           updatedAt: {
             isVisible: { list: false, filter: false, show: true, edit: false },
@@ -905,7 +919,26 @@ const adminJsOptions = {
       resource: db.Certificate,
       options: {
         navigation: projectParent,
-        
+        properties: {
+          ProjectId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          EventId: {
+            isVisible: { list: true, filter: true, show: false, edit: true},},
+          text: { type: 'richtext' 
+          },
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+            type: 'richtext' ,
+          },
+
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -940,24 +973,7 @@ const adminJsOptions = {
            },
               
         },
-        properties: {
-          text: { type: 'richtext' },
-          EventId: {
-            isVisible: { list: false, filter: false, show: false, edit: true },},
-          id: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
-            type: 'richtext' ,
-          },
-          ProjectId: {
-            isVisible: { list: true, filter: false, show: true, edit: true },
-          },
-          updatedAt: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
-          },
-          createdAt: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
-          },
-        }
+
       }
     },
     {
@@ -1361,6 +1377,14 @@ const adminJsOptions = {
       resource: db.Table,
       options: {
         navigation: planningParent,
+        properties: {
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -1444,11 +1468,14 @@ const adminJsOptions = {
         projectId: {
             isVisible: { list: false, filter: false, show: false, edit: true },
         },
+        id: {
+          isVisible: { list: false, filter: false, show: true, edit: false},
+      },
         tableId: {
             isVisible: { list: false, filter: false, show: false, edit: true},
         },
         eventId: {
-        isVisible: { list: false, filter: false, show: false, edit: false},
+        isVisible: { list: true, filter: true, show: false, edit: false},
         },
         updatedAt: {
           isVisible: { list: false, filter: false, show: true, edit: false },
