@@ -94,10 +94,10 @@ module.exports = (sequelize, DataTypes) => {
     // address info
     postalcode: {
       type: DataTypes.INTEGER,
-      validate: {
+      /*validate: {
         min: 1000,
         max: 9999,
-      },
+      },*/
       allowNull: true
     },
     municipality_name: {

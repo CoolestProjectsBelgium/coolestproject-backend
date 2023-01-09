@@ -41,13 +41,14 @@ module.exports = function(database, models, jwt, mailer) {
       t_size: user.sizeId,
       general_questions: general_questions,
       mandatory_approvals: mandatory_approvals,
-      address: {
+      /*address: {
         postalcode: user.postalcode,
         street: user.street,
         house_number: user.house_number,
         box_number: user.box_number,
         municipality_name: user.municipality_name
       },
+      */
       delete_possible: await database.isUserDeletable(user.id)
     };
   }
