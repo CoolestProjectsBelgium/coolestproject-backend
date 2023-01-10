@@ -1,10 +1,10 @@
 module.exports = function(models, database, azure, mailer) {
 
   const operations = {
-    GET,
-    POST,
-    DELETE,
-    PATCH
+    get,
+    post,
+    delete:del,
+    patch
   };
 
   /**
@@ -96,7 +96,7 @@ module.exports = function(models, database, azure, mailer) {
     return projectResult;
   }
   
-  async function GET(req, res) {
+  async function get(req, res) {
     const user = req.user || null;
     const project = await getProjectDetails(user.id);
     let response_code = 404;
@@ -106,7 +106,7 @@ module.exports = function(models, database, azure, mailer) {
     res.status(response_code).json(project);
   }
 
-  async function PATCH(req, res) {
+  async function patch(req, res) {
     const user = req.user || null;
     const project_fields = req.body;
 
@@ -124,7 +124,7 @@ module.exports = function(models, database, azure, mailer) {
     res.status(200).json(await getProjectDetails(user.id));
   }
 
-  async function DELETE(req, res) {
+  async function del(req, res) {
     const user = req.user || null;
 
     const project = await database.getProject(user.id);
@@ -135,7 +135,7 @@ module.exports = function(models, database, azure, mailer) {
     res.status(200).send(null);
   }
 
-  async function POST(req, res) {
+  async function post(req, res) {
     const user = req.user || null;
     const project_fields = req.body;
 

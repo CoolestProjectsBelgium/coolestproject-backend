@@ -3,9 +3,9 @@ module.exports = function(database, models, jwt, mailer) {
   const Event = models.Event;
 
   const operations = {
-    GET,
-    DELETE,
-    PATCH
+    get,
+    delete:del,
+    patch
   };
   /**
    * 
@@ -41,7 +41,7 @@ module.exports = function(database, models, jwt, mailer) {
       t_size: user.sizeId,
       general_questions: general_questions,
       mandatory_approvals: mandatory_approvals,
-      /*address: {
+      /*address: { // GDPR!
         postalcode: user.postalcode,
         street: user.street,
         house_number: user.house_number,
@@ -53,13 +53,13 @@ module.exports = function(database, models, jwt, mailer) {
     };
   }
   
-  async function GET(req, res) {
+  async function get(req, res) {
     const user = req.user || null;
     const details = await getUserDetails(user);
     res.status(200).json(details);
   }
 
-  async function PATCH(req, res) {
+  async function patch(req, res) {
     const user = req.user || null;  
 
     const event = await user.getEvent();
@@ -72,7 +72,7 @@ module.exports = function(database, models, jwt, mailer) {
     res.status(200).json(await getUserDetails(await database.getUser(user.id)));
   }
   
-  async function DELETE(req, res) {
+  async function del(req, res) {
     const user = req.user || null;
     await database.deleteUser(user.id);
 

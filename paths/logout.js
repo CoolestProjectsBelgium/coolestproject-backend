@@ -1,9 +1,9 @@
 module.exports = function() {    
   const operations = {
-    POST
+    post
   };
         
-  async function POST(req, res) {
+  async function post(req, res) {
     res.cookie('jwt', null, { 
       maxAge: 0,
       sameSite: process.env.SAMESITE_COOKIE || 'None', 
