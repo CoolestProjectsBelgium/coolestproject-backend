@@ -692,7 +692,7 @@ components:
       required: ['id']
       properties:
         id:
-          type: number
+          type: string
         name:
           type: string
         description:
