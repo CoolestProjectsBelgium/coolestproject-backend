@@ -581,7 +581,7 @@ class DBA {
 
     // 1a) are all questions mapped to this event
     for (const q of dbValues.questions) {
-      if (!possibleQuestions.some((value) => value.id === q.QuestionId)) {
+      if (!possibleQuestions.some((value) => value.id === parseInt( q.QuestionId ))) {
         throw new Error('questions are not from the correct event');
       }
     }
@@ -700,6 +700,7 @@ class DBA {
           dbValues.waiting_list = true;
           console.log('add to waiting list');
         }
+        console.log('add to waiting list:',dbValues);
         return await Registration.create(dbValues, { include: [{ model: QuestionRegistration, as: 'questions' }] });
       }
     );
