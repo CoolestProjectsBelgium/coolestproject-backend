@@ -900,6 +900,17 @@ const adminJsOptions = {
       resource: db.Voucher,
       options: {
         navigation: projectParent,
+        properties: {
+          eventId: {
+            isVisible: { list: false, filter: true, show: false, edit: false },
+          },
+          projectId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          participantId: {
+            isVisible: { list: true, filter: true, show: true ,edit: true },
+          },
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
@@ -911,7 +922,27 @@ const adminJsOptions = {
               request.query = { ...request.query, 'filters.eventId': event.id }
               return request
             }
-          }
+          },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+          },
+          new: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+           },
         }
       }
     },
