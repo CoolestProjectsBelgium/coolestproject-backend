@@ -1059,7 +1059,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex((x) => x.language === process.env.LANG);
       }
       return {
-        'id': q.id,
+        'id': q.id+ '',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name),
         'positive': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].positive : `positive ${q.name}`),
