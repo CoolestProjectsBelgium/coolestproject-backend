@@ -1,10 +1,10 @@
 module.exports = function(models, database) {
   
   const operations = {
-    GET
+    get
   };
   
-  async function GET(req, res) {
+  async function get(req, res) {
     const user = req.user || null;
     const language = req.language || null;
     

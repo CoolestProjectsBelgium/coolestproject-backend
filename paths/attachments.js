@@ -1,9 +1,9 @@
 module.exports = function(database) {  
   const operations = {
-    POST
+    post
   };
     
-  async function POST(req, res) {
+  async function post(req, res) {
     const user = req.user || null;
     const attachment = req.body;
 

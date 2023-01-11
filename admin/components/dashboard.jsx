@@ -4,21 +4,21 @@ import { ApiClient } from 'adminjs'
 import styled from 'styled-components'
 import {
     Box,
-    H2,
+    //H2,
     H5,
     H4,
     Text,
-    Illustration,
-    IllustrationProps,
-    Icon,
-    IconProps,
-    Button,
+    //Illustration,
+    //IllustrationProps,
+    //Icon,
+    //IconProps,
+    //Button,
     Table,
     TableRow,
     TableBody,
     TableCell,
     TableHead,
-    Tooltip
+    //Tooltip
 } from '@adminjs/design-system'
 
 const pageHeaderHeight = 284

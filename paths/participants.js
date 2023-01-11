@@ -1,10 +1,10 @@
 module.exports = function(models, database) {
   
   const operations = {
-    POST
+    post
   };
     
-  async function POST(req, res) {
+  async function post(req, res) {
     const user = req.user || null;
     await database.createVoucher(user.id);
     res.status(200).send(null);

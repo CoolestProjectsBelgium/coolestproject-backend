@@ -12,10 +12,10 @@ const Mailer = require('../mailer');
 module.exports = function(models, database, mailer, jwt) {
 
   const operations = {
-    POST
+    post
   };
   
-  async function POST(req, res) {
+  async function post(req, res) {
     const registration_fields = req.body;
     const event = await database.getEventActive();
 
@@ -31,7 +31,7 @@ module.exports = function(models, database, mailer, jwt) {
     }
     else { //send emailExistsMail
       const email = registration_fields.user.email;
-      var users = await database.getOnlyUsersViaMail(email, event); // The result is always a list or collection!
+      let users = await database.getOnlyUsersViaMail(email, event); // The result is always a list or collection!
       for (const user of users) {
         const lang = user.language;
         console.log('UserError: Calling emailExistsMail=', email, 'language:', lang);

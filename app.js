@@ -14,7 +14,7 @@ app.use(session({
   cookie: { secure: true }
 }))
 
-var exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
@@ -49,14 +49,15 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
 
-var whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
-var corsOptions = {
+const whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
+const corsOptions = {
   origin: function (origin, callback) {
     console.log(origin)
     if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      console.error(`Backend CORS: ${origin} not in ${whitelist}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   optionsSuccessStatus: 200,
@@ -139,7 +140,7 @@ function cleanResponse(req, res, next) {
 
   /* remove null values for api calls */
   function cleanup(obj) {
-    for (var propName in obj) { 
+    for (let propName in obj) { 
       if (obj[propName] === null || obj[propName] === undefined) {
         delete obj[propName];
       } else if (typeof obj[propName] === "object") {
