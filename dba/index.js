@@ -78,7 +78,7 @@ class DBA {
               municipality_name: registration.municipality_name,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId+'' }; }),
             },
             registration.project_code,
             registration.id
@@ -107,7 +107,7 @@ class DBA {
               street: registration.street,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId +''}; }),
               project: {
                 eventId: registration.eventId,
                 project_name: registration.project_name,
@@ -230,7 +230,7 @@ class DBA {
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
       await user.setQuestions(questions);
 
-      changedFields.questions = questions.map((q) => { return { QuestionId: q };});
+      changedFields.questions = questions.map((q) => { return { QuestionId: q+'' };});
 
       // map questions
       delete changedFields.mandatory_approvals;
@@ -581,14 +581,14 @@ class DBA {
 
     // 1a) are all questions mapped to this event
     for (const q of dbValues.questions) {
-      if (!possibleQuestions.some((value) => value.id === parseInt( q.QuestionId ))) {
+      if (!possibleQuestions.some((value) => value.id === parseInt( q.QuestionId+'' ))) {
         throw new Error('questions are not from the correct event');
       }
     }
 
     // 1b) are the mandatory approvals filled in
     for (const q of possibleQuestions.filter((value) => value.mandatory === true)) {
-      if (!dbValues.questions.some((value) => value.QuestionId === q.id)) {
+      if (!dbValues.questions.some((value) => value.QuestionId === q.id+'')) {
         throw new Error('mandatory questions not filled in');
       }
     }
@@ -665,6 +665,9 @@ class DBA {
         if (user.mandatory_approvals) {
           answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
         }
+        console.log('answers:');
+        console.log(answers);
+
         dbValues.questions = answers;
 
         //flatten address
@@ -1085,7 +1088,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex(x => x.language === 'nl');
       }
       return {
-        'id': q.id,
+        'id': q.id+'',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name)
       };

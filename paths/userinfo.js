@@ -19,9 +19,9 @@ module.exports = function(database, models, jwt, mailer) {
   
     for (const question of questions) {
       if (question.mandatory) {
-        mandatory_approvals.push(question.id);
+        mandatory_approvals.push(question.id+'');
       } else {
-        general_questions.push(question.id);
+        general_questions.push(question.id+'');
       }
     }
     const birthDate = new Date(user.birthmonth);

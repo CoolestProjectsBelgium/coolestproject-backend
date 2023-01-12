@@ -505,7 +505,7 @@ components:
         mandatory_approvals:
           type: array
           items:
-            type: integer
+            type: string
         year:
           type: integer
         month:
@@ -706,7 +706,7 @@ components:
       required: ['id']
       properties:
         id:
-          type: number
+          type: string
         name:
           type: string
         description:
