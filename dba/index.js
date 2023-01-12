@@ -78,7 +78,7 @@ class DBA {
               municipality_name: registration.municipality_name,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId+'' }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId+'', EventId:registration.eventId  }; }),
             },
             registration.project_code,
             registration.id
@@ -107,7 +107,7 @@ class DBA {
               street: registration.street,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId +''}; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId +'', EventId:registration.eventId }; }),
               project: {
                 eventId: registration.eventId,
                 project_name: registration.project_name,
