@@ -58,7 +58,7 @@
   "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>": "<a\n                href=\"{{hash.website}}\">Coolest Projects {{hash.year}}</a>",
   "You can find all the info on Coolest Project on our {{ link }} website .": " ",
   "<a\n                    href=\"{{hash.link}}\">Activation Link</a>": "<a\n                    href=\"{{hash.link}}\">activatielink</a>",
-  "Click this {{{hash.link}}} to activate your project.": "LET OP:  Om jouw registratratie te bevestigen, dien je op de activatielink te klikken {{{hash.link}}}.",
+  "Click this {{{hash.link}}} to activate your project.": "LET OP:  Om jouw registratie te bevestigen, dien je op de activatielink te klikken {{{hash.link}}}.",
   "Be sure to activate": "Zorg ervoor dat u binnen 2 dagen op deze activatie link klikt om zeker te zijn van je deelname.",
   "Good luck, <strong>{{hash.firstname}}</strong> we’re looking forward to your project activation!": "Indien je hier nog vragen bij zou hebben, lees dan zeker onze FAQ https://coolestprojects.be/faq-nl/ eens na op onze website.",
   "Coolest Projects Team": "Coolest Projects Team België",
