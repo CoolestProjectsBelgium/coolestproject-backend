@@ -461,6 +461,7 @@ class DBA {
           container_name: containerName,
           blob_name: blobName,
           size: attachment_fields.size,
+          EventId: event.id,
           Attachment: {
             name: attachment_fields.name,
             filename: attachment_fields.filename,
