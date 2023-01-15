@@ -47,7 +47,7 @@ module.exports = function(models, database) {
       maxUploadSize: event.maxFileSize  || 1024 * 1024 * 1024 * 5, // 5 gigs in bytes
 
       startDateEvent: event.eventBeginDate.toISOString().substring(0, 10),
-      tshirtDate: event.officialStartDate.toISOString().substring(0, 10),
+      tshirtDate: event.registrationClosedDate.toISOString().substring(0, 10),
 
       isActive: event.current,
 
