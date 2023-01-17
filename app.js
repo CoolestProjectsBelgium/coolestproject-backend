@@ -49,8 +49,6 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
 
-var whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL, process.env.WEBSITE_DOMAIN_URL]
-var corsOptions = {
 const whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 const corsOptions = {
   origin: function (origin, callback) {
