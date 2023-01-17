@@ -8,6 +8,7 @@
     "start": "node index.js",
     "development": "nodemon index.js",
     "development:light": "npm i && NODE_ENV=production npx nodemon index.js",
+    "debugging": "node --inspect=0.0.0.0:9229 index.js",
     "dev:clean": "./helpers/index.js init_db && npx sequelize db:seed:all && nodemon index.js",
     "test_local": "nyc mocha"
   },
