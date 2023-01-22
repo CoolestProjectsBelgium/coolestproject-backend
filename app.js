@@ -49,7 +49,7 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
 
-const whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
+const whitelist = [process.env.WEBSITE_DOMAIN_URL, process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 const corsOptions = {
   origin: function (origin, callback) {
     console.log(origin)
