@@ -700,9 +700,9 @@ class DBA {
         const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
         if (registration_count >= event.maxRegistration) {
           dbValues.waiting_list = true;
-          console.log('add to waiting list');
+          console.log('Add to waiting list!');
         }
-        console.log('add to waiting list:',dbValues);
+        console.log('Adding to Registration:', dbValues);
         return await Registration.create(dbValues, { include: [{ model: QuestionRegistration, as: 'questions' }] });
       }
     );

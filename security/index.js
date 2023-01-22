@@ -18,7 +18,7 @@ const Token = require('../jwts');
 const Mail = require('../mailer');
 
 const cookieExtractor = function (req) {
-  var token = null;
+  let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
@@ -92,7 +92,7 @@ module.exports = function (app) {
   ));
 
   passport.serializeUser(function (user, done) {
-    console.log('usr:' + user);
+    console.log('User:', user.firstname, user.lastname);
     done(null, user.id);
   });
 
