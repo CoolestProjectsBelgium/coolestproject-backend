@@ -83,7 +83,7 @@
   "You can anytime register your own project or paricipate in another project\n(you need then the code of the project owner) via the project page.": "",
   "If you do not enter your own project or participate in another project\nyour registration will then be deleted after closing the coolest project registration.": "",
   "If you want to make changes on your user\nplease Cat & paste this link between \"...\"\n\n\"{{{hash.url}}}\"\n\ninto your browser to activate your project.": "Si tu veux apporter des modifications à ton utilisateur\nplease Cat & paste ce lien entre \"...\"\n\n\"{{{hash.url}}}\"\n\n dans ton navigateur pour activer ton projet.",
-  "Your parents will also receive this mail and they have to confirm your participation.": "Tes parents recevront également ce mail et devront confirmer ta participation.",
+  "Your parents will also receive this mail and they have to confirm your participation.": "Tes parents ont aussi reçu ce mail. L'un d'entre vous doit confirmer ta participation.",
   "Coolest Projects Team": "Coolest Projects Team Belgium",
   "COW_Only the project owner can make changes to the project.\n            Please use the following link <a href=\"{{hash.url}}\">Go2MyProject</a> to start your browser.": "Seul⸱e le propriétaire du projet peut apporter des modifications au projet. Tu peux utiliser ce lien\n            <a href=\"{{hash.url}}\">Go2MyProject</a>Tu peux utiliser ce lien Go2MyProject pour ouvrir la page d'inscription et mettre à jour tes informations personnelles.",
   "Attention please, there was an additional registration with your email address.": "Attention ! Une inscription à Coolest Projects avec ton adresse mail est déjà enregistrée.",
