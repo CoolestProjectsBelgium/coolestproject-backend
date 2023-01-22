@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { ApiClient } from 'admin-bro'
+import { ApiClient } from 'adminjs'
 
 import styled from 'styled-components'
 import {
     Box,
-    H2,
+    //H2,
     H5,
     H4,
     Text,
-    Illustration,
-    IllustrationProps,
-    Icon,
-    IconProps,
-    Button,
+    //Illustration,
+    //IllustrationProps,
+    //Icon,
+    //IconProps,
+    //Button,
     Table,
     TableRow,
     TableBody,
     TableCell,
     TableHead,
-    Tooltip
-} from '@admin-bro/design-system'
+    //Tooltip
+} from '@adminjs/design-system'
 
 const pageHeaderHeight = 284
 const pageHeaderPaddingY = 74
@@ -52,7 +52,7 @@ export const DashboardHeader = () => {
                 px={['default', 'lg', pageHeaderPaddingX]}
             >
                 <Text textAlign="center" color="white">
-                    <h2>{data.event_title} starting on {data.eventBeginDate !== undefined ? new Intl.DateTimeFormat('en-BE', options).format(new Date(data.eventBeginDate)) : 'No event'}</h2>
+                    <h2>{data.event_title} starting on {data.officialStartDate !== undefined ? new Intl.DateTimeFormat('en-BE', options).format(new Date(data.officialStartDate)) : 'No event'}</h2>
                     <Text>{data.days_remaining} days remaining</Text>
                 </Text>
             </Box>

@@ -1,9 +1,9 @@
 module.exports = function(database) {  
   const operations = {
-    DELETE,
+    delete:del,
   };
         
-  async function DELETE(req, res) {
+  async function del(req, res) {
     const user = req.user;
     const name = req.params.name;
     

@@ -3,12 +3,12 @@ module.exports = function(models, database, mailer, jwt) {
   const addSeconds = require('date-fns/addSeconds');
 
   const operations = {
-    POST
+    post
   };
       
-  async function POST(req, res) {
+  async function post(req, res) {
     const login = req.body;
-    var users = await database.getUsersViaMail(login.email);
+    let users = await database.getUsersViaMail(login.email);
     for (const user of users) {
       logger.info('user found: ' + user.id);
       const event = await user.getEvent();
@@ -17,7 +17,7 @@ module.exports = function(models, database, mailer, jwt) {
         continue; // jump to the next found user
       }
       // only one token every n seconds
-      var tokenTime = -1;
+      let tokenTime = -1;
       if (user.last_token !== null) {
         tokenTime = addSeconds(user.last_token, process.env.TOKEN_RESEND_TIME || 0);
       }

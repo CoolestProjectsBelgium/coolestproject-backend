@@ -2,22 +2,22 @@
 import styled from 'styled-components'
 import {
     Box,
-    H2,
+    //H2,
     H5,
-    H4,
-    Text,
-    Illustration,
-    IllustrationProps,
-    Icon,
-    IconProps,
-    Button,
+    //H4,
+    //Text,
+    //Illustration,
+    //IllustrationProps,
+    //Icon,
+    //IconProps,
+    //Button,
     Table,
     TableRow,
     TableBody,
     TableCell,
     TableHead,
-    Tooltip
-} from '@admin-bro/design-system'
+    //Tooltip
+} from '@adminjs/design-system'
 
 const Card = styled(Box)`
   display: ${({ flex }) => (flex ? 'flex' : 'block')};

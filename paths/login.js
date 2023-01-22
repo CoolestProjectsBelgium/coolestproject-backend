@@ -2,10 +2,10 @@ module.exports = function(jwt) {
   const addSeconds = require('date-fns/addSeconds');
 
   const operations = {
-    POST
+    post
   };
       
-  async function POST(req, res) {
+  async function post(req, res) {
     const user = req.user;
   
     const token = await jwt.generateLoginToken(user.id);

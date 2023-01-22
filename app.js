@@ -4,7 +4,17 @@ const DBA = require('./dba');
 const models = require('./models');
 const express = require('express');
 const app = express();
-var exphbs  = require('express-handlebars');
+
+const session = require("express-session");
+
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+
+const exphbs = require('express-handlebars');
 const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
@@ -34,19 +44,20 @@ app.use(requestLanguage({
   }
 }));  
 
-app.engine('handlebars', exphbs());
+app.engine('handlebars', exphbs.engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
 
-var whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL, process.env.WEBSITE_DOMAIN_URL]
-var corsOptions = {
+const whitelist = [process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
+const corsOptions = {
   origin: function (origin, callback) {
     console.log(origin)
     if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'))
+      console.error(`Backend CORS: ${origin} not in ${whitelist}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   optionsSuccessStatus: 200,
@@ -55,8 +66,7 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-// secure routes
-require('./security')(app);
+
 
 // website integration 
 const websiteIntegration = require('./website');
@@ -74,6 +84,9 @@ app.use('/voting', votingIntegration);
 const adminUI = require('./admin');
 app.use('/admin', adminUI);
 
+// secure routes
+require('./security')(app);
+ 
 //enable i18n
 const i18n = require('i18n');
 i18n.configure({
@@ -127,7 +140,7 @@ function cleanResponse(req, res, next) {
 
   /* remove null values for api calls */
   function cleanup(obj) {
-    for (var propName in obj) { 
+    for (let propName in obj) { 
       if (obj[propName] === null || obj[propName] === undefined) {
         delete obj[propName];
       } else if (typeof obj[propName] === "object") {

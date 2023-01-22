@@ -1,9 +1,16 @@
-const AdminBro = require('admin-bro');
-const AdminBroSequelize = require('admin-bro-sequelizejs');
-const AdminBroExpress = require('admin-bro-expressjs');
-const session = require("express-session");
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const AdminJS = require('adminjs')
+const AdminJSExpress = require('@adminjs/express')
+const passport = require('passport')
+const express = require('express')
+const app = express()
 const db = require('../models');
+
+//const router = AdminJSExpress.buildRouter(adminJs)
+const AdminJSSequelize = require('@adminjs/sequelize')
+
+//const session = require("express-session");
+//const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
 const AzureBlob = db.AzureBlob;
 const Attachment = db.Attachment;
 const ProjectTable = db.ProjectTable;
@@ -15,7 +22,7 @@ var DBA = require('../dba');
 const Azure = require('../azure');
 const database = new DBA(Azure);
 const sequelize = db.sequelize;
-const sessionStore = new SequelizeStore({ db: sequelize });
+//const sessionStore = new SequelizeStore({ db: sequelize });
 var stream = require('stream');
 var Mail = require('../mailer');
 const Token = require('../jwts');
@@ -63,20 +70,21 @@ const adminParent = {
   icon: 'Identification'
 }
 
-function superAdminAllowed({ currentAdmin }){
-  return currentAdmin.account_type === 'super_admin'
+
+function superAdminAllowed({ currentAdmin }) {
+ return currentAdmin.account_type === 'super_admin'
 }
 
-function adminAllowed({ currentAdmin }){
-  return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
+function adminAllowed({ currentAdmin }) {
+ return superAdminAllowed({ currentAdmin }) || currentAdmin.account_type === 'admin'
 }
 
-function adminAllowedOwnUser(context){
+function adminAllowedOwnUser(context) {
   return superAdminAllowed({ currentAdmin: context.currentAdmin }) || (context.currentAdmin.account_type === 'admin' && context.record.params.email === context.currentAdmin.email)
 }
 
 
-const adminBroOptions = {
+const adminJsOptions = {
   databases: [db],
   rootPath: '/admin',
   dashboard: {
@@ -84,7 +92,7 @@ const adminBroOptions = {
       const evt = await database.getEventActive()
       return { ...evt.dataValues, questions: evt.questions, tshirts: evt.tshirts };
     },
-    component: AdminBro.bundle('./components/dashboard')
+    component: AdminJS.bundle('./components/dashboard')
   },
   branding: {
     companyName: 'Coolest Projects',
@@ -127,11 +135,11 @@ const adminBroOptions = {
       options: {
         navigation: adminParent,
         properties: {
-          account_type:{
-          isVisible: {
-            edit: true
+          account_type: {
+            isVisible: {
+              edit: true
+            }
           }
-        }
         },
         actions: {
           new: {
@@ -140,8 +148,8 @@ const adminBroOptions = {
           edit: {
             isAccessible: adminAllowedOwnUser,
             before: async (request, { currentAdmin }) => {
-              function changeAccountType(){
-                if (currentAdmin.account_type === 'super_admin'){
+              function changeAccountType() {
+                if (currentAdmin.account_type === 'super_admin') {
                   return request.payload.account_type
                 }
                 return currentAdmin.account_type
@@ -155,10 +163,10 @@ const adminBroOptions = {
 
 
 
-              if(currentAdmin.account_type === 'super_admin')
-                
+              if (currentAdmin.account_type === 'super_admin')
+
                 console.log('super admin:')
-                return request
+              return request
             }
           },
           delete: {
@@ -169,8 +177,8 @@ const adminBroOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
-              console.log(currentAdmin);
-              if(currentAdmin.account_type != 'super_admin')
+             // console.log(currentAdmin);
+              if (currentAdmin.account_type != 'super_admin')
                 request.query = { ...request.query, 'filters.email': currentAdmin.email }
               return request
             },
@@ -287,16 +295,16 @@ const adminBroOptions = {
               return response
             },
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
-             
+
               const event = await database.getEventActive();
               request.query = { ...request.query, 'filters.id': event.id }
               return request
             }
           },
-          show: {            
+          show: {
             after: async (response, request, context) => {
               try {
                 const evt = await database.getEventDetail(response.record.params.id);
@@ -362,7 +370,7 @@ const adminBroOptions = {
                 record: record.toJSON(evt),
               }
             },
-            component: AdminBro.bundle('./components/eventDashboard')
+            component: AdminJS.bundle('./components/eventDashboard')
           },
           setActive: {
             isAccessible: superAdminAllowed,
@@ -402,7 +410,7 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -417,20 +425,25 @@ const adminBroOptions = {
       resource: db.QuestionTranslation,
       options: {
         navigation: registerParent,
+        properties: {
+          EventId: {
+            isVisible: { list: true, filter: true, show: false, edit: false },
+          }
+        },
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-               return request
-             }
-           }
-         }
-      
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          }
+        }
+
       }
     },
     {
@@ -439,16 +452,16 @@ const adminBroOptions = {
         navigation: registerParent,
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.eventId': event.id }
-               return request
-             }
-           }
-         }
+            before: async (request, { currentAdmin }) => {
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
@@ -457,27 +470,33 @@ const adminBroOptions = {
         navigation: registerParent,
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-               return request
-             }
-           }
-         }
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
       resource: db.TShirt,
       options: {
         navigation: registerParent,
+        properties: {
+          EventId: {
+            isVisible: { list: true, filter: true, show: false, edit: false },
+          }
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -492,17 +511,19 @@ const adminBroOptions = {
       resource: db.TShirtTranslation,
       options: {
         navigation: registerParent,
-        actions: {          list: {
-          before: async (request, { currentAdmin }) => {
-            if(superAdminAllowed({ currentAdmin })){
-              return request;
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
             }
-            const event = await database.getEventActive();
-            request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-            request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-            return request
           }
-        }}
+        }
       }
     },
 
@@ -573,11 +594,47 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext' },
+          project_id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          }, 
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },          
+          project_lang: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          project_type: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
           project_name: {
             isTitle: true,
-            label: 'project'
+            label: 'project',
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
+          ownerId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          eventId: {
+            isVisible: { list: false, filter: true, show: true, edit: false },
+          },
+          max_tokens: {
+            isVisible: { list: false, filter: false, show: true, edit: true },
+          },
+          project_descr: { 
+            isVisible: { list: true, filter: true, show: true, edit: true }
+
+          },
+          internalinfo: { 
+            isVisible: { list: true, filter: false, show: true, edit: true },
+            type: 'richtext' },
+          
+          /*
           totalAttachments: {
             list: true,
             show: true,
@@ -603,12 +660,13 @@ const adminBroOptions = {
             list: true,
             show: true,
             filter: false
-          }
+          }*/
         },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              request.query.perPage ??= 200;
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -693,30 +751,38 @@ const adminBroOptions = {
       options: {
         navigation: projectParent,
         properties: {
-          internalinfo: { type: 'richtext' },
-          isOwner: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          sizeId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
-          isParticipant: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          birthmonth: {
+            isVisible: { list: false, filter: true, show: true, edit: true },
           },
-          hasProject: {
-            list: true,
-            show: true,
-            filter: false,
-            type: 'boolean'
+          postalcode: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          municipality_name: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          street: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          house_number: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          box_number: {
+            isVisible: { list: false, filter: false, show: false, edit: false },
+          },
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          via: {
+            isVisible: { list: false, filter: false, show: true, edit: true},
           },
           email_guardian: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: true, filter: true, show: true, edit: true },
           },
           eventId: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: true, show: true, edit: false },
           },
           updatedAt: {
             isVisible: { list: false, filter: false, show: true, edit: false },
@@ -725,22 +791,45 @@ const adminBroOptions = {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
           gsm_guardian: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           gsm: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           medical: {
-            isVisible: { list: false, filter: false, show: true, edit: false },
+            isVisible: { list: false, filter: false, show: true, edit: true },
           },
           last_token: {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
+          internalinfo: { type: 'richtext',
+          isVisible: { list: false, filter: false, show: true, edit: true }, },
+          isOwner: {
+            list: false,
+            show: true,
+            edit: false,
+            filter: false,
+            type: 'boolean'
+          },
+                    /*
+          isParticipant: {
+            list: false,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },
+          hasProject: {
+            list: false,
+            show: true,
+            filter: false,
+            type: 'boolean'
+          },*/
         },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              request.query.perPage ??= 200;
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -794,57 +883,128 @@ const adminBroOptions = {
         navigation: projectParent,
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-               return request
-             }
-           }
-         }
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
       resource: db.Voucher,
       options: {
         navigation: projectParent,
-      actions: {
-       list: {
-          before: async (request, { currentAdmin }) => {
-            if(superAdminAllowed({ currentAdmin })){
-              return request;
+        properties: {
+          eventId: {
+            isVisible: { list: false, filter: true, show: false, edit: false },
+          },
+          projectId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          participantId: {
+            isVisible: { list: true, filter: true, show: true ,edit: true },
+          },
+        },
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
             }
-            const event = await database.getEventActive();
-            request.query = { ...request.query, 'filters.eventId': event.id }
-            return request
-          }
+          },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+          },
+          new: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+           },
         }
       }
-    }
     },
     {
       resource: db.Certificate,
       options: {
         navigation: projectParent,
+        properties: {
+          ProjectId: {
+            isVisible: { list: true, filter: true, show: true, edit: true },
+          },
+          EventId: {
+            isVisible: { list: true, filter: true, show: false, edit: true},},
+          text: { type: 'richtext' 
+          },
+          id: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+            type: 'richtext' ,
+          },
+
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+        },
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-               request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-               return request
-             }
-           }
-         },
-        properties: {
-          text: { type: 'richtext' }
-        }
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+          },
+          new: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+           },
+              
+        },
+
       }
     },
     {
@@ -871,8 +1031,8 @@ const adminBroOptions = {
               filter: false,
             },
             components: {
-              list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),
+              list: AdminJS.bundle('./components/file'),
+              show: AdminJS.bundle('./components/file'),
             },
           }
         },
@@ -882,12 +1042,11 @@ const adminBroOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
             },
             after: async (response, request, context) => {
@@ -934,8 +1093,8 @@ const adminBroOptions = {
               filter: false,
             },
             components: {
-              list: AdminBro.bundle('./components/file'),
-              show: AdminBro.bundle('./components/file'),
+              list: AdminJS.bundle('./components/file'),
+              show: AdminJS.bundle('./components/file'),
             },
           },
           azureExists: {
@@ -955,7 +1114,7 @@ const adminBroOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -998,30 +1157,17 @@ const adminBroOptions = {
       resource: db.Hyperlink,
       options: {
         navigation: projectParent,
-        properties: {
-          projectId: {
-            list: true,
-            show: true,
-            new: false,
-            filter: false
-          },
-          projectName: {
-            list: true,
-            show: true,
-            new: false,
-            filter: false
-          }
-        },
+        //sort:{direction:'DESC',sortBy: 'Attachment.id'},
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
+              request.query = { ...request.query, 'filters.EventId': event.id }
               return request
+
             },
             after: async (response, request, context) => {
               response.records = await Promise.all(response.records.map(async (r) => {
@@ -1050,7 +1196,7 @@ const adminBroOptions = {
               return response;
             }
           }
-        },
+        }
       },
     },
     {
@@ -1060,7 +1206,7 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -1078,16 +1224,16 @@ const adminBroOptions = {
         navigation: votingParent,
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.eventId': event.id }
-               return request
-             }
-           }
-         }
+            before: async (request, { currentAdmin }) => {
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
@@ -1097,56 +1243,85 @@ const adminBroOptions = {
         actions: {}
       }
     },
+
+    {
+      resource: db.Message,
+      options: {
+        navigation: planningParent,
+        properties: {
+          endAt: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+          startAt: {
+            isVisible: { list: true, filter: false, show: true, edit: true },
+          },
+        },
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
+            }
+          }
+        }
+      }
+
+    },
+
     {
       resource: db.Award,
       options: {
         navigation: votingParent,
         actions: {
           list: {
-             before: async (request, { currentAdmin }) => {
-               if(superAdminAllowed({ currentAdmin })){
-                 return request;
-               }
-               const event = await database.getEventActive();
-               request.query = { ...request.query, 'filters.EventId': event.id }
-               return request
-             }
-           }
-         }
+            before: async (request, { currentAdmin }) => {
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.EventId': event.id }
+              return request
+            }
+          }
+        }
       }
     },
     {
-    resource: db.showprojectusersemail,
-    options: {
-      name: "Projects met Email en deelnemers)",
-      listProperties: ['ProjectID', 'email', 'participants', 'Project_Name', 'project_descr', 'Language', 'eventId'],
-      parent: reportParent,
-      actions: {
-        list: {
-          before: async (request, { currentAdmin }) => {
-            if(superAdminAllowed({ currentAdmin })){
-              return request;
+      resource: db.showprojectusersemail,
+      options: {
+        name: "Projects met Email en deelnemers)",
+        listProperties: ['ProjectID', 'email', 'participants', 'Project_Name', 'project_descr', 'Language', 'eventId'],
+        parent: reportParent,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              const event = await database.getEventActive();
+              request.query = { ...request.query, 'filters.eventId': event.id }
+              return request
             }
-            const event = await database.getEventActive();
-            request.query = { ...request.query, 'filters.eventId': event.id }
-            return request
+          },
+
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
           }
         },
-        
-        new: {
-          isVisible: false
-        },
-        edit: {
-          isVisible: false
-        },
-        delete: {
-          isVisible: false
+        properties: {
         }
-      },
-      properties: {
       }
-    }
-  },
+    },
     {
       resource: db.ShowUserWithNoProject,
       options: {
@@ -1176,7 +1351,7 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -1206,7 +1381,7 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -1233,10 +1408,19 @@ const adminBroOptions = {
       resource: db.Table,
       options: {
         navigation: planningParent,
+        properties: {
+          createdAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: false, show: true, edit: false },
+          },
+        },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -1290,7 +1474,7 @@ const adminBroOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
               const event = await database.getEventActive();
@@ -1298,7 +1482,7 @@ const adminBroOptions = {
               return request
             }
           }
-          },  
+        },
         properties: {
           text: {
             isTitle: true,
@@ -1311,18 +1495,67 @@ const adminBroOptions = {
       resource: db.ProjectTable,
       options: {
         navigation: planningParent,
+        properties: {
+        projectId: {
+            isVisible: { list: false, filter: false, show: false, edit: true },
+        },
+        id: {
+          isVisible: { list: false, filter: false, show: true, edit: false},
+      },
+        tableId: {
+            isVisible: { list: false, filter: false, show: false, edit: true},
+        },
+        eventId: {
+        isVisible: { list: true, filter: true, show: false, edit: false},
+        },
+        updatedAt: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        createdAt: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        startTime: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+        endTime: {
+          isVisible: { list: false, filter: false, show: true, edit: false },
+        },
+      },
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              if(superAdminAllowed({ currentAdmin })){
+              request.query.perPage ??= 100;
+             if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
-              const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.createdAt~~from': event.eventBeginDate }
-              request.query = { ...request.query, 'filters.createdAt~~to': event.eventEndDate }
-              return request
+             const event = await database.getEventActive();
+             request.query = { ...request.query, 'filters.eventId': event.id }
+             
+            return request
             }
           },
+          edit: {
+            before: async (request, { currentAdmin }) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id
+              }
+              return request
+            }
+
+            },
+            new: {
+              before: async (request, { currentAdmin }) => {
+                const event = await database.getEventActive();
+                request.payload = {
+                  ...request.payload,
+                  eventId: event.id
+                }
+                return request
+              }
+  
+              },
           switch: {
             actionType: 'record',
             icon: 'Switch',
@@ -1335,58 +1568,41 @@ const adminBroOptions = {
             isVisible: true,
             handler: async () => { }
           },
-          new: {
-            actionType: 'resource',
-            handler: async (request, response, context) => {
-              const { resource, h, currentAdmin, translateMessage } = context
-              if (request.method === 'post') {
-                let record = await resource.build(request.payload ? request.payload : {})
-
-                await resource.create(record.params)
-
-                if (record.isValid()) {
-                  return {
-                    redirectUrl: h.resourceUrl({ resourceId: resource._decorated?.id() || resource.id() }),
-                    notice: {
-                      message: translateMessage('successfullyCreated', resource.id()),
-                      type: 'success',
-                    },
-                    record: record.toJSON(currentAdmin),
-                  }
-                }
-                return {
-                  record: record.toJSON(currentAdmin),
-                  notice: {
-                    message: translateMessage('thereWereValidationErrors', resource.id()),
-                    type: 'error',
-                  },
-                }
-              }
-              // TODO add wrong implementation error
-              throw new Error('new action can be invoked only via `post` http method')
-            },
-          }
         }
       }
     }
   ]
 }
 
-AdminBro.registerAdapter(AdminBroSequelize)
+AdminJS.registerAdapter(AdminJSSequelize)
+const adminJs = new AdminJS(adminJsOptions)
 
-const adminBro = new AdminBro(adminBroOptions);
-const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
-  async authenticate(email, password) {
-    const user = await db.Account.findOne({ where: { email: email, account_type: { [Sequelize.Op.in]: ['admin', 'super_admin'] } }});
-    console.log(user);
-    if (!user) { return null }
-    if (! await user.verifyPassword(password)) { return null }
-    return { 'email': user.email, 'account_type': user.account_type };
-  },
-  cookieName: 'adminbro',
-  cookiePassword: process.env.SECRET_KEY
-}, null, {
-  store: sessionStore
-});
+let router = express.Router()
+router.use(passport.authenticate('planning_login'));
+router.use((req, res, next) => {
 
+   req.session.adminUser = req.user
+    next()
+  
+})
+router.get('/login', passport.authenticate('planning_login'),(req,res)=> {
+  req.session.adminUser = req.user
+  res.redirect('/admin' );
+}
+);
+
+router.get('/logout',(req, res, next) => {
+    req.logout(function(err) {
+      req.session.destroy(() => {
+        res.redirect('/admin/login')
+      })
+    });
+})
+
+router = AdminJSExpress.buildRouter(adminJs, router)
+
+
+
+//const router = AdminJSExpress.buildRouter(adminJs)
+//router.use('/', passport.authenticate('admin_login'));
 module.exports = router

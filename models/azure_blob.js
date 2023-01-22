@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     blob_name: {
       type: DataTypes.STRING(100)
     },
-    size: DataTypes.BIGINT(20)
+    size: DataTypes.BIGINT(20),
+    EventId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'AzureBlob',

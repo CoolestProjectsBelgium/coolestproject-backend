@@ -14,10 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       QuestionUser.belongsTo(models.Question, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
       QuestionUser.belongsTo(models.User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
     }
-  };
+  }
   QuestionUser.init({
     UserId: DataTypes.INTEGER,
-    QuestionId: DataTypes.INTEGER
+    QuestionId: DataTypes.INTEGER,
+    EventId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'QuestionUser',

@@ -1,18 +1,15 @@
 {
   "development": {
-    "operatorsAliases": false,
     "use_env_variable": "DB",
     "collate": "latin1_general_ci",
     "charset": "latin1"
   },
   "test": {
-    "operatorsAliases": false,
     "use_env_variable": "DB",
     "collate": "latin1_general_ci",
     "charset": "latin1"
   },
   "production": {
-    "operatorsAliases": false,
     "use_env_variable": "DB",
     "collate": "latin1_general_ci",
     "charset": "latin1"

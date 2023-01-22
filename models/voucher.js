@@ -16,10 +16,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Voucher.init({
-    id: { type: DataTypes.UUID, primaryKey: true },
+    idx:{
+      type:DataTypes.INTEGER,
+      autoincrement:true,
+      primaryKey:true
+    },
+    id: { type: DataTypes.UUID},
+    projectId: { type: DataTypes.STRING},
+    participantId: { type: DataTypes.STRING},
   }, {
     sequelize,
     modelName: 'Voucher',
+    indexes: [
+      {
+        unique: true,
+        fields: ['id']
+      }
+    ]
   });
   return Voucher;
 };

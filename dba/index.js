@@ -78,7 +78,7 @@ class DBA {
               municipality_name: registration.municipality_name,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId+'', EventId:registration.eventId  }; }),
             },
             registration.project_code,
             registration.id
@@ -107,7 +107,7 @@ class DBA {
               street: registration.street,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId +'', EventId:registration.eventId }; }),
               project: {
                 eventId: registration.eventId,
                 project_name: registration.project_name,
@@ -214,11 +214,13 @@ class DBA {
 
       //flatten address
       const address = changedFields.address;
-      changedFields.postalcode = address.postalcode;
-      changedFields.street = address.street;
-      changedFields.house_number = address.house_number;
-      changedFields.box_number = address.box_number;
-      changedFields.municipality_name = address.municipality_name;
+      if(address){
+        changedFields.postalcode = address.postalcode;
+        changedFields.street = address.street;
+        changedFields.house_number = address.house_number;
+        changedFields.box_number = address.box_number;
+        changedFields.municipality_name = address.municipality_name;
+      }
       delete changedFields.address;
 
       // cleanup guardian fields when not needed anymore
@@ -228,7 +230,7 @@ class DBA {
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
       await user.setQuestions(questions);
 
-      changedFields.questions = questions.map((q) => { return { QuestionId: q };});
+      changedFields.questions = questions.map((q) => { return { QuestionId: q+'', EventId: event.id };});
 
       // map questions
       delete changedFields.mandatory_approvals;
@@ -459,10 +461,12 @@ class DBA {
           container_name: containerName,
           blob_name: blobName,
           size: attachment_fields.size,
+          EventId: event.id,
           Attachment: {
             name: attachment_fields.name,
             filename: attachment_fields.filename,
             ProjectId: project.id,
+            EventId: event.id,
             confirmed: false,
             internal: false
           }
@@ -578,14 +582,14 @@ class DBA {
 
     // 1a) are all questions mapped to this event
     for (const q of dbValues.questions) {
-      if (!possibleQuestions.some((value) => value.id === q.QuestionId)) {
+      if (!possibleQuestions.some((value) => value.id === parseInt( q.QuestionId+'' ))) {
         throw new Error('questions are not from the correct event');
       }
     }
 
     // 1b) are the mandatory approvals filled in
     for (const q of possibleQuestions.filter((value) => value.mandatory === true)) {
-      if (!dbValues.questions.some((value) => value.QuestionId === q.id)) {
+      if (!dbValues.questions.some((value) => value.QuestionId === q.id+'')) {
         throw new Error('mandatory questions not filled in');
       }
     }
@@ -593,27 +597,26 @@ class DBA {
     // validate data based on event settings
     const minAgeDate = addYears(endOfMonth(event.officialStartDate), -1 * event.minAge);
     const maxAgeDate = addYears(startOfMonth(event.officialStartDate), -1 * event.maxAge);
-    console.log('ages:');
-    console.log(event.officialStartDate);
-    console.log(minAgeDate);
-    console.log(maxAgeDate);
+    console.log('** Ages: **');
+    console.log('Official Start Date:', event.officialStartDate);
+    console.log('Minimum age:', minAgeDate);
+    console.log('Maximum age:', maxAgeDate);
     // 2) check if birthdate is valid
-    console.log(dbValues.birthmonth);
+    console.log('Participant birth(month):', dbValues.birthmonth);
     if (!(dbValues.birthmonth <= minAgeDate && dbValues.birthmonth >= maxAgeDate)) {
-      throw new Error('incorrect age');
+      throw new Error('Incorrect age');
     }
 
     // 3) check if guardian is required
     const minGuardian = addYears(startOfMonth(event.officialStartDate), -1 * event.minGuardianAge);
-    console.log(minGuardian);
+    console.log('Minimum Guardian:', minGuardian);
     if (minGuardian < dbValues.birthmonth) {
       if (!dbValues.gsm_guardian || !dbValues.email_guardian) {
         throw new Error('Guardian is required');
       }
     } else {
-      // console.log(typeof dbValues.gsm_guardian);
       if (dbValues.gsm_guardian || dbValues.email_guardian) {
-        throw new Error('Guardian is filled in');
+        throw new Error('Guardian is filled in, and not allowed');
       }
     }
   }
@@ -642,7 +645,6 @@ class DBA {
         dbValues.firstname = user.firstname;
         dbValues.lastname = user.lastname;
         dbValues.sex = user.sex;
-        //dbValues.birthmonth = user.birthmonth;
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
@@ -651,8 +653,8 @@ class DBA {
         dbValues.sizeId = user.t_size;
         dbValues.waiting_list = false;
 
-        // to month (set hour to 12)
-        dbValues.birthmonth = new Date(user.year, user.month, 12);
+        // to month (set hour to 00:00)
+        dbValues.birthmonth = new Date(user.year, user.month, 1, 0);
 
         // map the questions to the correct table
         const answers = [];
@@ -662,15 +664,20 @@ class DBA {
         if (user.mandatory_approvals) {
           answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
         }
+        console.log('answers:');
+        console.log(answers);
+
         dbValues.questions = answers;
 
         //flatten address
         const address = user.address;
-        dbValues.postalcode = address.postalcode;
-        dbValues.street = address.street;
-        dbValues.house_number = address.house_number;
-        dbValues.box_number = address.box_number;
-        dbValues.municipality_name = address.municipality_name;
+        if (address) {
+          dbValues.postalcode = address.postalcode;
+          dbValues.street = address.street;
+          dbValues.house_number = address.house_number;
+          dbValues.box_number = address.box_number;
+          dbValues.municipality_name = address.municipality_name;
+        }
 
         //flatten own project
         const ownProject = registrationValues.project.own_project;
@@ -693,8 +700,9 @@ class DBA {
         const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
         if (registration_count >= event.maxRegistration) {
           dbValues.waiting_list = true;
-          console.log('add to waiting list');
+          console.log('Add to waiting list!');
         }
+        console.log('Adding to Registration:', dbValues);
         return await Registration.create(dbValues, { include: [{ model: QuestionRegistration, as: 'questions' }] });
       }
     );
@@ -1054,7 +1062,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex((x) => x.language === process.env.LANG);
       }
       return {
-        'id': q.id,
+        'id': q.id+ '',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name),
         'positive': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].positive : `positive ${q.name}`),
@@ -1079,7 +1087,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex(x => x.language === 'nl');
       }
       return {
-        'id': q.id,
+        'id': q.id+'',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name)
       };

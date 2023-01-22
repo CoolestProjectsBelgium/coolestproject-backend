@@ -18,7 +18,7 @@ const Token = require('../jwts');
 const Mail = require('../mailer');
 
 const cookieExtractor = function (req) {
-  var token = null;
+  let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt'];
   }
@@ -84,7 +84,7 @@ module.exports = function (app) {
         if (!account.verifyPassword(password)) { 
           return done(null, false); 
         }
-        return done(null, {id: account.id, email: account.email, user: account.email});
+        return done(null, {id: account.id, email: account.email, user: account.email, account_type:account.account_type});
       } catch (error) {
         return done(null, false);
       }
@@ -92,13 +92,13 @@ module.exports = function (app) {
   ));
 
   passport.serializeUser(function (user, done) {
-    console.log('usr:' + user);
+    console.log('User:', user.firstname, user.lastname);
     done(null, user.id);
   });
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const user = await database.getUser(user.id);
+      const user = await database.getUser(id);
       return done(null, user);
     } catch (err) {
       return done(err, false);

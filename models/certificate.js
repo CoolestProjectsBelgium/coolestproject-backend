@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     text: {
       type: DataTypes.STRING,
     },
+    EventId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Certificate',

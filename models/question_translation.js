@@ -11,12 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) { }
-  };
+  }
   QuestionTranslation.init({
     language: DataTypes.ENUM('nl', 'fr', 'en'),
     description: { type: DataTypes.CHAR(255) },
     positive: { type: DataTypes.CHAR(100) },
-    negative: { type: DataTypes.CHAR(100) },
+    negative: { type: DataTypes.CHAR(110) },
+    EventId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'QuestionTranslation',

@@ -75,12 +75,12 @@ exports.handler = async function (argv) {
       };
     }
 
-    var registration = await DBA.createRegistration(registrationValues);
-    console.log('Registration ' + registration.id + ' created');
+    let registration = await DBA.createRegistration(registrationValues);
+    console.log('Registration created:', registration.id);
 
   } catch (error) {
     console.error(error.message);
-    for (var err of error.errors || []) {
+    for (let err of error.errors || []) {
       console.error(err.message);
     }
   }

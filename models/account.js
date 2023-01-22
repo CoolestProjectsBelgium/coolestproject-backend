@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
 
     verifyPassword(password) {
+      //console.log(bcrypt.compareSync(password, this.password));
       return bcrypt.compareSync(password, this.password);
     }
 

@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   PublicVote.init({
+    EventId: DataTypes.INTEGER,
     phone: { type: DataTypes.CHAR(100), allowNull: false, require: true }
   }, {
     sequelize,

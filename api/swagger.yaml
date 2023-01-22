@@ -501,11 +501,11 @@ components:
         general_questions:
           type: array
           items:
-            type: integer
+            type: string
         mandatory_approvals:
           type: array
           items:
-            type: integer
+            type: string
         year:
           type: integer
         month:
@@ -674,8 +674,6 @@ components:
         name:
           type: string
     Address:
-      required:
-      - postalcode
       type: object
       properties:
         street:
@@ -694,7 +692,7 @@ components:
       required: ['id']
       properties:
         id:
-          type: number
+          type: string
         name:
           type: string
         description:
@@ -708,7 +706,7 @@ components:
       required: ['id']
       properties:
         id:
-          type: number
+          type: string
         name:
           type: string
         description:
