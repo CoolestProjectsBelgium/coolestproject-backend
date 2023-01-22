@@ -597,25 +597,24 @@ class DBA {
     // validate data based on event settings
     const minAgeDate = addYears(endOfMonth(event.officialStartDate), -1 * event.minAge);
     const maxAgeDate = addYears(startOfMonth(event.officialStartDate), -1 * event.maxAge);
-    console.log('ages:');
-    console.log(event.officialStartDate);
-    console.log(minAgeDate);
-    console.log(maxAgeDate);
+    console.log('** Ages: **');
+    console.log('Official Start Date:', event.officialStartDate);
+    console.log('Minimum age:', minAgeDate);
+    console.log('Maximum age:', maxAgeDate);
     // 2) check if birthdate is valid
-    console.log(dbValues.birthmonth);
+    console.log('Participant birth(month):', dbValues.birthmonth);
     if (!(dbValues.birthmonth <= minAgeDate && dbValues.birthmonth >= maxAgeDate)) {
-      throw new Error('incorrect age');
+      throw new Error('Incorrect age');
     }
 
     // 3) check if guardian is required
     const minGuardian = addYears(startOfMonth(event.officialStartDate), -1 * event.minGuardianAge);
-    console.log(minGuardian);
+    console.log('Minimum Guardian:', minGuardian);
     if (minGuardian < dbValues.birthmonth) {
       if (!dbValues.gsm_guardian || !dbValues.email_guardian) {
         throw new Error('Guardian is required');
       }
     } else {
-      // console.log(typeof dbValues.gsm_guardian);
       if (dbValues.gsm_guardian || dbValues.email_guardian) {
         throw new Error('Guardian is filled in');
       }
@@ -656,7 +655,7 @@ class DBA {
         dbValues.waiting_list = false;
 
         // to month (set hour to 12)
-        dbValues.birthmonth = new Date(user.year, user.month, 12);
+        dbValues.birthmonth = new Date(user.year, user.month, 1, 12);
 
         // map the questions to the correct table
         const answers = [];
