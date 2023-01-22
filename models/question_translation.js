@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   QuestionTranslation.init({
     language: DataTypes.ENUM('nl', 'fr', 'en'),
     description: { type: DataTypes.CHAR(255) },
-    positive: { type: DataTypes.CHAR(100) },
-    negative: { type: DataTypes.CHAR(110) },
+    positive: { type: DataTypes.CHAR(120) },
+    negative: { type: DataTypes.CHAR(120) },
     EventId: DataTypes.INTEGER,
   }, {
     sequelize,
