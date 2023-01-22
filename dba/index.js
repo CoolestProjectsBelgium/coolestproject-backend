@@ -616,7 +616,7 @@ class DBA {
       }
     } else {
       if (dbValues.gsm_guardian || dbValues.email_guardian) {
-        throw new Error('Guardian is filled in');
+        throw new Error('Guardian is filled in, and not allowed');
       }
     }
   }
@@ -645,7 +645,6 @@ class DBA {
         dbValues.firstname = user.firstname;
         dbValues.lastname = user.lastname;
         dbValues.sex = user.sex;
-        //dbValues.birthmonth = user.birthmonth;
         dbValues.via = user.via;
         dbValues.medical = user.medical;
         dbValues.gsm = user.gsm;
@@ -654,8 +653,8 @@ class DBA {
         dbValues.sizeId = user.t_size;
         dbValues.waiting_list = false;
 
-        // to month (set hour to 12)
-        dbValues.birthmonth = new Date(user.year, user.month, 1, 12);
+        // to month (set hour to 00:00)
+        dbValues.birthmonth = new Date(user.year, user.month, 1, 0);
 
         // map the questions to the correct table
         const answers = [];
