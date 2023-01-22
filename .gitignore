@@ -10,4 +10,4 @@ manual_test/testfile
 manual_test/resultfile
 .nyc_output
 history_dataLoad/*
-.adminjs/bundle.js
+.adminjs/
