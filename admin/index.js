@@ -488,7 +488,7 @@ const adminJsOptions = {
       options: {
         navigation: registerParent,
         properties: {
-          EventId: {
+          eventId: {
             isVisible: { list: true, filter: true, show: false, edit: false },
           }
         },
