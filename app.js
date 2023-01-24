@@ -52,7 +52,7 @@ app.set('views', path.join(__dirname, 'website', 'views'));
 const whitelist = [process.env.WEBSITEURL, process.env.WEBSITE_DOMAIN_URL, process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin)
+    console.log('Origin:', origin)
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -65,8 +65,6 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions));
-
-
 
 // website integration 
 const websiteIntegration = require('./website');
@@ -184,7 +182,7 @@ initialize({
     'text/text': bodyParser.text()
   },
   errorMiddleware: function(err, req, res, next) {
-    console.log(err);
+    console.log('Error Middleware:', err);
 
     const language = req.language || 'en';
     i18n.setLocale(language);
