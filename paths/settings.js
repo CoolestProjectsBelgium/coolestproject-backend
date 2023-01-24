@@ -22,9 +22,7 @@ module.exports = function(models, database) {
     } else {
       event = await database.getEventActive();
     }
-
-    console.log(event);
-
+    
     if (!event) {
       res.status(404).json({
         message: 'No active event',
