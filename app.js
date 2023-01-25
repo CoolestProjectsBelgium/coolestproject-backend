@@ -48,6 +48,12 @@ app.engine('handlebars', exphbs.engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'website', 'views'));
 
+/* In case of issues with CORS, especially while deploying in Azure,
+ * remember that the App Service also has CORS settings that must be 
+ * filled with the clients origins AND that 
+ * 'Enable Access-Control-Allow-Credentials' MUST be ON
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
+ */
 
 const whitelist = [process.env.WEBSITEURL, process.env.WEBSITE_DOMAIN_URL, process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 const corsOptions = {
