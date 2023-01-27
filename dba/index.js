@@ -78,7 +78,7 @@ class DBA {
               municipality_name: registration.municipality_name,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId+'', EventId:registration.eventId  }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId + '', EventId: registration.eventId }; }),
             },
             registration.project_code,
             registration.id
@@ -107,7 +107,7 @@ class DBA {
               street: registration.street,
               house_number: registration.house_number,
               box_number: registration.box_number,
-              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId +'', EventId:registration.eventId }; }),
+              questions_user: registration.questions.map(q => { return { QuestionId: q.QuestionId + '', EventId: registration.eventId }; }),
               project: {
                 eventId: registration.eventId,
                 project_name: registration.project_name,
@@ -214,7 +214,7 @@ class DBA {
 
       //flatten address
       const address = changedFields.address;
-      if(address){
+      if (address) {
         changedFields.postalcode = address.postalcode;
         changedFields.street = address.street;
         changedFields.house_number = address.house_number;
@@ -230,7 +230,7 @@ class DBA {
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
       await user.setQuestions(questions);
 
-      changedFields.questions = questions.map((q) => { return { QuestionId: q+'', EventId: event.id };});
+      changedFields.questions = questions.map((q) => { return { QuestionId: q + '', EventId: event.id }; });
 
       // map questions
       delete changedFields.mandatory_approvals;
@@ -284,7 +284,7 @@ class DBA {
   async createProject(project, userId) {
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
-    if(event.projectClosed){
+    if (event.projectClosed) {
       throw new Error('Project update is not allowed');
     }
 
@@ -317,7 +317,7 @@ class DBA {
     const user = await User.findByPk(userId);
     const event = await user.getEvent();
 
-    if(event.projectClosed){
+    if (event.projectClosed) {
       throw new Error('Project update is not allowed');
     }
 
@@ -425,7 +425,7 @@ class DBA {
       throw new Error('No attachment found');
     }
     //blobName, type = 'w', filename=null, containerName=process.env.AZURE_STORAGE_CONTAINER
-    return await this.azure.generateSAS(name,'w', null, azureInfo.container_name);
+    return await this.azure.generateSAS(name, 'w', null, azureInfo.container_name);
   }
 
   /**
@@ -477,7 +477,7 @@ class DBA {
           throw new Error('Attachment failed');
         }
         //blobName, type = 'w', filename=null, containerName=process.env.AZURE_STORAGE_CONTAINER
-        const sas = await this.azure.generateSAS(blobName,'w', null, containerName);
+        const sas = await this.azure.generateSAS(blobName, 'w', null, containerName);
 
         return sas;
       }
@@ -582,14 +582,14 @@ class DBA {
 
     // 1a) are all questions mapped to this event
     for (const q of dbValues.questions) {
-      if (!possibleQuestions.some((value) => value.id === parseInt( q.QuestionId+'' ))) {
+      if (!possibleQuestions.some((value) => value.id === parseInt(q.QuestionId + ''))) {
         throw new Error('questions are not from the correct event');
       }
     }
 
     // 1b) are the mandatory approvals filled in
     for (const q of possibleQuestions.filter((value) => value.mandatory === true)) {
-      if (!dbValues.questions.some((value) => value.QuestionId === q.id+'')) {
+      if (!dbValues.questions.some((value) => value.QuestionId === q.id + '')) {
         throw new Error('mandatory questions not filled in');
       }
     }
@@ -659,10 +659,10 @@ class DBA {
         // map the questions to the correct table
         const answers = [];
         if (user.general_questions) {
-          answers.push(...user.general_questions.map(QuestionId => { return { QuestionId }; }));
+          answers.push(...user.general_questions.map(QuestionId => { return { QuestionId: QuestionId + '', EventId: event.id }; }));
         }
         if (user.mandatory_approvals) {
-          answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId }; }));
+          answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId: QuestionId + '', EventId:event.id }; }));
         }
         console.log('answers:');
         console.log(answers);
@@ -794,8 +794,7 @@ class DBA {
    * @param {Integer} projectId
    * @returns {Promise<models.Project>}
    */
-  async getProjectById(projectId)
-  {
+  async getProjectById(projectId) {
     const event = await this.getEventActive();
     if (!event) {
       return;
@@ -803,7 +802,7 @@ class DBA {
     console.log(event.id);
 
     const project = await Project.findOne({
-      where: { Id: projectId, eventId : event.id }
+      where: { Id: projectId, eventId: event.id }
     });
     //console.log(project);
 
@@ -882,7 +881,7 @@ class DBA {
         }
         event.eventStartDate = new Date();
 
-        if(event.eventEndDate <= new Date()){
+        if (event.eventEndDate <= new Date()) {
           event.eventEndDate = addYears(new Date(), 1);
         }
 
@@ -1062,7 +1061,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex((x) => x.language === process.env.LANG);
       }
       return {
-        'id': q.id+ '',
+        'id': q.id + '',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name),
         'positive': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].positive : `positive ${q.name}`),
@@ -1087,7 +1086,7 @@ class DBA {
         languageIndex = q.QuestionTranslations.findIndex(x => x.language === 'nl');
       }
       return {
-        'id': q.id+'',
+        'id': q.id + '',
         'name': q.name,
         'description': ((q.QuestionTranslations[languageIndex]) ? q.QuestionTranslations[languageIndex].description : q.name)
       };
