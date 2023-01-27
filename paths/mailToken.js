@@ -5,15 +5,16 @@ module.exports = function(models, database, mailer, jwt) {
   const operations = {
     post
   };
-      
+  
   async function post(req, res) {
+    let counter = 0;
     const login = req.body;
     let users = await database.getUsersViaMail(login.email);
     for (const user of users) {
-      logger.info('user found: ' + user.id);
+      console.log('User found:', user.id);
       const event = await user.getEvent();
       if (event.closed) {
-        logger.info('event is closed');
+        console.log('But event is closed.');
         continue; // jump to the next found user
       }
       // only one token every n seconds
@@ -26,12 +27,16 @@ module.exports = function(models, database, mailer, jwt) {
         await database.updateLastToken(user.id);
         const token = await jwt.generateLoginToken(user.id);
         await mailer.ask4TokenMail(user, token, event);
-        logger.info('Token email send');
+        counter++;
+        console.log('Token email send for:', user.email);
       } else {
-        logger.info('Token requested but time is not passed yet: ' + user.email);
+        counter++;
+        console.log('Token requested but time is not passed yet:', user.email);
       }
     }
-
+    if (counter==0) {
+      console.log('No user found for:', login.email);
+    }
     res.status(200).send(null);
   }
       
