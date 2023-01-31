@@ -92,5 +92,6 @@
 	"Good luck, {{hash.firstname}}": "Good luck, {{hash.firstname}}",
 	"Your parents will also receive this mail.": "Your parents will also receive this mail.",
 	"VOUCHER_NOT_FOUND": "Voucher not found",
-  	"INTERNAL_SERVER_ERROR": "Internal Server error"
+  	"INTERNAL_SERVER_ERROR": "Internal Server error",
+	"plain-text-activation-url {{{hash.link}}}": "If the above link does not work in your email client, please copy and paste this full url in a browser window: {{{hash.link}}}"
 }

@@ -84,5 +84,6 @@
   "Good luck, {{hash.firstname}}": "Veel succes, {{hash.firstname}}",
   "Your parents will also receive this mail.": "Your parents will also receive this mail.",
   "VOUCHER_NOT_FOUND": "Token is niet gevonden",
-  "INTERNAL_SERVER_ERROR": "Interne serverfout"
+  "INTERNAL_SERVER_ERROR": "Interne serverfout",
+  "plain-text-activation-url {{{hash.link}}}": "Als de bovenstaande link niet werkt in je email programma, copieer en plak dan de volgende url volledig in een browser scherm: {{{hash.link}}}"
 }

@@ -97,5 +97,6 @@
   "Good luck, {{hash.firstname}}": "Bonne chance, {{hash.firstname}}",
   "Your parents will also receive this mail.": "Vos parents recevront également ce courrier.",
   "VOUCHER_NOT_FOUND": "Jeton introuvable",
-  "INTERNAL_SERVER_ERROR": "Une erreur de serveur interne s'est produite"
+  "INTERNAL_SERVER_ERROR": "Une erreur de serveur interne s'est produite",
+  "plain-text-activation-url {{{hash.link}}}": "Si le lien ci-dessus ne fonctionne pas dans votre programme de messagerie, copiez et collez complètement l'URL suivante dans une fenêtre de navigateur: {{{hash.link}}}"
 }
