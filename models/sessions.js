@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Sessions', // we need plural in this case (Sessions is handled by AdminBro)
     freezeTableName: true,
     timestamps: true // https://sequelize.org/master/manual/model-basics.html#timestamps 
+    // By default, Sequelize automatically adds the fields createdAt and updatedAt to every model, using the data type DataTypes.DATE
   });
   return Sessions;
 };

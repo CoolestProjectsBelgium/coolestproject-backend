@@ -40,28 +40,24 @@ module.exports = (sequelize, DataTypes) => {
     closed: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['eventBeginDate', 'eventEndDate']),
       get: function() {
-        //console.log(Date.now());
         return Date.now() < this.get('eventBeginDate') || Date.now() > this.get('eventEndDate');
       }
     },
     registrationClosed: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['registrationClosedDate']),
       get: function() {
-        //console.log(Date.now());
         return Date.now() > this.get('registrationClosedDate');
       }
     },
     registrationOpen: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['registrationOpenDate', 'registrationClosedDate']),
       get: function() {
-        //console.log(Date.now());
         return this.get('registrationOpenDate') < Date.now()  && this.get('registrationClosedDate') > Date.now();
       }
     },
     projectClosed: {
       type: new DataTypes.VIRTUAL(DataTypes.BOOLEAN, ['projectClosedDate']),
       get: function() {
-        //console.log(Date.now());
         return Date.now() > this.get('projectClosedDate');
       }
     },
