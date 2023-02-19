@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       QuestionUser.belongsTo(models.Question, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
       QuestionUser.belongsTo(models.User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
+      QuestionUser.belongsTo(models.Event, { foreignKey: { allowNull: true }});
     }
   }
   QuestionUser.init({

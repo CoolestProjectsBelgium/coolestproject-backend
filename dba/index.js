@@ -211,7 +211,7 @@ class DBA {
     return await sequelize.transaction(async () => {
       // remove fields that are not allowed to change (be paranoid)
       delete changedFields.email;
-
+      
       //flatten address
       const address = changedFields.address;
       if (address) {
@@ -226,13 +226,13 @@ class DBA {
       // cleanup guardian fields when not needed anymore
       let user = await User.findByPk(userId, { include: [{ model: Question, as: 'questions' }] });
       const event = await user.getEvent();
-
+     
+            
       let questions = changedFields.mandatory_approvals.concat(changedFields.general_questions);
-      await user.setQuestions(questions);
+      changedFields.questions = questions.map((q) => { return { QuestionId: q }; });
 
-      changedFields.questions = questions.map((q) => { return { QuestionId: q + '', EventId: event.id }; });
+      await user.setQuestions(questions, { through: { EventId: event.id }});
 
-      // map questions
       delete changedFields.mandatory_approvals;
       delete changedFields.general_questions;
 
@@ -250,7 +250,6 @@ class DBA {
       changedFields.sizeId = changedFields.t_size;
 
       this.validateUser(changedFields, event);
-
       return await user.update(changedFields);
     });
   }
@@ -664,7 +663,7 @@ class DBA {
         if (user.mandatory_approvals) {
           answers.push(...user.mandatory_approvals.map(QuestionId => { return { QuestionId: QuestionId + '', EventId:event.id }; }));
         }
-        console.log('answers:');
+        console.log('dba_01_answers:');
         console.log(answers);
 
         dbValues.questions = answers;
@@ -799,13 +798,11 @@ class DBA {
     if (!event) {
       return;
     }
-    console.log(event.id);
+    console.log('dba_02:',event.id);
 
     const project = await Project.findOne({
       where: { Id: projectId, eventId: event.id }
     });
-    //console.log(project);
-
     return project;
   }
 

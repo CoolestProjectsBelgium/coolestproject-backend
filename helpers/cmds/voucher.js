@@ -11,7 +11,8 @@ exports.builder = (yargs) => {
         const voucher = await DBA.createVoucher(argv.userId);
         console.log(`Voucher created for user  ${argv.userId} token ${voucher.id}`);
 
-      } catch (error) {
+      } catch (error) {        
+        console.log('voucher.js:');
         console.log(error.message);
         for (var err of error.errors || []) {
           console.error(err.message);

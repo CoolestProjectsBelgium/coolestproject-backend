@@ -16,7 +16,7 @@ module.exports = function(database, models, jwt, mailer) {
     const questions = await user.getQuestions();
     const general_questions = [];
     const mandatory_approvals = [];
-  
+    
     for (const question of questions) {
       if (question.mandatory) {
         mandatory_approvals.push(question.id+'');

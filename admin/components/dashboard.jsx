@@ -37,7 +37,7 @@ export const DashboardHeader = () => {
     useEffect(() => {
         let isSubscribed = true
         api.getDashboard().then((response) => {
-            console.log(response)
+            console.log('dashboard.jsx_01',response)
             setData(response.data)
         })
         return () => isSubscribed = false

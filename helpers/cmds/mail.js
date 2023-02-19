@@ -29,7 +29,7 @@ exports.builder = (yargs) => {
         console.log(`Mail was send ${mail}`);
         return;
       } catch (error) {
-        console.log(error.message);
+        console.log('cmds_01:',error.message);
         for (var err of error.errors || []) {
           console.error(err.message);
         }
@@ -82,7 +82,7 @@ exports.builder = (yargs) => {
         console.log(`Welcome mail coworker was send ${mail}`);
         return;
       } catch (error) {
-        console.log(error.message);
+        console.log('cmds_01:',error.message);
         for (var err of error.errors || []) {
           console.error(err.message);
         }
@@ -101,7 +101,7 @@ exports.builder = (yargs) => {
         console.log(`Delete mail coworker was send ${mail}`);
         return;
       } catch (error) {
-        //console.log('user:',argv.userid,error.message)
+        console.log('mails.js:');
         console.log(error.message);
         for (var err of error.errors || []) {
           console.error(err.message);

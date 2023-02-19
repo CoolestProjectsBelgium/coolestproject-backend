@@ -32,7 +32,7 @@ const Card = styled(Box)`
 
 const EventDashboardAction = (props) => {
     const { resource, action, record, property } = props
-    console.log(props)
+    console.log('eventDashboard.jsx_01',props)
     return (
         <Box>
             <Box width={[1, 1, 1]} p="lg">

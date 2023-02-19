@@ -165,7 +165,7 @@ const adminJsOptions = {
 
               if (currentAdmin.account_type === 'super_admin')
 
-                console.log('super admin:')
+                console.log('index.js_01_super admin:')
               return request
             }
           },
@@ -177,7 +177,6 @@ const adminJsOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
-             // console.log(currentAdmin);
               if (currentAdmin.account_type != 'super_admin')
                 request.query = { ...request.query, 'filters.email': currentAdmin.email }
               return request
@@ -288,7 +287,7 @@ const adminJsOptions = {
                     r.params[p] = properties[p];
                   }
                 } catch (error) {
-                  console.log(error)
+                  console.log('index.js_02',error)
                 }
                 return r
               }));
@@ -313,7 +312,7 @@ const adminJsOptions = {
                   response.record.params[p] = properties[p];
                 }
               } catch (error) {
-                console.log(error)
+                console.log('index.js_03',error)
               }
               return response;
             }
@@ -365,7 +364,7 @@ const adminJsOptions = {
             handler: async (request, response, data) => {
               const { record, resource, currentAdmin, h } = data
               const evt = await database.getEventDetail(request.params.recordId)
-              console.log(record.toJSON(evt))
+              console.log('index.js_04',record.toJSON(evt))
               return {
                 record: record.toJSON(evt),
               }
@@ -552,8 +551,7 @@ const adminJsOptions = {
                 const event = await registration.getEvent();
                 const token = await Token.generateRegistrationToken(registration.id);
                 const mail = await Mail.activationMail(registration, token, event);
-                console.log(`Mail was send ${mail}`);
-                //console.log(mail);
+                console.log(`index.js_05:Mail was send ${mail}`);
               } catch (error) {
                 return {
                   record: data.record.toJSON(data.currentAdmin),
@@ -697,7 +695,7 @@ const adminJsOptions = {
                   r.params.confirmedHref = confirmedHref
                   r.params.videoConfirmedId = confirmedId
                 } catch (error) {
-                  console.log(error)
+                  console.log('index.js_06',error)
                 }
                 return r
               }));
@@ -728,7 +726,7 @@ const adminJsOptions = {
                 response.record.params.videoConfirmedId = confirmedId
                 response.record.params.confirmedHref = confirmedHref
               } catch (error) {
-                console.log(error)
+                console.log('index.js_07',error)
               }
               return response;
             }
@@ -845,7 +843,7 @@ const adminJsOptions = {
                   r.params.isParticipant = (participant > 0) ? true : false
                   r.params.hasProject = (owner > 0 || participant > 0) ? true : false
                 } catch (error) {
-                  console.log(error)
+                  console.log('index.js_08',error)
                 }
                 return r
               }));
@@ -869,7 +867,7 @@ const adminJsOptions = {
                 response.record.params.isParticipant = (participant > 0) ? true : false
                 response.record.params.hasProject = (owner > 0 || participant > 0) ? true : false
               } catch (error) {
-                console.log(error)
+                console.log('index.js_09',error)
               }
               return response;
             }
@@ -1072,7 +1070,7 @@ const adminJsOptions = {
                 response.record.params['downloadLink'] = sas.url
                 response.record.params['azureExists'] = await Azure.checkBlobExists(attachment.AzureBlob.blob_name, attachment.AzureBlob.container_name);
               } catch (error) {
-                console.log(error)
+                console.log('index.js_10',error)
               }
               return response;
             }
@@ -1145,7 +1143,7 @@ const adminJsOptions = {
                 response.record.params['downloadLink'] = sas.url
                 response.record.params['azureExists'] = await Azure.checkBlobExists(blob.blob_name, blob.container_name);
               } catch (error) {
-                console.log(error)
+                console.log('index.js_11',error)
               }
               return response;
             }
@@ -1191,7 +1189,7 @@ const adminJsOptions = {
                 response.record.params.projectName = hyperlink.Attachment.Project.project_name
 
               } catch (error) {
-                console.log(error)
+                console.log('index.js_12',error)
               }
               return response;
             }
@@ -1447,7 +1445,7 @@ const adminJsOptions = {
                   });
                   r.params['remainingPlaces'] = r.params.maxPlaces - remaining
                 } catch (error) {
-                  console.log(error)
+                  console.log('index.js_13',error)
                 }
                 return r
               }));
@@ -1464,7 +1462,7 @@ const adminJsOptions = {
                 });
                 response.record.params['remainingPlaces'] = response.record.params.maxPlaces - remaining
               } catch (error) {
-                console.log(error)
+                console.log('index.js_14',error)
               }
               return response;
             }

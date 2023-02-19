@@ -58,7 +58,6 @@ app.set('views', path.join(__dirname, 'website', 'views'));
 const whitelist = [process.env.WEBSITEURL, process.env.WEBSITE_DOMAIN_URL, process.env.BACKENDURL, process.env.URL, process.env.VOTE_URL]
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log('Origin:', origin)
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -157,7 +156,7 @@ function cleanResponse(req, res, next) {
   res.send = function(...args){
     const arg_changed = args;
     if(arg_changed[0]){
-      console.log(arg_changed[0])
+      console.log('app.js_01',arg_changed[0])
       const content = JSON.parse(arg_changed[0]);
       arg_changed[0] = JSON.stringify(cleanup(content));
     }
@@ -188,7 +187,7 @@ initialize({
     'text/text': bodyParser.text()
   },
   errorMiddleware: function(err, req, res, next) {
-    console.log('Error Middleware:', err);
+    console.log('app.js_02_Error Middleware:', err);
 
     const language = req.language || 'en';
     i18n.setLocale(language);
