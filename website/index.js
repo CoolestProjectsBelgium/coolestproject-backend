@@ -640,9 +640,13 @@ router.get('/project-list/:eventId', cors(corsOptions), async function (req, res
 });
 
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
+  
+  if (typeof req.query.Projectid === "undefined") {
+    console.log('?parameter is wrong',req.query,' should be: ?Projectid=<nn>');
+  }else {
   const project = await Project.findOne({
     where: {
-      id: req.query.ProjectId,
+      id: req.query.Projectid,
       eventId: req.params.eventId
     },
     include:[
@@ -732,8 +736,10 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   }
   res.render('video-presentation.handlebars', {
     project: projectforUI,
+    eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
   })
   return
+};
 });
 
 
