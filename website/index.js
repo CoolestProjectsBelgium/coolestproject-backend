@@ -662,11 +662,11 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   }
 
   const event = await Event.findByPk(req.params.eventId)
-  const evStorage = event.azure_storage_container;
+
   if (event === null) {
     return next(new Error('event not found'))
   }
-
+  const evStorage = event.azure_storage_container;
   const activeMessage = await Message.findOne({
     where: {
       startAt: { [Sequelize.Op.lt]: Sequelize.literal('CURRENT_TIMESTAMP()') },
@@ -702,7 +702,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   }
   let hlink2 = 'https://coolestprojects.blob.core.windows.net/'+ evStorage +'-images/proj-' + project.id + '.png'
  
-  tName = table[0]?.name
+  tName = table[0]?.name.replaceAll("3_", "")
   vNumber = ''
   if (!tName) {
     tName = "not yet assigned"
