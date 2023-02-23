@@ -726,8 +726,8 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
     'description': project.get('project_descr'),
     'agreedToPhoto': agreedToPhoto,
     'location': 'Voting Number: ' + vNumber + '    ',
-    'name': tName,
-    'tableNumber': tName.toLowerCase().replaceAll(" ", "_"),
+    'name': 'table_' + vNumber, 
+    'tableNumber': 'table_' + vNumber,     //tName.toLowerCase().replaceAll(" ", "_"),
     'messages': activeMessage?.message
   }
 
