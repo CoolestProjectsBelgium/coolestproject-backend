@@ -662,6 +662,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   }
 
   const event = await Event.findByPk(req.params.eventId)
+  const evStorage = event.azure_storage_container;
   if (event === null) {
     return next(new Error('event not found'))
   }
@@ -699,9 +700,8 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   } else if (project.get('project_lang') == 'fr') {
     cardStyle = 'border-secondary'
   }
-
-  let hlink2 = 'https://coolestprojects.blob.core.windows.net/coolestprojects22-images/proj-' + project.id + '.png'
-
+  let hlink2 = 'https://coolestprojects.blob.core.windows.net/'+ evStorage +'-images/proj-' + project.id + '.png'
+ 
   tName = table[0]?.name
   vNumber = ''
   if (!tName) {
