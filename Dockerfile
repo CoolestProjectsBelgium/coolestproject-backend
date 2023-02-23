@@ -1,15 +1,14 @@
 FROM node:18-slim
-
-WORKDIR /usr/src/app
-
-COPY . .
-
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+RUN npm install -g npm@9.5.1
 RUN npm i
-RUN npm i -g nodemon
-RUN npm i -g sequelize-cli
-RUN npm i -g mocha
-RUN npm i -g nyc
-RUN npm i -g .
-
+RUN npm i -g nodemon \
+    && npm i -g sequelize-cli \
+    && npm i -g mocha \
+    && npm i -g nyc \
+    && npm i -g .
+COPY . .
 EXPOSE 8080
-CMD [ "npm", "run development" ]
+CMD ["npm", "run development"]
