@@ -642,7 +642,7 @@ router.get('/project-list/:eventId', cors(corsOptions), async function (req, res
 router.get('/video-presentation/:eventId/', cors(corsOptions), async function (req, res, next) {
   
   if (typeof req.query.Projectid === "undefined") {
-    console.log('?parameter is wrong',req.query,' should be: ?Projectid=<nn>');
+    console.log('Video-presentation: parameter is wrong', req.query, ' should be: ?projectid=<nn>');
   }else {
   const project = await Project.findOne({
     where: {

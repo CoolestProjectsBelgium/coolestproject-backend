@@ -384,12 +384,12 @@ class DBA {
           throw new Error('No project found');
         }
 
-        var totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
+        const totalVouchers = await Voucher.count({ where: { projectId: project.id }, lock: true });
         if (totalVouchers >= project.max_tokens) {
           throw new Error('Max token reached');
         }
 
-        var token = await new Promise(function (resolve, reject) {
+        const token = await new Promise(function (resolve, reject) {
           crypto.randomBytes(18, function (error, buffer) {
             if (error) {
               reject(error);
@@ -452,7 +452,8 @@ class DBA {
           throw new Error('File validation failed');
         }
 
-        const blobName = uuidv4();
+        const fileExt = attachment_fields.filename.split('.').pop();
+        const blobName = uuidv4()+'.'+fileExt;
         const containerName = event.azure_storage_container;
 
         // create AzureBlob & create Attachment
