@@ -1,6 +1,7 @@
 const express = require('express');
 
-var cors = require('cors');
+// CORS: configuration is in app.js in the root
+
 const models = require('../models');
 
 const Sequelize = require('sequelize');
@@ -23,7 +24,7 @@ const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-var router = express.Router();
+const router = express.Router();
 router.use(passport.session());
 router.use(bodyParser.json());
 router.use(passport.initialize());
