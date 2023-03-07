@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       PublicVote.belongsTo(models.Project, { as: 'project', optional: false, require: true, allowNull: false });
+      PublicVote.belongsTo(models.Event, { optional: false, require: true, allowNull: false });
     }
   }
   PublicVote.init({

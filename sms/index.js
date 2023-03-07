@@ -10,7 +10,7 @@ const Project = models.Project;
 const Event = models.Event;
 
 
-var router = express.Router();
+const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false }));
 
 /**
@@ -22,7 +22,7 @@ router.post('/', async function (req, res, _next) {
     console.log('** SMS Request coming in **');
     console.log('Body:', req.body.Body);
 
-    const lookupRegex = /\d+/g;
+    const lookupRegex = /\d+/g; // Zoek naar decimals 0-9 (\d), one or more (+), global match finds all matches (compared to only the first).
     const tableNumber = lookupRegex.exec(req.body.Body)?.[0].padStart(2, '0')
     console.log('Table1:', tableNumber);
 
@@ -83,11 +83,11 @@ router.post('/', async function (req, res, _next) {
     }
 
     const md5 = crypto.createHash('md5');
-    var hash = md5.update(phone).digest('hex');
+    const hash = md5.update(phone).digest('hex');
     console.log('Phone hash:', hash);
 
     try {
-        await PublicVote.create({ phone: hash, projectId: projectId });
+        await PublicVote.create({ phone: hash, projectId: projectId, eventId: activeEvent.id });
     } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
             console.log('Double vote');
