@@ -94,6 +94,7 @@ router.post('/', async function (req, res, _next) {
             res.status(202).send();
             return;
         } else {
+            console.log(e);
             throw e;
         }
     }

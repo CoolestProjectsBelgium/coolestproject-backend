@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      ProjectTable.belongsTo(models.Project, { as: 'project', optional: false }), 
+      ProjectTable.belongsTo(models.Project, { as: 'project', optional: false }); 
       ProjectTable.belongsTo(models.Table, { as: 'table', optional: true });
       ProjectTable.belongsTo(models.Event, { as: 'event', optional: false });
     }

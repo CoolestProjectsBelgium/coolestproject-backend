@@ -12,11 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       PublicVote.belongsTo(models.Project, { as: 'project', optional: false, require: true, allowNull: false });
-      PublicVote.belongsTo(models.Event, { optional: false, require: true, allowNull: false });
+      PublicVote.belongsTo(models.Event, { as: 'event', optional: false });
     }
   }
   PublicVote.init({
-    EventId: DataTypes.INTEGER,
     phone: { type: DataTypes.CHAR(100), allowNull: false, require: true }
   }, {
     sequelize,
