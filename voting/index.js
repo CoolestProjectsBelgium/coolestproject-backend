@@ -86,9 +86,15 @@ router.get('/languages', passport.authenticate('voting'), async (_req, res) => {
 router.get('/projects', passport.authenticate('voting'), async (req, res) => {
 
     let languages = ['nl', 'fr', 'en'];
-    console.log('query:',req.query);
+    console.log('query:', req.query);
     try {
       languages = JSON.parse(req.query.languages);
+
+    } catch (e) { }
+
+    let skipProjectId = null;
+    try {
+      skipProjectId = JSON.parse(req.query.skipProject);
 
     } catch (e) { }
 
@@ -106,11 +112,14 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
 
     // get random project
     //load categories
-    const projects = await Project.findAll({
+    const randomProject = await Project.findOne({
       limit: 1,
       where: {
         id: {
-          [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
+          [Op.and]: {
+            [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`),
+            [Sequelize.Op.ne]: skipProjectId
+          }
         },
         eventId: activeEvent.id,
         project_lang: {
@@ -127,22 +136,21 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
         include: [
           [
             Sequelize.literal('(SELECT COUNT(*) FROM Votes AS vote WHERE vote.projectId = Project.id )'),
-            'votesRecieved'
+            'votesReceived'
           ],
         ]
       },
       order: [
-        [Sequelize.literal('votesRecieved'), 'ASC'],
-        [Sequelize.literal('rand()')]
+        [Sequelize.literal('votesReceived'), 'ASC'], // Lowest on top
+        [Sequelize.literal('rand()')] // Within the lowest, order randomly
       ]
     });
-
-    //const randomProject = projects[Math.floor(Math.random() * projects.length)];
-    const randomProject = projects[0];
+    
     if (!randomProject) {
       res.json({ message: 'finished' });
       return;
     }
+
     const location = (await randomProject.getTables())?.[0]?.name;
     console.log('Location:', location);
     const categories = await VoteCategory.findAll({
