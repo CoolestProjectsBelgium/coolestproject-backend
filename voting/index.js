@@ -107,7 +107,7 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
     // get random project
     //load categories
     const projects = await Project.findAll({
-      limit: 5,
+      limit: 1,
       where: {
         id: {
           [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`)
@@ -132,17 +132,19 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
         ]
       },
       order: [
-        [Sequelize.literal('votesRecieved'), 'DESC']
+        [Sequelize.literal('votesRecieved'), 'DESC'],
+        [Sequelize.literal('rand()')]
       ]
     });
 
-    const randomProject = projects[Math.floor(Math.random() * projects.length)];
+    //const randomProject = projects[Math.floor(Math.random() * projects.length)];
+    const randomProject = projects[0];
     if (!randomProject) {
       res.json({ message: 'finished' });
       return;
     }
     const location = (await randomProject.getTables())?.[0]?.name;
-    console.log('location:',location);
+    console.log('Location:', location);
     const categories = await VoteCategory.findAll({
       attributes: ['name', 'max', 'optional', 'id'],
       where: {
