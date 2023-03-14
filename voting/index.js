@@ -50,15 +50,15 @@ passport.use('voting', new JwtStrategy({
   secretOrKey: secretOrPublicKey,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }, (payload, done) => {
-  console.log(payload);
+  console.log('payload:',payload);
   return done(null, payload);
 }));
 
 router.post('/auth/login', passport.authenticate('voting_login'), async (req, res) => {
-    console.log(req.user);
+    console.log('user:',req.user);
 
     const account = await Account.findByPk(req.user.id);
-    console.log(account);
+    console.log('account:',account);
     if (!account) {
       res.status(403);
       return;
@@ -86,7 +86,7 @@ router.get('/languages', passport.authenticate('voting'), async (_req, res) => {
 router.get('/projects', passport.authenticate('voting'), async (req, res) => {
 
     let languages = ['nl', 'fr', 'en'];
-    console.log(req.query);
+    console.log('query:',req.query);
     try {
       languages = JSON.parse(req.query.languages);
 
@@ -142,7 +142,7 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
       return;
     }
     const location = (await randomProject.getTables())?.[0]?.name;
-    console.log(location);
+    console.log('location:',location);
     const categories = await VoteCategory.findAll({
       attributes: ['name', 'max', 'optional', 'id'],
       where: {

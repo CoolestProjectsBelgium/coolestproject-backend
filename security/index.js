@@ -92,7 +92,7 @@ module.exports = function (app) {
   ));
 
   passport.serializeUser(function (user, done) {
-    console.log('User:', user.firstname, user.lastname);
+    console.log('User security:', user);
     done(null, user.id);
   });
 
