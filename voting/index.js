@@ -132,7 +132,7 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
         ]
       },
       order: [
-        [Sequelize.literal('votesRecieved'), 'DESC'],
+        [Sequelize.literal('votesRecieved'), 'ASC'],
         [Sequelize.literal('rand()')]
       ]
     });
