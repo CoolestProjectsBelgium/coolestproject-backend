@@ -116,7 +116,7 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
       limit: 1,
       where: {
         id: {
-          [Op.and]: {
+          [Sequelize.Op.and]: {
             [Sequelize.Op.notIn]: Sequelize.literal(`(SELECT DISTINCT vote.projectId FROM Votes AS vote WHERE vote.accountId = ${req.user.id})`),
             [Sequelize.Op.ne]: skipProjectId
           }
