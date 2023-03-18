@@ -137,6 +137,9 @@ const adminJsOptions = {
         properties: {
           account_type: {
             isVisible: {
+              filter: true,
+              list: true,
+              show: true,
               edit: true
             }
           }
