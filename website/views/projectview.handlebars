@@ -1,0 +1,89 @@
+{{!< default}}
+<style>
+    .planning-card {
+        min-width: 25ch;
+    }
+</style>
+<div class="container-fluid">
+    <h2 class="display-6"> {{ eventName }} {{ eventDate }}</h2>
+    <div class="accordion" id="accordionExample">
+        {{#each projects}}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{projectId}}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{projectId}}" aria-controls="collapse{{projectId}}">
+                        {{projectId}}. {{projectName}}
+                    </button>
+                </h2>
+                <div id="collapse{{projectId}}" class="accordion-collapse collapse" aria-labelledby="heading{{projectId}}" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="d-flex py-1">
+                            <img src="{{picturLink}}" class="img-fluid mx-auto d-block">
+                        </div>
+                        <div class="d-flex justify-content-between py-1">
+                            <div class="d-flex"></div>
+                            <div class="ml-auto"> 
+                                <span class="badge rounded-pill bg-primary">{{language}}</span>
+                                {{#if agreedToPhoto}}
+                                    <i class="bi bi-camera-video-fill text-success mx-2"></i>
+                                {{else}}
+                                    <i class="bi bi-camera-video-off-fill text-danger mx-2"></i>
+                                {{/if}}
+                                <a class="btn btn-primary my-1" href="{{voteLink}}" role="button">Vote</a>
+                                <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#mapModal" data-bs-whatever="{{tableNumber}}">Map</button>
+                            </div>
+                        </div>
+                        <div class="d-flex px-2 py-2">{{participants}}</div>
+                        <div class="d-flex py-1">
+                            <p>
+                                {{description}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}} 
+        <div class="modal fade bd-map-modal" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mapModalLabel">Map</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{> tables selected=this.tableNumber}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var mapModal = document.getElementById('mapModal')
+    mapModal.addEventListener('show.bs.modal', function (event) {
+
+        // Get the selected table from the data in the map button
+        var button = event.relatedTarget
+        var table_selected = button.getAttribute('data-bs-whatever')
+
+        var svg = document.getElementsByTagName("svg")[0]
+        var svg_style = svg.getElementsByTagName("style")[0]
+
+        // Change the selected table in the svg
+        svg_style.innerHTML = svg_style.innerHTML.replace(/#table_\d*/g, "#" + table_selected)
+        console.log(svg_style.innerHTML.replace(/#table_\d*/g, "#" + table_selected))
+    })
+
+    const accordionItems = document.querySelectorAll('.accordion-collapse')
+    const acc = document.getElementById('accordionExample')
+
+    accordionItems.forEach((el)=>{
+        el.addEventListener('shown.bs.collapse',(e)=>{
+            var scrollOffset = acc.scrollTop + el.parentNode.offsetTop
+            acc.scroll({
+                top: scrollOffset,
+                left: 0, 
+                behavior: 'smooth'
+            })
+        })
+    })
+</script>
