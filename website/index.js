@@ -616,6 +616,49 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
   })
 });
 
+router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res, next) {
+  
+  const event = await Event.findByPk(req.params.eventId)
+  if (event === null) {
+    return next(new Error('event not found'))
+  }
+  var projects = await Project.findAll({ where: { eventId: req.params.eventId } });
+  /*
+  const render_projects = [];
+  for (let project of projects) {
+​
+    let owner = await project.getOwner()
+    let participants = await project.getParticipant()
+    let agreedToPhoto = true
+    if (owner) {
+      agreedToPhoto = agreedToPhoto && (await owner.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
+    }
+    if (participants) {
+      for (let participant of participants) {
+        agreedToPhoto = agreedToPhoto && (await participant.getQuestions()).some((ele) => { return ele.name == 'Agreed to Photo' })
+      }
+    }
+​
+    render_projects.push({
+      language: project.get('project_lang').toUpperCase(),
+      projectName: project.get('project_name'),
+      participants: [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
+      description: project.get('project_descr'),
+      agreedToPhoto: agreedToPhoto,
+      tableNumber: 1,
+      picturLink: 2,
+      voteLink: 3,
+      projectId: project.get('id')
+    })
+  }
+​
+  res.render('projectsview.handlebars', {
+    eventName: event.event_title,
+    eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
+    projects: render_projects
+  })
+  */
+});
 router.get('/project-list/:eventId', cors(corsOptions), async function (req, res, next) {
   const event = await Event.findByPk(req.params.eventId)
   if (event === null) {
