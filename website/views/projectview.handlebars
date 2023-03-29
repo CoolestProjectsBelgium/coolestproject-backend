@@ -5,13 +5,13 @@
     }
 </style>
 <div class="container-fluid">
-    <h2 class="display-6"> {{ eventName }} {{ eventDate }}</h2>
+    <h2 class="display-6"> {{ eventName }} - {{ eventDate }}</h2>
     <div class="accordion" id="accordionExample">
         {{#each projects}}
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading{{projectId}}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{projectId}}" aria-controls="collapse{{projectId}}">
-                        {{projectId}}. {{projectName}}
+                        {{tableNumber}}. {{projectName}}
                     </button>
                 </h2>
                 <div id="collapse{{projectId}}" class="accordion-collapse collapse" aria-labelledby="heading{{projectId}}" data-bs-parent="#accordionExample">
@@ -50,7 +50,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{> tables selected=this.tableNumber}}
+                        {{> tables selected="table_00"}}
                     </div>
                 </div>
             </div>
@@ -60,22 +60,17 @@
 <script>
     var mapModal = document.getElementById('mapModal')
     mapModal.addEventListener('show.bs.modal', function (event) {
-
         // Get the selected table from the data in the map button
         var button = event.relatedTarget
         var table_selected = button.getAttribute('data-bs-whatever')
-
         var svg = document.getElementsByTagName("svg")[0]
         var svg_style = svg.getElementsByTagName("style")[0]
-
         // Change the selected table in the svg
-        svg_style.innerHTML = svg_style.innerHTML.replace(/#table_\d*/g, "#" + table_selected)
+        svg_style.innerHTML = svg_style.innerHTML.replace(/#table_\d*/g, '#table_' + ("0" + table_selected).slice (-2))
         console.log(svg_style.innerHTML.replace(/#table_\d*/g, "#" + table_selected))
     })
-
     const accordionItems = document.querySelectorAll('.accordion-collapse')
     const acc = document.getElementById('accordionExample')
-
     accordionItems.forEach((el)=>{
         el.addEventListener('shown.bs.collapse',(e)=>{
             var scrollOffset = acc.scrollTop + el.parentNode.offsetTop
