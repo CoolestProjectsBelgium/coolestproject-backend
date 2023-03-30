@@ -624,7 +624,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
   }
   var projects = await Project.findAll({ where: { eventId: req.params.eventId } });
 
-  const render_projects = [];
+  var render_projects = [];
   for (let project of projects) {
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
@@ -655,7 +655,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
       projectId: project.get('id')
     })
   }
-  res.render('projectsview.handlebars', {
+  res.render('projectview.handlebars', {
     eventName: event.event_title,
     eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
     projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
