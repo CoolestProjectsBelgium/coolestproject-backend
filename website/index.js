@@ -646,7 +646,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     render_projects.push({
       language: project.get('project_lang').toUpperCase(),
       projectName: project.get('project_name'),
-      participants: [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
+      participants: [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }),
       description: project.get('project_descr'),
       agreedToPhoto: agreedToPhoto,
       tableNumber: table_id,
