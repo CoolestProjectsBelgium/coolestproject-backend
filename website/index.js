@@ -651,7 +651,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
       agreedToPhoto: agreedToPhoto,
       tableNumber: table_id,
       picturLink: 'https://dummyimage.com/500x300.png',
-      voteLink: 'smsto:' + process.env.TWILIO_NUMBER + '?body=' + ("0" + table_id).slice (-2),
+      voteLink: 'sms:' + process.env.TWILIO_NUMBER + ';?&body=' + ("0" + table_id).slice (-2),
       projectId: project.get('id')
     })
   }
