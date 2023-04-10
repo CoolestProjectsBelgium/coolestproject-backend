@@ -3,6 +3,22 @@
     .planning-card {
         min-width: 25ch;
     }
+    @media (min-width: 800px) {
+       .modal-xl {
+          max-width: 90%;
+       }
+       svg {
+          max-height: 90%;
+       }4
+    }
+    @media (min-width: 1200px) {
+       .modal-xl {
+          max-width: 70%;
+       }
+       svg {
+          max-height: 90%;
+       }4
+    }
 </style>
 <div class="container-fluid">
     <h2 class="display-6"> {{ eventName }} - {{ eventDate }}</h2>
@@ -27,7 +43,9 @@
                             <img src="{{picturLink}}" class="img-fluid mx-auto d-block">
                         </div>
                         <div class="d-flex justify-content-between py-1">
-                            <div class="d-flex"></div>
+                            <div class="d-flex">
+                            	<h5>{{tableNumber}}. {{projectName}}</h5>
+                            </div>
                             <div class="ml-auto"> 
                                 <span class="badge rounded-pill bg-primary">{{language}}</span>
                                 {{#if agreedToPhoto}}
@@ -55,7 +73,7 @@
             </div>
         {{/each}} 
         <div class="modal fade bd-map-modal" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="mapModalLabel">Map</h5>
