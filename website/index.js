@@ -638,6 +638,14 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
       }
     }
     
+    const evStorage = event.azure_storage_container
+
+    let image = '-image'
+    let position1 = evStorage.search(/-test/)
+    let position2 = evStorage.search(/-dev/)
+    if (position1 >= 0 || position2 >= 0) { image = ''}
+    let piclink = 'https://coolestprojects.blob.core.windows.net/'+ evStorage + image +'/proj-' + project.id + '.png'
+    
     const table = (await project.getTables())?.[0]?.name;
     table_id = parseInt(table?.replace(' ', '_').split('_').at(-1)) || 0
     console.log(table)
@@ -650,7 +658,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
       description: project.get('project_descr'),
       agreedToPhoto: agreedToPhoto,
       tableNumber: table_id,
-      picturLink: 'https://dummyimage.com/500x300.png',
+      picturLink: piclink, //'https://dummyimage.com/500x300.png',
       voteLink: 'sms:' + process.env.TWILIO_NUMBER + ';?&body=' + ("0" + table_id).slice (-2),
       projectId: project.get('id')
     })
