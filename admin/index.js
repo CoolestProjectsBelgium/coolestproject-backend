@@ -956,14 +956,15 @@ const adminJsOptions = {
             isVisible: { list: true, filter: true, show: true, edit: true },
           },
           EventId: {
-            isVisible: { list: true, filter: true, show: false, edit: true},},
-          text: { type: 'richtext' 
+            isVisible: { list: true, filter: true, show: false, edit: true},
+          },
+          text: {
+            isVisible: { list: true, filter: true, show: true, edit: true},
+            type: 'textarea' // TODO: default the height to 140 px
           },
           id: {
             isVisible: { list: false, filter: false, show: true, edit: false },
-            type: 'richtext' ,
           },
-
           updatedAt: {
             isVisible: { list: false, filter: false, show: true, edit: false },
           },
