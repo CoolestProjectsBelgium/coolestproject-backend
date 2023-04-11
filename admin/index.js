@@ -1314,6 +1314,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -1396,6 +1397,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
