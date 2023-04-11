@@ -658,7 +658,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     
     let piclink = ''
 
-    const attachment = await project.getAttachments()?.[0]
+    const attachment = (await project.getAttachments())[0]
     console.log('attachment: ', attachment)
     if (attachment) {
 
