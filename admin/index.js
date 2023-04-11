@@ -960,7 +960,10 @@ const adminJsOptions = {
           },
           text: {
             isVisible: { list: true, filter: true, show: true, edit: true},
-            type: 'textarea' // TODO: default the height to 140 px
+            type: 'textarea',
+            props: {
+              rows: 10,
+            },
           },
           id: {
             isVisible: { list: false, filter: false, show: true, edit: false },
