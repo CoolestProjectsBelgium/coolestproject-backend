@@ -661,8 +661,8 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     const attachment = (await project.getAttachments())[0]
     console.log('attachment: ', attachment)
     if (attachment) {
-
-        const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, attachment.AzureBlob.container_name)        
+        const azureblob = attachment.getAzureBlob()
+        const sas = await Azure.generateSAS(azureblob.blob_name, 'r', attachment.filename, azureblob.container_name)        
         console.log('sas: ', sas)
         piclink = sas.url
     }
