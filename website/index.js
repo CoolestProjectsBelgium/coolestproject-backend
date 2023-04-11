@@ -16,6 +16,10 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os'); 
 
+const AzureBlob = models.AzureBlob;
+const Attachment = models.Attachment;
+const Azure = require('../azure');
+
 //temp folder for qrcodes
 const tmpPath = fs.mkdtempSync(path.join(os.tmpdir(), 'coolestproject'))
 
@@ -622,9 +626,21 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
   if (event === null) {
     return next(new Error('event not found'))
   }
-  var projects = await Project.findAll({ where: { eventId: req.params.eventId } });
+  var projects = await Project.findAll({ 
+      where: { eventId: req.params.eventId }, 
+      include:[
+         { 
+             model: Attachment, 
+             include: [
+                 {model: AzureBlob}
+             ],
+             where: { confirmed: true }, 
+             required: false
+         },
+      ]
+  });
 
-  var render_projects = [];
+  const render_projects = [];
   for (let project of projects) {
     let owner = await project.getOwner()
     let participants = await project.getParticipant()
@@ -639,17 +655,23 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     }
     
     const evStorage = event.azure_storage_container
-
-    let image = '-image'
-    let position1 = evStorage.search(/-test/)
-    let position2 = evStorage.search(/-dev/)
-    if (position1 >= 0 || position2 >= 0) { image = ''}
-    let piclink = 'https://coolestprojects.blob.core.windows.net/'+ evStorage + image +'/proj-' + project.id + '.png'
     
+    let piclink = ''
+
+    const attachment = await project.getAttachments()?.[0]
+    console.log('attachment: ', attachment)
+    if (attachment) {
+
+        const sas = await Azure.generateSAS(attachment.AzureBlob.blob_name, 'r', attachment.filename, attachment.AzureBlob.container_name)        
+        console.log('sas: ', sas)
+        piclink = sas.url
+    }
+
+	    
     const table = (await project.getTables())?.[0]?.name;
     table_id = parseInt(table?.replace(' ', '_').split('_').at(-1)) || 0
-    console.log(table)
-    console.log(table_id)
+    
+    console.log('table_id: ', table_id)
     
     render_projects.push({
       language: project.get('project_lang').toUpperCase(),
@@ -670,6 +692,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
   })
 
 });
+
 router.get('/project-list/:eventId', cors(corsOptions), async function (req, res, next) {
   const event = await Event.findByPk(req.params.eventId)
   if (event === null) {
