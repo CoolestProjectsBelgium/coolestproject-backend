@@ -43,9 +43,7 @@
                             <img src="{{picturLink}}" class="img-fluid mx-auto d-block">
                         </div>
                         <div class="d-flex justify-content-between py-1">
-                            <div class="d-flex">
-                            	<h5>{{tableNumber}}. {{projectName}}</h5>
-                            </div>
+                            <div class="d-flex"></div>
                             <div class="ml-auto"> 
                                 <span class="badge rounded-pill bg-primary">{{language}}</span>
                                 {{#if agreedToPhoto}}
@@ -56,12 +54,6 @@
                                 <a class="btn btn-primary my-1" href="{{voteLink}}" role="button">Vote</a>
                                 <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#mapModal" data-bs-whatever="{{tableNumber}}">Map</button>
                             </div>
-                        </div>
-                        <div class="d-flex px-2 py-2">
-                            {{#each participants}}
-    			         {{#if @index}}, {{/if}}
-                                {{this}}
-                            {{/each}}
                         </div>
                         <div class="d-flex py-1">
                             <p>
