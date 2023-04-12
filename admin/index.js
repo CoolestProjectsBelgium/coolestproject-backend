@@ -1047,6 +1047,7 @@ const adminJsOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -1119,6 +1120,7 @@ const adminJsOptions = {
           },
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 200;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -1211,6 +1213,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 500;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
@@ -1248,6 +1251,7 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 500;
               if (superAdminAllowed({ currentAdmin })) {
                 return request;
               }
