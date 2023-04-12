@@ -31,7 +31,7 @@
   "dependencies": {
     "@adminjs/express": "^5.0.1",
     "@adminjs/sequelize": "^3.0.0",
-    "@azure/storage-blob": "^12.11.0",
+    "@azure/storage-blob": "^12.13.0",
     "accept-language-parser": "^1.5.0",
     "adminjs": "^6.7.0",
     "bcrypt": "^5.1.0",
