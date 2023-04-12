@@ -1018,8 +1018,19 @@ const adminJsOptions = {
         navigation: projectParent,
         properties: {
           id: {
-            isTitle: true,
-            label: 'id'
+            isVisible: {list: true, show: true, new: true,  filter: true},
+          },
+          createdAt: {
+            isVisible: { list: false, filter: true, show: true, edit: true },
+          },
+          updatedAt: {
+            isVisible: { list: false, filter: true, show: true, edit: true },
+          },
+          filename: {
+            isVisible: {list: false, show: true, new: true,  filter: true},
+          },
+          name: {
+            isVisible: {list: true, show: true, new: true,  filter: true},
           },
           azureExists: {
             list: true,

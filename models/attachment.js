@@ -10,12 +10,15 @@ module.exports = (sequelize, DataTypes) => {
       Attachment.belongsTo(models.Project, {});
       Attachment.hasOne(models.AzureBlob, {});
       Attachment.hasOne(models.Hyperlink, {});
+      Attachment.belongsTo(models.Event, { as: 'Event', optional: false });
     }
   }
   Attachment.init({
-    name: DataTypes.STRING(50),
-    filename: DataTypes.STRING(255),
-    EventId: DataTypes.INTEGER,
+    id:{
+      type:DataTypes.INTEGER,
+      autoincrement:true,
+      primaryKey:true
+    },
     confirmed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
@@ -23,7 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     internal: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    }
+    },
+    filename: DataTypes.STRING(255),
+    name: DataTypes.STRING(50)
   }, {
     sequelize,
     modelName: 'Attachment',
