@@ -656,7 +656,7 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     
     const evStorage = event.azure_storage_container
     let piclink = ''
-    const attachment = (await project.getAttachments())[0]
+    const attachment = (await project.getAttachments({where: { confirmed: true }}))[0]
     
     if (attachment) {
         // console.log('attachment: ', attachment)
