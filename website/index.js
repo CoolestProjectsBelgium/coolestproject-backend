@@ -655,23 +655,25 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     }
     
     const evStorage = event.azure_storage_container
-    
     let piclink = ''
-
     const attachment = (await project.getAttachments())[0]
-    console.log('attachment: ', attachment)
+    //console.log('attachment: ', attachment)
+
     if (attachment) {
-        const azureblob = attachment.getAzureBlob()
+        console.log('attachment: ', attachment)
+        const azureblob = await attachment.getAzureBlob()
+        console.log('azureblob: ', azureblob)
         const sas = await Azure.generateSAS(azureblob.blob_name, 'r', attachment.filename, azureblob.container_name)        
         console.log('sas: ', sas)
         piclink = sas.url
+        console.log('piclink: ', piclink)
     }
 
 	    
     const table = (await project.getTables())?.[0]?.name;
     table_id = parseInt(table?.replace(' ', '_').split('_').at(-1)) || 0
     
-    console.log('table_id: ', table_id)
+    //console.log('table_id: ', table_id)
     
     render_projects.push({
       language: project.get('project_lang').toUpperCase(),
