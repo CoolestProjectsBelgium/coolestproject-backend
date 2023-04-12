@@ -659,12 +659,12 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     const attachment = (await project.getAttachments())[0]
     
     if (attachment) {
-        console.log('attachment: ', attachment)
+        // console.log('attachment: ', attachment)
         const azureblob = await attachment.getAzureBlob()
-        console.log('azureblob: ', azureblob)
+        // console.log('azureblob: ', azureblob)
         const sas = await Azure.generateSAS(azureblob.blob_name, 'r', attachment.filename, azureblob.container_name)        
         piclink = sas.url
-        console.log('piclink: ', piclink)
+        // console.log('piclink: ', piclink)
     }
 	    
     const table = (await project.getTables())?.[0]?.name;
