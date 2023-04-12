@@ -28,7 +28,7 @@
   "license": "MIT License",
   "private": true,
   "dependencies": {
-    "@azure/storage-blob": "^12.8.0",
+    "@azure/storage-blob": "^12.13.0",
     "accept-language-parser": "^1.5.0",
     "admin-bro": "^4.0.1",
     "admin-bro-expressjs": "*",
