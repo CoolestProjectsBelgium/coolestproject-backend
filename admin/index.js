@@ -4,7 +4,7 @@ const passport = require('passport')
 const express = require('express')
 const app = express()
 const db = require('../models');
-
+const importExportFeature = require('@adminjs/import-export').default;
 //const router = AdminJSExpress.buildRouter(adminJs)
 const AdminJSSequelize = require('@adminjs/sequelize')
 
@@ -592,6 +592,9 @@ const adminJsOptions = {
     },
     {
       resource: db.Project,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: projectParent,
         properties: {
@@ -749,6 +752,9 @@ const adminJsOptions = {
     },
     {
       resource: db.User,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: projectParent,
         properties: {
@@ -949,6 +955,9 @@ const adminJsOptions = {
     },
     {
       resource: db.Certificate,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: projectParent,
         properties: {
@@ -1239,6 +1248,9 @@ const adminJsOptions = {
     },
     {
       resource: db.VoteCategory,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: votingParent,
         actions: {
@@ -1376,6 +1388,9 @@ const adminJsOptions = {
     },
     {
       resource: db.ShowAttachmentLoaded,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         name: "Alle geladen projecten",
         parent: reportParent,
@@ -1438,6 +1453,9 @@ const adminJsOptions = {
 
     {
       resource: db.Table,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: planningParent,
         properties: {
@@ -1525,6 +1543,9 @@ const adminJsOptions = {
     },
     {
       resource: db.ProjectTable,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: planningParent,
         properties: {
