@@ -657,7 +657,6 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     const evStorage = event.azure_storage_container
     let piclink = ''
     const attachment = (await project.getAttachments({where: { confirmed: true }}))[0]
-    
     if (attachment) {
         // console.log('attachment: ', attachment)
         const azureblob = await attachment.getAzureBlob()
@@ -747,9 +746,7 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   let image = '-image'
   let position1 = evStorage.search(/-test/)
   let position2 = evStorage.search(/-dev/)
-  console.log("++++++",position1,position2, evStorage,image)
   if (position1 >= 0 || position2 >= 0) { image = ''}
-
   const activeMessage = await Message.findOne({
     where: {
       startAt: { [Sequelize.Op.lt]: Sequelize.literal('CURRENT_TIMESTAMP()') },
@@ -783,8 +780,16 @@ router.get('/video-presentation/:eventId/', cors(corsOptions), async function (r
   } else if (project.get('project_lang') == 'fr') {
     cardStyle = 'border-secondary'
   }
-  
-  let hlink2 = 'https://coolestprojects.blob.core.windows.net/'+ evStorage + image +'/proj-' + project.id + '.png'
+
+  let hlink2 = ''
+  const attachment = (await project.getAttachments({where: {confirmed: true }}))[0]
+
+  if (attachment) {
+      const aazureblob = await attachment.getAzureBlob()
+      const ssas = await Azure.generateSAS(aazureblob.blob_name, 'r', attachment.filename, aazureblob.container_name)        
+      hlink2 = ssas.url
+  }
+  //let hlink2 = 'https://coolestprojects.blob.core.windows.net/'+ evStorage + image +'/proj-' + project.id + '.png'
   
   tName = table[0]?.name.replaceAll("3_", "")
   vNumber = ''
