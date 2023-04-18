@@ -1613,13 +1613,13 @@ const adminJsOptions = {
             actionType: 'record',
             icon: 'Switch',
             isVisible: true,
-            handler: async () => { }
+            handler: async () => { } // TODO: Implement Switch Action https://docs.adminjs.co/ui-customization/writing-your-own-components#props-passed-to-components
           },
           plan: {
             actionType: 'resource',
             icon: 'Plan',
             isVisible: true,
-            handler: async () => { }
+            handler: async () => { } // TODO: Implement Plan Action https://docs.adminjs.co/ui-customization/writing-your-own-components#props-passed-to-components
           },
         }
       }
