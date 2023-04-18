@@ -669,6 +669,10 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
     const table = (await project.getTables())?.[0]?.name;
     table_id = parseInt(table?.replace(' ', '_').split('_').at(-1)) || 0
     
+    if (table_id == 0){
+        continue
+    }
+    
     //console.log('table_id: ', table_id)
     
     render_projects.push({
