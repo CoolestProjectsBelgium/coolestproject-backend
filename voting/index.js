@@ -153,10 +153,17 @@ router.get('/projects', passport.authenticate('voting'), async (req, res) => {
 
     const location = (await randomProject.getTables())?.[0]?.name;
     console.log('Location:', location);
+    
     const categories = await VoteCategory.findAll({
       attributes: ['name', 'max', 'optional', 'id'],
       where: {
-        eventId: activeEvent.id
+        eventId: activeEvent.id,
+        public: {
+          [Sequelize.Op.or]: {
+            [Sequelize.Op.eq]: false,
+            [Sequelize.Op.is]: null
+          }
+        },
       }
     });
 
