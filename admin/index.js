@@ -959,7 +959,7 @@ const adminJsOptions = {
         importExportFeature(),
       ],
       options: {
-        navigation: projectParent,
+        navigation: votingParent,
         properties: {
           ProjectId: {
             isVisible: { list: true, filter: true, show: true, edit: true },
@@ -1279,7 +1279,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.id': event.id }
+              request.query = { ...request.query, 'filters.eventId': event.id }
               return request
             }
           },
