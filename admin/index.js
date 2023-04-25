@@ -962,7 +962,7 @@ const adminJsOptions = {
         importExportFeature(),
       ],
       options: {
-        navigation: projectParent,
+        navigation: votingParent,
         properties: {
           ProjectId: {
             isVisible: { list: true, filter: true, show: true, edit: true },
@@ -1282,7 +1282,7 @@ const adminJsOptions = {
                 return request;
               }
               const event = await database.getEventActive();
-              request.query = { ...request.query, 'filters.id': event.id }
+              request.query = { ...request.query, 'filters.eventId': event.id }
               return request
             }
           },
@@ -1616,13 +1616,13 @@ const adminJsOptions = {
             actionType: 'record',
             icon: 'Switch',
             isVisible: true,
-            handler: async () => { }
+            handler: async () => { } // TODO: Implement Switch Action https://docs.adminjs.co/ui-customization/writing-your-own-components#props-passed-to-components
           },
           plan: {
             actionType: 'resource',
             icon: 'Plan',
             isVisible: true,
-            handler: async () => { }
+            handler: async () => { } // TODO: Implement Plan Action https://docs.adminjs.co/ui-customization/writing-your-own-components#props-passed-to-components
           },
         }
       }

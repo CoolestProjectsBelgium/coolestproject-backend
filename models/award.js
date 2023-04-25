@@ -11,12 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Award.belongsTo(models.Event, {});
-      Award.belongsTo(models.Project, {});
+      Award.belongsTo(models.Event, { optional: false });
+      Award.belongsTo(models.Project, { optional: false });
+      Award.belongsTo(models.VoteCategory, { optional: false });
+      Award.belongsTo(models.Account, { as: 'juror', optional: true})
     }
   }
   Award.init({
-    name: { type: DataTypes.STRING }
   }, {
     sequelize,
     modelName: 'Award',
