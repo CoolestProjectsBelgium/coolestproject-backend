@@ -368,9 +368,15 @@ router.get('/planning/:eventId/projects.json', cors(corsOptions), async function
   var response = []
 
   for (let project of projects) {
-    let owner = await project.getOwner()
-    let participants = await project.getParticipant()
-    let attachments = await project.getAttachments({ where: { confirmed: true } })
+    let sas = null;
+    
+    let owner = await project.getOwner();
+    let participants = await project.getParticipant();
+    let attachments = await project.getAttachments({ where: { confirmed: true } });
+    let blob = await attachments[0]?.getAzureBlob();
+    if (blob) {
+      sas = await Azure.generateSAS(blob.blob_name, 'r', attachments[0]?.filename, blob.container_name);  
+    }
     let table = await project.getTables()
     let tableEquip = table[0]?.requirements
     if (!tableEquip) { tableEquip = "" }
@@ -380,6 +386,7 @@ router.get('/planning/:eventId/projects.json', cors(corsOptions), async function
       'projectID': project.get('id'),
       'participants': [owner].concat(participants).map((ele) => { return ele.get('firstname') + ' ' + ele.get('lastname') }).join(', '),
       'link': (await attachments[0]?.getHyperlink())?.get('href'),
+      'pic' : sas?.url,
       'location': table[0]?.LocationId,
       'place': table[0]?.name,
       'usedPlaces': table[0]?.ProjectTable.get('usedPlaces'),
