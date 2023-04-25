@@ -531,6 +531,9 @@ const adminJsOptions = {
 
     {
       resource: db.Registration,
+      features: [
+        importExportFeature(),
+      ],
       options: {
         navigation: projectParent,
         actions: {
