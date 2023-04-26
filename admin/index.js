@@ -591,7 +591,19 @@ const adminJsOptions = {
       options: {
         navigation: projectParent
       },
-      actions: {}
+      actions: {
+        list: {
+          before: async (request, { currentAdmin }) => {
+            request.query.perPage ??= 100;
+            if (superAdminAllowed({ currentAdmin })) {
+              return request;
+            }
+            const event = await database.getEventActive();
+            request.query = { ...request.query, 'filters.EventId': event.id }
+            return request
+          }
+        }
+      }
     },
     {
       resource: db.Project,
@@ -910,10 +922,10 @@ const adminJsOptions = {
         actions: {
           list: {
             before: async (request, { currentAdmin }) => {
-              request.query.perPage ??= 200;
-              /* if (superAdminAllowed({ currentAdmin })) {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
                 return request;
-              } */
+              }
               const event = await database.getEventActive();
               request.query = { ...request.query, 'filters.EventId': event.id }
               return request

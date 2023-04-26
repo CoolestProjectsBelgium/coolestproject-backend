@@ -11,19 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      QuestionUser.belongsTo(models.Question, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
-      QuestionUser.belongsTo(models.User, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
-      QuestionUser.belongsTo(models.Event, { foreignKey: { allowNull: true }});
+      QuestionUser.belongsTo(models.Question, { optional: false });
+      QuestionUser.belongsTo(models.User, { optional: false });
+      QuestionUser.belongsTo(models.Event, { optional: false });
     }
   }
   QuestionUser.init({
-    // TODO: These fields are blocking the associations (see above). To be tested.
-    UserId: DataTypes.INTEGER,
-    QuestionId: DataTypes.INTEGER,
-    EventId: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'QuestionUser',
+    modelName: 'QuestionUser'
   });
   return QuestionUser;
 };
