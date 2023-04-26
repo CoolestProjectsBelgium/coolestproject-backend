@@ -792,7 +792,7 @@ const adminJsOptions = {
             isVisible: { list: true, filter: true, show: true, edit: true },
           },
           eventId: {
-            isVisible: { list: false, filter: true, show: true, edit: false },
+            isVisible: { list: false, filter: true, show: true, edit: true },
           },
           updatedAt: {
             isVisible: { list: false, filter: false, show: true, edit: false },
@@ -879,8 +879,24 @@ const adminJsOptions = {
                 response.record.params.isParticipant = (participant > 0) ? true : false
                 response.record.params.hasProject = (owner > 0 || participant > 0) ? true : false
               } catch (error) {
-                console.log('index.js_09',error)
+                console.log('Admin index.js user.show.after', error)
               }
+              return response;
+            }
+          },
+          new: { // Poging tot vastleggen van EventId voor nieuwe records
+            before: async (request, response, context) => {
+              const event = await database.getEventActive();
+              request.payload = {
+                ...request.payload,
+                eventId: event.id,
+              }
+              return request
+            },
+            after: async (response, request, context) => {
+              // Vastleggen van EventId voor nieuwe records waar nog geen Event gekozen was
+              const event = await database.getEventActive();
+              response.record.params.eventId ??= event.id;
               return response;
             }
           }
@@ -895,9 +911,9 @@ const adminJsOptions = {
           list: {
             before: async (request, { currentAdmin }) => {
               request.query.perPage ??= 200;
-              if (superAdminAllowed({ currentAdmin })) {
+              /* if (superAdminAllowed({ currentAdmin })) {
                 return request;
-              }
+              } */
               const event = await database.getEventActive();
               request.query = { ...request.query, 'filters.EventId': event.id }
               return request
@@ -1657,8 +1673,8 @@ router.get('/logout',(req, res, next) => {
 
 router = AdminJSExpress.buildRouter(adminJs, router)
 
-
-
 //const router = AdminJSExpress.buildRouter(adminJs)
 //router.use('/', passport.authenticate('admin_login'));
-module.exports = router
+module.exports = router;
+
+console.log('AdminJS index.js done');

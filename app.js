@@ -205,3 +205,5 @@ initialize({
 });
 
 module.exports = app;
+
+console.log('App Ready!');

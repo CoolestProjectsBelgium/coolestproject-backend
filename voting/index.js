@@ -201,4 +201,5 @@ router.post('/projects/:projectId', passport.authenticate('voting'), async (req,
     res.send(null);
   });
 
-module.exports = router;  
+module.exports = router;
+console.log('Voting index.js done');

@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   QuestionUser.init({
+    // TODO: These fields are blocking the associations (see above). To be tested.
     UserId: DataTypes.INTEGER,
     QuestionId: DataTypes.INTEGER,
     EventId: DataTypes.INTEGER
