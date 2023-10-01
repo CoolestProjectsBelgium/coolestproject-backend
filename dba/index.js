@@ -905,10 +905,10 @@ class DBA {
     const activeEvent = await Event.findOne({
       where: {
         eventBeginDate: {
-          [Op.lt]: Sequelize.literal('CURDATE()'),
+          [Op.lte]: Sequelize.literal('CURDATE()'),
         },
         eventEndDate: {
-          [Op.gt]: Sequelize.literal('CURDATE()'),
+          [Op.gte]: Sequelize.literal('CURDATE()'),
         }
       },
       attributes: ['id']
