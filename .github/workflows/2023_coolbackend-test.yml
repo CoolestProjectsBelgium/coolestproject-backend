@@ -6,7 +6,7 @@ name: Coolbackend-Test - Build and deploy Node.js app to Azure Web App
 on:
   push:
     branches:
-      - "2023"
+      - "2024"
   workflow_dispatch:
     inputs:
       logLevel:
