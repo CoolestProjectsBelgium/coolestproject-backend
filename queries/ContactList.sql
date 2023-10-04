@@ -2,9 +2,9 @@ CREATE OR REPLACE VIEW `ContactList` AS
 SELECT 
 	u.firstname, u.lastname, 
     TIMESTAMPDIFF(YEAR, u.birthmonth, e.officialStartDate) AS Age,
-	CASE WHEN p.Agree IS NULL THEN 'NO PHOTO' ELSE NULL END as Photo,
-    CASE WHEN c.Agree IS NULL THEN 'NO CONTACT' ELSE NULL END as Contact
-    , u.via, u.gsm, u.email, u.email_guardian
+	CASE WHEN p.Agree IS NULL THEN 'NO PHOTO' ELSE 'OK' END as Photo,
+    CASE WHEN c.Agree IS NULL THEN 'NO CONTACT' ELSE 'OK' END as Contact
+    , u.via, u.gsm, u.gsm_guardian, u.email, u.email_guardian
 FROM
 	users u
     inner join events e on u.eventId = e.id
