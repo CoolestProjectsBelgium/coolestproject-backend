@@ -869,16 +869,17 @@ class DBA {
   async setEventActive(eventId) {
     return sequelize.transaction(
       async () => {
-        // cancel previous events
-        await Event.update({ eventEndDate: new Date() }, { where: { id: { [Op.ne]: eventId } } });
+        // cancel previous events, do not do it, this updates all previous events
+        // await Event.update({ eventEndDate: new Date() }, { where: { id: { [Op.ne]: eventId } } });
 
         //activate current
         const event = await Event.findByPk(eventId);
         if (event === null) {
           throw new Error('No event found');
         }
-        event.eventStartDate = new Date();
+        // event.eventStartDate = new Date(); // bestaat niet meer, nothing to do
 
+        // shift the end date into the future (+1Y) is not defined well
         if (event.eventEndDate <= new Date()) {
           event.eventEndDate = addYears(new Date(), 1);
         }
