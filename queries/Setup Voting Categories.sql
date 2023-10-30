@@ -5,8 +5,8 @@ WHERE eventBeginDate <= CURDATE() and CURDATE() <= eventEndDate;
 SET @eventIdOld = @eventIdNew - 1;
 
 -- Name contains the year!
-SET @old = CAST(YEAR(now()) as CHAR);
-SET @new = CAST(YEAR(now())+1 as CHAR);
+SET @old = RIGHT(CAST(YEAR(now()) as CHAR), 2);
+SET @new = RIGHT(CAST(YEAR(now())+1 as CHAR), 2);
 select @old, @new;
 
 INSERT INTO votecategories
