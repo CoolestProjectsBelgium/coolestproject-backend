@@ -471,7 +471,7 @@ class DBA {
             internal: false
           }
         }, {
-          include: [{ association: Attachment }]
+          include: [{ association: 'Attachment' }]
         });
         if (attachment === null) {
           throw new Error('Attachment failed');

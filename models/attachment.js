@@ -14,11 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Attachment.init({
-    id:{
-      type:DataTypes.INTEGER,
-      autoincrement:true,
-      primaryKey:true
-    },
     confirmed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
