@@ -7,15 +7,15 @@ import * as fs from 'fs/promises';
 
 const env = process.env.NODE_ENV || 'development';
 const config = {
-  database: 'coolestproject_test',
-  username: 'coolestproject_test',
-  password: '9b6xgLku9vCP8wy2'
+  database: 'coolestproject',
+  username: 'coolestproject',
+  password: 'Se84KCCCJlnfkdfv'
 };
 const filename = fileURLToPath(import.meta.url);
 const dir = dirname(filename)
 const configOptions = {
   dialect: 'mysql' as Dialect,
-  port: 5306,
+  port: 3306,
 };
 const sequelize = new Sequelize(config.database, config.username, config.password, configOptions);
 
