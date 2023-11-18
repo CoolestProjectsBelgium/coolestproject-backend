@@ -1,3 +1,6 @@
 node_modules
 dist/**
 history_dataLoad/*
+dist/*
+dist/*
+dist/models/i*
