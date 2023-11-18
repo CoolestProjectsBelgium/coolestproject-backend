@@ -3,7 +3,7 @@ import AdminJSExpress from '@adminjs/express'
 import express from 'express'
 import * as AdminJSSequelize from '@adminjs/sequelize'
 
-import { Event } from './models/index.js'
+import { models } from './models/index.js'
 
 AdminJS.registerAdapter({
   Resource: AdminJSSequelize.Resource,
@@ -15,8 +15,10 @@ const PORT = 3000
 async function start() {
   const app = express()
 
+  console.log(models)
+
   const adminOptions = {
-    resources: [Event],
+    resources: [models.Event, models.Account],
   }
   const admin = new AdminJS(adminOptions)
 
