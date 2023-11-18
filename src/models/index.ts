@@ -38,13 +38,13 @@ for (const file of files) {
     continue;
   }
   let module = await import( './' + file);
-  let name = Object.keys(module)[0];
-  let Model = module[name];
+  let name = Object.keys(module)[0]; //just pick the first export
+  let model = module[name];
 
   if(currentEvent){
-    Model.addScope('defaultScope', { where: { id: currentEvent.id } });
+    model.addScope('defaultScope', { where: { id: currentEvent.id } });
   }
-  models[name] = Model;
+  models[name] = model;
 }
 sequelize.addModels(Object.values(models));
 
