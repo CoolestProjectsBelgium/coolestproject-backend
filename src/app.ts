@@ -15,10 +15,8 @@ const PORT = 3000
 async function start() {
   const app = express()
 
-  console.log(models)
-
   const adminOptions = {
-    resources: [models.Event, models.Account],
+    resources: Object.values(models),
   }
   const admin = new AdminJS(adminOptions)
 
