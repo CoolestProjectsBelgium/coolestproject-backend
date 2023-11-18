@@ -37,7 +37,7 @@ for (const file of files) {
     if (currentEvent) {
         Model.addScope('defaultScope', { where: { id: currentEvent.id } });
     }
-    sequelize.addModels([Model]);
     models[name] = Model;
 }
+sequelize.addModels(Object.values(models));
 export { models };

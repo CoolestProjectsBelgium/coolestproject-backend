@@ -11,8 +11,6 @@ const config = {
   username: 'coolestproject_test',
   password: '9b6xgLku9vCP8wy2'
 };
-const filename = fileURLToPath(import.meta.url);
-const dir = dirname(filename)
 const configOptions = {
   dialect: 'mysql' as Dialect,
   port: 5306,
@@ -23,16 +21,18 @@ sequelize.addModels([Event]);
 
 const models: { [key: string]: any } = {};
 
-// create default scope for current event
+//get the current event for the default scope
 const currentEvent = await Event.findOne({ where: { eventBeginDate: { [Op.lt]: new Date() }, eventEndDate: { [Op.gt]: new Date() } } });
 if(currentEvent){
   Event.addScope('defaultScope', { where: { id: currentEvent.id } });
 }
-
 models["Event"] = Event;
 
-// loop over directory
+const filename = fileURLToPath(import.meta.url);
+const dir = dirname(filename);
 const files = await fs.readdir(dir);
+
+// loop over directory
 for (const file of files) {
   if(file === 'event.js' || file === 'index.js'){
     continue;
@@ -44,8 +44,8 @@ for (const file of files) {
   if(currentEvent){
     Model.addScope('defaultScope', { where: { id: currentEvent.id } });
   }
-  sequelize.addModels([Model]);
   models[name] = Model;
 }
+sequelize.addModels(Object.values(models));
 
 export { models };
