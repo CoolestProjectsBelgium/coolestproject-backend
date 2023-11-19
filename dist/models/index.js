@@ -10,8 +10,6 @@ const config = {
     username: 'coolestproject_test',
     password: '9b6xgLku9vCP8wy2'
 };
-const filename = fileURLToPath(import.meta.url);
-const dir = dirname(filename);
 const configOptions = {
     dialect: 'mysql',
     port: 5306,
@@ -19,25 +17,27 @@ const configOptions = {
 const sequelize = new Sequelize(config.database, config.username, config.password, configOptions);
 sequelize.addModels([Event]);
 const models = {};
-// create default scope for current event
+//get the current event for the default scope
 const currentEvent = await Event.findOne({ where: { eventBeginDate: { [Op.lt]: new Date() }, eventEndDate: { [Op.gt]: new Date() } } });
 if (currentEvent) {
     Event.addScope('defaultScope', { where: { id: currentEvent.id } });
 }
 models["Event"] = Event;
-// loop over directory
+const filename = fileURLToPath(import.meta.url);
+const dir = dirname(filename);
 const files = await fs.readdir(dir);
+// loop over directory
 for (const file of files) {
     if (file === 'event.js' || file === 'index.js') {
         continue;
     }
     let module = await import('./' + file);
-    let name = Object.keys(module)[0];
-    let Model = module[name];
+    let name = Object.keys(module)[0]; //just pick the first export
+    let model = module[name];
     if (currentEvent) {
-        Model.addScope('defaultScope', { where: { id: currentEvent.id } });
+        model.addScope('defaultScope', { where: { id: currentEvent.id } });
     }
-    models[name] = Model;
+    models[name] = model;
 }
 sequelize.addModels(Object.values(models));
 export { models };

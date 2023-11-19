@@ -8,17 +8,21 @@ AdminJS.registerAdapter({
     Database: AdminJSSequelize.Database,
 });
 const PORT = 3000;
+const HOST = '0.0.0.0';
 async function start() {
     const app = express();
-    console.log(models);
-    const adminOptions = {
-        resources: [models.Event, models.Account],
-    };
-    const admin = new AdminJS(adminOptions);
-    const adminRouter = AdminJSExpress.buildRouter(admin);
-    app.use(admin.options.rootPath, adminRouter);
-    app.listen(PORT, () => {
-        console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`);
+    //start admin for all previous events
+    const events = await models.Event.unscoped().findAll();
+    for (const event of events) {
+        let adminOptions = {
+            resources: Object.values(models).map((model) => model.unscoped().scope('event', { method: ['eventId', event.id] })),
+        };
+        let admin = new AdminJS(adminOptions);
+        let adminRouter = AdminJSExpress.buildRouter(admin);
+        app.use(admin.options.rootPath + '/' + event.id, adminRouter);
+    }
+    app.listen(PORT, HOST, () => {
+        console.log(`Backend Started`);
     });
 }
 start();
