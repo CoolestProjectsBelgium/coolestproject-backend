@@ -16,16 +16,20 @@ const HOST = '0.0.0.0'
 async function start() {
   const app = express()
 
-  const adminOptions = {
-    resources: Object.values(models),
+  //start admin for all previous events
+  const events = await models.Event.unscoped().findAll();
+  for (const event of events) {
+    //remove default scope & trigger specific event scope
+    let adminOptions = {
+      resources: Object.values(models).map((model) => model.unscoped().scope('event', { method: ['eventId', event.id] })),
+    }
+    let admin = new AdminJS(adminOptions)
+    let adminRouter = AdminJSExpress.buildRouter(admin)
+    app.use(admin.options.rootPath + '/' + event.id , adminRouter)
   }
-  const admin = new AdminJS(adminOptions)
-
-  const adminRouter = AdminJSExpress.buildRouter(admin)
-  app.use(admin.options.rootPath, adminRouter)
 
   app.listen(PORT, HOST, () => {
-    console.log(`AdminJS started on http://localhost:${PORT}${admin.options.rootPath}`)
+    console.log(`Backend Started`)
   })
 }
 
