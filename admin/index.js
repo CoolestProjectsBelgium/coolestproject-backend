@@ -35,6 +35,10 @@ const projectParent = {
   icon: 'Roadmap'
 }
 
+const projectHistory = {
+  name: 'History',
+  icon: 'Roadmap'
+}
 const reportParent = {
   name: 'Reporting',
   icon: 'fa fa-stream',
@@ -1481,7 +1485,151 @@ const adminJsOptions = {
         }
       }
     },
-
+    {
+      resource: db.stats_demographics,
+      options: {
+        name: "Alle overzichten history",
+        parent: projectHistory,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              return request
+            },
+          },
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      }
+    },
+    {
+      resource: db.stats_genderage,
+      options: {
+        name: "Alle overzichten history",
+        parent: projectHistory,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              return request
+            },
+          },
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      }
+    },
+    {
+      resource: db.stats_language,
+      options: {
+        name: "Alle overzichten history",
+        parent: projectHistory,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              return request
+            },
+          },
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      }
+    },
+    {
+      resource: db.stats_languagegender,
+      options: {
+        name: "Alle overzichten history",
+        parent: projectHistory,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              return request
+            },
+          },
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      }
+    },
+    {
+      resource: db.stats_teams,
+      options: {
+        name: "Alle overzichten history",
+        parent: projectHistory,
+        actions: {
+          list: {
+            before: async (request, { currentAdmin }) => {
+              request.query.perPage ??= 100;
+              if (superAdminAllowed({ currentAdmin })) {
+                return request;
+              }
+              return request
+            },
+          },
+          new: {
+            isVisible: false
+          },
+          edit: {
+            isVisible: false
+          },
+          delete: {
+            isVisible: false
+          }
+        },
+        properties: {
+        }
+      }
+    },
     {
       resource: db.Table,
       features: [
