@@ -86,4 +86,29 @@ END
 
 delimiter ;
 
+-- Done once
 CALL `statistics-update`();
+
+-- Schedule
+
+DROP EVENT IF EXISTS e_daily_update_stats;
+
+DELIMITER |
+
+CREATE EVENT e_daily_update_stats
+    ON SCHEDULE
+      EVERY 1 DAY
+    COMMENT 'Upsert the new statistics into the stats tables'
+    DO
+      BEGIN
+        CALL `statistics-update`();
+      END |
+
+DELIMITER ;
+
+SHOW EVENTS;
+
+-- On Azure, use Flexserver Server Parameters to update All / event_scheduler to ON
+SET GLOBAL event_scheduler = ON;
+
+SELECT @@event_scheduler;
