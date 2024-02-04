@@ -28,7 +28,7 @@
 </style>
 
 <div id="map"></div>
-<object id="map_svg" type="image/svg+xml" data="/website/map.svg" style="height: 740px;"></object>
+<object id="map_svg" type="image/svg+xml" data="/website/static/map.svg" style="height: 740px;"></object>
 
 <script src="/website/static/js/leaflet.js"></script>
 <script src="/website/static/js/leaflet-search.js"></script>
@@ -45,12 +45,8 @@
     {{/each}}
 ]
 
-
-
 var coords = {
 }
-
-
 
 // Initialize the map
 var map = L.map('map', {
@@ -65,7 +61,7 @@ const bounds = [
 	[0, 0],
 	[740, 1200]
 ];
-const image = L.imageOverlay('/website/map.svg', bounds).addTo(map);
+const image = L.imageOverlay('/website/static/map.svg', bounds).addTo(map);
   
 var markersLayer = new L.featureGroup();
 map.addLayer(markersLayer);
