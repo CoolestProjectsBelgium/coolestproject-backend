@@ -702,6 +702,10 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
 
 });
 
+router.get("/map.svg", cors(corsOptions), async function(req, res) {
+  res.sendFile("./map/map.svg", {root: __dirname});
+});
+
 router.get('/project-list/:eventId', cors(corsOptions), async function (req, res, next) {
   const event = await Event.findByPk(req.params.eventId)
   if (event === null) {

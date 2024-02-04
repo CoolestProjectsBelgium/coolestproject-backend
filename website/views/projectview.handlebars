@@ -1,106 +1,167 @@
 {{!< default}}
+<link rel="stylesheet" href="/website/static/style/leaflet.css">
+<link rel="stylesheet" href="/website/static/style/leaflet-search.css">
 <style>
-    .planning-card {
-        min-width: 25ch;
-    }
-    @media (min-width: 800px) {
-       .modal-xl {
-          max-width: 90%;
-       }
-       svg {
-          max-height: 90%;
-       }
-    }
-    @media (min-width: 1200px) {
-       .modal-xl {
-          max-width: 70%;
-       }
-       svg {
-          max-height: 90%;
-       }
-    }
+    html, body{
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+  }
+#map
+{
+    width: auto;
+    height: 100%;
+}
+.leaflet-control-search .search-tip {
+    height: auto;
+    margin-bottom: 4px;
+}
+.leaflet-control-search .search-tip h3 {
+    margin: 1px 0px 0px 0px;
+}
+.leaflet-popup-content{
+    width: 300px;
+}
+.leaflet-popup-content img{
+    width: 100%;
+}
 </style>
-<div class="container-fluid">
-    <h2 class="display-6"> {{ eventName }} - {{ eventDate }}</h2>
-    <div class="accordion" id="accordionExample">
-        {{#each projects}}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading{{projectId}}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{projectId}}" aria-controls="collapse{{projectId}}">
-                        <div class="d-flex flex-column">
-                            <h5>{{tableNumber}}. {{projectName}}</h5>
-                            <div class="d-flex flex-row flex-wrap">
-                                {{#each participants}}
-                                    <span class="badge bg-light text-dark mx-1">{{this}}</span>
-                                {{/each}} 
-                            </div>
-                        </div>
-                    </button>
-                </h2>
-                <div id="collapse{{projectId}}" class="accordion-collapse collapse" aria-labelledby="heading{{projectId}}" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <div class="d-flex py-1">
-                            <img src="{{picturLink}}" class="img-fluid mx-auto d-block">
-                        </div>
-                        <div class="d-flex justify-content-between py-1">
-                            <div class="d-flex"></div>
-                            <div class="ml-auto"> 
-                                <span class="badge rounded-pill bg-primary">{{language}}</span>
-                                {{#if agreedToPhoto}}
-                                    <i class="bi bi-camera-video-fill text-success mx-2"></i>
-                                {{else}}
-                                    <i class="bi bi-camera-video-off-fill text-danger mx-2"></i>
-                                {{/if}}
-                                <a class="btn btn-primary my-1" href="{{voteLink}}" role="button">Vote</a>
-                                <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#mapModal" data-bs-whatever="{{tableNumber}}">Map</button>
-                            </div>
-                        </div>
-                        <div class="d-flex py-1">
-                            <p>
-                                {{description}}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {{/each}} 
-        <div class="modal fade bd-map-modal" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="mapModalLabel">Map</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        {{> tables selected="table_00"}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+<div id="map"></div>
+<object id="map_svg" type="image/svg+xml" data="/website/map.svg" style="height: 740px;"></object>
+
+<script src="/website/static/js/leaflet.js"></script>
+<script src="/website/static/js/leaflet-search.js"></script>
 <script>
-    var mapModal = document.getElementById('mapModal')
-    mapModal.addEventListener('show.bs.modal', function (event) {
-        // Get the selected table from the data in the map button
-        var button = event.relatedTarget
-        var table_selected = button.getAttribute('data-bs-whatever')
-        var svg = document.getElementsByTagName("svg")[0]
-        var svg_style = svg.getElementsByTagName("style")[0]
-        // Change the selected table in the svg
-        svg_style.innerHTML = svg_style.innerHTML.replace(/#table_\d*/g, '#table_' + ("0" + table_selected).slice (-2))
-        console.log(svg_style.innerHTML.replace(/#table_\d*/g, "#" + table_selected))
-    })
-    const accordionItems = document.querySelectorAll('.accordion-collapse')
-    const acc = document.getElementById('accordionExample')
-    accordionItems.forEach((el)=>{
-        el.addEventListener('shown.bs.collapse',(e)=>{
-            var scrollOffset = acc.scrollTop + el.parentNode.offsetTop
-            acc.scroll({
-                top: scrollOffset,
-                left: 0, 
-                behavior: 'smooth'
-            })
-        })
-    })
+    var data =[
+    {{#each projects}}
+	{id: {{tableNumber}}, title: '{{projectName}}', 
+        users: [
+        {{#each participants}}
+            '{{this}}', 
+        {{/each}} 
+        ]
+    },
+    {{/each}}
+]
+
+
+
+var coords = {
+}
+
+
+
+// Initialize the map
+var map = L.map('map', {
+	crs: L.CRS.Simple,
+	minZoom: -2,
+	maxZoom: 20
+  });
+  
+
+
+const bounds = [
+	[0, 0],
+	[740, 1200]
+];
+const image = L.imageOverlay('/website/map.svg', bounds).addTo(map);
+  
+var markersLayer = new L.featureGroup();
+map.addLayer(markersLayer);
+
+function customTip(text, val){
+	var subTitleUsers = text.split(':');
+	var title = subTitleUsers[0].trim();
+	var users = ''
+	if (subTitleUsers.length >= 2){
+		users = subTitleUsers[1].trim();
+	}
+	return '<a href="#"><h3>' + title + '</h3><p>'+users+'</p></a>';
+}
+
+
+var controlSearch = new L.Control.Search({
+	position:'topleft',		
+	buildTip: customTip,
+	layer: markersLayer,
+	propertyName: 'sdata',
+	initial: false,
+	zoom: 3,
+	marker: false
+});
+
+map.addControl( controlSearch );
+map.fitBounds(bounds);
+
+window.onload=function() {
+	var svg_doc = document.getElementById("map_svg").contentDocument;
+	svg = svg_doc.getElementsByTagName('svg')
+	svg_parts = svg_doc.getElementsByTagName('g')
+
+	for (part_name in svg_parts){
+		part = svg_parts[part_name]
+
+		if (String(part.id).startsWith("table_")){
+			
+			ctm = get_center(svg, part)
+			id = parseInt(part.id.substring(6))
+
+			x = ctm.x_cen;
+			y = 740 -(ctm.y_cen);
+			x0 = ctm.x0;
+			y0 = 740 -(ctm.y0);
+			x1 = ctm.x1;
+			y1 = 740 -(ctm.y1);
+			x2 = ctm.x2;
+			y2 = 740 -(ctm.y2);
+			x3 = ctm.x3;
+			y3 = 740 -(ctm.y3);
+			height = 22.7
+			width = 51
+			console.log(id, x, y)
+			coords[id] = [[y0, x0], [y1, x1], [y2, x2], [y3, x3]]
+		}
+	}
+	var icon = L.icon({iconUrl: '/images/Icon.png', iconSize: [40, 40], iconAnchor: [20, 40]})
+
+	for (d_i in data){
+		d = data[d_i];
+		if (!(d.id in coords))
+			continue;
+		coord = coords[d.id];
+		title = d.id + '. ' + d.title;
+		users = d.users.join(", ");
+		sdata = title + ': ' + users;
+
+		var poly_mark = L.polygon(coord, {title: title, sdata: sdata})
+		poly_mark.bindPopup("<b>" + title + "</b><img src='https://th.bing.com/th/id/OIG.ey_KYrwhZnirAkSgDhmg' alt='Italian Trulli'><br>" + users);
+		markersLayer.addLayer(poly_mark)
+	}
+}
+
+function get_center(svg, elem) {
+	//console.log(elem);
+	var bbox = elem.getBBox(),
+    x = bbox.x + (bbox.width / 2),
+    y = bbox.y + (bbox.height / 2);
+	w2 = bbox.width / 2;
+	h2 = bbox.height / 2;
+
+	var matrix = elem.getCTM();
+  
+	return {
+	  x_cen: (matrix.a * x) + (matrix.c * y) + matrix.e,
+	  y_cen: (matrix.b * x) + (matrix.d * y) + matrix.f,
+	  x0: (matrix.a * (x - w2)) + (matrix.c * (y - h2)) + matrix.e,
+	  y0: (matrix.b * (x - w2)) + (matrix.d * (y - h2)) + matrix.f,
+	  x1: (matrix.a * (x - w2)) + (matrix.c * (y + h2)) + matrix.e,
+	  y1: (matrix.b * (x - w2)) + (matrix.d * (y + h2)) + matrix.f,
+	  x2: (matrix.a * (x + w2)) + (matrix.c * (y + h2)) + matrix.e,
+	  y2: (matrix.b * (x + w2)) + (matrix.d * (y + h2)) + matrix.f,
+	  x3: (matrix.a * (x + w2)) + (matrix.c * (y - h2)) + matrix.e,
+	  y3: (matrix.b * (x + w2)) + (matrix.d * (y - h2)) + matrix.f,
+	};
+  }
 </script>
+
