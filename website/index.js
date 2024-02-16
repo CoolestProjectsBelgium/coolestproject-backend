@@ -627,14 +627,46 @@ router.get('/presentation/:eventId/', cors(corsOptions), async function (req, re
   })
 });
 
-router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res, next) {
+router.get('/projectview/:eventId/map', cors(corsOptions), async function (req, res, next) {
   
-  const event = await Event.findByPk(req.params.eventId)
-  if (event === null) {
-    return next(new Error('event not found'))
+  const render_projects = await get_projects_from_event(req.params.eventId);
+  
+  if (render_projects instanceof Error) {
+	  return next(render_projects)
   }
-  var projects = await Project.findAll({ 
-      where: { eventId: req.params.eventId }, 
+  
+  res.render('projectview_map.handlebars', {
+    eventName: event.event_title,
+    eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
+    projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
+  })
+
+});
+
+router.get('/projectview/:eventId/list', cors(corsOptions), async function (req, res, next) {
+  
+  const render_projects = await get_projects_from_event(req.params.eventId);
+  
+  if (render_projects instanceof Error) {
+	  return next(render_projects)
+  }
+  
+  res.render('projectview_list.handlebars', {
+    eventName: event.event_title,
+    eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
+    projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
+  })
+
+});
+
+async function get_projects_from_event(eventId){
+	const event = await Event.findByPk(eventId)
+	if (event === null) {
+		return new Error('event not found')
+	}
+	
+	var projects = await Project.findAll({ 
+      where: { eventId: eventId }, 
       include:[
          { 
              model: Attachment, 
@@ -694,17 +726,8 @@ router.get('/projectview/:eventId/', cors(corsOptions), async function (req, res
       projectId: project.get('id')
     })
   }
-  res.render('projectview.handlebars', {
-    eventName: event.event_title,
-    eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
-    projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
-  })
-
-});
-
-router.get("/map.svg", cors(corsOptions), async function(req, res) {
-  res.sendFile("./map/map.svg", {root: __dirname});
-});
+  return render_projects;
+}
 
 router.get('/project-list/:eventId', cors(corsOptions), async function (req, res, next) {
   const event = await Event.findByPk(req.params.eventId)
