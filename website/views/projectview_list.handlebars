@@ -96,6 +96,8 @@
         const svgContainer = document.getElementById('add_svg_map');
         svgContainer.innerHTML = svg;
 
+        document.getElementById("map_svg").style.display = "none";
+
         // Add the blinking to the map
         svgContainer.getElementsByTagName("style")[0].innerHTML += "\n@keyframes blink { 0%{ fill:#b60000; } 50%{ fill:#ffcd5f; } 100%{ fill:#b60000; }}\n#table_00 .table {\nanimation: blink 1s infinite;\n}\n#table_00 .number {\nfill: white;\nfont-size: 1.2em;\n}\n";
     }

@@ -698,6 +698,7 @@ router.get('/projectview/:eventId/map', cors(corsOptions), async function (req, 
   res.render('projectview_map.handlebars', {
     eventName: event.event_title,
     eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
+    eventId: req.params.eventId,
     projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
   })
 
@@ -774,6 +775,7 @@ router.get('/projectview/:eventId/list', cors(corsOptions), async function (req,
   res.render('projectview_list.handlebars', {
     eventName: event.event_title,
     eventDate: new Intl.DateTimeFormat('nl-BE', { dateStyle: 'short' }).format(event.officialStartDate),
+    eventId: req.params.eventId,
     projects: render_projects.sort((p1, p2) => (p1.tableNumber < p2.tableNumber) ? -1 : (p1.tableNumber > p2.tableNumber) ? 1 : 0)
   })
 
