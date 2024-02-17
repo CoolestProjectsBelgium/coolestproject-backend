@@ -27,6 +27,21 @@ html, body{
 .leaflet-popup-content img{
     width: 100%;
 }
+.leaflet-popup-content b{
+	font-size: 1.2em;
+}
+.leaflet-popup-content a{
+	color: #fff;
+}
+p.popup-description{
+	margin-top: 1px;
+}
+.search-tooltip h3{
+	font-size: 1.5em;
+}
+.search-tooltip p{
+	margin-bottom: 2px;
+}
 </style>
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
   <div class="container-fluid">
@@ -44,7 +59,14 @@ html, body{
 <script>
 var data =[
     {{#each projects}}
-	{id: {{tableNumber}}, title: '{{projectName}}', picture: '{{picturLink}}', 
+	{
+		id: {{tableNumber}}, 
+		title: '{{projectName}}', 
+		picture: '{{picturLink}}', 
+		agreedToPhoto: {{agreedToPhoto}}, 
+		voteLink: '{{voteLink}}',
+		language: '{{language}}',
+		description: '{{description}}',
         users: [
         {{#each participants}}
             '{{this}}', 
@@ -82,7 +104,7 @@ function customTip(text, val){
 	if (subTitleUsers.length >= 2){
 		users = subTitleUsers[1].trim();
 	}
-	return '<a href="#"><h3>' + title + '</h3><p>'+users+'</p></a>';
+	return '<a href="#"><h3>' + title + '</h3><p>'+ users +'</p></a>';
 }
 
 
@@ -127,7 +149,21 @@ window.onload=function() {
 		sdata = title + ': ' + users;
 
 		var poly_mark = L.polygon(coord, {title: title, sdata: sdata})
-		poly_mark.bindPopup("<b>" + title + "</b><img src='" + d.picture + "'><br>" + users);
+		var camera_badge = d.agreedToPhoto ? "bi-camera-video-fill text-success" : "bi-camera-video-off-fill text-danger";
+		var popup_html = "" +
+		"<b>" + title + "</b>" + 
+		"<img src='" + d.picture + "'><br>" + 
+		"<div class='d-flex justify-content-between py-1'>" + 
+		"    <div class='d-flex'></div>" + 
+		"    <div class='ml-auto'>" +
+		"        <span class='badge rounded-pill bg-primary'>" + d.language + "</span>" +
+		"        <i class='bi " + camera_badge + " mx-2'></i>" + 
+		"        <a class='btn btn-primary my-1' href='" + d.voteLink + "' role='button'>Vote</a>" + 
+		"    </div>" + 
+		"</div>" +
+		"<p class='popup-description'>" + d.description + "</p>";
+
+		poly_mark.bindPopup(popup_html);
 		markersLayer.addLayer(poly_mark)
 	}
 }
