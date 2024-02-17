@@ -22,12 +22,12 @@
 </style>
 <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
   <div class="container-fluid">
-    <a class="navbar-brand">{{ eventName }} - {{ eventDate }}</a>
+    <a class="navbar-brand">{{ eventName }}</a>
     <a class="btn btn-primary" href="/website/projectview/{{eventId}}/map">Map</a>
   </div>
 </nav>
 <div class="container-fluid">
-    <h2 class="display-6"> {{ eventName }} - {{ eventDate }}</h2>
+    <h2 class="display-6"> {{ eventName }}</h2>
     <div class="accordion" id="accordionExample">
         {{#each projects}}
             <div class="accordion-item">
