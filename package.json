@@ -43,7 +43,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.26.0",
     "dotenv": "^10.0.0",
-    "email-templates": "^8.0.8",
+    "email-templates": "^11.1.1",
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-formidable": "^1.2.0",
