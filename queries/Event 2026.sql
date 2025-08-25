@@ -36,7 +36,7 @@ VALUES
 7,
 18,
 16,
-64,
+90, -- Temporary fix for error in counting projects
 3,
 DATE('2026-03-14'), -- officialStartDate
 'Coolest Projects 2026',
