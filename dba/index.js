@@ -697,8 +697,9 @@ class DBA {
         await this.validateRegistration(dbValues, event);
 
         // check for waiting list
-        const registration_count = await User.count({ where: { eventId: event.id }, lock: true }) + await Registration.count({ where: { eventId: event.id }, lock: true });
-        if (registration_count >= event.maxRegistration) {
+        const registration_count = await Project.count({ where: { eventId: event.id }, lock: true }) // Effective projects
+                                + await Registration.count({ where: { eventId: event.id, project_code: null }, lock: true }); // New owners in validation of project, not participants
+        if (registration_count >= event.maxRegistration && !dbValues.project_code) {
           dbValues.waiting_list = true;
           console.log('Add to waiting list!');
         }
