@@ -16,7 +16,7 @@ if (sslenabled) {
   const ssl = {
     dialectOptions: {
       ssl  : {
-        ca : fs.readFileSync(__dirname + '/../DigiCertGlobalRootCA.crt.pem')
+        ca : fs.readFileSync(__dirname + '/../DigiCertGlobalRootG2.crt.pem')
         }  
       }
     };
