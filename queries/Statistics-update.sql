@@ -31,17 +31,17 @@ GROUP BY u.eventId,
 order by 1, 2, 3, 4
 ;
 
-REPLACE INTO stats_languagegender
+REPLACE INTO stats_genderage
 SELECT
 	u.eventId,
-	u.language,
 	u.sex,
+    floor(datediff(e.officialStartDate, u.birthmonth)/365) as age,
 	count(u.id) as count
 FROM users u
 inner join events e on u.eventId = e.id
 GROUP BY u.eventId,
-	u.language,
-	u.sex
+	u.sex,
+    floor(datediff(e.officialStartDate, u.birthmonth)/365)
 order by 1, 2, 3
 ;
 
