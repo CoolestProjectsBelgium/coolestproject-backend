@@ -5,8 +5,8 @@ WHERE eventBeginDate <= CURDATE() and CURDATE() <= eventEndDate;
 SET @eventIdOld = @eventIdNew - 1;
 
 -- Name contains the year!
-SET @old = RIGHT(CAST(YEAR(now()) as CHAR), 1);
-SET @new = RIGHT(CAST(YEAR(now())+1 as CHAR), 1);
+SET @old = RIGHT(CAST(YEAR(now())-1 as CHAR), 1);
+SET @new = RIGHT(CAST(YEAR(now()) as CHAR), 1);
 select @old, @new;
 
 INSERT INTO locations
