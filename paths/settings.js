@@ -6,6 +6,7 @@ const DBA = require('../dba');
  */
 module.exports = function(models, database) {
   const User = models.User;
+  const Project = models.Project;
   const Registration = models.Registration;
 
   const operations = {
@@ -30,11 +31,10 @@ module.exports = function(models, database) {
       });
       return;
     }
-    let registration_count = 
-          await User.count({ where: { eventId: event.id }, lock: true }); 
-          
-    registration_count += await Registration.count({ lock: true });
-      
+    let registration_count = await Project.count({ where: { eventId: event.id }, lock: true }); 
+    
+    registration_count += await Registration.count({ where: { eventId: event.id, project_code: null }, lock: true }); // New owners in validation of project, not participants
+    
     res.status(200).json({
       maxAge: event.maxAge,
       minAge: event.minAge,
