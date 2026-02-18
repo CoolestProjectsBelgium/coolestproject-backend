@@ -696,7 +696,9 @@ class DBA {
 
         await this.validateRegistration(dbValues, event);
 
-        // check for waiting list
+        // Check for waiting list
+        // Attention: same logic in the Settings.js file for the project creation,
+        // if you change something here, also change it there
         const registration_count = await Project.count({ where: { eventId: event.id }, lock: true }) // Effective projects
                                 + await Registration.count({ where: { eventId: event.id, project_code: null }, lock: true }); // New owners in validation of project, not participants
         if (registration_count >= event.maxRegistration && !dbValues.project_code) {
