@@ -17,6 +17,11 @@ const FileComponent = componentLoader.add('File', path.join(__dirname, './compon
 // Compatibility shim: AdminJS v6 @adminjs/import-export uses AdminJS.bundle() at load
 // time. We patch it temporarily to register components with our componentLoader instead.
 // The path from bundleComponents.js is relative to node_modules/@adminjs/import-export/lib/components/
+// NOTE: __unsafe_addWithoutChecks is used here instead of .add() because .add() validates
+// that the file exists at the time of registration, but bundleComponents.js passes a path
+// to TypeScript (.tsx) source files that are resolvable but only as-typed paths. This shim
+// can be removed once @adminjs/import-export is upgraded to v3+ which is natively compatible
+// with AdminJS v7's ComponentLoader API.
 const importExportBase = path.dirname(require.resolve('@adminjs/import-export/lib/components/bundleComponents.js'))
 AdminJS.default.bundle = function bundleCompat(componentPath) {
   const absolutePath = path.isAbsolute(componentPath)
