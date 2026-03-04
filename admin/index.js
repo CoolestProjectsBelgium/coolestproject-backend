@@ -1,12 +1,33 @@
+const path = require('path')
 const AdminJS = require('adminjs')
 const AdminJSExpress = require('@adminjs/express')
 const passport = require('passport')
 const express = require('express')
 const app = express()
 const db = require('../models');
-const importExportFeature = require('@adminjs/import-export').default;
 //const router = AdminJSExpress.buildRouter(adminJs)
 const AdminJSSequelize = require('@adminjs/sequelize')
+
+// ComponentLoader replaces AdminJS.bundle() which was removed in AdminJS v7
+const componentLoader = new AdminJS.ComponentLoader()
+
+// Pre-register reusable components
+const FileComponent = componentLoader.add('File', path.join(__dirname, './components/file'))
+
+// Compatibility shim: AdminJS v6 @adminjs/import-export uses AdminJS.bundle() at load
+// time. We patch it temporarily to register components with our componentLoader instead.
+// The path from bundleComponents.js is relative to node_modules/@adminjs/import-export/lib/components/
+const importExportBase = path.dirname(require.resolve('@adminjs/import-export/lib/components/bundleComponents.js'))
+AdminJS.default.bundle = function bundleCompat(componentPath) {
+  const absolutePath = path.isAbsolute(componentPath)
+    ? componentPath
+    : path.resolve(importExportBase, componentPath)
+  const name = path.basename(absolutePath)
+  componentLoader.__unsafe_addWithoutChecks(name, absolutePath)
+  return name
+}
+const importExportFeature = require('@adminjs/import-export').default;
+delete AdminJS.default.bundle
 
 //const session = require("express-session");
 //const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -89,6 +110,7 @@ function adminAllowedOwnUser(context) {
 
 
 const adminJsOptions = {
+  componentLoader,
   databases: [db],
   rootPath: '/admin',
   dashboard: {
@@ -96,7 +118,7 @@ const adminJsOptions = {
       const evt = await database.getEventActive()
       return { ...evt.dataValues, questions: evt.questions, tshirts: evt.tshirts };
     },
-    component: AdminJS.bundle('./components/dashboard')
+    component: componentLoader.add('Dashboard', path.join(__dirname, './components/dashboard'))
   },
   branding: {
     companyName: 'Coolest Projects',
@@ -377,7 +399,7 @@ const adminJsOptions = {
                 record: record.toJSON(evt),
               }
             },
-            component: AdminJS.bundle('./components/eventDashboard')
+            component: componentLoader.add('EventDashboard', path.join(__dirname, './components/eventDashboard'))
           },
           setActive: {
             isAccessible: superAdminAllowed,
@@ -1092,8 +1114,8 @@ const adminJsOptions = {
               filter: false,
             },
             components: {
-              list: AdminJS.bundle('./components/file'),
-              show: AdminJS.bundle('./components/file'),
+              list: FileComponent,
+              show: FileComponent,
             },
           }
         },
@@ -1155,8 +1177,8 @@ const adminJsOptions = {
               filter: false,
             },
             components: {
-              list: AdminJS.bundle('./components/file'),
-              show: AdminJS.bundle('./components/file'),
+              list: FileComponent,
+              show: FileComponent,
             },
           },
           azureExists: {
@@ -1831,8 +1853,8 @@ const adminJsOptions = {
   ]
 }
 
-AdminJS.registerAdapter(AdminJSSequelize)
-const adminJs = new AdminJS(adminJsOptions)
+AdminJS.default.registerAdapter(AdminJSSequelize)
+const adminJs = new AdminJS.default(adminJsOptions)
 
 let router = express.Router()
 router.use(passport.authenticate('planning_login'));
